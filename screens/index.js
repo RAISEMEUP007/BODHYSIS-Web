@@ -1,3 +1,4 @@
+import DashboardScreen from './DashboardScreen';
 import AuthScreen from './AuthScreen';
 
-export { AuthScreen };
+export { DashboardScreen, AuthScreen };

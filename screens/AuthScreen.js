@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { ImageBackground, View, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { API_URL } from '../constants/appConstants';
+import { useNavigation } from '@react-navigation/native';
 
 const AuthScreen = () => {
+    const navigation = useNavigation();
+
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
@@ -17,6 +20,7 @@ const AuthScreen = () => {
     };
 
     const onLoggedIn = token => {
+        console.log(API_URL);
         fetch(`${API_URL}/private`, {
             method: 'GET',
             headers: {
@@ -28,7 +32,7 @@ const AuthScreen = () => {
             try {
                 const jsonRes = await res.json();
                 if (res.status === 200) {
-                    setMessage(jsonRes.message);
+                    navigation.navigate('Dashboard');
                 }
             } catch (err) {
                 console.log(err);
