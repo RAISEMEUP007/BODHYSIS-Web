@@ -4,8 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 const DashboardScreen = ({ navigation }) => {
   
     const onLogout = () => {
-        // Perform logout actions, e.g., clear token, navigate to AuthScreen
-        navigation.navigate('Auth'); // Assuming the name of the AuthScreen is 'Auth'
+        navigation.navigate('Auth');
     };
 
     return (

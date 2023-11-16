@@ -34,7 +34,7 @@ const AuthScreen = () => {
             try {
                 const jsonRes = await res.json();
                 if (res.status === 200) {
-                    navigation.navigate('Dashboard');
+                    navigation.navigate('Home');
                 }
             } catch (err) {
                 console.log(err);
