@@ -4,7 +4,7 @@
     "start": "set NODE_OPTIONS=--openssl-legacy-provider && expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "set NODE_OPTIONS=--openssl-legacy-provider && expo start --web"
+    "web": "set NODE_OPTIONS=--openssl-legacy-provider && EXPO_NO_DOTENV=1 expo start --web"
   },
   "dependencies": {
     "@expo/webpack-config": "^0.17.0",

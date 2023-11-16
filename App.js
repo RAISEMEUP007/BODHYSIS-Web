@@ -5,8 +5,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { AuthScreen, Home } from './screens';
+import { ClientEnv, Env  } from './env';
 
 const Stack = createStackNavigator();
+
+console.log(ClientEnv);
 
 export default function App() {
   return (
