@@ -1,3 +1,5 @@
+import DashboardScreen from './DashboardScreen';
 import AuthScreen from './AuthScreen';
+import Home from './Home';
 
-export { AuthScreen };
+export { DashboardScreen, AuthScreen, Home };
