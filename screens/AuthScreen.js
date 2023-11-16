@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { ImageBackground, View, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
-//import { API_URL } from '../constants/appConstants';
+import { API_URL } from '../constants/appConstants';
 import { useNavigation } from '@react-navigation/native';
-
-const API_URL = "http://10.0.2.2:5000";
 
 const AuthScreen = () => {
     const navigation = useNavigation();
@@ -22,7 +20,6 @@ const AuthScreen = () => {
     };
 
     const onLoggedIn = token => {
-        console.log(API_URL);
         fetch(`${API_URL}/private`, {
             method: 'GET',
             headers: {
