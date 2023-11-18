@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ImageBackground, View, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
+import { Alert, Modal, ImageBackground, View, Image, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { API_URL } from '../constants/appConstants';
 import { useNavigation } from '@react-navigation/native';
 
@@ -83,7 +83,7 @@ const AuthScreen = () => {
     return (
         <ImageBackground source={require('../assets/gradient-back.jpeg')} style={styles.image}>
             <View style={styles.card}>
-                {/* <Image source={require('../assets/icon.png')} style={styles.image}></Image> */}
+                <Image source={require('../assets/icon.png')}></Image>
                 <Text style={styles.heading}>{isLogin ? 'Login' : 'Signup'}</Text>
                 <View style={styles.form}>
                     <View style={styles.inputs}>
