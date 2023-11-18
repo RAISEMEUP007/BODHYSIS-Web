@@ -83,6 +83,7 @@ const AuthScreen = () => {
     return (
         <ImageBackground source={require('../assets/gradient-back.jpeg')} style={styles.image}>
             <View style={styles.card}>
+                {/* <Image source={require('../assets/icon.png')} style={styles.image}></Image> */}
                 <Text style={styles.heading}>{isLogin ? 'Login' : 'Signup'}</Text>
                 <View style={styles.form}>
                     <View style={styles.inputs}>
@@ -91,10 +92,10 @@ const AuthScreen = () => {
                         <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setPassword}></TextInput>
                         <Text style={[styles.message, {color: isError ? 'red' : 'green'}]}>{message ? getMessage() : null}</Text>
                         <TouchableOpacity style={styles.button} onPress={onSubmitHandler}>
-                            <Text style={styles.buttonText}>Done</Text>
+                            <Text style={styles.buttonText}>{isLogin ? 'Login' : 'Continue'}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.buttonAlt} onPress={onChangeHandler}>
-                            <Text style={styles.buttonAltText}>{isLogin ? 'Sign Up' : 'Log In'}</Text>
+                            <Text style={styles.buttonAltText}>{isLogin ? 'Create Account' : 'Login'}</Text>
                         </TouchableOpacity>
                     </View>    
                 </View>
@@ -122,8 +123,8 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: 'bold',
         marginLeft: '10%',
-        marginTop: Platform.OS === 'web' ? '10%' : '5%',
-        marginBottom: Platform.OS === 'web' ? '20%' : '30%',
+        marginTop: Platform.OS === 'web' ? '40px' : '5%',
+        marginBottom: Platform.OS === 'web' ? '60px' : '30%',
         color: 'black',
     },
     form: {
