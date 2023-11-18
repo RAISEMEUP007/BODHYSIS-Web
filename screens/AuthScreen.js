@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Modal, ImageBackground, View, Image, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
+import { Alert, Modal, Pressable, ImageBackground, View, Image, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { API_URL } from '../constants/appConstants';
 import { useNavigation } from '@react-navigation/native';
 
@@ -13,6 +13,8 @@ const AuthScreen = () => {
     const [isError, setIsError] = useState(false);
     const [message, setMessage] = useState('');
     const [isLogin, setIsLogin] = useState(true);
+
+    const [modalVisible, setModalVisible] = useState(false);
 
     const onChangeHandler = () => {
         setIsLogin(!isLogin);
@@ -48,6 +50,7 @@ const AuthScreen = () => {
             name,
             password,
         };
+        showMessage();
         fetch(`${API_URL}/${isLogin ? 'login' : 'signup'}`, {
             method: 'POST',
             headers: {
@@ -75,9 +78,8 @@ const AuthScreen = () => {
         });
     };
 
-    const getMessage = () => {
-        const status = isError ? `Error: ` : `Success: `;
-        return status + message;
+    const showMessage = () => {
+        setModalVisible(!modalVisible);
     }
 
     return (
@@ -90,7 +92,6 @@ const AuthScreen = () => {
                         <TextInput style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={setEmail}></TextInput>
                         {!isLogin && <TextInput style={styles.input} placeholder="Name" onChangeText={setName}></TextInput>}
                         <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setPassword}></TextInput>
-                        <Text style={[styles.message, {color: isError ? 'red' : 'green'}]}>{message ? getMessage() : null}</Text>
                         <TouchableOpacity style={styles.button} onPress={onSubmitHandler}>
                             <Text style={styles.buttonText}>{isLogin ? 'Login' : 'Continue'}</Text>
                         </TouchableOpacity>
@@ -100,6 +101,25 @@ const AuthScreen = () => {
                     </View>    
                 </View>
             </View>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                Alert.alert('Modal has been closed.');
+                setModalVisible(!modalVisible);
+            }}>
+                <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                    <Text style={styles.modalText}>Hello World!</Text>
+                    <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => setModalVisible(!modalVisible)}>
+                    <Text style={styles.textStyle}>Hide Modal</Text>
+                    </Pressable>
+                </View>
+                </View>
+            </Modal>
         </ImageBackground>
     );
 };
@@ -180,6 +200,28 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginVertical: '5%',
     },
+
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+      },
 });
 
 export default AuthScreen;
