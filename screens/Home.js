@@ -4,14 +4,6 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
 import DashboardScreen from './DashboardScreen';
 
-function Dashboard() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Feed Screen</Text>
-    </View>
-  );
-}
-
 function Inventory() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

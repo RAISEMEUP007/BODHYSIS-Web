@@ -3,7 +3,7 @@ import { ImageBackground, View, Text, StyleSheet, TouchableOpacity, TextInput, P
 import { API_URL } from '../constants/appConstants';
 import { useNavigation } from '@react-navigation/native';
 
-const AuthScreen = () => {
+const RecoverPass = () => {
     const navigation = useNavigation();
 
     const [email, setEmail] = useState('');
@@ -75,10 +75,6 @@ const AuthScreen = () => {
         });
     };
 
-    const forgotPass = () => {
-        navigation.navigate('RecoverPass');
-    };
-
     const getMessage = () => {
         const status = isError ? `Error: ` : `Success: `;
         return status + message;
@@ -87,7 +83,7 @@ const AuthScreen = () => {
     return (
         <ImageBackground source={require('../assets/gradient-back.jpeg')} style={styles.image}>
             <View style={styles.card}>
-                <Text style={styles.heading}>{isLogin ? 'Login' : 'Signup'}</Text>
+                <Text style={styles.heading}>{'Reset Password'}</Text>
                 <View style={styles.form}>
                     <View style={styles.inputs}>
                         <TextInput style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={setEmail}></TextInput>
@@ -95,13 +91,7 @@ const AuthScreen = () => {
                         <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setPassword}></TextInput>
                         <Text style={[styles.message, {color: isError ? 'red' : 'green'}]}>{message ? getMessage() : null}</Text>
                         <TouchableOpacity style={styles.button} onPress={onSubmitHandler}>
-                            <Text style={styles.buttonText}>Done</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.buttonAlt} onPress={onChangeHandler}>
-                            <Text style={styles.buttonAltText}>{isLogin ? 'Sign Up' : 'Log In'}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.forgotPass} onPress={forgotPass}>
-                            <Text style={styles.buttonAltText}>{'forgot password?'}</Text>
+                            <Text style={styles.buttonText}>Send</Text>
                         </TouchableOpacity>
                     </View>    
                 </View>
@@ -193,4 +183,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default AuthScreen;
+export default RecoverPass;
