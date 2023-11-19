@@ -76,6 +76,10 @@ const AuthScreen = () => {
             resetValidMessage();
             switch(res.status){
                 case 200:
+                    if(!isLogin){
+                        onChangeHandler();
+                        showAlert('success', msgStr('userCreated'));
+                    }
                     break;
                 case 400:
                     break;
@@ -188,7 +192,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.4)',
         width: '80%',
         maxWidth : 480,
-        marginTop: Platform.OS == 'web' ? 'calc(40VH - 220px)' : '35%',
+        marginTop: Platform.OS == 'web' ? 'calc(40VH - 220px)' : '32%',
         borderRadius: 20,
         paddingTop: defaultFontSize,
         paddingBottom: Platform.OS == 'web' ? defaultFontSize * 4 : defaultFontSize * 3,
