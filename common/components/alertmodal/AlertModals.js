@@ -13,23 +13,23 @@ const AlertModals = () => {
     switch (modalType) {
         case 'success':
             ({ modalText = 'Success', modalBtnText = 'Okay' } = useAlertModal());
-            modalBackgroundColor = '#d4edda'; // Bootstrap success color
-            modalBtnColor = '#28a745'; // Bootstrap success button color
+            modalBackgroundColor = '#d4edda'; 
+            modalBtnColor = '#28a745';
             break;
         case 'error':
             ({ modalText = 'Error', modalBtnText = 'Got it' } = useAlertModal());
-            modalBackgroundColor = '#f8d7da'; // Bootstrap error color
-            modalBtnColor = '#dc3545'; // Bootstrap error button color
+            modalBackgroundColor = '#f8d7da';
+            modalBtnColor = '#dc3545';
             break;
         case 'warning':
             ({ modalText = 'Warning', modalBtnText = 'Got it' } = useAlertModal());
-            modalBackgroundColor = '#fff3cd'; // Bootstrap warning color
-            modalBtnColor = '#ffc107'; // Bootstrap warning button color
+            modalBackgroundColor = '#fff3cd';
+            modalBtnColor = '#ffc107';
             break;
         default:
             ({ modalText = 'Default', modalBtnText = 'OK' } = useAlertModal());
-            modalBackgroundColor = '#f8f9fa'; // Bootstrap default color
-            modalBtnColor = '#007bff'; // Bootstrap default button color
+            modalBackgroundColor = '#f8f9fa';
+            modalBtnColor = '#007bff';
     }
 
 
