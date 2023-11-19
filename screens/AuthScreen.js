@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ImageBackground, View, Image, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { API_URL } from '../constants/appConstants';
 import { useNavigation } from '@react-navigation/native';
-import { useAlertModal } from '../common/providers/alertmodal/provider';
+import { useAlertModal } from '../common/hooks/useAlertModal';
 
 const AuthScreen = () => {
     const navigation = useNavigation();

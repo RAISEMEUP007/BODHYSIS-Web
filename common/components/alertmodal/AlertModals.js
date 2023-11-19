@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, StyleSheet, Pressable } from 'react-native';
-import { useAlertModal } from '../../providers/alertmodal/provider';
+import { useAlertModal } from '../../hooks/useAlertModal';
 
 const AlertModals = () => {
     const { modalType, modalVisible, setModalVisible } = useAlertModal();

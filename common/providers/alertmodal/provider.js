@@ -1,10 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { AlertModalContext } from './context'
 
-export const useAlertModal = () => {
-  return useContext(AlertModalContext);
-};
-
 export const AlertModalProvider = ({ children }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState('');

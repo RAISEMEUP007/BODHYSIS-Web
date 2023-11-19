@@ -15,7 +15,7 @@ export default function App() {
   return (
     <Providers>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Auth" mode="modal">
+        <Stack.Navigator initialRouteName="Auth" screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen
             name="Auth"
             component={AuthScreen}
