@@ -3,7 +3,7 @@ import { Modal, View, Text, StyleSheet, Pressable } from 'react-native';
 import { useAlertModal } from '../../hooks/useAlertModal';
 
 const AlertModals = () => {
-    const { modalType, modalVisible, setModalVisible } = useAlertModal();
+    const { modalType, modalVisible, closeAlert } = useAlertModal();
   
     let modalBackgroundColor = '';
     let modalText = 'Default Modal Text';
@@ -44,7 +44,7 @@ const AlertModals = () => {
                 <Text style={styles.modalText}>{modalText}</Text>
                 <Pressable
                     style={[styles.button, styles.buttonClose, { backgroundColor: modalBtnColor }]}
-                    onPress={() => {setModalVisible(!modalVisible)}}
+                    onPress={closeAlert}
                 >
                     <Text style={[styles.textStyle, { color: '#fff' }]}>{modalBtnText}</Text>
                 </Pressable>
