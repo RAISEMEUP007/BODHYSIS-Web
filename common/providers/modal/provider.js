@@ -1,37 +1,23 @@
-import React, { useState } from 'react';
-import { ModalContext } from './context';
+import React, { createContext, useContext, useState } from 'react';
 
-function isModalWithData(a) {
-  return !!a.data;
-}
+const ModalContext = createContext({
+  modalVisible: false,
+  text: "",
+  setModalVisible: () => {},
+  setText: () => {},
+});
 
-export const ModalContextProvider = (props) => {
-  const [modal, setModal] = useState(null);
-  const [modalData, setModalData] = useState(undefined);
-  const [isClosing, setIsClosing] = useState(false);
-  
-  const modalApi = {
-    showModal: (modalCall) => {
-      setModal(modalCall.modal);
+export const useModal = () => {
+  return useContext(ModalContext);
+};
 
-      if (isModalWithData(modalCall)) {
-        setModalData(modalCall.data);
-      }
-    },
-    hideModal: () => {
-      if (isClosing) {
-        setModal(null);
-        setModalData(null);
-        setIsClosing(false);
-      } else {
-        setIsClosing(true);
-      }
-    },
-    modal,
-    modalData,
-    isClosing,
-    returnClosedModal: () => setIsClosing(false),
-  };
+export const ModalProvider = ({ children }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [text, setText] = useState("");
 
-  return React.createElement(ModalContext.Provider, { value: modalApi }, props.children);
+  return (
+    <ModalContext.Provider value={{ modalVisible, text, setModalVisible, setText }}>
+      {children}
+    </ModalContext.Provider>
+  );
 };

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Alert, Modal, Pressable, ImageBackground, View, Image, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
+import { ImageBackground, View, Image, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { API_URL } from '../constants/appConstants';
 import { useNavigation } from '@react-navigation/native';
+import { useModal } from '../common/providers/modal/provider';
 
 const AuthScreen = () => {
     const navigation = useNavigation();
@@ -11,14 +12,12 @@ const AuthScreen = () => {
     const [password, setPassword] = useState('');
 
     const [isError, setIsError] = useState(false);
-    const [message, setMessage] = useState('');
     const [isLogin, setIsLogin] = useState(true);
 
-    const [modalVisible, setModalVisible] = useState(false);
+    const { setModalVisible, setText } = useModal();
 
     const onChangeHandler = () => {
         setIsLogin(!isLogin);
-        setMessage('');
     };
 
     const onLoggedIn = token => {
@@ -44,13 +43,17 @@ const AuthScreen = () => {
         });
     }
 
+    const showMessage = () => {
+        setText("Error");
+        setModalVisible(true);
+    };
+
     const onSubmitHandler = () => {
         const payload = {
             email,
             name,
             password,
         };
-        showMessage();
         fetch(`${API_URL}/${isLogin ? 'login' : 'signup'}`, {
             method: 'POST',
             headers: {
@@ -63,12 +66,11 @@ const AuthScreen = () => {
                 const jsonRes = await res.json();
                 if (res.status !== 200) {
                     setIsError(true);
-                    setMessage(jsonRes.message);
                 } else {
                     onLoggedIn(jsonRes.token);
                     setIsError(false);
-                    setMessage(jsonRes.message);
                 }
+                showMessage();
             } catch (err) {
                 console.log(err);
             };
@@ -77,10 +79,6 @@ const AuthScreen = () => {
             console.log(err);
         });
     };
-
-    const showMessage = () => {
-        setModalVisible(!modalVisible);
-    }
 
     return (
         <ImageBackground source={require('../assets/gradient-back.jpeg')} style={styles.image}>
@@ -101,25 +99,6 @@ const AuthScreen = () => {
                     </View>    
                 </View>
             </View>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
-                setModalVisible(!modalVisible);
-            }}>
-                <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <Text style={styles.modalText}>Hello World!</Text>
-                    <Pressable
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={() => setModalVisible(!modalVisible)}>
-                    <Text style={styles.textStyle}>Hide Modal</Text>
-                    </Pressable>
-                </View>
-                </View>
-            </Modal>
         </ImageBackground>
     );
 };
@@ -200,28 +179,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginVertical: '5%',
     },
-
-    centeredView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 22,
-      },
-      modalView: {
-        margin: 20,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 35,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-      },
 });
 
 export default AuthScreen;
