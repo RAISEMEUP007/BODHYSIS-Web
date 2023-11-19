@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { API_URL } from '../common/constants/appConstants';
 import { defaultFontSize } from '../common/constants/fonts';
-import { msgStr } from '../common/constants/mess';
+import { msgStr } from '../common/constants/message';
 
 import { useAlertModal } from '../common/hooks/useAlertModal';
 
@@ -16,10 +16,14 @@ const AuthScreen = () => {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
 
-    const [isError, setIsError] = useState(false);
     const [isLogin, setIsLogin] = useState(true);
 
+    const [emailValidMessage, setEmailValidMessage] = useState('');
+    const [nameValidMessage, setNameValidMessage] = useState('');
+    const [passValidMessage, setPassValidMessage] = useState('');
+    
     const onChangeHandler = () => {
+        resetValidMessage();
         setIsLogin(!isLogin);
     };
 
@@ -36,20 +40,26 @@ const AuthScreen = () => {
                 const jsonRes = await res.json();
                 if (res.status === 200) {
                     navigation.navigate('Home');
-                    showAlert('success', 'Welcome!', 'Okay');
                 }
             } catch (err) {
                 console.log(err);
-                showAlert('error');
             };
         })
         .catch(err => {
             console.log(err);
-            showAlert('error');
+            showAlert('error', msgStr('serverError'));
         });
     }
 
     const onSubmitHandler = () => {
+        if(!email.trim()){
+            setEmailValidMessage(msgStr('emptyField'));
+            return;
+        }else if(!password.trim()){
+            setPassValidMessage(msgStr('emptyField'));
+            return;
+        }
+
         const payload = {
             email,
             name,
@@ -63,13 +73,31 @@ const AuthScreen = () => {
             body: JSON.stringify(payload),
         })
         .then(async res => { 
+            resetValidMessage();
+            switch(res.status){
+                case 200:
+                    break;
+                case 400:
+                    break;
+                case 401:
+                    setPassValidMessage(msgStr('errorComparingPassword'));
+                    break;
+                case 404:
+                    setEmailValidMessage(msgStr('userNotFound'));
+                    break;
+                case 409:
+                    setEmailValidMessage(msgStr('emailExists'));
+                    showAlert('error', msgStr('emailExists'));
+                    break;
+                default:
+                    if(res.message) showAlert('error', res.message);
+                    else showAlert('error', msgStr('unknownError'));
+                    break;
+            }
             try {
                 const jsonRes = await res.json();
-                if (res.status !== 200) {
-                    setIsError(true);
-                } else {
+                if (res.status == 200) {
                     onLoggedIn(jsonRes.token);
-                    setIsError(false);
                 }
             } catch (err) {
                 console.log(err);
@@ -77,7 +105,45 @@ const AuthScreen = () => {
         })
         .catch(err => {
             console.log(err);
+            showAlert('error', msgStr('serverError'));
         });
+    };
+
+    const checkEmailInput = () => {
+        if (!email.trim()) {
+            setEmailValidMessage(msgStr('emptyField'));
+        } else if (!isValidEmailFormat(email)) {
+            setEmailValidMessage(msgStr('invalidEmailFormat'));
+        } else {
+            setEmailValidMessage('');
+        }
+    };
+
+    const resetValidMessage = () => {
+        setEmailValidMessage('');
+        setNameValidMessage('');
+        setPassValidMessage('');
+    }
+
+    const checkNameInput = () => {
+        if (!name.trim()) {
+            setNameValidMessage(msgStr('emptyField'));
+        } else {
+            setNameValidMessage('');
+        }
+    };
+
+    const checkPasswordInput = () => {
+        if (!password.trim()) {
+            setPassValidMessage(msgStr('emptyField'));
+        } else {
+            setPassValidMessage('');
+        }
+    };
+
+    const isValidEmailFormat = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     };
 
     return (
@@ -87,9 +153,15 @@ const AuthScreen = () => {
                 <Text style={styles.heading}>{isLogin ? 'Login' : 'Signup'}</Text>
                 <View style={styles.form}>
                     <View style={styles.inputs}>
-                        <TextInput style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={setEmail}></TextInput>
-                        {!isLogin && <TextInput style={styles.input} placeholder="Name" onChangeText={setName}></TextInput>}
-                        <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setPassword}></TextInput>
+                        <TextInput style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={setEmail} onBlur={checkEmailInput}></TextInput>
+                        {(emailValidMessage.trim() != '') && <Text style={styles.message}>{emailValidMessage}</Text>}
+                        {!isLogin && (
+                        <>
+                            <TextInput style={styles.input} placeholder="Name" onChangeText={setName} onBlur={checkNameInput}/>
+                            {nameValidMessage.trim() !== "" && <Text style={styles.message}>{nameValidMessage}</Text>}
+                        </>)}
+                        <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setPassword} onBlur={checkPasswordInput}></TextInput>
+                        {(passValidMessage.trim() != '') && <Text style={[styles.message, {marginBottom: 0}]}>{passValidMessage}</Text>}
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity style={styles.button} onPress={onSubmitHandler}>
                                 <Text style={styles.buttonText}>{isLogin ? 'Login' : 'Continue'}</Text>
@@ -116,10 +188,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.4)',
         width: '80%',
         maxWidth : 480,
-        marginTop: Platform.OS == 'web' ? 'calc(40VH - 200px)' : '35%',
+        marginTop: Platform.OS == 'web' ? 'calc(40VH - 220px)' : '35%',
         borderRadius: 20,
         paddingTop: defaultFontSize,
         paddingBottom: Platform.OS == 'web' ? defaultFontSize * 4 : defaultFontSize * 3,
+        paddingHorizontal: defaultFontSize*3,
     },
     icon: {
         height: 110,
@@ -130,9 +203,8 @@ const styles = StyleSheet.create({
     heading: {
         fontSize: defaultFontSize * 1.6,
         fontWeight: 'bold',
-        marginLeft: '10%',
-        marginTop: defaultFontSize,
-        marginBottom: defaultFontSize * 1.5,
+        marginTop: defaultFontSize/2,
+        marginBottom: defaultFontSize * 1.2,
         color: 'black',
     },
     form: {
@@ -144,7 +216,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },  
     input: {
-        width: '80%',
+        width: '100%',
         borderBottomWidth: 1,
         borderBottomColor: 'black',
         fontSize: defaultFontSize,
@@ -153,7 +225,7 @@ const styles = StyleSheet.create({
     },
     buttonGroup: {
         marginTop: defaultFontSize * 1.5,
-        width: "80%",
+        width: "100%",
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -183,6 +255,14 @@ const styles = StyleSheet.create({
     buttonAltText: {
         color: 'black',
         fontSize: defaultFontSize,
+    },
+    message: {
+        width: '100%',
+        color: 'red',
+        marginBottom: 3,
+        marginTop: -defaultFontSize/2,
+        fontSize: defaultFontSize * 0.8,
+        paddingLeft: defaultFontSize/2,
     },
 });
 
