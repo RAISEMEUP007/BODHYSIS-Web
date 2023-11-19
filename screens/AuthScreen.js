@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ImageBackground, View, Image, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
-import { API_URL } from '../constants/appConstants';
+import { API_URL } from '../common/constants/appConstants';
 import { useNavigation } from '@react-navigation/native';
 import { useAlertModal } from '../common/hooks/useAlertModal';
 
