@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { API_URL } from '../common/constants/appConstants';
 import { defaultFontSize } from '../common/constants/fonts';
+import { msgStr } from '../common/constants/mess';
 
 import { useAlertModal } from '../common/hooks/useAlertModal';
 
@@ -66,19 +67,16 @@ const AuthScreen = () => {
                 const jsonRes = await res.json();
                 if (res.status !== 200) {
                     setIsError(true);
-                    showAlert('error');
                 } else {
                     onLoggedIn(jsonRes.token);
                     setIsError(false);
                 }
             } catch (err) {
                 console.log(err);
-                showAlert('error');
             };
         })
         .catch(err => {
             console.log(err);
-            showAlert('error');
         });
     };
 
