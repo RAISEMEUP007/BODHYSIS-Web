@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react';
-import { ModalProvider } from './modal/provider'
+import { AlertModalProvider } from './alertmodal/provider'
 
 export const Providers = ({ children }) => (
-    <ModalProvider>
+    <AlertModalProvider>
         {children}
-    </ModalProvider>
+    </AlertModalProvider>
 )

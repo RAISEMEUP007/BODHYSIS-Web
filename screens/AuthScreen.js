@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { ImageBackground, View, Image, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { API_URL } from '../constants/appConstants';
 import { useNavigation } from '@react-navigation/native';
-import { useModal } from '../common/providers/modal/provider';
+import { useAlertModal } from '../common/providers/alertmodal/provider';
 
 const AuthScreen = () => {
     const navigation = useNavigation();
+    const { showAlert } = useAlertModal();
 
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
@@ -13,8 +14,6 @@ const AuthScreen = () => {
 
     const [isError, setIsError] = useState(false);
     const [isLogin, setIsLogin] = useState(true);
-
-    const { setModalVisible, setText } = useModal();
 
     const onChangeHandler = () => {
         setIsLogin(!isLogin);
@@ -33,20 +32,18 @@ const AuthScreen = () => {
                 const jsonRes = await res.json();
                 if (res.status === 200) {
                     navigation.navigate('Home');
+                    showAlert('success', 'Welcome!', 'Okay');
                 }
             } catch (err) {
                 console.log(err);
+                showAlert('error');
             };
         })
         .catch(err => {
             console.log(err);
+            showAlert('error');
         });
     }
-
-    const showMessage = () => {
-        setText("Error");
-        setModalVisible(true);
-    };
 
     const onSubmitHandler = () => {
         const payload = {
@@ -66,17 +63,19 @@ const AuthScreen = () => {
                 const jsonRes = await res.json();
                 if (res.status !== 200) {
                     setIsError(true);
+                    showAlert('error');
                 } else {
                     onLoggedIn(jsonRes.token);
                     setIsError(false);
                 }
-                showMessage();
             } catch (err) {
                 console.log(err);
+                showAlert('error');
             };
         })
         .catch(err => {
             console.log(err);
+            showAlert('error');
         });
     };
 

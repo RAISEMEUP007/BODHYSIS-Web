@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, StackViewStyleInterpolator } from '@react-navigation/stack';
 
 import { Providers } from './common/providers/providers';
-import { SuccessModal } from './common/components/modal/successModal';
+import { AlertModals } from './common/components/alertmodal/AlertModals';
 import { AuthScreen, Home } from './screens';
 
 const Stack = createStackNavigator();
@@ -25,7 +25,7 @@ export default function App() {
         </Stack.Navigator>
         <StatusBar style="auto" />
       </NavigationContainer>
-        <SuccessModal/>
+      <AlertModals/>
     </Providers>
   );
 }
