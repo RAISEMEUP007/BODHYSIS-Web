@@ -18,11 +18,9 @@ export default function App() {
     const handleDeepLinking = async () => {
       try {
         const url = await Linking.getInitialURL();
-        console.log(url);
         if (url) {
           const route = url.replace(/.*?:\/\//g, '');
           if (route.toLowerCase().includes('changepass')) {
-            console.log('....');
             setInitalRoute('changePass');
           }
         }

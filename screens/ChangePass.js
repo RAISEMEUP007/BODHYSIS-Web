@@ -10,10 +10,9 @@ import { useAlertModal } from '../common/hooks/useAlertModal';
 
 
 const ChangePass = () => {
-    console.log("here");
     const navigation = useNavigation();
     const { showAlert } = useAlertModal();
-
+    
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -23,6 +22,7 @@ const ChangePass = () => {
     const sendResetPass = () => {
         const payload = {
             password,
+            clientHost:getCurrentHost()
         };
 
         fetch(`${API_URL}/changepass`, {
@@ -61,7 +61,8 @@ const ChangePass = () => {
     };
 
     const checkConfirmPasswordInput = () => {
-        if (!password.trim()) {
+        console.log(confirmPassword.trim());
+        if (!confirmPassword.trim()) {
             setConfirmPassValidMessage(msgStr('emptyField'));
         } if (password.trim() != confirmPassword.trim()) {
             setConfirmPassValidMessage(msgStr('noMatchPass'));
@@ -84,7 +85,7 @@ const ChangePass = () => {
                         <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setPassword} onBlur={checkPasswordInput}></TextInput>
                         {(passValidMessage.trim() != '') && <Text style={[styles.message, {marginBottom: 0}]}>{passValidMessage}</Text>}
                         <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setConfirmPassword} onBlur={checkConfirmPasswordInput}></TextInput>
-                        {(passValidMessage.trim() != '') && <Text style={[styles.message, {marginBottom: 0}]}>{passValidMessage}</Text>}
+                        {(confirmPassValidMessage.trim() != '') && <Text style={[styles.message, {marginBottom: 0}]}>{confirmPassValidMessage}</Text>}
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity style={styles.button} onPress={sendResetPass}>
                                 <Text style={styles.buttonText}>{'Send'}</Text>

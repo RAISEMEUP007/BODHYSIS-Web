@@ -8,14 +8,33 @@ import { msgStr } from '../common/constants/message';
 import { authStyles } from './styles/authStyles';
 import { useAlertModal } from '../common/hooks/useAlertModal';
 
-
 const RecoverPass = () => {
     const navigation = useNavigation();
     const { showAlert } = useAlertModal();
 
     const [email, setEmail] = useState('');
-
     const [emailValidMessage, setEmailValidMessage] = useState('');
+    
+    const getCurrentHost = () => {
+        if (typeof window !== 'undefined') {
+          return window.location.host;
+        } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
+          Linking.getInitialURL()
+            .then((url) => {
+              if (url) {
+                const host = new URL(url).host;
+                console.log(host);
+                return host;
+              }
+            })
+            .catch((err) => {
+              console.error('An error occurred', err);
+              return null;
+            });
+        } else {
+          return null;
+        }
+    };
 
     const sendResetPass = () => {
         if(!email.trim()){
@@ -25,6 +44,7 @@ const RecoverPass = () => {
 
         const payload = {
             email,
+            clientHost: getCurrentHost(),
         };
 
         fetch(`${API_URL}/resetpass`, {
