@@ -31,7 +31,6 @@ const RecoverPass = () => {
     
     const resetValidMessage = () => {
         setEmailValidMessage('');
-        setNameValidMessage('');
         setPassValidMessage('');
     }
 
@@ -61,8 +60,6 @@ const RecoverPass = () => {
                     <View style={styles.inputs}>
                         <TextInput style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={setEmail} onBlur={checkEmailInput}></TextInput>
                         {(emailValidMessage.trim() != '') && <Text style={styles.message}>{emailValidMessage}</Text>}
-                        <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setPassword} onBlur={checkPasswordInput}></TextInput>
-                        {(passValidMessage.trim() != '') && <Text style={[styles.message, {marginBottom: 0}]}>{passValidMessage}</Text>}
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity style={styles.button}>
                                 <Text style={styles.buttonText}>Send</Text>
