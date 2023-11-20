@@ -67,8 +67,8 @@ const RecoverPass = () => {
                             <TouchableOpacity style={styles.button}>
                                 <Text style={styles.buttonText}>Send</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.forgotPass]} onPress={login}>
-                                <Text style={styles.forgotLink}>{'Log in'}</Text>
+                            <TouchableOpacity style={styles.buttonAlt} onPress={login}>
+                                <Text style={styles.buttonAltText}>{'Login'}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>    

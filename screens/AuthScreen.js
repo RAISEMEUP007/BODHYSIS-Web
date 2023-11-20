@@ -177,9 +177,12 @@ const AuthScreen = () => {
                             <TouchableOpacity style={styles.buttonAlt} onPress={onChangeHandler}>
                                 <Text style={styles.buttonAltText}>{isLogin ? 'Create Account' : 'Login'}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.forgotPass]} onPress={forgotPass}>
-                                <Text style={styles.forgotLink}>{'forgot password?'}</Text>
-                            </TouchableOpacity>
+                            {isLogin && (
+                            <>
+                                <TouchableOpacity style={[styles.forgotPass]} onPress={forgotPass}>
+                                    <Text style={styles.forgotLink}>{'forgot password?'}</Text>
+                                </TouchableOpacity>
+                            </>)}
                         </View>
                     </View>    
                 </View>
