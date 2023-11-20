@@ -24,6 +24,11 @@ const messages = {
     notAuthenticated: "User is not authenticated. Please log in.", // 401 Unauthorized
     unauthorized: "User is not authorized to access this resource.", // 401 Unauthorized
     tokenDecodingError: "Error decoding the authentication token. Please log in again.", // 500 Internal Server Error
+
+    // Reste password
+    emailNotFound: "Cannot find this email.", // 404 Not Found
+    resetPasslinkSent: "Reset password link is sent. Please check your email.", // 404 Not Found
+    noMatchPass: "The password doesn't match.", // 404 Not Found
 };
   
 export function msgStr(messageType) {

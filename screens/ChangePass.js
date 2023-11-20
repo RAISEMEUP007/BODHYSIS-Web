@@ -9,25 +9,23 @@ import { authStyles } from './styles/authStyles';
 import { useAlertModal } from '../common/hooks/useAlertModal';
 
 
-const RecoverPass = () => {
+const ChangePass = () => {
+    console.log("here");
     const navigation = useNavigation();
     const { showAlert } = useAlertModal();
 
-    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
-    const [emailValidMessage, setEmailValidMessage] = useState('');
+    const [passValidMessage, setPassValidMessage] = useState('');
+    const [confirmPassValidMessage, setConfirmPassValidMessage] = useState('');
 
     const sendResetPass = () => {
-        if(!email.trim()){
-            setEmailValidMessage(msgStr('emptyField'));
-            return;
-        }
-
         const payload = {
-            email,
+            password,
         };
 
-        fetch(`${API_URL}/resetpass`, {
+        fetch(`${API_URL}/changepass`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -40,7 +38,7 @@ const RecoverPass = () => {
                     showAlert('success', msgStr('resetPasslinkSent'));
                 break;
                 case 404:
-                    setEmailValidMessage(msgStr('emailNotFound'));
+                    //setEmailValidMessage(msgStr('emailNotFound'));
                     break;
                 default:
                     if(res.message) showAlert('error', res.message);
@@ -54,19 +52,22 @@ const RecoverPass = () => {
         });
     };
     
-    const checkEmailInput = () => {
-        if (!email.trim()) {
-            setEmailValidMessage(msgStr('emptyField'));
-        } else if (!isValidEmailFormat(email)) {
-            setEmailValidMessage(msgStr('invalidEmailFormat'));
+    const checkPasswordInput = () => {
+        if (!password.trim()) {
+            setPassValidMessage(msgStr('emptyField'));
         } else {
-            setEmailValidMessage('');
+            setPassValidMessage('');
         }
     };
 
-    const isValidEmailFormat = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+    const checkConfirmPasswordInput = () => {
+        if (!password.trim()) {
+            setConfirmPassValidMessage(msgStr('emptyField'));
+        } if (password.trim() != confirmPassword.trim()) {
+            setConfirmPassValidMessage(msgStr('noMatchPass'));
+        } else {
+            setConfirmPassValidMessage('');
+        }
     };
 
     const login = () => {
@@ -77,11 +78,13 @@ const RecoverPass = () => {
         <ImageBackground source={require('../assets/gradient-back.jpeg')} style={styles.image}>
             <View style={styles.card}>
                 <Image style={styles.icon} source={require('../assets/icon.png')}></Image>
-                <Text style={styles.heading}>{'Reset Password'}</Text>
+                <Text style={styles.heading}>{'Change Password'}</Text>
                 <View style={styles.form}>
                     <View style={styles.inputs}>
-                        <TextInput style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={setEmail} onBlur={checkEmailInput}></TextInput>
-                        {(emailValidMessage.trim() != '') && <Text style={styles.message}>{emailValidMessage}</Text>}
+                        <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setPassword} onBlur={checkPasswordInput}></TextInput>
+                        {(passValidMessage.trim() != '') && <Text style={[styles.message, {marginBottom: 0}]}>{passValidMessage}</Text>}
+                        <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setConfirmPassword} onBlur={checkConfirmPasswordInput}></TextInput>
+                        {(passValidMessage.trim() != '') && <Text style={[styles.message, {marginBottom: 0}]}>{passValidMessage}</Text>}
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity style={styles.button} onPress={sendResetPass}>
                                 <Text style={styles.buttonText}>{'Send'}</Text>
@@ -99,4 +102,4 @@ const RecoverPass = () => {
 
 const styles = authStyles;
 
-export default RecoverPass;
+export default ChangePass;
