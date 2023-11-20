@@ -27,8 +27,10 @@ const messages = {
 
     // Reste password
     emailNotFound: "Cannot find this email.", // 404 Not Found
-    resetPasslinkSent: "Reset password link is sent. Please check your email.", // 404 Not Found
-    noMatchPass: "The password doesn't match.", // 404 Not Found
+    resetPasslinkSent: "Reset password link is sent. Please check your email.", // 200 OK
+    noMatchPass: "The password doesn't match.",
+    passUpdatedSuccessfully: "Password updated successfully.", // 200 OK
+    linkExpired: "This link is expired.", // 400 Bad Request
 };
   
 export function msgStr(messageType) {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ImageBackground, View, Image, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
+import { ImageBackground, View, Image, Text, Linking, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { API_URL } from '../common/constants/appConstants';
@@ -16,24 +16,18 @@ const RecoverPass = () => {
     const [emailValidMessage, setEmailValidMessage] = useState('');
     
     const getCurrentHost = () => {
-        if (typeof window !== 'undefined') {
-          return window.location.host;
-        } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
-          Linking.getInitialURL()
-            .then((url) => {
-              if (url) {
+        Linking.getInitialURL()
+        .then((url) => {
+            if (url) {
                 const host = new URL(url).host;
                 console.log(host);
                 return host;
-              }
-            })
-            .catch((err) => {
-              console.error('An error occurred', err);
-              return null;
-            });
-        } else {
-          return null;
-        }
+            }
+        })
+        .catch((err) => {
+            console.error('An error occurred', err);
+            return null;
+        });
     };
 
     const sendResetPass = () => {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ImageBackground, View, Image, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
+import { ImageBackground, View, Image, Text, StyleSheet, TouchableOpacity, TextInput, Linking } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { API_URL } from '../common/constants/appConstants';
@@ -18,14 +18,22 @@ const ChangePass = () => {
 
     const [passValidMessage, setPassValidMessage] = useState('');
     const [confirmPassValidMessage, setConfirmPassValidMessage] = useState('');
+    
+    const setpassword = async () => {
+        if (password.trim() != confirmPassword.trim()) {
+            setConfirmPassValidMessage(msgStr('noMatchPass'));
+            return;
+        }
+        console.log('ss');
+        const url = await Linking.getInitialURL();
+        const recoveryId = url.substring(url.lastIndexOf("/") + 1);
 
-    const sendResetPass = () => {
         const payload = {
-            password,
-            clientHost:getCurrentHost()
+            recoveryId: recoveryId,
+            password: password,
         };
 
-        fetch(`${API_URL}/changepass`, {
+        fetch(`${API_URL}/password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -35,10 +43,12 @@ const ChangePass = () => {
         .then(async res => { 
             switch(res.status){
                 case 200:
-                    showAlert('success', msgStr('resetPasslinkSent'));
+                    showAlert('success', msgStr('passUpdatedSuccessfully'));
+                    navigation.navigate('Auth');
                 break;
-                case 404:
-                    //setEmailValidMessage(msgStr('emailNotFound'));
+                case 400:
+                    showAlert('error', msgStr('linkExpired'));
+                    navigation.navigate('Auth');
                     break;
                 default:
                     if(res.message) showAlert('error', res.message);
@@ -61,10 +71,9 @@ const ChangePass = () => {
     };
 
     const checkConfirmPasswordInput = () => {
-        console.log(confirmPassword.trim());
         if (!confirmPassword.trim()) {
             setConfirmPassValidMessage(msgStr('emptyField'));
-        } if (password.trim() != confirmPassword.trim()) {
+        } else if (password.trim() != confirmPassword.trim()) {
             setConfirmPassValidMessage(msgStr('noMatchPass'));
         } else {
             setConfirmPassValidMessage('');
@@ -84,11 +93,11 @@ const ChangePass = () => {
                     <View style={styles.inputs}>
                         <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setPassword} onBlur={checkPasswordInput}></TextInput>
                         {(passValidMessage.trim() != '') && <Text style={[styles.message, {marginBottom: 0}]}>{passValidMessage}</Text>}
-                        <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setConfirmPassword} onBlur={checkConfirmPasswordInput}></TextInput>
+                        <TextInput secureTextEntry={true} style={styles.input} placeholder="Confirm Password" onChangeText={setConfirmPassword} onBlur={checkConfirmPasswordInput}></TextInput>
                         {(confirmPassValidMessage.trim() != '') && <Text style={[styles.message, {marginBottom: 0}]}>{confirmPassValidMessage}</Text>}
                         <View style={styles.buttonGroup}>
-                            <TouchableOpacity style={styles.button} onPress={sendResetPass}>
-                                <Text style={styles.buttonText}>{'Send'}</Text>
+                            <TouchableOpacity style={styles.button} onPress={setpassword}>
+                                <Text style={styles.buttonText}>{'Set password'}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.buttonAlt} onPress={login}>
                                 <Text style={styles.buttonAltText}>{'Login'}</Text>
