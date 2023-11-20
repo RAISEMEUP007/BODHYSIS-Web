@@ -6,7 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { Providers } from './common/providers/providers';
 import { AlertModals } from './common/components/alertmodal/AlertModals';
-import { AuthScreen, Home } from './screens';
+import { AuthScreen, Home, RecoverPass } from './screens';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +22,7 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+          <Stack.Screen name="RecoverPass" component={RecoverPass} options={{ headerShown: false }} />
         </Stack.Navigator>
         <StatusBar style="auto" />
       </NavigationContainer>
