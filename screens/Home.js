@@ -1,18 +1,11 @@
 import React, { useEffect } from 'react';
 import { View, Text } from 'react-native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator} from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
 import DashboardScreen from './DashboardScreen';
+import Inventory from './Inventory/Inventory';
 
-function Inventory() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Inventory</Text>
-    </View>
-  );
-}
-
-function Settings() {
+function Settings(props) {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Settings</Text>
@@ -35,7 +28,7 @@ const Drawer = createDrawerNavigator();
 
 function MyDrawer() {
   return (
-    <Drawer.Navigator useLegacyImplementation initialRouteName="Dashboard">
+    <Drawer.Navigator useLegacyImplementation initialRouteName="Inventory">
       <Drawer.Screen
         name="Dashboard"
         component={DashboardScreen}
@@ -50,7 +43,8 @@ function MyDrawer() {
         name="Settings"
         component={Settings}
         options={{ drawerLabel: 'Settings' }}
-      />
+      >
+      </Drawer.Screen>
       <Drawer.Screen
         name="Logout"
         component={Logout}
@@ -60,7 +54,7 @@ function MyDrawer() {
   );
 }
 
-const Home = ({ navigation }) => {
+const Home = () => {
   return (
       <MyDrawer />
   );

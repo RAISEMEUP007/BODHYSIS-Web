@@ -11,7 +11,7 @@ import { AuthScreen, Home, RecoverPass, ChangePass } from './screens';
 const Stack = createStackNavigator();
 
 export default function App() {
-  const [initialRoute, setInitalRoute] = useState('Auth');
+  const [initialRoute, setInitalRoute] = useState('Home');
   const [loading, setLoading] = useState(true); // add loading state
 
   useEffect(() => {
