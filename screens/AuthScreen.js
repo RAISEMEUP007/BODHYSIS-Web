@@ -1,22 +1,30 @@
 import React, { useState } from 'react';
-import { Alert, Modal, ImageBackground, View, Image, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
-import { API_URL } from '../constants/appConstants';
+import { ImageBackground, View, Image, Text, TouchableOpacity, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+
+import { API_URL } from '../common/constants/appConstants';
+import { msgStr } from '../common/constants/message';
+
+import { authStyles } from './styles/authStyles';
+import { useAlertModal } from '../common/hooks/useAlertModal';
 
 const AuthScreen = () => {
     const navigation = useNavigation();
+    const { showAlert } = useAlertModal();
 
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
 
-    const [isError, setIsError] = useState(false);
-    const [message, setMessage] = useState('');
     const [isLogin, setIsLogin] = useState(true);
 
+    const [emailValidMessage, setEmailValidMessage] = useState('');
+    const [nameValidMessage, setNameValidMessage] = useState('');
+    const [passValidMessage, setPassValidMessage] = useState('');
+    
     const onChangeHandler = () => {
+        resetValidMessage();
         setIsLogin(!isLogin);
-        setMessage('');
     };
 
     const onLoggedIn = token => {
@@ -39,10 +47,19 @@ const AuthScreen = () => {
         })
         .catch(err => {
             console.log(err);
+            showAlert('error', msgStr('serverError'));
         });
     }
 
     const onSubmitHandler = () => {
+        if(!email.trim()){
+            setEmailValidMessage(msgStr('emptyField'));
+            return;
+        }else if(!password.trim()){
+            setPassValidMessage(msgStr('emptyField'));
+            return;
+        }
+
         const payload = {
             email,
             name,
@@ -56,15 +73,35 @@ const AuthScreen = () => {
             body: JSON.stringify(payload),
         })
         .then(async res => { 
+            resetValidMessage();
+            switch(res.status){
+                case 200:
+                    if(!isLogin){
+                        onChangeHandler();
+                        showAlert('success', msgStr('userCreated'));
+                    }
+                    break;
+                case 400:
+                    break;
+                case 401:
+                    setPassValidMessage(msgStr('errorComparingPassword'));
+                    break;
+                case 404:
+                    setEmailValidMessage(msgStr('userNotFound'));
+                    break;
+                case 409:
+                    setEmailValidMessage(msgStr('emailExists'));
+                    showAlert('error', msgStr('emailExists'));
+                    break;
+                default:
+                    if(res.message) showAlert('error', res.message);
+                    else showAlert('error', msgStr('unknownError'));
+                    break;
+            }
             try {
                 const jsonRes = await res.json();
-                if (res.status !== 200) {
-                    setIsError(true);
-                    setMessage(jsonRes.message);
-                } else {
+                if (res.status == 200) {
                     onLoggedIn(jsonRes.token);
-                    setIsError(false);
-                    setMessage(jsonRes.message);
                 }
             } catch (err) {
                 console.log(err);
@@ -72,31 +109,81 @@ const AuthScreen = () => {
         })
         .catch(err => {
             console.log(err);
+            showAlert('error', msgStr('serverError'));
         });
     };
 
-    const getMessage = () => {
-        const status = isError ? `Error: ` : `Success: `;
-        return status + message;
+    const checkEmailInput = () => {
+        if (!email.trim()) {
+            setEmailValidMessage(msgStr('emptyField'));
+        } else if (!isValidEmailFormat(email)) {
+            setEmailValidMessage(msgStr('invalidEmailFormat'));
+        } else {
+            setEmailValidMessage('');
+        }
+    };
+
+    const resetValidMessage = () => {
+        setEmailValidMessage('');
+        setNameValidMessage('');
+        setPassValidMessage('');
     }
+
+    const checkNameInput = () => {
+        if (!name.trim()) {
+            setNameValidMessage(msgStr('emptyField'));
+        } else {
+            setNameValidMessage('');
+        }
+    };
+
+    const checkPasswordInput = () => {
+        if (!password.trim()) {
+            setPassValidMessage(msgStr('emptyField'));
+        } else {
+            setPassValidMessage('');
+        }
+    };
+    
+    const isValidEmailFormat = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const forgotPass = () => {
+        navigation.navigate('RecoverPass');
+    };
 
     return (
         <ImageBackground source={require('../assets/gradient-back.jpeg')} style={styles.image}>
             <View style={styles.card}>
-                <Image source={require('../assets/icon.png')}></Image>
+                <Image style={styles.icon} source={require('../assets/icon.png')}></Image>
                 <Text style={styles.heading}>{isLogin ? 'Login' : 'Signup'}</Text>
                 <View style={styles.form}>
                     <View style={styles.inputs}>
-                        <TextInput style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={setEmail}></TextInput>
-                        {!isLogin && <TextInput style={styles.input} placeholder="Name" onChangeText={setName}></TextInput>}
-                        <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setPassword}></TextInput>
-                        <Text style={[styles.message, {color: isError ? 'red' : 'green'}]}>{message ? getMessage() : null}</Text>
-                        <TouchableOpacity style={styles.button} onPress={onSubmitHandler}>
-                            <Text style={styles.buttonText}>{isLogin ? 'Login' : 'Continue'}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.buttonAlt} onPress={onChangeHandler}>
-                            <Text style={styles.buttonAltText}>{isLogin ? 'Create Account' : 'Login'}</Text>
-                        </TouchableOpacity>
+                        <TextInput style={styles.input} placeholder="Email" autoCapitalize="none" onChangeText={setEmail} onBlur={checkEmailInput}></TextInput>
+                        {(emailValidMessage.trim() != '') && <Text style={styles.message}>{emailValidMessage}</Text>}
+                        {!isLogin && (
+                        <>
+                            <TextInput style={styles.input} placeholder="Name" onChangeText={setName} onBlur={checkNameInput}/>
+                            {nameValidMessage.trim() !== "" && <Text style={styles.message}>{nameValidMessage}</Text>}
+                        </>)}
+                        <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setPassword} onBlur={checkPasswordInput}></TextInput>
+                        {(passValidMessage.trim() != '') && <Text style={[styles.message, {marginBottom: 0}]}>{passValidMessage}</Text>}
+                        <View style={styles.buttonGroup}>
+                            <TouchableOpacity style={styles.button} onPress={onSubmitHandler}>
+                                <Text style={styles.buttonText}>{isLogin ? 'Login' : 'Continue'}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.buttonAlt} onPress={onChangeHandler}>
+                                <Text style={styles.buttonAltText}>{isLogin ? 'Create Account' : 'Login'}</Text>
+                            </TouchableOpacity>
+                            {isLogin && (
+                            <>
+                                <TouchableOpacity style={[styles.forgotPass]} onPress={forgotPass}>
+                                    <Text style={styles.forgotLink}>{'forgot password?'}</Text>
+                                </TouchableOpacity>
+                            </>)}
+                        </View>
                     </View>    
                 </View>
             </View>
@@ -104,82 +191,6 @@ const AuthScreen = () => {
     );
 };
 
-const styles = StyleSheet.create({
-    image: {
-        flex: 1,
-        width: '100%',
-        alignItems: 'center',
-    },  
-    card: {
-        flex: 1,
-        backgroundColor: 'rgba(255, 255, 255, 0.4)',
-        width: Platform.OS === 'web' ? '700px' : '80%',
-        marginTop: Platform.OS === 'web' ? '5%' : '40%',
-        borderRadius: 20,
-        maxHeight: 380,
-        paddingBottom: '30%',
-    },
-    heading: {
-        fontSize: 30,
-        fontWeight: 'bold',
-        marginLeft: '10%',
-        marginTop: Platform.OS === 'web' ? '40px' : '5%',
-        marginBottom: Platform.OS === 'web' ? '60px' : '30%',
-        color: 'black',
-    },
-    form: {
-        flex: 1,
-        justifyContent: 'space-between',
-        paddingBottom: '5%',
-    },
-    inputs: {
-        width: '100%',
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: '10%',
-    },  
-    input: {
-        width: '80%',
-        borderBottomWidth: 1,
-        borderBottomColor: 'black',
-        paddingTop: 10,
-        fontSize: 16, 
-        minHeight: 40,
-    },
-    button: {
-        width: '80%',
-        backgroundColor: 'black',
-        height: 40,
-        borderRadius: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginVertical: 5,
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: '400'
-    },
-    buttonAlt: {
-        width: '80%',
-        borderWidth: 1,
-        height: 40,
-        borderRadius: 50,
-        borderColor: 'black',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginVertical: 5,
-    },
-    buttonAltText: {
-        color: 'black',
-        fontSize: 16,
-        fontWeight: '400',
-    },
-    message: {
-        fontSize: 16,
-        marginVertical: '5%',
-    },
-});
+const styles = authStyles;
 
 export default AuthScreen;
