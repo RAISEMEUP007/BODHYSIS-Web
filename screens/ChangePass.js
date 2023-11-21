@@ -24,7 +24,6 @@ const ChangePass = () => {
             setConfirmPassValidMessage(msgStr('noMatchPass'));
             return;
         }
-        console.log('ss');
         const url = await Linking.getInitialURL();
         const recoveryId = url.substring(url.lastIndexOf("/") + 1);
 

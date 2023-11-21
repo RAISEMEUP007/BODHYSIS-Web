@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ImageBackground, View, Image, Text, Linking, TouchableOpacity, TextInput, Platform } from 'react-native';
+import { ImageBackground, View, Image, Text, TouchableOpacity, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import { API_URL } from '../common/constants/appConstants';
+import { API_URL, BASE_URL } from '../common/constants/appConstants';
 import { msgStr } from '../common/constants/message';
 
 import { authStyles } from './styles/authStyles';
@@ -14,21 +14,6 @@ const RecoverPass = () => {
 
     const [email, setEmail] = useState('');
     const [emailValidMessage, setEmailValidMessage] = useState('');
-    
-    const getCurrentHost = () => {
-        Linking.getInitialURL()
-        .then((url) => {
-            if (url) {
-                const host = new URL(url).host;
-                console.log(host);
-                return host;
-            }
-        })
-        .catch((err) => {
-            console.error('An error occurred', err);
-            return null;
-        });
-    };
 
     const sendResetPass = () => {
         if(!email.trim()){
@@ -38,7 +23,7 @@ const RecoverPass = () => {
 
         const payload = {
             email,
-            clientHost: getCurrentHost(),
+            clientHost: BASE_URL,
         };
 
         fetch(`${API_URL}/resetpass`, {
