@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import TouchNav from './TouchNav';
+import { TextMediumLargeSize } from '../../constants/fonts';
 
 const TouchNavGroup = ({ sectionTitle, items, handleItemClick }) => {
   return (
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
         marginBottom: 40,
     },
     label: {
-        fontSize: 20,
+        fontSize: TextMediumLargeSize,
         fontWeight: 'bold',
         marginBottom: 10,
     },

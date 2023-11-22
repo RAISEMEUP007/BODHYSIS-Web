@@ -84,14 +84,15 @@ const PricePointModal = ({ isModalVisible, closeModal }) => {
 };
 
 const styles = StyleSheet.create({
-  select: {
+  input: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     marginVertical: 10,
     padding: 8,
+    width: 250,
   },
-  input: {
+  select: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,

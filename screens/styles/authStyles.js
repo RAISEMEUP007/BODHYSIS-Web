@@ -1,5 +1,5 @@
 import { StyleSheet, Platform } from 'react-native';
-import { defaultFontSize } from '../../common/constants/fonts';
+import { loginDefaultFontSize } from '../../common/constants/fonts';
 
 export const authStyles = StyleSheet.create({
     image: {
@@ -8,15 +8,15 @@ export const authStyles = StyleSheet.create({
         alignItems: 'center',
     },  
     card: {
-        fontSize: defaultFontSize,
+        fontSize: loginDefaultFontSize,
         backgroundColor: 'rgba(255, 255, 255, 0.4)',
         width: '80%',
         maxWidth : 480,
         marginTop: Platform.OS == 'web' ? 'calc(40VH - 220px)' : '32%',
         borderRadius: 20,
-        paddingTop: defaultFontSize,
-        paddingBottom: Platform.OS == 'web' ? defaultFontSize * 4 : defaultFontSize * 3,
-        paddingHorizontal: defaultFontSize*3,
+        paddingTop: loginDefaultFontSize,
+        paddingBottom: Platform.OS == 'web' ? loginDefaultFontSize * 4 : loginDefaultFontSize * 3,
+        paddingHorizontal: loginDefaultFontSize*3,
     },
     icon: {
         height: 110,
@@ -25,10 +25,10 @@ export const authStyles = StyleSheet.create({
         justifyContent: 'center',
     },
     heading: {
-        fontSize: defaultFontSize * 1.6,
+        fontSize: loginDefaultFontSize * 1.6,
         fontWeight: 'bold',
-        marginTop: defaultFontSize/2,
-        marginBottom: defaultFontSize * 1.2,
+        marginTop: loginDefaultFontSize/2,
+        marginBottom: loginDefaultFontSize * 1.2,
         color: 'black',
     },
     form: {
@@ -43,12 +43,12 @@ export const authStyles = StyleSheet.create({
         width: '100%',
         borderBottomWidth: 1,
         borderBottomColor: 'black',
-        fontSize: defaultFontSize,
-        padding: defaultFontSize/2,
+        fontSize: loginDefaultFontSize,
+        padding: loginDefaultFontSize/2,
         marginBottom: 10,
     },
     buttonGroup: {
-        marginTop: defaultFontSize * 1.5,
+        marginTop: loginDefaultFontSize * 1.5,
         width: "100%",
         alignItems: 'center',
         justifyContent: 'center',
@@ -64,7 +64,7 @@ export const authStyles = StyleSheet.create({
     },
     buttonText: {
         color: 'white',
-        fontSize: defaultFontSize,
+        fontSize: loginDefaultFontSize,
     },
     buttonAlt: {
         width: '100%',
@@ -78,21 +78,21 @@ export const authStyles = StyleSheet.create({
     },
     buttonAltText: {
         color: 'black',
-        fontSize: defaultFontSize,
+        fontSize: loginDefaultFontSize,
     },
     message: {
         width: '100%',
         color: 'red',
         marginBottom: 3,
-        marginTop: -defaultFontSize/2,
-        fontSize: defaultFontSize * 0.8,
-        paddingLeft: defaultFontSize/2,
+        marginTop: -loginDefaultFontSize/2,
+        fontSize: loginDefaultFontSize * 0.8,
+        paddingLeft: loginDefaultFontSize/2,
     },
     forgotPass: {
         width: '100%',
     },
     forgotLink: {
-        fontSize: defaultFontSize * 0.9,
+        fontSize: loginDefaultFontSize * 0.9,
         textAlign: 'right',
         marginRight: 3,
         color: "#174191",

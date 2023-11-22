@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
 
 import CreateGroupModal from './CreateGroupModal';
 import PricePointModal from './PricePointModal';
@@ -24,41 +24,42 @@ const PriceGroup = () => {
   const closeAddPriceModal = () => {
     setAddPriceModalVisible(false);
   };
+  
 
-  // Render table headers
+  // Define the dynamic header data and table data
+  const headerData = ['header2', 'header3', 'header4', 'header5', 'header6', 'header7', 'header8', 'header9', 'header10'];
+  const tableData = {
+    groupName: ['cell data 2', 'cell data 3', 'cell data 4', 'cell data 5', 'cell data 6', 'cell data 7', 'cell data 8', 'cell data 9']
+  };
+
+  // Modify renderTableHeader function
   const renderTableHeader = () => {
     return (
       <View style={styles.tableHeader}>
-        <Text style={[styles.columnHeader, {width: 280}]}>Header 1</Text>
-        <Text style={styles.columnHeader}>Header 2</Text>
-        <Text style={styles.columnHeader}>Header 3</Text>
-        <Text style={styles.columnHeader}>Header 4</Text>
-        <Text style={styles.columnHeader}>Header 5</Text>
-        <Text style={styles.columnHeader}>Header 6</Text>
-        <Text style={styles.columnHeader}>Header 7</Text>
-        <Text style={styles.columnHeader}>Header 8</Text>
-        <Text style={styles.columnHeader}>Header 9</Text>
-        {/* Add more Text components for additional headers */}
+        <Text style={[styles.columnHeader, {width: 300}]}>PriceGroup</Text>
+        <Text style={styles.columnHeader}>Free</Text>
+        {headerData.map((header, index) => (
+          <Text key={index} style={styles.columnHeader}>{header}</Text>
+        ))}
+        <Text style={styles.columnHeader}>Extra day</Text>
       </View>
     );
   };
 
-  // Render table data
+  // Modify renderTableData function
   const renderTableData = () => {
     const rows = [];
-    for (let i = 1; i <= 10; i++) {
+    for (let i in tableData) {
       rows.push(
         <View key={i} style={styles.tableRow}>
-          <Text style={[styles.cell, {width: 210}]}>{`cell data 1`}</Text>
-          <Text style={[styles.cell, {width: 82}]}>{`cell data 2`}</Text>
-          <Text style={[styles.cell, {width: 82}]}>{`cell data 3`}</Text>
-          <Text style={[styles.cell, {width: 82}]}>{`cell data 4`}</Text>
-          <Text style={[styles.cell, {width: 82}]}>{`cell data 5`}</Text>
-          <Text style={[styles.cell, {width: 82}]}>{`cell data 6`}</Text>
-          <Text style={[styles.cell, {width: 82}]}>{`cell data 7`}</Text>
-          <Text style={[styles.cell, {width: 82}]}>{`cell data 8`}</Text>
-          <Text style={[styles.cell, {width: 82}]}>{`cell data 9`}</Text>
-          {/* Add more Text components for additional cells */}
+          <Text style={[styles.cell, {width: 300}]}>{'group Name'}</Text>
+          <Text style={styles.cell}>{'free cell data'}</Text>
+          {headerData.map((header, index) => (
+            <Text key={index} style={styles.cell}>
+              {tableData[i][index]}
+            </Text>
+          ))}
+          <Text style={styles.cell}>{'extra day data'}</Text>
         </View>
       );
     }
@@ -67,13 +68,19 @@ const PriceGroup = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.toolbar}>
-        <Button title="Create price group" onPress={handleButton1Click} />
-        <Button title="Add price point" onPress={handleButton2Click} />
-      </View>
-      <View>
-        {renderTableHeader()}
-        {renderTableData()}
+      <View style={styles.tableContainer}>
+        <View style={styles.toolbar}>
+          <TouchableHighlight style={styles.button} onPress={handleButton1Click}>
+            <Text style={styles.buttonText}>Create price group</Text>
+          </TouchableHighlight>
+          <TouchableHighlight style={styles.button} onPress={handleButton2Click}>
+            <Text style={styles.buttonText}>Add price point</Text>
+          </TouchableHighlight>
+        </View>
+        <View style={styles.table}>
+            {renderTableHeader()}
+            {renderTableData()}
+        </View>
       </View>
 
       <CreateGroupModal
@@ -94,37 +101,61 @@ const PriceGroup = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+    paddingTop: 32,
   },
+
+  tableContainer: {
+    borderRadius: 4,
+    marginBottom: 16,
+    overflow: 'hidden',
+  },
+  
   toolbar: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    width: '80%',
     marginBottom: 16,
+  },
+ 
+  buttonText: {
+    fontSize: 16,
+    color: 'white',
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#007bff', // Bootstrap primary color
+    borderRadius: 4,
+    paddingVertical: 10,
+    paddingHorizontal: 32,
+    margin: 5,
+  },
+
+  table: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    flexDirection: 'column',
   },
   tableHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 8,
-    borderBottomWidth: 2,
-    borderBottomColor: '#000',
-  },
-  columnHeader: {
-    fontWeight: 'bold',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
   },
   tableRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#ddd',
+  },
+  columnHeader: {
+    fontWeight: 'bold',
+    backgroundColor: '#f5f5f5',
+    padding: 8,
+    width: 100,
   },
   cell: {
-    flex: 1,
-    textAlign: 'center',
+    padding: 8,
+    width: 100,
   },
 });
 

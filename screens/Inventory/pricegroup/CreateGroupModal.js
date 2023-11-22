@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     padding: 8,
+    width: 250,
   },
   addButton: {
     backgroundColor: 'blue',
