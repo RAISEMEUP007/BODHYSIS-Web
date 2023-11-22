@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import PriceGroup from './PriceGroup';
+
 import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
+
+import PriceGroup from './pricegroup/PriceGroup';
 
 const Inventory = ({initalItem = null}) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);

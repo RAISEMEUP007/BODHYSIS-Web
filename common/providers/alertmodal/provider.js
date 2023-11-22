@@ -34,5 +34,3 @@ export const AlertModalProvider = ({ children }) => {
     </AlertModalContext.Provider>
   );
 };
-
-export default AlertModalContext;

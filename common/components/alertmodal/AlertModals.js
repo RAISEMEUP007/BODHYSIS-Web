@@ -32,7 +32,6 @@ const AlertModals = () => {
             modalBtnColor = '#007bff';
     }
 
-
     return (
         <Modal
             animationType="slide"
