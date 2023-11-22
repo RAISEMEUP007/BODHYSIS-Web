@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-const DashboardScreen = ({ navigation }) => {
+const Dashboard = ({ navigation }) => {
   
     const onLogout = () => {
         navigation.navigate('Auth');
@@ -39,4 +39,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default DashboardScreen;
+export default Dashboard;

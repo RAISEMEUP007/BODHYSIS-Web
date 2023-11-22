@@ -2,10 +2,18 @@ import React, { useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { createDrawerNavigator} from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
-import DashboardScreen from './DashboardScreen';
+import Dashboard from './Dashboard';
 import Inventory from './Inventory/Inventory';
 
-function Settings(props) {
+function DashboardScreen(props) {
+  return <Dashboard/>
+}
+
+function InventoryScreen(props) {
+  return <Inventory/>
+}
+
+function SettingsScreen(props) {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Settings</Text>
@@ -36,12 +44,12 @@ function MyDrawer() {
       />
       <Drawer.Screen
         name="Inventory"
-        component={Inventory}
-        options={{ drawerLabel: 'Inventory' }}
+        component={InventoryScreen}
+        options={{ drawerLabel: 'Inventory', unmountOnBlur: true }}
       />
       <Drawer.Screen
         name="Settings"
-        component={Settings}
+        component={SettingsScreen}
         options={{ drawerLabel: 'Settings' }}
       >
       </Drawer.Screen>

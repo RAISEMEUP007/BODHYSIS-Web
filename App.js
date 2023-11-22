@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { Providers } from './common/providers/providers';
 import { AlertModals } from './common/components/alertmodal/AlertModals';
+
 import { AuthScreen, Home, RecoverPass, ChangePass } from './screens';
 
 const Stack = createStackNavigator();
