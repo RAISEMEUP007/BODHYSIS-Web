@@ -18,9 +18,10 @@ const PricePointModal = ({ isModalVisible, closeModal }) => {
 
   const handleAddButtonClick = () => {
     const payload = {
-      group: _groupName,
+      duration: duration,
+      durationType: selectedOption,
     };
-    fetch(`${API_URL}/price/creategroup`, {
+    fetch(`${API_URL}/price/addpricepoint`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -34,12 +35,13 @@ const PricePointModal = ({ isModalVisible, closeModal }) => {
       }
       try {
         const jsonRes = await res.json();
+        closeModal();
+        showAlert('success', jsonRes.message);
       } catch (err) {
         console.log(err);
       }
     })
     .catch((err) => {
-      console.log(err);
       showAlert('error', msgStr('serverError'));
     });
   };
@@ -66,9 +68,9 @@ const PricePointModal = ({ isModalVisible, closeModal }) => {
             onValueChange={(itemValue, itemIndex) =>
               setSelectedOption(itemValue)
             }>
+            <Picker.Item label="Hours(s)" value="Hours(s)" />
             <Picker.Item label="Day(s)" value="Day(s)" />
             <Picker.Item label="Week(s)" value="Week(s)" />
-            <Picker.Item label="Year(s)" value="Year(s)" />
           </Picker>
         </ModalBody>
         <ModalFooter>
@@ -86,14 +88,14 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    margin: 10,
+    marginVertical: 10,
     padding: 8,
   },
   input: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    margin: 10,
+    marginVertical: 10,
     padding: 8,
   },
   addButton: {

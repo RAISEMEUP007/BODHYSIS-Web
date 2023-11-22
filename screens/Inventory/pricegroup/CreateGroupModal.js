@@ -33,6 +33,8 @@ const CreateGroupModal = ({ isModalVisible, groupName, closeModal }) => {
       }
       try {
         const jsonRes = await res.json();
+        closeModal();
+        showAlert('success', jsonRes.message);
       } catch (err) {
         console.log(err);
       }
@@ -42,7 +44,6 @@ const CreateGroupModal = ({ isModalVisible, groupName, closeModal }) => {
       showAlert('error', msgStr('serverError'));
     });
   };
-  
 
   return (
     <Modal
@@ -75,7 +76,6 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    margin: 10,
     padding: 8,
   },
   addButton: {

@@ -34,21 +34,21 @@ const AlertModals = () => {
 
     return (
         <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
         >
-            <View style={styles.centeredView}>
-            <View style={[styles.modalView, { backgroundColor: modalBackgroundColor }]}>
-                <Text style={styles.modalText}>{modalText}</Text>
-                <Pressable
-                    style={[styles.button, styles.buttonClose, { backgroundColor: modalBtnColor }]}
-                    onPress={closeAlert}
-                >
-                    <Text style={[styles.textStyle, { color: '#fff' }]}>{modalBtnText}</Text>
-                </Pressable>
-            </View>
-            </View>
+          <View style={styles.centeredView}>
+          <View style={[styles.modalView, { backgroundColor: modalBackgroundColor }]}>
+            <Text style={styles.modalText}>{modalText}</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose, { backgroundColor: modalBtnColor }]}
+              onPress={closeAlert}
+            >
+            <Text style={[styles.textStyle, { color: '#fff' }]}>{modalBtnText}</Text>
+            </Pressable>
+          </View>
+          </View>
         </Modal>
     );
 };
