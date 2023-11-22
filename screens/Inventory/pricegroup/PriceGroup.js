@@ -10,19 +10,19 @@ const PriceGroup = () => {
   const [groupName, setGroupname] = useState('');
 
   const closeGroupModal = () => {
-    setGroupModalVisible(false); // Open the modal when Button 1 is clicked
+    setGroupModalVisible(false);
   }
 
   const handleButton1Click = () => {
-    setGroupModalVisible(true); // Open the modal when Button 1 is clicked
+    setGroupModalVisible(true);
   };
 
   const handleButton2Click = () => {
-    setAddPriceModalVisible(true); // Open the modal when Button 2 is clicked
+    setAddPriceModalVisible(true);
   };
 
   const closeAddPriceModal = () => {
-    setAddPriceModalVisible(false); // Close the modal for adding price point
+    setAddPriceModalVisible(false);
   };
 
   // Render table headers
