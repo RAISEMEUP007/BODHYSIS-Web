@@ -49,7 +49,7 @@ const PricePointModal = ({ isModalVisible, closeModal }) => {
 
   return (
     <Modal
-      animationType="slide"
+      animationType="none"
       transparent={true}
       visible={isModalVisible}
     >

@@ -47,7 +47,7 @@ const CreateGroupModal = ({ isModalVisible, groupName, closeModal }) => {
 
   return (
     <Modal
-      animationType="slide"
+      animationType="none"
       transparent={true}
       visible={isModalVisible}
     >
