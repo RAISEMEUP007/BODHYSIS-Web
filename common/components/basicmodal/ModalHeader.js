@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { TextMediumSize, TextdefaultSize } from '../../constants/fonts';
+import { TextMediumSize, TextMediumLargeSize } from '../../constants/fonts';
 
 const ModalHeader = ({ label, closeModal }) => {
   return (
     <View style={styles.modalHeader}>
       <Text style={styles.modalTitle}>{label}</Text>
       <TouchableOpacity onPress={closeModal}>
-        <FontAwesome5 name="times" size={TextdefaultSize} color="black" />
+        <FontAwesome5 name="times" size={TextMediumLargeSize} color="black" />
       </TouchableOpacity>
     </View>
   );

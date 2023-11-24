@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import { Text, TextInput, Picker, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
@@ -66,8 +67,8 @@ const PricePointModal = ({ isModalVisible, closeModal }) => {
             selectedValue={selectedOption}
             style={styles.select}
             onValueChange={(itemValue, itemIndex) =>
-              setSelectedOption(itemValue)
-            }>
+            setSelectedOption(itemValue)
+          }>
             <Picker.Item label="Hours(s)" value="Hours(s)" />
             <Picker.Item label="Day(s)" value="Day(s)" />
             <Picker.Item label="Week(s)" value="Week(s)" />

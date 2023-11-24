@@ -1,5 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
+
+import { API_URL } from '../../../common/constants/appConstants';
 
 import CreateGroupModal from './CreateGroupModal';
 import PricePointModal from './PricePointModal';
@@ -8,15 +10,18 @@ const PriceGroup = () => {
   const [isGroupModalVisible, setGroupModalVisible] = useState(false);
   const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
   const [groupName, setGroupname] = useState('');
-
+  
+  const [headerData, setHeaderData] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  
   const closeGroupModal = () => {
     setGroupModalVisible(false);
   }
-
+  
   const handleButton1Click = () => {
     setGroupModalVisible(true);
   };
-
+  
   const handleButton2Click = () => {
     setAddPriceModalVisible(true);
   };
@@ -24,15 +29,68 @@ const PriceGroup = () => {
   const closeAddPriceModal = () => {
     setAddPriceModalVisible(false);
   };
-  
 
-  // Define the dynamic header data and table data
-  const headerData = ['header2', 'header3', 'header4', 'header5', 'header6', 'header7', 'header8', 'header9', 'header10'];
-  const tableData = {
-    groupName: ['cell data 2', 'cell data 3', 'cell data 4', 'cell data 5', 'cell data 6', 'cell data 7', 'cell data 8', 'cell data 9']
-  };
+  const getHeaderData = () => {
+    fetch(`${API_URL}/price/getheaderdata`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(async (res) => {
+      switch (res.status) {
+        default:
+          break;
+      }
+      try {
+        const jsonRes = await res.json();
+        if(jsonRes){
+          setHeaderData(jsonRes);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      //showAlert('error', msgStr('serverError'));
+    });
+  }
 
-  // Modify renderTableHeader function
+  const getTableData = () => {
+    const payload = {
+    };
+    fetch(`${API_URL}/price/gettabledata`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(async (res) => {
+      switch (res.status) {
+        default:
+          break;
+      }
+      try {
+        const jsonRes = await res.json();
+        if(jsonRes){
+          setTableData(jsonRes);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      //showAlert('error', msgStr('serverError'));
+    });
+  }
+
+  useEffect(()=>{
+    getHeaderData();
+    getTableData();
+  }, [])
+
   const renderTableHeader = () => {
     return (
       <View style={styles.tableHeader}>
@@ -52,14 +110,14 @@ const PriceGroup = () => {
     for (let i in tableData) {
       rows.push(
         <View key={i} style={styles.tableRow}>
-          <Text style={[styles.cell, {width: 300}]}>{'group Name'}</Text>
-          <Text style={styles.cell}>{'free cell data'}</Text>
+          <Text style={[styles.cell, {width: 300}]}>{i}</Text>
+          <Text style={styles.cell}>{tableData[i].is_free}</Text>
           {headerData.map((header, index) => (
             <Text key={index} style={styles.cell}>
-              {tableData[i][index]}
+              {tableData[i].data[index]}
             </Text>
           ))}
-          <Text style={styles.cell}>{'extra day data'}</Text>
+          <Text style={styles.cell}>{tableData[i].extra_day}</Text>
         </View>
       );
     }
@@ -101,7 +159,7 @@ const PriceGroup = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     padding: 16,
     paddingTop: 32,
   },

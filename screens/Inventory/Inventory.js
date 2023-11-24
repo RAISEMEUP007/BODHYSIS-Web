@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
 import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         width: '80%',
-        maxWidth: 800,
+        maxWidth: 1000,
         margin: 'auto',
         marginTop: 80,
     },
