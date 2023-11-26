@@ -8,16 +8,23 @@ import ModalBody from '../../../common/components/basicmodal/ModalBody';
 import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
 import { API_URL } from '../../../common/constants/appConstants';
 import { msgStr } from '../../../common/constants/message';
+import { TextSmallSize } from '../../../common/constants/fonts';
 import { useAlertModal } from '../../../common/hooks/useAlertModal';
 
-const PricePointModal = ({ isModalVisible, closeModal }) => {
+const PricePointModal = ({ isModalVisible, setUpdatePointTrigger, closeModal }) => {
 
   const { showAlert } = useAlertModal();
+  const [ValidMessage, setValidMessage] = useState('');
 
   const [duration, setDuration] = useState('');
-  const [selectedOption, setSelectedOption] = useState(0);
+  const [selectedOption, setSelectedOption] = useState("Hour(s)");
 
   const handleAddButtonClick = () => {
+    if (!duration.trim()) {
+      setValidMessage(msgStr('emptyField'));
+      return;
+    } 
+
     const payload = {
       duration: duration,
       durationType: selectedOption,
@@ -30,23 +37,35 @@ const PricePointModal = ({ isModalVisible, closeModal }) => {
       body: JSON.stringify(payload),
     })
     .then(async (res) => {
-      switch (res.status) {
-        default:
-          break;
-      }
       try {
         const jsonRes = await res.json();
-        closeModal();
-        showAlert('success', jsonRes.message);
+        if(res.status == 409){
+          setValidMessage(jsonRes.message);
+        }else if(res.status == 200){
+          showAlert('success', jsonRes.message);
+          setUpdatePointTrigger(true);
+          closeModal();
+        }else{
+          showAlert('success', jsonRes.message);
+          closeModal();
+        }
       } catch (err) {
         console.log(err);
       }
     })
     .catch((err) => {
       showAlert('error', msgStr('serverError'));
+      closeModal();
     });
   };
-  
+
+  const checkInput = () => {
+    if (!duration.trim()) {
+        setValidMessage(msgStr('emptyField'));
+    } else {
+        setValidMessage('');
+    }
+  };
 
   return (
     <Modal
@@ -62,7 +81,9 @@ const PricePointModal = ({ isModalVisible, closeModal }) => {
             onChangeText={setDuration}
             value={duration}
             placeholder="Duration"
+            onBlur={checkInput}
           />
+          {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
           <Picker
             selectedValue={selectedOption}
             style={styles.select}
@@ -91,7 +112,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginVertical: 10,
     padding: 8,
-    width: 250,
+    width: 320,
   },
   select: {
     height: 40,
@@ -106,6 +127,14 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlign: 'center',
     borderRadius: 5,
+  },
+  message: {
+    width: '100%',
+    color: 'red',
+    marginBottom: 0,
+    marginTop: -10,
+    fontSize: TextSmallSize,
+    paddingLeft: 5,
   },
 });
 

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState} from 'react';
 import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
 
 import { API_URL } from '../../../common/constants/appConstants';
@@ -9,7 +9,8 @@ import PricePointModal from './PricePointModal';
 const PriceGroup = () => {
   const [isGroupModalVisible, setGroupModalVisible] = useState(false);
   const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
-  const [groupName, setGroupname] = useState('');
+  const [updateGroupTrigger, setUpdateGroupTrigger] = useState(false);
+  const [updatePointTrigger, setUpdatePointTrigger] = useState(true);
   
   const [headerData, setHeaderData] = useState([]);
   const [tableData, setTableData] = useState([]);
@@ -53,7 +54,7 @@ const PriceGroup = () => {
     })
     .catch((err) => {
       console.log(err);
-      //showAlert('error', msgStr('serverError'));
+      showAlert('error', msgStr('serverError'));
     });
   }
 
@@ -75,6 +76,7 @@ const PriceGroup = () => {
         const jsonRes = await res.json();
         if(jsonRes){
           setTableData(jsonRes);
+          setUpdateGroupTrigger(false);
         }
       } catch (err) {
         console.log(err);
@@ -82,14 +84,21 @@ const PriceGroup = () => {
     })
     .catch((err) => {
       console.log(err);
-      //showAlert('error', msgStr('serverError'));
+      showAlert('error', msgStr('serverError'));
     });
   }
 
   useEffect(()=>{
-    getHeaderData();
-    getTableData();
-  }, [])
+    if(updatePointTrigger == true){
+      getHeaderData();
+      getTableData();
+      setUpdatePointTrigger(false);
+    }
+  }, [updatePointTrigger])
+
+  useEffect(() => {
+    if(updateGroupTrigger == true) getTableData();
+  }, [updateGroupTrigger]);
 
   const renderTableHeader = () => {
     return (
@@ -112,9 +121,9 @@ const PriceGroup = () => {
         <View key={i} style={styles.tableRow}>
           <Text style={[styles.cell, {width: 300}]}>{i}</Text>
           <Text style={styles.cell}>{tableData[i].is_free}</Text>
-          {headerData.map((header, index) => (
+          {tableData[i].data.map((cellData, index) => (
             <Text key={index} style={styles.cell}>
-              {tableData[i].data[index]}
+              {cellData}
             </Text>
           ))}
           <Text style={styles.cell}>{tableData[i].extra_day}</Text>
@@ -143,12 +152,14 @@ const PriceGroup = () => {
 
       <CreateGroupModal
         isModalVisible={isGroupModalVisible}
-        groupName={groupName} 
+        groupName={""}
+        setUpdateGroupTrigger = {setUpdateGroupTrigger} 
         closeModal={closeGroupModal}
       />
 
       <PricePointModal
         isModalVisible={isAddPriceModalVisible}
+        setUpdatePointTrigger = {setUpdatePointTrigger} 
         closeModal={closeAddPriceModal}
       />
 

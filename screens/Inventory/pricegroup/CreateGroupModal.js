@@ -7,15 +7,22 @@ import ModalBody from '../../../common/components/basicmodal/ModalBody';
 import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
 import { API_URL } from '../../../common/constants/appConstants';
 import { msgStr } from '../../../common/constants/message';
+import { TextSmallSize } from '../../../common/constants/fonts';
 import { useAlertModal } from '../../../common/hooks/useAlertModal';
 
-const CreateGroupModal = ({ isModalVisible, groupName, closeModal }) => {
+const CreateGroupModal = ({ isModalVisible, groupName, setUpdateGroupTrigger, closeModal }) => {
 
   const { showAlert } = useAlertModal();
+  const [ValidMessage, setValidMessage] = useState('');
 
   const [_groupName, setGroupname] = useState(groupName);
 
   const handleAddButtonClick = () => {
+    if (!_groupName.trim()) {
+      setValidMessage(msgStr('emptyField'));
+      return;
+    } 
+
     const payload = {
       group: _groupName,
     };
@@ -33,8 +40,16 @@ const CreateGroupModal = ({ isModalVisible, groupName, closeModal }) => {
       }
       try {
         const jsonRes = await res.json();
-        closeModal();
-        showAlert('success', jsonRes.message);
+        if(res.status == 409){
+          setValidMessage(jsonRes.message);
+        }else if(res.status == 200){
+          showAlert('success', jsonRes.message);
+          setUpdateGroupTrigger(true);
+          closeModal();
+        }else{
+          showAlert('success', jsonRes.message);
+          closeModal();
+        }
       } catch (err) {
         console.log(err);
       }
@@ -45,11 +60,20 @@ const CreateGroupModal = ({ isModalVisible, groupName, closeModal }) => {
     });
   };
 
+  const checkInput = () => {
+    if (!_groupName.trim()) {
+        setValidMessage(msgStr('emptyField'));
+    } else {
+        setValidMessage('');
+    }
+  };
+
   return (
     <Modal
       animationType="none"
       transparent={true}
       visible={isModalVisible}
+      onShow={()=>{setValidMessage(''); setGroupname(groupName)}}
     >
       <BasicModalContainer>
         <ModalHeader label={"Create price group"} closeModal={closeModal} />
@@ -59,7 +83,9 @@ const CreateGroupModal = ({ isModalVisible, groupName, closeModal }) => {
             onChangeText={setGroupname}
             value={_groupName}
             placeholder="Price group name"
+            onBlur={checkInput}
           />
+          {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={handleAddButtonClick}>
@@ -77,7 +103,7 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     padding: 8,
-    width: 250,
+    width: 320,
   },
   addButton: {
     backgroundColor: 'blue',
@@ -85,6 +111,14 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlign: 'center',
     borderRadius: 5,
+  },
+  message: {
+    width: '100%',
+    color: 'red',
+    marginBottom: 0,
+    marginTop: 0,
+    fontSize: TextSmallSize,
+    paddingLeft: 5,
   },
 });
 
