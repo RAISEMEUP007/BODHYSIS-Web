@@ -1,12 +1,15 @@
 import React, { useEffect, useState} from 'react';
-import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
+import { View, Text, TouchableHighlight, StyleSheet, CheckBox } from 'react-native';
 
 import { API_URL } from '../../../common/constants/appConstants';
 
 import CreateGroupModal from './CreateGroupModal';
 import PricePointModal from './PricePointModal';
+import { useAlertModal } from '../../../common/hooks/useAlertModal';
 
 const PriceGroup = () => {
+  const { showAlert } = useAlertModal();
+
   const [isGroupModalVisible, setGroupModalVisible] = useState(false);
   const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
   const [updateGroupTrigger, setUpdateGroupTrigger] = useState(false);
@@ -15,6 +18,18 @@ const PriceGroup = () => {
   const [headerData, setHeaderData] = useState([]);
   const [tableData, setTableData] = useState([]);
   
+  useEffect(()=>{
+    if(updatePointTrigger == true){
+      getHeaderData();
+      getTableData();
+      setUpdatePointTrigger(false);
+    }
+  }, [updatePointTrigger])
+
+  useEffect(() => {
+    if(updateGroupTrigger == true) getTableData();
+  }, [updateGroupTrigger]);
+
   const closeGroupModal = () => {
     setGroupModalVisible(false);
   }
@@ -88,17 +103,39 @@ const PriceGroup = () => {
     });
   }
 
-  useEffect(()=>{
-    if(updatePointTrigger == true){
-      getHeaderData();
-      getTableData();
-      setUpdatePointTrigger(false);
-    }
-  }, [updatePointTrigger])
-
-  useEffect(() => {
-    if(updateGroupTrigger == true) getTableData();
-  }, [updateGroupTrigger]);
+  const setFree = (group, isFree, callbackfunc) => {
+    const payload = {
+      group: group,
+      isFree: isFree,
+    };
+    fetch(`${API_URL}/price/setfree`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+    .then(async (res) => {
+      switch (res.status) {
+        default:
+          break;
+      }
+      try {
+        const jsonRes = await res.json();
+        if(res.status == 200){
+          callbackfunc();
+        }else{
+          showAlert('error', jsonRes.message);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      showAlert('error', msgStr('serverError'));
+    });
+  }
 
   const renderTableHeader = () => {
     return (
@@ -113,14 +150,26 @@ const PriceGroup = () => {
     );
   };
 
-  // Modify renderTableData function
+  const handleCheckboxChange = (index, newValue) => {
+    setFree(index, newValue, ()=>{
+      const updatedTableData = {...tableData};
+      updatedTableData[index] = {
+        ...updatedTableData[index],
+        is_free: newValue
+      };
+      setTableData(updatedTableData);
+    });
+  };  
+
   const renderTableData = () => {
     const rows = [];
     for (let i in tableData) {
       rows.push(
         <View key={i} style={styles.tableRow}>
           <Text style={[styles.cell, {width: 300}]}>{i}</Text>
-          <Text style={styles.cell}>{tableData[i].is_free}</Text>
+          <View style={[styles.cell, styles.cellcheckbox]}>
+            <CheckBox style={styles.cellcheckbox} value={tableData[i].is_free} onValueChange={(newValue) => handleCheckboxChange(i, newValue)} />
+          </View>
           {tableData[i].data.map((cellData, index) => (
             <Text key={index} style={styles.cell}>
               {cellData}
@@ -225,6 +274,11 @@ const styles = StyleSheet.create({
   cell: {
     padding: 8,
     width: 100,
+  },
+  cellcheckbox: {
+    //width: '100%',
+    //textAlign: 'center',
+    alignItems: 'flex-start',
   },
 });
 
