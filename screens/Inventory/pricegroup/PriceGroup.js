@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
+import { View, Text, TouchableHighlight, StyleSheet, TextInput } from 'react-native';
 import CheckBox from 'expo-checkbox';
 
 import { API_URL } from '../../../common/constants/appConstants';
@@ -138,29 +138,127 @@ const PriceGroup = () => {
     });
   }
 
+  const saveCellData = (group, index, cellData) => {
+    console.log('sss');
+    const groupId = tableData[group].group_id;
+    const pointId = headerData[index].id;
+    const payload = {
+      groupId: groupId,
+      pointId: pointId,
+      value: cellData,
+    };
+    fetch(`${API_URL}/price/setpricedata`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+    .then(async (res) => {
+      switch (res.status) {
+        default:
+          break;
+      }
+      try {
+        const jsonRes = await res.json();
+        console.log(jsonRes);
+        if(res.status == 200){
+
+        }else{
+          //showAlert('error', jsonRes.message);
+          setUpdateGroupTrigger(true);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      showAlert('error', msgStr('serverError'));
+    });
+  }
+
+  const saveExtraDay = (group, extraDay) => {
+    const payload = {
+      group: group,
+      extraDay: extraDay,
+    };
+    fetch(`${API_URL}/price/saveextraday`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+    .then(async (res) => {
+      switch (res.status) {
+        default:
+          break;
+      }
+      try {
+        const jsonRes = await res.json();
+        if(res.status == 200){
+        }else{
+          //showAlert('error', jsonRes.message);
+          setUpdateGroupTrigger(true);
+        }
+      } catch (err) {
+        console.log(err);
+        setUpdateGroupTrigger(true);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      showAlert('error', msgStr('serverError'));
+    });
+  }
+
+
   const renderTableHeader = () => {
     return (
       <View style={styles.tableHeader}>
         <Text style={[styles.columnHeader, {width: 300}]}>PriceGroup</Text>
         <Text style={styles.columnHeader}>Free</Text>
-        {headerData.map((header, index) => (
-          <Text key={index} style={styles.columnHeader}>{header}</Text>
+        {headerData.map((item, index) => (
+          <Text key={index} style={styles.columnHeader} pointId={item.id}>{item.header}</Text>
         ))}
         <Text style={styles.columnHeader}>Extra day</Text>
       </View>
     );
   };
 
-  const handleCheckboxChange = (index, newValue) => {
-    setFree(index, newValue, ()=>{
+  const handleCheckboxChange = (group, isFree) => {
+    setFree(group, isFree, ()=>{
       const updatedTableData = {...tableData};
-      updatedTableData[index] = {
-        ...updatedTableData[index],
-        is_free: newValue
+      updatedTableData[group] = {
+        ...updatedTableData[group],
+        is_free: isFree
       };
       setTableData(updatedTableData);
     });
+  };
+  
+  const changeCellData = (group, index, newVal) => {
+    const updatedTableData = { ...tableData };
+    updatedTableData[group] = {
+      ...updatedTableData[group],
+      data: [
+        ...updatedTableData[group].data.slice(0, index),
+        newVal,
+        ...updatedTableData[group].data.slice(index + 1),
+      ],
+    };
+    setTableData(updatedTableData);
   };  
+
+  const changeExtraDay = (group, extraDay) => {
+      const updatedTableData = {...tableData};
+      updatedTableData[group] = {
+        ...updatedTableData[group],
+        extra_day: extraDay
+      };
+      setTableData(updatedTableData);
+  };
 
   const renderTableData = () => {
     const rows = [];
@@ -172,11 +270,32 @@ const PriceGroup = () => {
             <CheckBox style={styles.cellcheckbox} value={(tableData[i].is_free ? true : false)} onValueChange={(newValue) => handleCheckboxChange(i, newValue)} />
           </View>
           {tableData[i].data.map((cellData, index) => (
-            <Text key={index} style={styles.cell}>
-              {cellData}
-            </Text>
+            <TextInput
+              key={index}
+              style={[styles.cell]}
+              value={cellData}
+              onChange={(event) => {
+                const value = event.target.value;
+                changeCellData(i, index, value);
+              }}
+              onBlur={(event) => {
+                const value = event.target.value;
+                saveCellData(i, index, value);
+              }}
+            />
           ))}
-          <Text style={styles.cell}>{tableData[i].extra_day}</Text>
+          <TextInput
+            style={[styles.cell]}
+            value={tableData[i].extra_day?tableData[i].extra_day:""}
+            onChange={(event) => {
+              const value = event.target.value;
+              changeExtraDay(i, value);
+            }}
+            onBlur={(event) => {
+              const value = event.target.value;
+              saveExtraDay(i, value);
+            }}
+          />
         </View>
       );
     }
@@ -276,6 +395,10 @@ const styles = StyleSheet.create({
     padding: 8,
     width: 100,
   },
+  focusedCell: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+  }, 
   cellcheckbox: {
     //width: '100%',
     //textAlign: 'center',
