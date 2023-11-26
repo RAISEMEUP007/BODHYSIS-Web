@@ -1,5 +1,6 @@
 import React, { useEffect, useState} from 'react';
-import { View, Text, TouchableHighlight, StyleSheet, CheckBox } from 'react-native';
+import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
+import CheckBox from 'expo-checkbox';
 
 import { API_URL } from '../../../common/constants/appConstants';
 
@@ -168,7 +169,7 @@ const PriceGroup = () => {
         <View key={i} style={styles.tableRow}>
           <Text style={[styles.cell, {width: 300}]}>{i}</Text>
           <View style={[styles.cell, styles.cellcheckbox]}>
-            <CheckBox style={styles.cellcheckbox} value={tableData[i].is_free} onValueChange={(newValue) => handleCheckboxChange(i, newValue)} />
+            <CheckBox style={styles.cellcheckbox} value={(tableData[i].is_free ? true : false)} onValueChange={(newValue) => handleCheckboxChange(i, newValue)} />
           </View>
           {tableData[i].data.map((cellData, index) => (
             <Text key={index} style={styles.cell}>
@@ -179,7 +180,7 @@ const PriceGroup = () => {
         </View>
       );
     }
-    return rows;
+    return <>{rows}</>;
   };
 
   return (
