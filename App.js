@@ -8,7 +8,7 @@ import { Providers } from './src/common/providers/Providers';
 import { AlertModals } from './src/common/components/alertmodal/AlertModals';
 
 import { AuthScreen, Home, RecoverPass, ChangePass } from './src/screens';
-import { ConfirmModal } from './src/common/components/confirmModal/ConfirmModals';
+import { ConfirmModal } from './src/common/components/confirmmodal/ConfirmModals';
 
 const Stack = createStackNavigator();
 

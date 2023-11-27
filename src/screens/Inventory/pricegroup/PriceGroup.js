@@ -150,7 +150,6 @@ const PriceGroup = () => {
         switch(status){
           case 200:
             setUpdateGroupTrigger(true);
-            console.log(jsonRes.message);
             showAlert('success', jsonRes.message);
             break;
           default:
