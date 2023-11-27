@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { TextMediumSize } from '../../../../common/constants/Fonts';
 
 export const priceGroupStyles = StyleSheet.create({
   container: {
@@ -87,6 +88,11 @@ export const priceGroupStyles = StyleSheet.create({
   deleteRow: {
     position: 'absolute',
     right: 0,
+    top: -20,
+  },
+  editRow: {
+    position: 'absolute',
+    right: TextMediumSize * 1.5,
     top: -20,
   }
 });

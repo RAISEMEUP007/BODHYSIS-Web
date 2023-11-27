@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal } from 'react-native';
+import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator } from 'react-native';
 
 import { createGroup } from '../../../api/Price';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
@@ -15,6 +15,7 @@ const CreateGroupModal = ({ isModalVisible, groupName, setUpdateGroupTrigger, cl
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false); 
 
   const [_groupName, setGroupname] = useState(groupName);
 
@@ -23,6 +24,8 @@ const CreateGroupModal = ({ isModalVisible, groupName, setUpdateGroupTrigger, cl
       setValidMessage(msgStr('emptyField'));
       return;
     } 
+
+    setIsLoading(true);
 
     createGroup(_groupName, (jsonRes, status, error)=>{
       switch(status){
@@ -40,6 +43,7 @@ const CreateGroupModal = ({ isModalVisible, groupName, setUpdateGroupTrigger, cl
           closeModal();
           break;
       }
+      setIsLoading(false);
     });
   };
 
@@ -66,6 +70,7 @@ const CreateGroupModal = ({ isModalVisible, groupName, setUpdateGroupTrigger, cl
             onChangeText={setGroupname}
             value={_groupName}
             placeholder="Price group name"
+            placeholderTextColor="#ccc"
             onBlur={checkInput}
           />
           {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
@@ -75,6 +80,12 @@ const CreateGroupModal = ({ isModalVisible, groupName, setUpdateGroupTrigger, cl
             <Text style={styles.addButton}>Add</Text>
           </TouchableOpacity>
         </ModalFooter>
+        
+        {isLoading && (
+          <View style={styles.overlay}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        )}
       </BasicModalContainer>
     </Modal>
   );

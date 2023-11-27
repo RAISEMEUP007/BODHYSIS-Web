@@ -32,6 +32,11 @@ export const createGroup = (group, callback) => {
   postAPICall('price/creategroup', payload, callback);
 }
 
+export const updateGroup = (oldName, newName, callback) => {
+  const payload = { oldName, newName };
+  postAPICall('price/updategroup', payload, callback);
+}
+
 export const createPricePoint = (duration, durationType, callback) => {
   const payload = { duration, durationType };
   postAPICall('price/addpricepoint', payload, callback);

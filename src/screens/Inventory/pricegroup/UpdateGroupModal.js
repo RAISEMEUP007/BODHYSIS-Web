@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator  } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator } from 'react-native';
 
-import { createPricePoint } from '../../../api/Price';
+import { updateGroup } from '../../../api/Price';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
@@ -12,48 +11,50 @@ import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { priceModalstyles } from './styles/PriceModalStyle';
 
-const PricePointModal = ({ isModalVisible, setUpdatePointTrigger, closeModal }) => {
+const UpdateGroupModal = ({ isModalVisible, groupName, setUpdateGroupTrigger, closeModal }) => {
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
 
-  const [duration, setDuration] = useState('');
-  const [selectedOption, setSelectedOption] = useState("Hour(s)");
+  const [_groupName, setGroupname] = useState(groupName);
 
   const handleAddButtonClick = () => {
-    if (!duration.trim()) {
+    if (!_groupName.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
-    } 
-    
-    setIsLoading(true);
+    }else if(groupName == _groupName){
+      closeModal();
+      return;
+    }
 
-    createPricePoint(duration, selectedOption, (jsonRes, status, error)=>{
+    setIsLoading(true);
+    
+    updateGroup(groupName, _groupName, (jsonRes, status, error)=>{
       switch(status){
         case 200:
           showAlert('success', jsonRes.message);
-          setUpdatePointTrigger(true);
+          setUpdateGroupTrigger(true);
           closeModal();
           break;
         case 409:
           setValidMessage(jsonRes.error);
           break;
         default:
-          if(jsonRes.error) showAlert('error', jsonRes.error);
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           closeModal();
           break;
       }
       setIsLoading(false);
-    })
+    });
   };
 
   const checkInput = () => {
-    if (!duration.trim()) {
-        setValidMessage(msgStr('emptyField'));
+    if (!_groupName.trim()) {
+      setValidMessage(msgStr('emptyField'));
     } else {
-        setValidMessage('');
+      setValidMessage('');
     }
   };
 
@@ -62,36 +63,27 @@ const PricePointModal = ({ isModalVisible, setUpdatePointTrigger, closeModal }) 
       animationType="none"
       transparent={true}
       visible={isModalVisible}
+      onShow={()=>{setValidMessage(''); setGroupname(groupName)}}
     >
       <BasicModalContainer>
-        <ModalHeader label={"Add Price Point"} closeModal={closeModal} />
+        <ModalHeader label={"Update price group"} closeModal={closeModal} />
         <ModalBody>
           <TextInput
             style={styles.input}
-            onChangeText={setDuration}
-            value={duration}
-            placeholder="Duration"
+            onChangeText={setGroupname}
+            value={_groupName}
+            placeholder="Price group name"
             placeholderTextColor="#ccc"
             onBlur={checkInput}
           />
           {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
-          <Picker
-            selectedValue={selectedOption}
-            style={styles.select}
-            onValueChange={(itemValue, itemIndex) =>
-            setSelectedOption(itemValue)
-          }>
-            <Picker.Item label="Hours(s)" value="Hours(s)" />
-            <Picker.Item label="Day(s)" value="Day(s)" />
-            <Picker.Item label="Week(s)" value="Week(s)" />
-          </Picker>
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={handleAddButtonClick}>
-            <Text style={styles.addButton}>Add</Text>
+            <Text style={styles.addButton}>Update</Text>
           </TouchableOpacity>
         </ModalFooter>
-                
+
         {isLoading && (
           <View style={styles.overlay}>
             <ActivityIndicator size="large" color="#0000ff" />
@@ -104,4 +96,4 @@ const PricePointModal = ({ isModalVisible, setUpdatePointTrigger, closeModal }) 
 
 const styles = priceModalstyles;
 
-export default PricePointModal;
+export default UpdateGroupModal;

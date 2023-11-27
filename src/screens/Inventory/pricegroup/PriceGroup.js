@@ -11,13 +11,16 @@ import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
 import { priceGroupStyles } from './styles/PriceGroupStyle';
 import CreateGroupModal from './CreateGroupModal';
 import PricePointModal from './PricePointModal';
+import UpdateGroupModal from './UpdateGroupModal';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 
 const PriceGroup = () => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
+  const [groupName, setGroupName] = useState('');
   const [isGroupModalVisible, setGroupModalVisible] = useState(false);
+  const [isUpdateGroupModalVisible, setUpdateGroupModalVisible] = useState(false);
   const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
   const [updateGroupTrigger, setUpdateGroupTrigger] = useState(false);
   const [updatePointTrigger, setUpdatePointTrigger] = useState(true);
@@ -37,8 +40,10 @@ const PriceGroup = () => {
     if(updateGroupTrigger == true) getTable();
   }, [updateGroupTrigger]);
 
-  const closeGroupModal = () => { setGroupModalVisible(false); }
   const openGroupModal = () => { setGroupModalVisible(true); };
+  const closeGroupModal = () => { setGroupModalVisible(false); }
+  const openUpdateGroupModal = (group) => { setGroupName(group); setUpdateGroupModalVisible(true); };
+  const closeUpdateGroupModal = () => { setUpdateGroupModalVisible(false); }
   const openPriceModal = () => { setAddPriceModalVisible(true); };
   const closePriceModal = () => { setAddPriceModalVisible(false); };
   
@@ -210,6 +215,9 @@ const PriceGroup = () => {
         <View key={i} style={styles.tableRow}>
           <View style={[styles.cell, styles.groupCell]}>
             <Text >{i}</Text>
+            <TouchableOpacity onPress={()=>{openUpdateGroupModal(i)}}>
+              <FontAwesome5 style={styles.editRow} size={TextMediumSize} name="pencil-alt" color="black" />
+            </TouchableOpacity>
             <TouchableOpacity onPress={()=>{removeGroup(i)}}>
               <FontAwesome5 style={styles.deleteRow} size={TextMediumSize} name="times" color="black" />
             </TouchableOpacity>
@@ -272,6 +280,13 @@ const PriceGroup = () => {
         groupName={""}
         setUpdateGroupTrigger = {setUpdateGroupTrigger} 
         closeModal={closeGroupModal}
+      />
+
+      <UpdateGroupModal
+        isModalVisible={isUpdateGroupModalVisible}
+        groupName={groupName}
+        setUpdateGroupTrigger = {setUpdateGroupTrigger} 
+        closeModal={closeUpdateGroupModal}
       />
 
       <PricePointModal
