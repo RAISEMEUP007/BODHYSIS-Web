@@ -31,6 +31,9 @@ const messages = {
     noMatchPass: "The password doesn't match.",
     passUpdatedSuccessfully: "Password updated successfully.", // 200 OK
     linkExpired: "This link is expired.", // 400 Bad Request
+
+    //confirmation
+    deleteConfirmStr: "Are you sure you want to delete?",
 };
   
 export function msgStr(messageType) {

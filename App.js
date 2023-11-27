@@ -8,11 +8,12 @@ import { Providers } from './src/common/providers/Providers';
 import { AlertModals } from './src/common/components/alertmodal/AlertModals';
 
 import { AuthScreen, Home, RecoverPass, ChangePass } from './src/screens';
+import { ConfirmModal } from './src/common/components/confirmmodal/ConfirmModals';
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  const [initialRoute, setInitalRoute] = useState('Auth');
+  const [initialRoute, setInitalRoute] = useState('Home');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export default function App() {
         <StatusBar style="auto" />
       </NavigationContainer>
       <AlertModals/>
+      <ConfirmModal/>
     </Providers>
   );
 }

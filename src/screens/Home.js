@@ -37,7 +37,7 @@ const Drawer = createDrawerNavigator();
 
 function MyDrawer() {
   return (
-    <Drawer.Navigator useLegacyImplementation initialRouteName="Dashboard">
+    <Drawer.Navigator useLegacyImplementation initialRouteName="Inventory">
       <Drawer.Screen
         name="Dashboard"
         component={DashboardScreen}

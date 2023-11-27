@@ -36,3 +36,8 @@ export const createPricePoint = (duration, durationType, callback) => {
   const payload = { duration, durationType };
   postAPICall('price/addpricepoint', payload, callback);
 }
+
+export const deleteGroup = (group, callback) => {
+  const payload = { group };
+  postAPICall('price/deletegroup', payload, callback);
+}

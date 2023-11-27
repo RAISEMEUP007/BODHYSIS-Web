@@ -1,17 +1,21 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity } from 'react-native';
 import CheckBox from 'expo-checkbox';
+import { FontAwesome5 } from '@expo/vector-icons';
 
-import {getHeaderData, getTableData, setFree, setPriceData, setExtraDay} from '../../../api/Price';
+import {getHeaderData, getTableData, setFree, setPriceData, setExtraDay, deleteGroup} from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
 
 import { priceGroupStyles } from './styles/PriceGroupStyle';
 import CreateGroupModal from './CreateGroupModal';
 import PricePointModal from './PricePointModal';
+import { TextMediumSize } from '../../../common/constants/Fonts';
 
 const PriceGroup = () => {
   const { showAlert } = useAlertModal();
+  const { showConfirm } = useConfirmModal();
 
   const [isGroupModalVisible, setGroupModalVisible] = useState(false);
   const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
@@ -19,7 +23,7 @@ const PriceGroup = () => {
   const [updatePointTrigger, setUpdatePointTrigger] = useState(true);
   
   const [headerData, setHeaderData] = useState([]);
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData] = useState({});
   
   useEffect(()=>{
     if(updatePointTrigger == true){
@@ -140,6 +144,23 @@ const PriceGroup = () => {
     })
   }
 
+  const removeGroup = (group) => {
+    showConfirm(msgStr('deleteConfirmStr'), ()=>{
+      deleteGroup(group, (jsonRes, status, error)=>{
+        switch(status){
+          case 200:
+            setUpdateGroupTrigger(true);
+            showAlert('success', jsonRes.message);
+            break;
+          default:
+            if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+            else showAlert('error', msgStr('unknownError'));
+            break;
+        }
+      })
+    });
+  }
+
   const renderTableHeader = () => {
     return (
       <View style={styles.tableHeader}>
@@ -158,7 +179,12 @@ const PriceGroup = () => {
     for (let i in tableData) {
       rows.push( 
         <View key={i} style={styles.tableRow}>
-          <Text style={[styles.cell, {width: 250, textAlign:'left'}]}>{i}</Text>
+          <View style={[styles.cell, {width: 250, textAlign:'left'}]}>
+            <Text >{i}</Text>
+            <TouchableOpacity onPress={()=>{removeGroup(i)}}>
+              <FontAwesome5 style={styles.deleteRow} size={TextMediumSize} name="times" color="black" />
+            </TouchableOpacity>
+          </View>
           <View style={[styles.cell, styles.cellcheckbox]}>
             <CheckBox value={(tableData[i].is_free ? true : false)} onValueChange={(newValue) => saveFree(i, newValue)} />
           </View>
@@ -181,8 +207,8 @@ const PriceGroup = () => {
             onChangeText={(value) => {
               changeExtraDay(i, value);
             }}
-            onBlur={() => {
-              saveExtraDay(i, cellData);
+            onBlur={(e) => {
+              saveExtraDay(i, tableData[i].extra_day );
             }}
           />
         </View>
