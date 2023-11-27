@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { View, Text, TouchableHighlight, StyleSheet, TextInput } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, StyleSheet, TextInput } from 'react-native';
 import CheckBox from 'expo-checkbox';
 
 import { API_URL } from '../../../common/constants/appConstants';
@@ -56,10 +56,6 @@ const PriceGroup = () => {
       },
     })
     .then(async (res) => {
-      switch (res.status) {
-        default:
-          break;
-      }
       try {
         const jsonRes = await res.json();
         if(jsonRes){
@@ -85,10 +81,6 @@ const PriceGroup = () => {
       },
     })
     .then(async (res) => {
-      switch (res.status) {
-        default:
-          break;
-      }
       try {
         const jsonRes = await res.json();
         if(jsonRes){
@@ -118,16 +110,12 @@ const PriceGroup = () => {
       body: JSON.stringify(payload),
     })
     .then(async (res) => {
-      switch (res.status) {
-        default:
-          break;
-      }
       try {
         const jsonRes = await res.json();
         if(res.status == 200){
           callbackfunc();
         }else{
-          showAlert('error', jsonRes.message);
+          showAlert('error', jsonRes.error);
         }
       } catch (err) {
         console.log(err);
@@ -140,14 +128,14 @@ const PriceGroup = () => {
   }
 
   const saveCellData = (group, index, cellData) => {
-    console.log('sss');
     const groupId = tableData[group].group_id;
     const pointId = headerData[index].id;
     const payload = {
       groupId: groupId,
       pointId: pointId,
-      value: cellData,
+      value: cellData?cellData:"",
     };
+    console.log(payload);
     fetch(`${API_URL}/price/setpricedata`, {
       method: 'POST',
       headers: {
@@ -156,17 +144,12 @@ const PriceGroup = () => {
       body: JSON.stringify(payload),
     })
     .then(async (res) => {
-      switch (res.status) {
-        default:
-          break;
-      }
       try {
         const jsonRes = await res.json();
-        console.log(jsonRes);
         if(res.status == 200){
 
         }else{
-          //showAlert('error', jsonRes.message);
+          showAlert('error', jsonRes.message);
           setUpdateGroupTrigger(true);
         }
       } catch (err) {
@@ -192,15 +175,10 @@ const PriceGroup = () => {
       body: JSON.stringify(payload),
     })
     .then(async (res) => {
-      switch (res.status) {
-        default:
-          break;
-      }
       try {
         const jsonRes = await res.json();
-        if(res.status == 200){
-        }else{
-          //showAlert('error', jsonRes.message);
+        if(res.status != 200){
+          showAlert('error', jsonRes.message);
           setUpdateGroupTrigger(true);
         }
       } catch (err) {
@@ -214,11 +192,10 @@ const PriceGroup = () => {
     });
   }
 
-
   const renderTableHeader = () => {
     return (
       <View style={styles.tableHeader}>
-        <Text style={[styles.columnHeader, {width: 300}]}>PriceGroup</Text>
+        <Text style={[styles.columnHeader, {width: 250}]}>PriceGroup</Text>
         <Text style={styles.columnHeader}>Free</Text>
         {headerData.map((item, index) => (
           <Text key={index} style={styles.columnHeader} pointId={item.id}>{item.header}</Text>
@@ -263,10 +240,11 @@ const PriceGroup = () => {
 
   const renderTableData = () => {
     const rows = [];
+    //console.log(tableData);
     for (let i in tableData) {
-      rows.push(
+      rows.push( 
         <View key={i} style={styles.tableRow}>
-          <Text style={[styles.cell, {width: 300}]}>{i}</Text>
+          <Text style={[styles.cell, {width: 250}]}>{i}</Text>
           <View style={[styles.cell, styles.cellcheckbox]}>
             <CheckBox style={styles.cellcheckbox} value={(tableData[i].is_free ? true : false)} onValueChange={(newValue) => handleCheckboxChange(i, newValue)} />
           </View>
@@ -274,7 +252,7 @@ const PriceGroup = () => {
             <TextInput
               key={index}
               style={[styles.cell]}
-              value={cellData}
+              value={cellData?cellData.toString():""}
               onChange={(event) => {
                 const value = event.target.value;
                 changeCellData(i, index, value);
@@ -287,7 +265,7 @@ const PriceGroup = () => {
           ))}
           <TextInput
             style={[styles.cell]}
-            value={tableData[i].extra_day?tableData[i].extra_day:""}
+            value={tableData[i].extra_day ? tableData[i].extra_day.toString() : ""}
             onChange={(event) => {
               const value = event.target.value;
               changeExtraDay(i, value);
@@ -305,19 +283,23 @@ const PriceGroup = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.toolbar}>
+        <TouchableHighlight style={styles.button} onPress={handleButton1Click}>
+          <Text style={styles.buttonText}>Create price group</Text>
+        </TouchableHighlight>
+        <TouchableHighlight style={styles.button} onPress={handleButton2Click}>
+          <Text style={styles.buttonText}>Add price point</Text>
+        </TouchableHighlight>
+      </View>
       <View style={styles.tableContainer}>
-        <View style={styles.toolbar}>
-          <TouchableHighlight style={styles.button} onPress={handleButton1Click}>
-            <Text style={styles.buttonText}>Create price group</Text>
-          </TouchableHighlight>
-          <TouchableHighlight style={styles.button} onPress={handleButton2Click}>
-            <Text style={styles.buttonText}>Add price point</Text>
-          </TouchableHighlight>
-        </View>
-        <View style={styles.table}>
+        <ScrollView horizontal={true}>
+          <View style={styles.table}>
             {renderTableHeader()}
-            {renderTableData()}
-        </View>
+            <ScrollView>
+              {renderTableData()}
+            </ScrollView>
+          </View>
+        </ScrollView>
       </View>
 
       <CreateGroupModal
@@ -372,29 +354,41 @@ const styles = StyleSheet.create({
   },
 
   table: {
-    borderWidth: 1,
+    borderWidth: 0,
     borderColor: '#ddd',
     flexDirection: 'column',
   },
   tableHeader: {
     flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    borderLeftWidth: 1,
+    borderLeftColor: '#06685ea3',
+    borderRightWidth: 1,
+    borderRightColor: '#06685ea3',
   },
   tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    borderLeftWidth: 1,
+    borderLeftColor: '#06685ea3',
+    borderRightWidth: 1,
+    borderRightColor: '#06685ea3',
   },
   columnHeader: {
     fontWeight: 'bold',
     backgroundColor: '#f5f5f5',
+    textAlign: 'center',
     padding: 8,
     width: 100,
   },
   cell: {
     padding: 8,
     width: 100,
+    textAlign: 'center',
   },
   focusedCell: {
     borderWidth: 1,
@@ -402,8 +396,8 @@ const styles = StyleSheet.create({
   }, 
   cellcheckbox: {
     //width: '100%',
-    //textAlign: 'center',
-    alignItems: 'flex-start',
+    textAlign: 'center',
+    alignItems: 'center',
   },
 });
 
