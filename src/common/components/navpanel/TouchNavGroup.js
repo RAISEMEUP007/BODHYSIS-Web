@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import TouchNav from './TouchNav';
-import { TextMediumLargeSize } from '../../constants/fonts';
+import { TextMediumLargeSize } from '../../constants/Fonts';
 
 const TouchNavGroup = ({ sectionTitle, items, handleItemClick }) => {
   return (

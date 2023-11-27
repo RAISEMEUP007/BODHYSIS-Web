@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const Dashboard = ({ navigation }) => {
+const Dashboard = () => {
+    const navigation = useNavigation();
   
     const onLogout = () => {
         navigation.navigate('Auth');

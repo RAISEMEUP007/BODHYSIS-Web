@@ -4,16 +4,16 @@ import { StyleSheet, Linking, View, ActivityIndicator  } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { Providers } from './common/providers/providers';
-import { AlertModals } from './common/components/alertmodal/AlertModals';
+import { Providers } from './src/common/providers/providers';
+import { AlertModals } from './src/common/components/alertmodal/AlertModals';
 
-import { AuthScreen, Home, RecoverPass, ChangePass } from './screens';
+import { AuthScreen, Home, RecoverPass, ChangePass } from './src/screens';
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  const [initialRoute, setInitalRoute] = useState('Home');
-  const [loading, setLoading] = useState(true); // add loading state
+  const [initialRoute, setInitalRoute] = useState('Auth');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const handleDeepLinking = async () => {

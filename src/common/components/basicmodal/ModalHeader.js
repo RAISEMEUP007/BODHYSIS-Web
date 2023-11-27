@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { TextMediumSize, TextMediumLargeSize } from '../../constants/fonts';
+import { TextMediumSize, TextMediumLargeSize } from '../../constants/Fonts';
 
 const ModalHeader = ({ label, closeModal }) => {
   return (

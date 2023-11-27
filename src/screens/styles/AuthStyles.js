@@ -1,5 +1,5 @@
 import { StyleSheet, Platform } from 'react-native';
-import { loginDefaultFontSize } from '../../common/constants/fonts';
+import { loginDefaultFontSize } from '../../common/constants/Fonts';
 
 export const authStyles = StyleSheet.create({
     image: {

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { ImageBackground, View, Image, Text, StyleSheet, TouchableOpacity, TextInput, Linking } from 'react-native';
+import { ImageBackground, View, Image, Text, TouchableOpacity, TextInput, Linking } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import { API_URL } from '../common/constants/appConstants';
-import { msgStr } from '../common/constants/message';
-
-import { authStyles } from './styles/authStyles';
+import {newPasword} from '../api/Auth';
+import { msgStr } from '../common/constants/Message';
 import { useAlertModal } from '../common/hooks/useAlertModal';
+
+import { authStyles } from './styles/AuthStyles';
 
 
 const ChangePass = () => {
@@ -27,37 +27,23 @@ const ChangePass = () => {
         const url = await Linking.getInitialURL();
         const recoveryId = url.substring(url.lastIndexOf("/") + 1);
 
-        const payload = {
-            recoveryId: recoveryId,
-            password: password,
-        };
-
-        fetch(`${API_URL}/password`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-        })
-        .then(async res => { 
-            switch(res.status){
+        newPasword(recoveryId, password, (jsonRes, status, error)=>{
+            switch(status){
                 case 200:
                     showAlert('success', msgStr('passUpdatedSuccessfully'));
                     navigation.navigate('Auth');
+                    if(window) window.history.pushState(null, '', '/');
                 break;
                 case 400:
                     showAlert('error', msgStr('linkExpired'));
                     navigation.navigate('Auth');
+                    if(window) window.history.pushState(null, '', '/');
                     break;
                 default:
                     if(res.message) showAlert('error', res.message);
                     else showAlert('error', msgStr('unknownError'));
                     break;
             }
-        })
-        .catch(err => {
-            console.log(err);
-            showAlert('error', msgStr('serverError'));
         });
     };
     

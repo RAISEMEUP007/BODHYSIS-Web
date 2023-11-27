@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { ImageBackground, View, Image, Text, TouchableOpacity, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import { API_URL } from '../common/constants/appConstants';
-import { msgStr } from '../common/constants/message';
-
-import { authStyles } from './styles/authStyles';
+import {login, signup} from '../api/Auth';
+import { msgStr } from '../common/constants/Message';
 import { useAlertModal } from '../common/hooks/useAlertModal';
+
+import { authStyles } from './styles/AuthStyles';
 
 const AuthScreen = () => {
     const navigation = useNavigation();
@@ -28,27 +28,7 @@ const AuthScreen = () => {
     };
 
     const onLoggedIn = token => {
-        fetch(`${API_URL}/private`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`, 
-            },
-        })
-        .then(async res => { 
-            try {
-                const jsonRes = await res.json();
-                if (res.status === 200) {
-                    navigation.navigate('Home');
-                }
-            } catch (err) {
-                console.log(err);
-            };
-        })
-        .catch(err => {
-            console.log(err);
-            showAlert('error', msgStr('serverError'));
-        });
+        navigation.navigate('Home');
     }
 
     const onSubmitHandler = () => {
@@ -60,57 +40,49 @@ const AuthScreen = () => {
             return;
         }
 
-        const payload = {
-            email,
-            name,
-            password,
-        };
-        fetch(`${API_URL}/${isLogin ? 'login' : 'signup'}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-        })
-        .then(async res => { 
-            resetValidMessage();
-            switch(res.status){
-                case 200:
-                    if(!isLogin){
+        if(isLogin){
+            login(email, password, (jsonRes, status, error)=>{
+                resetValidMessage();
+                switch(status){
+                    case 200:
+                        onLoggedIn(jsonRes.token);
+                        break;
+                    case 401:
+                        setPassValidMessage(msgStr('errorComparingPassword'));
+                        break;
+                    case 404:
+                        setEmailValidMessage(msgStr('userNotFound'));
+                        break;
+                    case 500:
+                        showAlert('error', msgStr('serverError'));
+                        break;
+                    default:
+                        if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+                        else showAlert('error', msgStr('unknownError'));
+                        break;
+                }
+            });
+        }else{
+            signup(email, password, name, (jsonRes, status, error)=>{
+                resetValidMessage();
+                switch(status){
+                    case 200:
                         onChangeHandler();
                         showAlert('success', msgStr('userCreated'));
-                    }
-                    break;
-                case 400:
-                    break;
-                case 401:
-                    setPassValidMessage(msgStr('errorComparingPassword'));
-                    break;
-                case 404:
-                    setEmailValidMessage(msgStr('userNotFound'));
-                    break;
-                case 409:
-                    setEmailValidMessage(msgStr('emailExists'));
-                    showAlert('error', msgStr('emailExists'));
-                    break;
-                default:
-                    if(res.message) showAlert('error', res.message);
-                    else showAlert('error', msgStr('unknownError'));
-                    break;
-            }
-            try {
-                const jsonRes = await res.json();
-                if (res.status == 200) {
-                    onLoggedIn(jsonRes.token);
+                        break;
+                    case 409:
+                        setEmailValidMessage(msgStr('emailExists'));
+                        break;
+                    case 500:
+                        showAlert('error', msgStr('serverError'));
+                        break;
+                    default:
+                        if(res.message) showAlert('error', res.message);
+                        else showAlert('error', msgStr('unknownError'));
+                        break;
                 }
-            } catch (err) {
-                console.log(err);
-            };
-        })
-        .catch(err => {
-            console.log(err);
-            showAlert('error', msgStr('serverError'));
-        });
+            })
+        }
     };
 
     const checkEmailInput = () => {
@@ -168,7 +140,7 @@ const AuthScreen = () => {
                             <TextInput style={styles.input} placeholder="Name" onChangeText={setName} onBlur={checkNameInput}/>
                             {nameValidMessage.trim() !== "" && <Text style={styles.message}>{nameValidMessage}</Text>}
                         </>)}
-                        <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setPassword} onBlur={checkPasswordInput}></TextInput>
+                        <TextInput secureTextEntry={true} style={styles.input} placeholder="Password" onChangeText={setPassword} onBlur={checkPasswordInput} onSubmitEditing={onSubmitHandler}></TextInput>
                         {(passValidMessage.trim() != '') && <Text style={[styles.message, {marginBottom: 0}]}>{passValidMessage}</Text>}
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity style={styles.button} onPress={onSubmitHandler}>

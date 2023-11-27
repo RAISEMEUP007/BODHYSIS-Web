@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { ImageBackground, View, Image, Text, TouchableOpacity, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import { API_URL, BASE_URL } from '../common/constants/appConstants';
-import { msgStr } from '../common/constants/message';
-
-import { authStyles } from './styles/authStyles';
+import {resetPass} from '../api/Auth';
+import { msgStr } from '../common/constants/Message';
 import { useAlertModal } from '../common/hooks/useAlertModal';
+
+import { authStyles } from './styles/AuthStyles';
 
 const RecoverPass = () => {
     const navigation = useNavigation();
@@ -21,20 +21,8 @@ const RecoverPass = () => {
             return;
         }
 
-        const payload = {
-            email,
-            clientHost: BASE_URL,
-        };
-
-        fetch(`${API_URL}/resetpass`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-        })
-        .then(async res => { 
-            switch(res.status){
+        resetPass(email, (jsonRes, status, error)=>{
+            switch(status){
                 case 200:
                     showAlert('success', msgStr('resetPasslinkSent'));
                 break;
@@ -47,10 +35,6 @@ const RecoverPass = () => {
                     break;
             }
         })
-        .catch(err => {
-            console.log(err);
-            showAlert('error', msgStr('serverError'));
-        });
     };
     
     const checkEmailInput = () => {

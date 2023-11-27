@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { createDrawerNavigator} from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
+
 import Dashboard from './Dashboard';
 import Inventory from './Inventory/Inventory';
 
@@ -36,7 +37,7 @@ const Drawer = createDrawerNavigator();
 
 function MyDrawer() {
   return (
-    <Drawer.Navigator useLegacyImplementation initialRouteName="Inventory">
+    <Drawer.Navigator useLegacyImplementation initialRouteName="Dashboard">
       <Drawer.Screen
         name="Dashboard"
         component={DashboardScreen}
