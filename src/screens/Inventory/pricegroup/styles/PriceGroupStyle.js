@@ -80,6 +80,10 @@ export const priceGroupStyles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
   },
+  groupCell: {
+    width: 250, 
+    textAlign:'left'
+  },
   deleteRow: {
     position: 'absolute',
     right: 0,

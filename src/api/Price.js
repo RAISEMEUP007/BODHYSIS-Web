@@ -41,3 +41,8 @@ export const deleteGroup = (group, callback) => {
   const payload = { group };
   postAPICall('price/deletegroup', payload, callback);
 }
+
+export const deletePricePoint = (pointId, callback) => {
+  const payload = { pointId };
+  postAPICall('price/deletepricepoint', payload, callback);
+}

@@ -3,7 +3,7 @@ import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity
 import CheckBox from 'expo-checkbox';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import {getHeaderData, getTableData, setFree, setPriceData, setExtraDay, deleteGroup} from '../../../api/Price';
+import {getHeaderData, getTableData, setFree, setPriceData, setExtraDay, deleteGroup, deletePricePoint } from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
@@ -144,6 +144,23 @@ const PriceGroup = () => {
     })
   }
 
+  const removePoint = (priceId) => {
+    showConfirm(msgStr('deleteConfirmStr'), ()=>{
+      deletePricePoint(priceId, (jsonRes, status, error)=>{
+        switch(status){
+          case 200:
+            setUpdatePointTrigger(true);
+            showAlert('success', jsonRes.message);
+            break;
+          default:
+            if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+            else showAlert('error', msgStr('unknownError'));
+            break;
+        }
+      })
+    });
+  }
+
   const removeGroup = (group) => {
     showConfirm(msgStr('deleteConfirmStr'), ()=>{
       deleteGroup(group, (jsonRes, status, error)=>{
@@ -163,14 +180,26 @@ const PriceGroup = () => {
 
   const renderTableHeader = () => {
     return (
-      <View style={styles.tableHeader}>
-        <Text style={[styles.columnHeader, {width: 250, textAlign:'left'}]}>PriceGroup</Text>
-        <Text style={[styles.columnHeader, styles.cellcheckbox]}>Free</Text>
-        {headerData.map((item, index) => (
-          <Text key={index} style={styles.columnHeader} pointId={item.id}>{item.header}</Text>
-        ))}
-        <Text style={styles.columnHeader}>Extra day</Text>
-      </View>
+      <>
+        <View style={{flexDirection: 'row'}}>
+          <Text style={[styles.columnHeader, styles.groupCell]}></Text>
+          <Text style={[styles.columnHeader, styles.cellcheckbox]}></Text>
+          {headerData.map((item, index) => (
+            <TouchableOpacity key={index} style={styles.columnHeader} onPress={()=>{removePoint(item.id)}} >
+              <FontAwesome5 size={TextMediumSize} name="times" color="black" />
+            </TouchableOpacity>
+          ))}
+          <Text style={styles.columnHeader}></Text>
+        </View>
+        <View style={styles.tableHeader}>
+          <Text style={[styles.columnHeader, styles.groupCell]}>PriceGroup</Text>
+          <Text style={[styles.columnHeader, styles.cellcheckbox]}>Free</Text>
+          {headerData.map((item, index) => (
+            <Text key={index} style={styles.columnHeader} pointId={item.id}>{item.header}</Text>
+          ))}
+          <Text style={styles.columnHeader}>Extra day</Text>
+        </View>
+      </>
     );
   };
 
@@ -179,7 +208,7 @@ const PriceGroup = () => {
     for (let i in tableData) {
       rows.push( 
         <View key={i} style={styles.tableRow}>
-          <View style={[styles.cell, {width: 250, textAlign:'left'}]}>
+          <View style={[styles.cell, styles.groupCell]}>
             <Text >{i}</Text>
             <TouchableOpacity onPress={()=>{removeGroup(i)}}>
               <FontAwesome5 style={styles.deleteRow} size={TextMediumSize} name="times" color="black" />
