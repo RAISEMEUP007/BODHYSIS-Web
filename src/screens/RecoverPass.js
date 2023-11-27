@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import {resetPass} from '../api/Auth';
 import { msgStr } from '../common/constants/Message';
-import { useAlertModal } from '../common/hooks/useAlertModal';
+import { useAlertModal } from '../common/hooks/UseAlertModal';
 
 import { authStyles } from './styles/AuthStyles';
 

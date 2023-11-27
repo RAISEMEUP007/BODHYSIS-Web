@@ -4,7 +4,7 @@ import CheckBox from 'expo-checkbox';
 
 import {getHeaderData, getTableData, setFree, setPriceData, setExtraDay} from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/useAlertModal';
+import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { priceGroupStyles } from './styles/PriceGroupStyle';
 import CreateGroupModal from './CreateGroupModal';

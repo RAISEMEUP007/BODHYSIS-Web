@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { AlertModalContext } from './context'
+import { AlertModalContext } from './Context'
 
 export const AlertModalProvider = ({ children }) => {
   const [modalVisible, setModalVisible] = useState(false);

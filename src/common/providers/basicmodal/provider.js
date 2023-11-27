@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { BasicModalContext } from './context'
+import { BasicModalContext } from './Context'
 
 export const BasicModalProvider = ({ children }) => {
   const [modalVisible, setModalVisible] = useState(false);
