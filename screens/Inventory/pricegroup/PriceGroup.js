@@ -195,8 +195,8 @@ const PriceGroup = () => {
   const renderTableHeader = () => {
     return (
       <View style={styles.tableHeader}>
-        <Text style={[styles.columnHeader, {width: 250}]}>PriceGroup</Text>
-        <Text style={styles.columnHeader}>Free</Text>
+        <Text style={[styles.columnHeader, {width: 250, textAlign:'left'}]}>PriceGroup</Text>
+        <Text style={[styles.columnHeader, styles.cellcheckbox]}>Free</Text>
         {headerData.map((item, index) => (
           <Text key={index} style={styles.columnHeader} pointId={item.id}>{item.header}</Text>
         ))}
@@ -240,13 +240,12 @@ const PriceGroup = () => {
 
   const renderTableData = () => {
     const rows = [];
-    //console.log(tableData);
     for (let i in tableData) {
       rows.push( 
         <View key={i} style={styles.tableRow}>
-          <Text style={[styles.cell, {width: 250}]}>{i}</Text>
+          <Text style={[styles.cell, {width: 250, textAlign:'left'}]}>{i}</Text>
           <View style={[styles.cell, styles.cellcheckbox]}>
-            <CheckBox style={styles.cellcheckbox} value={(tableData[i].is_free ? true : false)} onValueChange={(newValue) => handleCheckboxChange(i, newValue)} />
+            <CheckBox value={(tableData[i].is_free ? true : false)} onValueChange={(newValue) => handleCheckboxChange(i, newValue)} />
           </View>
           {tableData[i].data.map((cellData, index) => (
             <TextInput
@@ -395,7 +394,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
   }, 
   cellcheckbox: {
-    //width: '100%',
+    width: 60,
     textAlign: 'center',
     alignItems: 'center',
   },
