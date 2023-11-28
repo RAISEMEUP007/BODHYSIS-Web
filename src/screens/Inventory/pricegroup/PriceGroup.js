@@ -269,7 +269,7 @@ const PriceGroup = () => {
           <Text style={styles.buttonText}>Create price group</Text>
         </TouchableHighlight>
         <TouchableHighlight style={styles.button} onPress={openPriceModal}>
-          <Text style={styles.buttonText}>Add price point</Text>
+          <Text style={styles.buttonText}>Add Duration</Text>
         </TouchableHighlight>
       </View>
       <View style={styles.tableContainer}>

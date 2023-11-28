@@ -64,7 +64,7 @@ const PricePointModal = ({ isModalVisible, setUpdatePointTrigger, closeModal }) 
       visible={isModalVisible}
     >
       <BasicModalContainer>
-        <ModalHeader label={"Add Price Point"} closeModal={closeModal} />
+        <ModalHeader label={"Add Duration"} closeModal={closeModal} />
         <ModalBody>
           <TextInput
             style={styles.input}
