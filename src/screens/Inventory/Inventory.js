@@ -5,6 +5,7 @@ import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 
 import PriceGroup from './pricegroup/PriceGroup';
 import Seasons from './seasons/Seasons';
+import Brands from './brands/Brands';
 
 const Inventory = ({initalItem = null}) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);
@@ -19,6 +20,8 @@ const Inventory = ({initalItem = null}) => {
                 return <PriceGroup/>;
             case 'Seasons':
                 return <Seasons/>;
+            case 'Brands':
+                return <Brands/>;
             default:
                 return (
                     <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row', marginTop: 100, }}>
@@ -39,7 +42,8 @@ const Inventory = ({initalItem = null}) => {
             ]} handleItemClick={handleItemClick} />
             <TouchNavGroup sectionTitle="Price Management" items={[
                 { title: "Price groups" },
-                { title: "Seasons" }
+                { title: "Seasons" },
+                { title: "Brands" }
             ]} handleItemClick={handleItemClick} />
             <TouchNavGroup sectionTitle="Bulk Update" items={[
                 { title: "Bulk Update" }

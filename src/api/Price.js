@@ -8,10 +8,6 @@ export const getTableData = (seasonId, callback) => {
   getAPICall('price/gettabledata/' + seasonId, callback);
 }
 
-export const getSeasonsData = (callback) => {
-  getAPICall('price/getseasonsdata', callback);
-}
-
 export const setFree = (group, isFree, callback) => {
   const payload = { group, isFree, };
   postAPICall('price/setfree', payload, callback);
@@ -57,7 +53,11 @@ export const deletePricePoint = (pointId, callback) => {
   postAPICall('price/deletepricepoint', payload, callback);
 }
 
-export const saveSessionCell = (id, column, value, callback) => {
+export const getSeasonsData = (callback) => {
+  getAPICall('price/getseasonsdata', callback);
+}
+
+export const saveSeasonCell = (id, column, value, callback) => {
   const payload = {id, column, value};
   postAPICall('price/saveseasoncell', payload, callback);
 }
@@ -65,4 +65,18 @@ export const saveSessionCell = (id, column, value, callback) => {
 export const deleteSeason = (id, callback) => {
   const payload = { id };
   postAPICall('price/deleteseason', payload, callback);
+}
+
+export const getBrandsData = (callback) => {
+  getAPICall('price/getbrandsdata', callback);
+}
+
+export const saveBrandCell = (id, column, value, callback) => {
+  const payload = {id, column, value};
+  postAPICall('price/savebrandcell', payload, callback);
+}
+
+export const deleteBrand = (id, callback) => {
+  const payload = { id };
+  postAPICall('price/deletebrand', payload, callback);
 }
