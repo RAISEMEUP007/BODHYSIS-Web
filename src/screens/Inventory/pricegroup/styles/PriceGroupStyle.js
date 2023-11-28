@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { TextMediumSize } from '../../../../common/constants/Fonts';
+import { TextMediumSize, TextSmallSize } from '../../../../common/constants/Fonts';
+import { TextdefaultSize } from '../../../../common/constants/Fonts';
 
 export const priceGroupStyles = StyleSheet.create({
   container: {
@@ -17,8 +18,9 @@ export const priceGroupStyles = StyleSheet.create({
   
   toolbar: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
   },
  
   buttonText: {
@@ -32,6 +34,21 @@ export const priceGroupStyles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     margin: 5,
+  },
+  toolbarLabel: {
+    fontSize: TextdefaultSize,
+    margin: 5,
+    paddingVertical: 5,
+  }, 
+  select: {
+    margin: 5,
+    fontSize: TextdefaultSize,
+    borderWidth: 1,
+    borderColor: '#ced4da',
+    borderRadius: 5,
+    width: 150,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
   },
 
   table: {

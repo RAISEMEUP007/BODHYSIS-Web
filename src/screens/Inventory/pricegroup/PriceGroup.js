@@ -2,8 +2,9 @@ import React, { useEffect, useState} from 'react';
 import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity } from 'react-native';
 import CheckBox from 'expo-checkbox';
 import { FontAwesome5 } from '@expo/vector-icons';
+import {Picker} from '@react-native-picker/picker';
 
-import {getHeaderData, getTableData, setFree, setPriceData, setExtraDay, deleteGroup, deletePricePoint } from '../../../api/Price';
+import {getHeaderData, getTableData, setFree, setPriceData, setExtraDay, deleteGroup, deletePricePoint, getSeasonsData } from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
@@ -19,6 +20,7 @@ const PriceGroup = () => {
   const { showConfirm } = useConfirmModal();
 
   const [groupName, setGroupName] = useState('');
+  const [seasonId, setSeasonId] = useState(0);
   const [isGroupModalVisible, setGroupModalVisible] = useState(false);
   const [isUpdateGroupModalVisible, setUpdateGroupModalVisible] = useState(false);
   const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
@@ -27,17 +29,22 @@ const PriceGroup = () => {
   
   const [headerData, setHeaderData] = useState([]);
   const [tableData, setTableData] = useState({});
+  const [seasonData, setSeasonData] = useState([]);
   
   useEffect(()=>{
     if(updatePointTrigger == true){
       getHeader();
       getTable();
+      getSeasons();
       setUpdatePointTrigger(false);
     }
   }, [updatePointTrigger])
 
   useEffect(() => {
-    if(updateGroupTrigger == true) getTable();
+    if(updateGroupTrigger == true) {
+      getSeasons();
+      getTable();
+    }
   }, [updateGroupTrigger]);
 
   const openGroupModal = () => { setGroupModalVisible(true); };
@@ -85,13 +92,30 @@ const PriceGroup = () => {
       }
     })
   }
-
+  
   const getTable = () => {
-    getTableData((jsonRes, status, error) => {
+    getTableData(seasonId, (jsonRes, status, error) => {
       switch(status){
         case 200:
           setTableData(jsonRes);
           setUpdateGroupTrigger(false);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
+
+  const getSeasons = () => {
+    getSeasonsData((jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          setSeasonData(jsonRes);
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -128,7 +152,7 @@ const PriceGroup = () => {
     const pointId = headerData[index].id;
     const value = cellData ? cellData : "";
 
-    setPriceData(groupId, pointId, value, (jsonRes, status, error)=>{
+    setPriceData(groupId, seasonId, pointId, value, (jsonRes, status, error)=>{
       switch(status){
         case 200:
           break;
@@ -262,6 +286,24 @@ const PriceGroup = () => {
     return <>{rows}</>;
   };
 
+  const renderSeasonPicker = () => {
+    return (
+      <Picker
+        selectedValue={seasonId}
+        style={styles.select}
+        onValueChange={(itemValue, itemIndex) =>
+        {
+          setSeasonId(itemValue); setUpdateGroupTrigger(true);
+        }
+      }>
+        <Picker.Item label="Default" value={0} />
+        {seasonData.map((item, index) => (
+          <Picker.Item key={index} label={item.season} value={item.id} />
+        ))}
+      </Picker>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.toolbar}>
@@ -271,6 +313,10 @@ const PriceGroup = () => {
         <TouchableHighlight style={styles.button} onPress={openPriceModal}>
           <Text style={styles.buttonText}>Add Duration</Text>
         </TouchableHighlight>
+      </View>
+      <View style={styles.toolbar}>
+        <Text style={styles.toolbarLabel}>seasons</Text>
+        {renderSeasonPicker()}
       </View>
       <View style={styles.tableContainer}>
         <ScrollView horizontal={true}>
