@@ -80,13 +80,12 @@ const CreateGroupModal = ({ isModalVisible, groupName, setUpdateGroupTrigger, cl
             <Text style={styles.addButton}>Add</Text>
           </TouchableOpacity>
         </ModalFooter>
-        
-        {isLoading && (
-          <View style={styles.overlay}>
-            <ActivityIndicator size="large" color="#0000ff" />
-          </View>
-        )}
       </BasicModalContainer>
+      {isLoading && (
+        <View style={styles.overlay}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
     </Modal>
   );
 };

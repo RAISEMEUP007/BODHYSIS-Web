@@ -75,6 +75,9 @@ const PriceGroup = () => {
         case 200:
           setHeaderData(jsonRes);
           break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
         default:
           if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
@@ -89,6 +92,9 @@ const PriceGroup = () => {
         case 200:
           setTableData(jsonRes);
           setUpdateGroupTrigger(false);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
           break;
         default:
           if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
@@ -125,6 +131,9 @@ const PriceGroup = () => {
     setPriceData(groupId, pointId, value, (jsonRes, status, error)=>{
       switch(status){
         case 200:
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
           break;
         default:
           setUpdateGroupTrigger(true);
@@ -186,21 +195,18 @@ const PriceGroup = () => {
   const renderTableHeader = () => {
     return (
       <>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={[styles.columnHeader, styles.groupCell]}></Text>
-          <Text style={[styles.columnHeader, styles.cellcheckbox]}></Text>
-          {headerData.map((item, index) => (
-            <TouchableOpacity key={index} style={styles.columnHeader} onPress={()=>{removePoint(item.id)}} >
-              <FontAwesome5 size={TextMediumSize} name="times" color="black" />
-            </TouchableOpacity>
-          ))}
-          <Text style={styles.columnHeader}></Text>
-        </View>
         <View style={styles.tableHeader}>
           <Text style={[styles.columnHeader, styles.groupCell]}>PriceGroup</Text>
           <Text style={[styles.columnHeader, styles.cellcheckbox]}>Free</Text>
           {headerData.map((item, index) => (
-            <Text key={index} style={styles.columnHeader} pointId={item.id}>{item.header}</Text>
+            <View key={index} style={styles.columnHeader} >
+              <View style={styles.headerIcon}>
+                <TouchableOpacity onPress={()=>{removePoint(item.id)}} >
+                  <FontAwesome5 size={TextMediumSize} name="times" color="black" />
+                </TouchableOpacity>
+              </View>
+              <Text pointId={item.id}>{item.header}</Text>
+            </View>
           ))}
           <Text style={styles.columnHeader}>Extra day</Text>
         </View>
@@ -213,14 +219,16 @@ const PriceGroup = () => {
     for (let i in tableData) {
       rows.push( 
         <View key={i} style={styles.tableRow}>
-          <View style={[styles.cell, styles.groupCell]}>
+          <View style={[styles.groupCell]}>
             <Text >{i}</Text>
-            <TouchableOpacity onPress={()=>{openUpdateGroupModal(i)}}>
-              <FontAwesome5 style={styles.editRow} size={TextMediumSize} name="pencil-alt" color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={()=>{removeGroup(i)}}>
-              <FontAwesome5 style={styles.deleteRow} size={TextMediumSize} name="times" color="black" />
-            </TouchableOpacity>
+            <View>
+              <TouchableOpacity onPress={()=>{openUpdateGroupModal(i)}}>
+                <FontAwesome5 style={styles.editRow} size={TextMediumSize} name="pencil-alt" color="black" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={()=>{removeGroup(i)}}>
+                <FontAwesome5 style={styles.deleteRow} size={TextMediumSize} name="times" color="black" />
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={[styles.cell, styles.cellcheckbox]}>
             <CheckBox value={(tableData[i].is_free ? true : false)} onValueChange={(newValue) => saveFree(i, newValue)} />

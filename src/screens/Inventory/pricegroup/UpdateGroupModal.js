@@ -83,13 +83,12 @@ const UpdateGroupModal = ({ isModalVisible, groupName, setUpdateGroupTrigger, cl
             <Text style={styles.addButton}>Update</Text>
           </TouchableOpacity>
         </ModalFooter>
-
-        {isLoading && (
-          <View style={styles.overlay}>
-            <ActivityIndicator size="large" color="#0000ff" />
-          </View>
-        )}
       </BasicModalContainer>
+      {isLoading && (
+        <View style={styles.overlay}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
     </Modal>
   );
 };
