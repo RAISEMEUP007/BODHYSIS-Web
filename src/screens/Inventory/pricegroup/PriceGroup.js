@@ -3,7 +3,7 @@ import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity
 import CheckBox from 'expo-checkbox';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import {getHeaderData, getTableData, setFree, setPriceData, setExtraDay, deleteGroup} from '../../../api/Price';
+import {getHeaderData, getTableData, setFree, setPriceData, setExtraDay, deleteGroup, deletePricePoint } from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
@@ -11,13 +11,16 @@ import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
 import { priceGroupStyles } from './styles/PriceGroupStyle';
 import CreateGroupModal from './CreateGroupModal';
 import PricePointModal from './PricePointModal';
+import UpdateGroupModal from './UpdateGroupModal';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 
 const PriceGroup = () => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
+  const [groupName, setGroupName] = useState('');
   const [isGroupModalVisible, setGroupModalVisible] = useState(false);
+  const [isUpdateGroupModalVisible, setUpdateGroupModalVisible] = useState(false);
   const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
   const [updateGroupTrigger, setUpdateGroupTrigger] = useState(false);
   const [updatePointTrigger, setUpdatePointTrigger] = useState(true);
@@ -37,8 +40,10 @@ const PriceGroup = () => {
     if(updateGroupTrigger == true) getTable();
   }, [updateGroupTrigger]);
 
-  const closeGroupModal = () => { setGroupModalVisible(false); }
   const openGroupModal = () => { setGroupModalVisible(true); };
+  const closeGroupModal = () => { setGroupModalVisible(false); }
+  const openUpdateGroupModal = (group) => { setGroupName(group); setUpdateGroupModalVisible(true); };
+  const closeUpdateGroupModal = () => { setUpdateGroupModalVisible(false); }
   const openPriceModal = () => { setAddPriceModalVisible(true); };
   const closePriceModal = () => { setAddPriceModalVisible(false); };
   
@@ -70,6 +75,9 @@ const PriceGroup = () => {
         case 200:
           setHeaderData(jsonRes);
           break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
         default:
           if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
@@ -84,6 +92,9 @@ const PriceGroup = () => {
         case 200:
           setTableData(jsonRes);
           setUpdateGroupTrigger(false);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
           break;
         default:
           if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
@@ -121,6 +132,9 @@ const PriceGroup = () => {
       switch(status){
         case 200:
           break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
         default:
           setUpdateGroupTrigger(true);
           if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
@@ -144,6 +158,23 @@ const PriceGroup = () => {
     })
   }
 
+  const removePoint = (priceId) => {
+    showConfirm(msgStr('deleteConfirmStr'), ()=>{
+      deletePricePoint(priceId, (jsonRes, status, error)=>{
+        switch(status){
+          case 200:
+            setUpdatePointTrigger(true);
+            showAlert('success', jsonRes.message);
+            break;
+          default:
+            if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+            else showAlert('error', msgStr('unknownError'));
+            break;
+        }
+      })
+    });
+  }
+
   const removeGroup = (group) => {
     showConfirm(msgStr('deleteConfirmStr'), ()=>{
       deleteGroup(group, (jsonRes, status, error)=>{
@@ -163,14 +194,23 @@ const PriceGroup = () => {
 
   const renderTableHeader = () => {
     return (
-      <View style={styles.tableHeader}>
-        <Text style={[styles.columnHeader, {width: 250, textAlign:'left'}]}>PriceGroup</Text>
-        <Text style={[styles.columnHeader, styles.cellcheckbox]}>Free</Text>
-        {headerData.map((item, index) => (
-          <Text key={index} style={styles.columnHeader} pointId={item.id}>{item.header}</Text>
-        ))}
-        <Text style={styles.columnHeader}>Extra day</Text>
-      </View>
+      <>
+        <View style={styles.tableHeader}>
+          <Text style={[styles.columnHeader, styles.groupCell]}>PriceGroup</Text>
+          <Text style={[styles.columnHeader, styles.cellcheckbox]}>Free</Text>
+          {headerData.map((item, index) => (
+            <View key={index} style={styles.columnHeader} >
+              <View style={styles.headerIcon}>
+                <TouchableOpacity onPress={()=>{removePoint(item.id)}} >
+                  <FontAwesome5 size={TextMediumSize} name="times" color="black" />
+                </TouchableOpacity>
+              </View>
+              <Text pointId={item.id}>{item.header}</Text>
+            </View>
+          ))}
+          <Text style={styles.columnHeader}>Extra day</Text>
+        </View>
+      </>
     );
   };
 
@@ -179,11 +219,16 @@ const PriceGroup = () => {
     for (let i in tableData) {
       rows.push( 
         <View key={i} style={styles.tableRow}>
-          <View style={[styles.cell, {width: 250, textAlign:'left'}]}>
+          <View style={[styles.groupCell]}>
             <Text >{i}</Text>
-            <TouchableOpacity onPress={()=>{removeGroup(i)}}>
-              <FontAwesome5 style={styles.deleteRow} size={TextMediumSize} name="times" color="black" />
-            </TouchableOpacity>
+            <View>
+              <TouchableOpacity onPress={()=>{openUpdateGroupModal(i)}}>
+                <FontAwesome5 style={styles.editRow} size={TextMediumSize} name="pencil-alt" color="black" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={()=>{removeGroup(i)}}>
+                <FontAwesome5 style={styles.deleteRow} size={TextMediumSize} name="times" color="black" />
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={[styles.cell, styles.cellcheckbox]}>
             <CheckBox value={(tableData[i].is_free ? true : false)} onValueChange={(newValue) => saveFree(i, newValue)} />
@@ -243,6 +288,13 @@ const PriceGroup = () => {
         groupName={""}
         setUpdateGroupTrigger = {setUpdateGroupTrigger} 
         closeModal={closeGroupModal}
+      />
+
+      <UpdateGroupModal
+        isModalVisible={isUpdateGroupModalVisible}
+        groupName={groupName}
+        setUpdateGroupTrigger = {setUpdateGroupTrigger} 
+        closeModal={closeUpdateGroupModal}
       />
 
       <PricePointModal

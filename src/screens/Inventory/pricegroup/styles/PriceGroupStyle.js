@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { TextMediumSize } from '../../../../common/constants/Fonts';
 
 export const priceGroupStyles = StyleSheet.create({
   container: {
@@ -18,7 +19,6 @@ export const priceGroupStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    marginBottom: 16,
   },
  
   buttonText: {
@@ -29,8 +29,8 @@ export const priceGroupStyles = StyleSheet.create({
   button: {
     backgroundColor: '#007bff',
     borderRadius: 4,
-    paddingVertical: 10,
-    paddingHorizontal: 32,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
     margin: 5,
   },
 
@@ -40,6 +40,7 @@ export const priceGroupStyles = StyleSheet.create({
     flexDirection: 'column',
   },
   tableHeader: {
+    marginTop: 30,
     flexDirection: 'row',
     borderTopWidth: 1,
     borderTopColor: '#ddd',
@@ -80,9 +81,27 @@ export const priceGroupStyles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
   },
+  groupCell: {
+    width: 250, 
+    paddingHorizontal: 12,
+    justifyContent: "center",
+    textAlign:'left',
+  },
+  headerIcon: {
+    position:'absolute', 
+    left:0, 
+    width:'100%', 
+    alignItems:'center', 
+    top:-26
+  },
   deleteRow: {
     position: 'absolute',
     right: 0,
+    top: -20,
+  },
+  editRow: {
+    position: 'absolute',
+    right: TextMediumSize * 1.5,
     top: -20,
   }
 });

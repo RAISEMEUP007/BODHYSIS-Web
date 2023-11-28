@@ -32,4 +32,14 @@ export const priceModalstyles = StyleSheet.create({
     fontSize: TextSmallSize,
     paddingLeft: 5,
   },
+  overlay: {
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+  },
 });
