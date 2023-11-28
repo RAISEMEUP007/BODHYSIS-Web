@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 
 import PriceGroup from './pricegroup/PriceGroup';
+import Seasons from './seasons/Seasons';
 
 const Inventory = ({initalItem = null}) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);
@@ -16,6 +17,8 @@ const Inventory = ({initalItem = null}) => {
         switch (selectedItem) {
             case 'Price groups':
                 return <PriceGroup/>;
+            case 'Seasons':
+                return <Seasons/>;
             default:
                 return (
                     <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row', marginTop: 100, }}>
@@ -35,7 +38,8 @@ const Inventory = ({initalItem = null}) => {
                 { title: "Search" }
             ]} handleItemClick={handleItemClick} />
             <TouchNavGroup sectionTitle="Price Management" items={[
-                { title: "Price groups" }
+                { title: "Price groups" },
+                { title: "Seasons" }
             ]} handleItemClick={handleItemClick} />
             <TouchNavGroup sectionTitle="Bulk Update" items={[
                 { title: "Bulk Update" }

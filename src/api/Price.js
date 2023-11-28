@@ -56,3 +56,13 @@ export const deletePricePoint = (pointId, callback) => {
   const payload = { pointId };
   postAPICall('price/deletepricepoint', payload, callback);
 }
+
+export const saveSessionCell = (id, column, value, callback) => {
+  const payload = {id, column, value};
+  postAPICall('price/saveseasoncell', payload, callback);
+}
+
+export const deleteSeason = (id, callback) => {
+  const payload = { id };
+  postAPICall('price/deleteseason', payload, callback);
+}
