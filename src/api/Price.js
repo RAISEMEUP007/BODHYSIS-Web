@@ -4,8 +4,8 @@ export const getHeaderData = (callback) => {
   getAPICall('price/getheaderdata', callback);
 }
 
-export const getTableData = (seasonId, callback) => {
-  getAPICall('price/gettabledata/' + seasonId, callback);
+export const getTableData = (seasonId, brandId, callback) => {
+  getAPICall('price/gettabledata/' + seasonId + '/' + brandId, callback);
 }
 
 export const setFree = (group, isFree, callback) => {
@@ -13,10 +13,11 @@ export const setFree = (group, isFree, callback) => {
   postAPICall('price/setfree', payload, callback);
 }
 
-export const setPriceData = (groupId, seasonId, pointId, value, callback) => {
+export const setPriceData = (groupId, seasonId, brandId, pointId, value, callback) => {
   const payload = {
     groupId,
     seasonId,
+    brandId,
     pointId,
     value: value ? value : "",
   };

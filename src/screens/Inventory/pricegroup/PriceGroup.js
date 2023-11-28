@@ -4,7 +4,7 @@ import CheckBox from 'expo-checkbox';
 import { FontAwesome5 } from '@expo/vector-icons';
 import {Picker} from '@react-native-picker/picker';
 
-import {getHeaderData, getTableData, setFree, setPriceData, setExtraDay, deleteGroup, deletePricePoint, getSeasonsData } from '../../../api/Price';
+import {getHeaderData, getTableData, setFree, setPriceData, setExtraDay, deleteGroup, deletePricePoint, getSeasonsData, getBrandsData } from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
@@ -21,6 +21,7 @@ const PriceGroup = () => {
 
   const [groupName, setGroupName] = useState('');
   const [seasonId, setSeasonId] = useState(0);
+  const [brandId, setBrandId] = useState(0);
   const [isGroupModalVisible, setGroupModalVisible] = useState(false);
   const [isUpdateGroupModalVisible, setUpdateGroupModalVisible] = useState(false);
   const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
@@ -30,12 +31,14 @@ const PriceGroup = () => {
   const [headerData, setHeaderData] = useState([]);
   const [tableData, setTableData] = useState({});
   const [seasonData, setSeasonData] = useState([]);
+  const [brandData, setBrandData] = useState([]);
   
   useEffect(()=>{
     if(updatePointTrigger == true){
       getHeader();
       getTable();
       getSeasons();
+      getBrands();
       setUpdatePointTrigger(false);
     }
   }, [updatePointTrigger])
@@ -43,6 +46,7 @@ const PriceGroup = () => {
   useEffect(() => {
     if(updateGroupTrigger == true) {
       getSeasons();
+      getBrands();
       getTable();
     }
   }, [updateGroupTrigger]);
@@ -94,7 +98,7 @@ const PriceGroup = () => {
   }
   
   const getTable = () => {
-    getTableData(seasonId, (jsonRes, status, error) => {
+    getTableData(seasonId, brandId, (jsonRes, status, error) => {
       switch(status){
         case 200:
           setTableData(jsonRes);
@@ -116,6 +120,23 @@ const PriceGroup = () => {
       switch(status){
         case 200:
           setSeasonData(jsonRes);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
+
+  const getBrands = () => {
+    getBrandsData((jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          setBrandData(jsonRes);
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -152,7 +173,7 @@ const PriceGroup = () => {
     const pointId = headerData[index].id;
     const value = cellData ? cellData : "";
 
-    setPriceData(groupId, seasonId, pointId, value, (jsonRes, status, error)=>{
+    setPriceData(groupId, seasonId, brandId, pointId, value, (jsonRes, status, error)=>{
       switch(status){
         case 200:
           break;
@@ -304,6 +325,24 @@ const PriceGroup = () => {
     );
   }
 
+  const renderBrandPicker = () => {
+    return (
+      <Picker
+        selectedValue={brandId}
+        style={styles.select}
+        onValueChange={(itemValue, itemIndex) =>
+        {
+          setBrandId(itemValue); setUpdateGroupTrigger(true);
+        }
+      }>
+        <Picker.Item label="Default" value={0} />
+        {brandData.map((item, index) => (
+          <Picker.Item key={index} label={item.brand} value={item.id} />
+        ))}
+      </Picker>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.toolbar}>
@@ -315,8 +354,10 @@ const PriceGroup = () => {
         </TouchableHighlight>
       </View>
       <View style={styles.toolbar}>
-        <Text style={styles.toolbarLabel}>seasons</Text>
+        <Text style={styles.toolbarLabel}>Seasons</Text>
         {renderSeasonPicker()}
+        <Text style={styles.toolbarLabel}>Brands</Text>
+        {renderBrandPicker()}
       </View>
       <View style={styles.tableContainer}>
         <ScrollView horizontal={true}>
