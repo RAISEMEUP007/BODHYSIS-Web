@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { TextMediumSize, TextSmallSize } from '../../../../common/constants/Fonts';
 import { TextdefaultSize } from '../../../../common/constants/Fonts';
-import { abs } from 'react-native-reanimated';
 
 export const seasonsStyle = StyleSheet.create({
   container: {
@@ -85,12 +84,16 @@ export const seasonsStyle = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     width: 200,
+    borderLeftWidth: 1,
+    borderLeftColor: '#ccc',
   },
   cell: {
     position: 'relative',
     padding: 2,
     width: 200,
     alignItems: 'flex-start',
+    borderLeftWidth: 1,
+    borderLeftColor: '#ccc',
   },
   cellInput: {
     width: 150,
@@ -128,5 +131,11 @@ export const seasonsStyle = StyleSheet.create({
     position: 'absolute',
     right: TextMediumSize * 1.5,
     top: -20,
-  }
+  },
+  radioButtonCell: {
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+  },
 });

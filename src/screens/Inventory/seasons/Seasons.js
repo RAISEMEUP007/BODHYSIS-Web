@@ -1,6 +1,7 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { RadioButton } from 'react-native-paper';
 
 import {getSeasonsData, saveSeasonCell, deleteSeason } from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';
@@ -20,8 +21,11 @@ const Seasons = () => {
   const openAddSeasonModal = () => { setAddModalVisible(true); };
   const closeAddSeasonModal = () => { setAddModalVisible(false); }
   const [updateSeasonTrigger, setUpdateSeasonTrigger] = useState(true);
-
   
+  useEffect(()=>{
+    if(updateSeasonTrigger == true) getTable();
+  }, [updateSeasonTrigger]);
+
   const changeCellData = (index, key, newVal) => {
     const updatedTableData = [ ...tableData ];
     updatedTableData[index] = {
@@ -31,12 +35,13 @@ const Seasons = () => {
     setTableData(updatedTableData);
   };  
 
-  const saveCellData = (id, column, value) => {
+  const saveCellData = (id, column, value, callback) => {
     value = value ? value : "";
 
     saveSeasonCell(id, column, value, (jsonRes, status, error)=>{
       switch(status){
         case 200:
+          if(callback) callback();
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -67,10 +72,6 @@ const Seasons = () => {
     });
   }
 
-  useEffect(()=>{
-    if(updateSeasonTrigger == true) getTable();
-  }, [updateSeasonTrigger]);
-
   const getTable = () => {
     getSeasonsData((jsonRes, status, error) => {
       switch(status){
@@ -89,6 +90,18 @@ const Seasons = () => {
     })
   }
 
+  const resetActiveSeason = (id) => {
+    tableData.map((item, index) => {
+      if(item.is_active){
+        saveCellData(item.id, 'is_active', 0, ()=>{
+          saveCellData(id, 'is_active', 1, ()=>{
+            setUpdateSeasonTrigger(true);
+          });
+        });
+      }
+    })
+  }
+
   const renderTableData = () => {
     const rows = [];
     if(tableData.length > 0){
@@ -102,7 +115,6 @@ const Seasons = () => {
                   changeCellData(index, 'season', value);
                 }}
                 onBlur={(e) => {
-                  console.log('ddd');
                   saveCellData(item.id, 'season', item.season);
                 }}
               />
@@ -111,6 +123,15 @@ const Seasons = () => {
                   <FontAwesome5 style={styles.deleteRow} size={TextMediumSize} name="times" color="black" />
                 </TouchableOpacity>
               </View>
+            </View>
+            <View style={[styles.cell, styles.radioButtonCell]}>
+              <TouchableWithoutFeedback onPress={()=>{resetActiveSeason(item.id)}}>
+                <FontAwesome5
+                  name={item.is_active?'dot-circle':'circle'}
+                  size={15}
+                  color={item.is_active ? "#007bff" : "#6c757d"}
+                />
+              </TouchableWithoutFeedback>
             </View>
           </View>
         );
@@ -131,6 +152,7 @@ const Seasons = () => {
       <View style={styles.tableContainer}>
         <View style={styles.tableHeader}>
           <Text style={styles.columnHeader}>{"Season"}</Text>
+          <Text style={[styles.columnHeader, styles.radioButtonCell]}>{"is_active"}</Text>
         </View>
         <ScrollView>
             {renderTableData()}
