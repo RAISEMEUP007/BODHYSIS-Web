@@ -27,7 +27,7 @@ build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
     - yarn
-    - yarn add netlify-cli
+    - npm install -g netlify-cli
     - netlify deploy --dir dist
 
 unit-test-job:   # This job runs in the test stage.
