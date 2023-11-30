@@ -48,6 +48,7 @@ const Seasons = () => {
           break;
         default:
           setUpdateSeasonTrigger(true);
+          console.log(jsonRes);
           if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           break;
@@ -125,13 +126,13 @@ const Seasons = () => {
               </View>
             </View>
             <View style={[styles.cell, styles.radioButtonCell]}>
-              <TouchableWithoutFeedback onPress={()=>{resetActiveSeason(item.id)}}>
+              <TouchableOpacity onPress={()=>{resetActiveSeason(item.id)}}>
                 <FontAwesome5
                   name={item.is_active?'dot-circle':'circle'}
                   size={15}
                   color={item.is_active ? "#007bff" : "#6c757d"}
                 />
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
             </View>
           </View>
         );

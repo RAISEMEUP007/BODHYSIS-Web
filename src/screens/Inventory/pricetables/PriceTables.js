@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import {getPriceTablesData, savePriceTableCell, deletePriceTable } from '../../../api/Price';
@@ -39,6 +39,7 @@ const PriceTables = ({selectedTableId = null}) => {
           showAlert('error', msgStr('serverError'));
           break;
         default:
+          console.log(jsonRes);
           if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           break;
@@ -123,13 +124,13 @@ const PriceTables = ({selectedTableId = null}) => {
               </View>
             </View>
             <View style={[styles.cell, styles.radioButtonCell]}>
-              <TouchableWithoutFeedback onPress={()=>{openPriceTable(item.id, item.table_name)}}>
+              <TouchableOpacity onPress={()=>{openPriceTable(item.id, item.table_name)}}>
                 <FontAwesome5
                   name={'edit'}
                   size={15}
                   color={"#6c757d"}
                 />
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
             </View>
           </View>
         );
@@ -149,7 +150,7 @@ const PriceTables = ({selectedTableId = null}) => {
       </View>
       <View style={styles.tableContainer}>
         <View style={styles.tableHeader}>
-          <Text style={styles.columnHeader}>{"PriceTable"}</Text>
+          <Text style={styles.columnHeader}>{"Price Tables"}</Text>
           <Text style={[styles.columnHeader, styles.radioButtonCell]}>{"Options"}</Text>
         </View>
         <ScrollView>
