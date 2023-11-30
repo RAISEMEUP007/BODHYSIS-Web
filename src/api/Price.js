@@ -4,8 +4,8 @@ export const getHeaderData = (callback) => {
   getAPICall('price/getheaderdata', callback);
 }
 
-export const getTableData = (callback) => {
-  getAPICall('price/gettabledata', callback);
+export const getTableData = (tableId, callback) => {
+  getAPICall('price/gettabledata/' + tableId, callback);
 }
 
 export const setFree = (group, isFree, callback) => {
@@ -13,9 +13,10 @@ export const setFree = (group, isFree, callback) => {
   postAPICall('price/setfree', payload, callback);
 }
 
-export const setPriceData = (groupId, pointId, value, callback) => {
+export const setPriceData = (groupId, tableId, pointId, value, callback) => {
   const payload = {
     groupId,
+    tableId,
     pointId,
     value: value ? value : "",
   };
@@ -50,4 +51,46 @@ export const deleteGroup = (group, callback) => {
 export const deletePricePoint = (pointId, callback) => {
   const payload = { pointId };
   postAPICall('price/deletepricepoint', payload, callback);
+}
+
+export const getSeasonsData = (callback) => {
+  getAPICall('price/getseasonsdata', callback);
+}
+
+export const saveSeasonCell = (id, column, value, callback) => {
+  const payload = {id, column, value};
+  postAPICall('price/saveseasoncell', payload, callback);
+}
+
+export const deleteSeason = (id, callback) => {
+  const payload = { id };
+  postAPICall('price/deleteseason', payload, callback);
+}
+
+export const getBrandsData = (callback) => {
+  getAPICall('price/getbrandsdata', callback);
+}
+
+export const saveBrandCell = (id, column, value, callback) => {
+  const payload = {id, column, value};
+  postAPICall('price/savebrandcell', payload, callback);
+}
+
+export const deleteBrand = (id, callback) => {
+  const payload = { id };
+  postAPICall('price/deletebrand', payload, callback);
+}
+
+export const getPriceTablesData = (callback) => {
+  getAPICall('price/getpricetablesdata', callback);
+}
+
+export const savePriceTableCell = (id, column, value, callback) => {
+  const payload = {id, column, value};
+  postAPICall('price/savepricetablecell', payload, callback);
+}
+
+export const deletePriceTable = (id, callback) => {
+  const payload = { id };
+  postAPICall('price/deletepricetable', payload, callback);
 }

@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform } from 'react-native';
 
 import { createGroup } from '../../../api/Price';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
@@ -18,6 +18,22 @@ const CreateGroupModal = ({ isModalVisible, groupName, setUpdateGroupTrigger, cl
   const [isLoading, setIsLoading] = useState(false); 
 
   const [_groupName, setGroupname] = useState(groupName);
+
+  useEffect(() => {
+    if(Platform.web){
+      const handleKeyDown = (event) => {
+        if (event.key === 'Escape') {
+          closeModal();
+        }
+      };
+  
+      window.addEventListener('keydown', handleKeyDown);
+  
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [closeModal]);
 
   const handleAddButtonClick = () => {
     if (!_groupName.trim()) {
@@ -71,6 +87,7 @@ const CreateGroupModal = ({ isModalVisible, groupName, setUpdateGroupTrigger, cl
             value={_groupName}
             placeholder="Price group name"
             placeholderTextColor="#ccc"
+            onSubmitEditing={handleAddButtonClick}
             onBlur={checkInput}
           />
           {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
