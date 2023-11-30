@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform } from 'react-native';
 
 import { saveSeasonCell } from '../../../api/Price';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
@@ -18,6 +18,22 @@ const AddSeasonModal = ({ isModalVisible, setUpdateSeasonTrigger, closeModal }) 
   const [isLoading, setIsLoading] = useState(false); 
 
   const [_season, setSeason] = useState('');
+
+  useEffect(() => {
+    if(Platform.web){
+      const handleKeyDown = (event) => {
+        if (event.key === 'Escape') {
+          closeModal();
+        }
+      };
+  
+      window.addEventListener('keydown', handleKeyDown);
+  
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [closeModal]);
 
   const handleAddButtonClick = () => {
     if (!_season.trim()) {
@@ -63,7 +79,7 @@ const AddSeasonModal = ({ isModalVisible, setUpdateSeasonTrigger, closeModal }) 
       onShow={()=>{setValidMessage(''); setSeason('')}}
     >
       <BasicModalContainer>
-        <ModalHeader label={"Add Season"} closeModal={closeModal} />
+        <ModalHeader label={"Season"} closeModal={closeModal} />
         <ModalBody>
           <TextInput
             style={styles.input}
@@ -71,6 +87,7 @@ const AddSeasonModal = ({ isModalVisible, setUpdateSeasonTrigger, closeModal }) 
             value={_season}
             placeholder="season"
             placeholderTextColor="#ccc"
+            onSubmitEditing={handleAddButtonClick}
             onBlur={checkInput}
           />
           {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}

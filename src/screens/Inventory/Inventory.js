@@ -6,6 +6,7 @@ import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 import PriceGroup from './pricegroup/PriceGroup';
 import Seasons from './seasons/Seasons';
 import Brands from './brands/Brands';
+import PriceTables from './pricetables/PriceTables';
 
 const Inventory = ({initalItem = null}) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);
@@ -16,8 +17,8 @@ const Inventory = ({initalItem = null}) => {
     
     if(selectedItem) {
         switch (selectedItem) {
-            case 'Price groups':
-                return <PriceGroup/>;
+            case 'Price tables':
+                return <PriceTables/>;
             case 'Seasons':
                 return <Seasons/>;
             case 'Brands':
@@ -41,7 +42,7 @@ const Inventory = ({initalItem = null}) => {
                 { title: "Search" }
             ]} handleItemClick={handleItemClick} />
             <TouchNavGroup sectionTitle="Price Management" items={[
-                { title: "Price groups" },
+                { title: "Price tables" },
                 { title: "Seasons" },
                 { title: "Brands" }
             ]} handleItemClick={handleItemClick} />

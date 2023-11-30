@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import { TextMediumSize, TextSmallSize } from '../../../../common/constants/Fonts';
 import { TextdefaultSize } from '../../../../common/constants/Fonts';
 
-export const priceGroupStyles = StyleSheet.create({
+export const priceTablesStyle = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
@@ -42,7 +42,7 @@ export const priceGroupStyles = StyleSheet.create({
   }, 
   select: {
     margin: 5,
-    fontSize: TextSmallSize,
+    fontSize: TextdefaultSize,
     borderWidth: 1,
     borderColor: '#ced4da',
     borderRadius: 5,
@@ -57,7 +57,7 @@ export const priceGroupStyles = StyleSheet.create({
     flexDirection: 'column',
   },
   tableHeader: {
-    marginTop: 30,
+    marginTop: 10,
     flexDirection: 'row',
     borderTopWidth: 1,
     borderTopColor: '#ddd',
@@ -80,14 +80,25 @@ export const priceGroupStyles = StyleSheet.create({
   columnHeader: {
     fontWeight: 'bold',
     backgroundColor: '#f5f5f5',
-    textAlign: 'center',
-    padding: 8,
-    width: 100,
+    alignItems: 'flex-start',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    width: 200,
+    borderLeftWidth: 1,
+    borderLeftColor: '#ccc',
   },
   cell: {
-    padding: 8,
-    width: 100,
-    textAlign: 'center',
+    position: 'relative',
+    padding: 2,
+    width: 200,
+    alignItems: 'flex-start',
+    borderLeftWidth: 1,
+    borderLeftColor: '#ccc',
+  },
+  cellInput: {
+    width: 150,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   focusedCell: {
     borderWidth: 1,
@@ -113,23 +124,18 @@ export const priceGroupStyles = StyleSheet.create({
   },
   deleteRow: {
     position: 'absolute',
-    right: 0,
-    top: -20,
+    right: 5,
+    top: 3,
   },
   editRow: {
     position: 'absolute',
     right: TextMediumSize * 1.5,
     top: -20,
   },
-  backButton: {
-    padding: 10,
-    borderRadius: 5,
-    backgroundColor: '#f0f0f0',
-    marginRight: 10,
-    // Add any other styles you'd like for the back button
+  radioButtonCell: {
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
   },
-  tableName: {
-    fontSize: TextMediumSize,
-    fontWeight: 'bold',
-  }
 });

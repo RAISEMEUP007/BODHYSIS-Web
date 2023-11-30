@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform } from 'react-native';
 
 import { saveBrandCell } from '../../../api/Price';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
@@ -18,6 +18,22 @@ const AddBrandModal = ({ isModalVisible, setUpdateBrandTrigger, closeModal }) =>
   const [isLoading, setIsLoading] = useState(false); 
 
   const [_brand, setBrand] = useState('');
+
+  useEffect(() => {
+    if(Platform.web){
+      const handleKeyDown = (event) => {
+        if (event.key === 'Escape') {
+          closeModal();
+        }
+      };
+  
+      window.addEventListener('keydown', handleKeyDown);
+  
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [closeModal]);
 
   const handleAddButtonClick = () => {
     if (!_brand.trim()) {
@@ -63,7 +79,7 @@ const AddBrandModal = ({ isModalVisible, setUpdateBrandTrigger, closeModal }) =>
       onShow={()=>{setValidMessage(''); setBrand('')}}
     >
       <BasicModalContainer>
-        <ModalHeader label={"Add Brand"} closeModal={closeModal} />
+        <ModalHeader label={"Brand"} closeModal={closeModal} />
         <ModalBody>
           <TextInput
             style={styles.input}
@@ -71,6 +87,7 @@ const AddBrandModal = ({ isModalVisible, setUpdateBrandTrigger, closeModal }) =>
             value={_brand}
             placeholder="brand"
             placeholderTextColor="#ccc"
+            onSubmitEditing={handleAddButtonClick}
             onBlur={checkInput}
           />
           {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}

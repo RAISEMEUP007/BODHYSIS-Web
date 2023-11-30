@@ -15,7 +15,7 @@ import PricePointModal from './PricePointModal';
 import UpdateGroupModal from './UpdateGroupModal';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 
-const PriceGroup = () => {
+const PriceGroup = ({tableId, tableName, openPriceTable}) => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -37,8 +37,8 @@ const PriceGroup = () => {
     if(updatePointTrigger == true){
       getHeader();
       getTable();
-      getSeasons();
-      getBrands();
+      //getSeasons();
+      //getBrands();
       setUpdatePointTrigger(false);
     }
   }, [updatePointTrigger])
@@ -98,7 +98,7 @@ const PriceGroup = () => {
   }
   
   const getTable = () => {
-    getTableData(seasonId, brandId, (jsonRes, status, error) => {
+    getTableData(tableId, (jsonRes, status, error) => {
       switch(status){
         case 200:
           setTableData(jsonRes);
@@ -173,7 +173,7 @@ const PriceGroup = () => {
     const pointId = headerData[index].id;
     const value = cellData ? cellData : "";
 
-    setPriceData(groupId, seasonId, brandId, pointId, value, (jsonRes, status, error)=>{
+    setPriceData(groupId, tableId, pointId, value, (jsonRes, status, error)=>{
       switch(status){
         case 200:
           break;
@@ -346,6 +346,12 @@ const PriceGroup = () => {
   return (
     <View style={styles.container}>
       <View style={styles.toolbar}>
+        <TouchableOpacity style={styles.backButton} onPress={()=>{openPriceTable(null)}}>
+          <FontAwesome5 name="arrow-left" size={15} color="#000" />
+        </TouchableOpacity>
+        <Text style={styles.tableName}>{tableName}</Text>
+      </View>
+      <View style={styles.toolbar}>
         <TouchableHighlight style={styles.button} onPress={openGroupModal}>
           <Text style={styles.buttonText}>Create price group</Text>
         </TouchableHighlight>
@@ -353,12 +359,12 @@ const PriceGroup = () => {
           <Text style={styles.buttonText}>Add Duration</Text>
         </TouchableHighlight>
       </View>
-      <View style={styles.toolbar}>
+      {/* <View style={styles.toolbar}>
         <Text style={styles.toolbarLabel}>Seasons</Text>
         {renderSeasonPicker()}
         <Text style={styles.toolbarLabel}>Brands</Text>
         {renderBrandPicker()}
-      </View>
+      </View> */}
       <View style={styles.tableContainer}>
         <ScrollView horizontal={true}>
           <View style={styles.table}>
