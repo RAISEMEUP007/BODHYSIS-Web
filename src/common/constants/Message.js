@@ -4,6 +4,7 @@ const messages = {
     
     // Validation
     emptyField: "Field cannot be empty. Please enter a value.", // 400 Bad Request
+    emptySelect: "Please select a value.", // 400 Bad Request
     invalidFormat: "Invalid format. Correct the input.", // 400 Bad Request
     invalidEmailFormat: "Invalid email format. Correct the email.", // 400 Bad Request
 

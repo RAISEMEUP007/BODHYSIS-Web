@@ -12,6 +12,23 @@ import { ConfirmModal } from './src/common/components/confirmmodal/ConfirmModals
 
 const Stack = createStackNavigator();
 
+const LoadingIndicator = () => {
+  return (
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color="#0000ff" />
+    </View>
+  );
+};
+
+const GlobalModals = () => {
+  return (
+    <>
+      <AlertModals/>
+      <ConfirmModal/>
+    </>
+  );
+}
+
 export default function App() {
   const [initialRoute, setInitalRoute] = useState('Home');
   const [loading, setLoading] = useState(true);
@@ -54,19 +71,10 @@ export default function App() {
         </Stack.Navigator>
         <StatusBar style="auto" />
       </NavigationContainer>
-      <AlertModals/>
-      <ConfirmModal/>
+      <GlobalModals/>
     </Providers>
   );
 }
-
-const LoadingIndicator = () => {
-  return (
-    <View style={styles.loadingContainer}>
-      <ActivityIndicator size="large" color="#0000ff" />
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {
