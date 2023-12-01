@@ -3,10 +3,10 @@ import { View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
 import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 
-import PriceGroup from './pricegroup/PriceGroup';
+import PriceTables from './pricetables/PriceTables';
+import PriceLogic from './pricelogic/PriceLogic';
 import Seasons from './seasons/Seasons';
 import Brands from './brands/Brands';
-import PriceTables from './pricetables/PriceTables';
 
 const Inventory = ({initalItem = null}) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);
@@ -19,6 +19,8 @@ const Inventory = ({initalItem = null}) => {
         switch (selectedItem) {
             case 'Price tables':
                 return <PriceTables/>;
+            case 'Price Logic':
+                return <PriceLogic/>;
             case 'Seasons':
                 return <Seasons/>;
             case 'Brands':
@@ -43,6 +45,7 @@ const Inventory = ({initalItem = null}) => {
             ]} handleItemClick={handleItemClick} />
             <TouchNavGroup sectionTitle="Price Management" items={[
                 { title: "Price tables" },
+                { title: "Price Logic" },
                 { title: "Seasons" },
                 { title: "Brands" }
             ]} handleItemClick={handleItemClick} />

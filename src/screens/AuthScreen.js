@@ -28,7 +28,7 @@ const AuthScreen = () => {
     };
 
     const onLoggedIn = token => {
-        navigation.navigate('Home');
+        navigation.navigate('Dashboard');
     }
 
     const onSubmitHandler = () => {
