@@ -9,7 +9,10 @@ const TouchNavGroup = ({ sectionTitle, items, handleItemClick }) => {
       <Text style={styles.label}>{sectionTitle}</Text>
       <View style={styles.containerRow}>
         {items.map((item, index) => (
-          <TouchNav key={index} title={item.title} handlePress={() => handleItemClick(item.title)} />
+          <TouchNav key={index} 
+            title={item.title} icon={item.icon} activeOpacity={0.7}
+            handlePress={() => handleItemClick(item.title)}>
+          </TouchNav>
         ))}
       </View>
     </View>
@@ -18,7 +21,7 @@ const TouchNavGroup = ({ sectionTitle, items, handleItemClick }) => {
 
 const styles = StyleSheet.create({
     section: {
-        marginBottom: 40,
+        marginBottom: 40
     },
     label: {
         fontSize: TextMediumLargeSize,

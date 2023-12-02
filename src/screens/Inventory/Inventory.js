@@ -17,7 +17,7 @@ const Inventory = ({initalItem = null}) => {
     
     if(selectedItem) {
         switch (selectedItem) {
-            case 'Price tables':
+            case 'Price Tables':
                 return <PriceTables/>;
             case 'Price Logic':
                 return <PriceLogic/>;
@@ -27,9 +27,9 @@ const Inventory = ({initalItem = null}) => {
                 return <Brands/>;
             default:
                 return (
-                    <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row', marginTop: 100, }}>
-                        <TouchableOpacity  style={{ border:'1px solid gray', marginRight: 20, paddingHorizontal: 10, paddingVertical:2, marginTop: 8, height: 28, }} onPress={() => handleItemClick(null)}>
-                            <Text>{'<'}</Text>
+                    <View style={{ flexs: 1, border:'1px solid #d54545', marginRights: 20, paddingHorizontal: 10, paddingVertical:2, marginTop: 8, height: 28, justifyContent: 'center', flexDirection: 'row', marginTop: 100, }}>
+                        <TouchableOpacity  onPress={() => handleItemClick(null)}>
+                            <Text>{'< Back'}</Text>
                         </TouchableOpacity>
                         <Text style={{ fontSize: 28 }}>{selectedItem}</Text>
                     </View>
@@ -40,20 +40,19 @@ const Inventory = ({initalItem = null}) => {
     return (
         <View style={styles.container}>
             <TouchNavGroup sectionTitle="General" items={[
-                { title: "Add/manage items" },
-                { title: "Search" }
+                { title: "Add/Manage Items", icon: 'check' },
+                { title: "Search", icon: 'search'  }
             ]} handleItemClick={handleItemClick} />
             <TouchNavGroup sectionTitle="Price Management" items={[
-                { title: "Price tables" },
-                { title: "Price Logic" },
-                { title: "Seasons" },
-                { title: "Brands" }
+                { title: "Price Tables",  icon: 'table'  },
+                { title: "Seasons", icon: 'tree'  },
+                { title: "Brands",  icon: 'tags' }
             ]} handleItemClick={handleItemClick} />
             <TouchNavGroup sectionTitle="Bulk Update" items={[
-                { title: "Bulk Update" }
+                { title: "Bulk Update", icon: 'wrench' }
             ]} handleItemClick={handleItemClick} />
             <TouchNavGroup sectionTitle="Print" items={[
-                { title: "Print snapshot" }
+                { title: "Print Snapshot", icon: 'print'  }
             ]} handleItemClick={handleItemClick} />
         </View>
     );
