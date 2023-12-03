@@ -94,3 +94,17 @@ export const deletePriceTable = (id, callback) => {
   const payload = { id };
   postAPICall('price/deletepricetable', payload, callback);
 }
+
+export const getPriceLogicData = (callback) => {
+  getAPICall('price/getpricelogicdata', callback);
+}
+
+export const createPriceLogic = (seasonId, brandId, tableId, callback) => {
+  const payload = {seasonId, brandId, tableId};
+  postAPICall('price/createpricelogic', payload, callback);
+}
+
+export const deletePriceLogic = (id, callback) => {
+  const payload = { id };
+  postAPICall('price/deletepricelogic', payload, callback);
+}
