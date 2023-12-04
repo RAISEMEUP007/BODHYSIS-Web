@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react';
-import { View, Text, Image, Platform } from 'react-native';
+import { View, Text, Image, Platform, useWindowDimensions } from 'react-native';
 import { createDrawerNavigator, DrawerItemList,  DrawerItem,} from '@react-navigation/drawer';
-import { useWindowDimensions } from 'react-native';
 
 import Dashboard from './Dashboard';
 import Inventory from './Inventory/Inventory';
 
 
+const MainDrawer = ({navigation}) => {
 
-
-const MainDrawer = () => {
   const dimensions = useWindowDimensions();
   const isLargeScreen = dimensions.width >= 1080;
 
@@ -68,6 +66,20 @@ const MainDrawer = () => {
       screenOptions={{
         drawerType: (Platform.OS == 'web' && isLargeScreen) ? 'permanent' : 'front',
       }}
+      options={{ 
+        drawerLabel: 'Dashboard',
+        drawerIcon: ({ focused, color, size }) => (
+          <Icon 
+            name={focused ? 'menu-open' : 'menu-close'} 
+            size={size} 
+            color={color} 
+            onPress={() => {
+              // Handle click event here
+              console.log('Drawer icon clicked');
+            }} 
+          />
+        )
+      }}
     >
       <Drawer.Screen
         name="Dashboard"
@@ -89,9 +101,9 @@ const MainDrawer = () => {
   );
 }
 
-const Home = () => {
+const Home = ({navigation}) => {
   return (
-      <MainDrawer />
+      <MainDrawer navigation={navigation}/>
   );
 };
 
