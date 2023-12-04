@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, Image } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import {getProductCategoriesData, saveProductCategoryCell, deleteProductCategory } from '../../../../api/Product';
@@ -10,6 +10,8 @@ import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
 
 import { productCategoriesStyle } from './styles/ProductCategoriesStyle';
 import AddProductCategoryModal from './AddProductCategoryModal';
+import UpdateProductCategoryModal from './UpdateProductCategoryModal';
+import { API_URL, BASE_URL } from '../../../../common/constants/AppConstants';
 
 const ProductCategories = () => {
   const { showAlert } = useAlertModal();
@@ -17,10 +19,18 @@ const ProductCategories = () => {
 
   const [tableData, setTableData] = useState([]);
   const [isAddModalVisible, setAddModalVisible] = useState(false);
+  const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const [updateProductCategoryTrigger, setUpdateProductCategoryTrigger] = useState(true);
   const openAddProductCategoryModal = () => { setAddModalVisible(true); };
   const closeAddProductCategoryModal = () => { setAddModalVisible(false); }
-  const [updateProductCategoryTrigger, setUpdateProductCategoryTrigger] = useState(true);
-  
+  const closeUpdateProductCategoryModal = () => { setUpdateModalVisible(false); }
+  const editProductCategory = (item) => {
+    setSelectedItem(item);
+    setUpdateModalVisible(true);
+  }
+
   useEffect(()=>{
     if(updateProductCategoryTrigger == true) getTable();
   }, [updateProductCategoryTrigger]);
@@ -107,31 +117,24 @@ const ProductCategories = () => {
         rows.push( 
           <View key={index} style={styles.tableRow}>
             <View style={styles.cell}>
-              <TextInput style={styles.cellInput}
-                value={item.category}
-                onChangeText={(value) => {
-                  changeCellData(index, 'category', value);
-                }}
-                onBlur={(e) => {
-                  saveCellData(item.id, 'category', item.category);
-                }}
-              />
-              <View style={styles.deleteRow}>
-                <TouchableOpacity onPress={()=>{removeProductCategory(item.id)}}>
-                  <FontAwesome5 style={styles.deleteRow} size={TextMediumSize} name="times" color="black" />
-                </TouchableOpacity>
-              </View>
+              <Text style={styles.cellInput}>{item.category}</Text>
             </View>
-            <View style={[styles.cell, {width:400}]}>
-              <TextInput style={[styles.cellInput, {width:"100%"}]}
-                value={item.description?item.description:""}
-                onChangeText={(value) => {
-                  changeCellData(index, 'description', value);
-                }}
-                onBlur={(e) => {
-                  saveCellData(item.id, 'description', item.description);
-                }}
-              />
+            <View style={[styles.IconCell]}>
+              {item.img_url ? (
+                <Image source={{ uri: API_URL+item.img_url }} style={styles.cellImage}/>
+              ) : (
+                <Text >no image</Text>
+              )}
+            </View>
+            <View style={[styles.IconCell]}>
+              <TouchableOpacity onPress={()=>{editProductCategory({id:item.id, category:item.category, img_url:item.img_url})}}>
+                <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.IconCell]}>
+              <TouchableOpacity onPress={()=>{removeProductCategory(item.id)}}>
+                <FontAwesome5 size={TextMediumSize} name="times" color="black" />
+              </TouchableOpacity>
             </View>
           </View>
         );
@@ -150,10 +153,10 @@ const ProductCategories = () => {
         </TouchableHighlight>
       </View>
       <View style={styles.tableContainer}>
-        <View style={styles.tableHeader}>
+        {/* <View style={styles.tableHeader}>
           <Text style={styles.columnHeader}>{"Category"}</Text>
-          <Text style={[styles.columnHeader, {width: 400}]}>{"Description"}</Text>
-        </View>
+          <Text style={[styles.IconCell]}>{""}</Text>
+        </View> */}
         <ScrollView>
             {renderTableData()}
         </ScrollView>
@@ -164,6 +167,13 @@ const ProductCategories = () => {
         setUpdateProductCategoryTrigger = {setUpdateProductCategoryTrigger} 
         closeModal={closeAddProductCategoryModal}
       />
+
+      {selectedItem && (<UpdateProductCategoryModal
+        isModalVisible={isUpdateModalVisible}
+        item = {selectedItem}
+        setUpdateProductCategoryTrigger = {setUpdateProductCategoryTrigger} 
+        closeModal={closeUpdateProductCategoryModal}
+      />)}
     </View>
   );
 };

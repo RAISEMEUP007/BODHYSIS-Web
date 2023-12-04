@@ -13,7 +13,10 @@ export const productCategoriesStyle = StyleSheet.create({
   tableContainer: {
     borderRadius: 4,
     marginBottom: 16,
+    marginTop: 10,
     overflow: 'hidden',
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
   },
   
   toolbar: {
@@ -92,6 +95,7 @@ export const productCategoriesStyle = StyleSheet.create({
     padding: 2,
     width: 200,
     alignItems: 'flex-start',
+    justifyContent: 'center',
     borderLeftWidth: 1,
     borderLeftColor: '#ccc',
   },
@@ -132,10 +136,15 @@ export const productCategoriesStyle = StyleSheet.create({
     right: TextMediumSize * 1.5,
     top: -20,
   },
-  radioButtonCell: {
-    width: 100,
+  IconCell: {
+    width: 60,
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
   },
+  cellImage: { 
+    width: 50, 
+    height: 50, 
+    resizeMode: 'cover'
+  }
 });

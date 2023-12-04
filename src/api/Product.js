@@ -8,6 +8,10 @@ export const createProductCategory = (payload, callback) => {
   basePostAPICall('product/createproductcategory', {}, payload, callback);
 };
 
+export const updateProductCategory = (payload, callback) => {
+  basePostAPICall('product/updateproductcategory', {}, payload, callback);
+};
+
 export const saveProductCategoryCell = (id, column, value, callback) => {
   const payload = {id, column, value};
   postAPICall('product/saveproductcategory', payload, callback);
