@@ -96,11 +96,14 @@ export const productCategoriesStyle = StyleSheet.create({
     width: 200,
     alignItems: 'flex-start',
     justifyContent: 'center',
-    borderLeftWidth: 1,
-    borderLeftColor: '#ccc',
   },
   cellInput: {
     width: 150,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  categoryCell: {
+    width: 220,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
@@ -146,5 +149,21 @@ export const productCategoriesStyle = StyleSheet.create({
     width: 50, 
     height: 50, 
     resizeMode: 'cover'
-  }
+  },
+  familyRow: {
+    marginLeft: 20,
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    borderLeftWidth: 1,
+    borderLeftColor: '#06685ea3',
+    borderRightWidth: 1,
+    borderRightColor: '#06685ea3',
+  },
+  familyIconCell: {
+    width: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+  },
 });

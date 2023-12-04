@@ -5,7 +5,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import {getProductCategoriesData, saveProductCategoryCell, deleteProductCategory } from '../../../../api/Product';
 import { msgStr } from '../../../../common/constants/Message';
 import { API_URL } from '../../../../common/constants/AppConstants';
-import { TextMediumSize } from '../../../../common/constants/Fonts';
+import { TextMediumSize, TextSmallSize } from '../../../../common/constants/Fonts';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
 
@@ -116,38 +116,92 @@ const ProductCategories = () => {
     })
   }
 
-  const renderTableData = () => {
+  const renderFamilyData = (familyData) => {
+    console.log(familyData);
     const rows = [];
-    if(tableData.length > 0){
-      tableData.map((item, index) => {
+    if(familyData.length > 0){
+      familyData.map((item, index) => {
         rows.push( 
-          <View key={index} style={styles.tableRow}>
-            <View style={styles.cell}>
-              <Text style={styles.cellInput}>{item.category}</Text>
+          <View key={index} style={styles.familyRow}>
+            <View style={[styles.familyIconCell, {width:40}]}>
+              <TouchableOpacity onPress={()=>{}}>
+                <FontAwesome5 size={TextSmallSize} name="chevron-right" color="black" />
+              </TouchableOpacity>
             </View>
-            <View style={[styles.IconCell]}>
+            <View style={styles.cell}>
+              <Text style={styles.cellInput}>{item.family}</Text>
+            </View>
+            <View style={[styles.familyIconCell]}>
               {item.img_url ? (
                 <Image source={{ uri: API_URL+item.img_url }} style={styles.cellImage}/>
               ) : (
                 <Text >no image</Text>
               )}
             </View>
-            <View style={[styles.IconCell]}>
+            <View style={[styles.familyIconCell]}>
               <TouchableOpacity onPress={()=>{openAddProductFamilyModal({id:item.id, category:item.category, img_url:item.img_url})}}>
                 <FontAwesome5 size={TextMediumSize} name="plus-square" color="black" />
               </TouchableOpacity>
             </View>
-            <View style={[styles.IconCell]}>
+            <View style={[styles.familyIconCell]}>
               <TouchableOpacity onPress={()=>{editProductCategory({id:item.id, category:item.category, img_url:item.img_url})}}>
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
             </View>
-            <View style={[styles.IconCell]}>
+            <View style={[styles.familyIconCell]}>
               <TouchableOpacity onPress={()=>{removeProductCategory(item.id)}}>
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />
               </TouchableOpacity>
             </View>
           </View>
+        );
+      });
+    }else{
+      <></>
+    }
+    return <>{rows}</>;
+  };
+
+  const renderTableData = () => {
+    const rows = [];
+    if(tableData.length > 0){
+      tableData.map((item, index) => {
+        rows.push( 
+          <>
+            <View key={index} style={styles.tableRow}>
+              <View style={[styles.familyIconCell, {width:40}]}>
+                <TouchableOpacity onPress={()=>{}}>
+                  <FontAwesome5 size={TextSmallSize} name="chevron-down" color="black" />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.categoryCell}>
+                <Text style={styles.categoryCell}>{item.category}</Text>
+              </View>
+              <View style={[styles.IconCell]}>
+                {item.img_url ? (
+                  <Image source={{ uri: API_URL+item.img_url }} style={styles.cellImage}/>
+                ) : (
+                  <Text >no image</Text>
+                )}
+              </View>
+              <View style={[styles.IconCell]}>
+                <TouchableOpacity onPress={()=>{openAddProductFamilyModal({id:item.id, category:item.category, img_url:item.img_url})}}>
+                  <FontAwesome5 size={TextMediumSize} name="plus-square" color="black" />
+                </TouchableOpacity>
+              </View>
+              <View style={[styles.IconCell]}>
+                <TouchableOpacity onPress={()=>{editProductCategory({id:item.id, category:item.category, img_url:item.img_url})}}>
+                  <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
+                </TouchableOpacity>
+              </View>
+              <View style={[styles.IconCell]}>
+                <TouchableOpacity onPress={()=>{removeProductCategory(item.id)}}>
+                  <FontAwesome5 size={TextMediumSize} name="times" color="black" />
+                </TouchableOpacity>
+              </View>
+            </View>
+            {item.product_families.length > 0 && renderFamilyData(item.product_families)}
+          </>
         );
       });
     }else{
