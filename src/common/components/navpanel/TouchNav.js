@@ -6,7 +6,7 @@ import { TextMediumSize, TextMediumLargeSize } from '../../constants/Fonts';
 const TouchNav = ({ title, icon, handlePress }) => {
   return (
     <TouchableOpacity style={styles.item} onPress={handlePress}>
-      <FontAwesome5 name={icon} size={TextMediumLargeSize} color="black" style={{ flex: 1, marginBottom: 10 }} />
+      <FontAwesome5 name={icon} size={TextMediumLargeSize} color="black" style={{ marginRight: 10 }} />
       <Text>{title}</Text>
     </TouchableOpacity>
   );
@@ -14,12 +14,14 @@ const TouchNav = ({ title, icon, handlePress }) => {
 
 const styles = StyleSheet.create({
     item: {
-        flexBasis: "40%",
-        padding: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        flexBasis: "41%",
+        padding: TextMediumSize,
         backgroundColor: 'white',
         border: '1px solid #cacaca',
         marginTop: "2.5%",
-        marginHorizontal: "5%",
+        marginHorizontal: "4%",
         marginBottom: 5,
     },
 });

@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        width: '80%',
+        width: '90%',
         maxWidth: 1000,
         margin: 'auto',
         marginTop: 80,

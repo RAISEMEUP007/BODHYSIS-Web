@@ -20,18 +20,18 @@ const TouchNavGroup = ({ sectionTitle, items, handleItemClick }) => {
 };
 
 const styles = StyleSheet.create({
-    section: {
-        marginBottom: 40
-    },
-    label: {
-        fontSize: TextMediumLargeSize,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    containerRow: {
-        flexWrap: 'wrap',
-        flexDirection: 'row',
-    },
+  section: {
+    marginBottom: 40,
+  },
+  label: {
+    fontSize: TextMediumLargeSize,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  containerRow: {
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+  },
 });
 
 export default TouchNavGroup;
