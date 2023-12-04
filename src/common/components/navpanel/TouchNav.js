@@ -6,7 +6,7 @@ import { TextMediumSize, TextMediumLargeSize } from '../../constants/Fonts';
 const TouchNav = ({ title, icon, handlePress }) => {
   return (
     <TouchableOpacity style={styles.item} onPress={handlePress}>
-      <FontAwesome5 name={icon} size={TextMediumLargeSize} color="black" style={{display: 'inline-block', marginBottom: 10}} />
+      <FontAwesome5 name={icon} size={TextMediumLargeSize} color="black" style={{ flex: 1, marginBottom: 10 }} />
       <Text>{title}</Text>
     </TouchableOpacity>
   );

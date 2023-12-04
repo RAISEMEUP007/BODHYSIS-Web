@@ -45,6 +45,7 @@ const Inventory = ({initalItem = null}) => {
             ]} handleItemClick={handleItemClick} />
             <TouchNavGroup sectionTitle="Price Management" items={[
                 { title: "Price Tables",  icon: 'table'  },
+                { title: "Price Logic",  icon: 'table'  },
                 { title: "Seasons", icon: 'tree'  },
                 { title: "Brands",  icon: 'tags' }
             ]} handleItemClick={handleItemClick} />
