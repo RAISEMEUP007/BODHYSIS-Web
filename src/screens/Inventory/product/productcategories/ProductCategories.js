@@ -4,6 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 import {getProductCategoriesData, saveProductCategoryCell, deleteProductCategory } from '../../../../api/Product';
 import { msgStr } from '../../../../common/constants/Message';
+import { API_URL } from '../../../../common/constants/AppConstants';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
@@ -11,25 +12,30 @@ import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
 import { productCategoriesStyle } from './styles/ProductCategoriesStyle';
 import AddProductCategoryModal from './AddProductCategoryModal';
 import UpdateProductCategoryModal from './UpdateProductCategoryModal';
-import { API_URL, BASE_URL } from '../../../../common/constants/AppConstants';
+import AddProductFamilyModal from './AddProductFamilyModal';
 
 const ProductCategories = () => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
   const [tableData, setTableData] = useState([]);
+  const [updateProductCategoryTrigger, setUpdateProductCategoryTrigger] = useState(true);
+
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const [updateProductCategoryTrigger, setUpdateProductCategoryTrigger] = useState(true);
+  const [isAddFamilyModalVisible, setAddFamilyModalVisible] = useState(false);
+  const [isUpdateFamilyModalVisible, setUpdateFamilyModalVisible] = useState(false);
+  const [selectedFamily, setSelectedFamily] = useState(null);
+
   const openAddProductCategoryModal = () => { setAddModalVisible(true); };
   const closeAddProductCategoryModal = () => { setAddModalVisible(false); }
+  const editProductCategory = (item) => { setSelectedCategory(item); setUpdateModalVisible(true); }
   const closeUpdateProductCategoryModal = () => { setUpdateModalVisible(false); }
-  const editProductCategory = (item) => {
-    setSelectedItem(item);
-    setUpdateModalVisible(true);
-  }
+  
+  const openAddProductFamilyModal = (item) => { setSelectedCategory(item); setAddFamilyModalVisible(true); };
+  const closeAddProductFamilyModal = () => { setAddFamilyModalVisible(false); }
 
   useEffect(()=>{
     if(updateProductCategoryTrigger == true) getTable();
@@ -127,6 +133,11 @@ const ProductCategories = () => {
               )}
             </View>
             <View style={[styles.IconCell]}>
+              <TouchableOpacity onPress={()=>{openAddProductFamilyModal({id:item.id, category:item.category, img_url:item.img_url})}}>
+                <FontAwesome5 size={TextMediumSize} name="plus-square" color="black" />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.IconCell]}>
               <TouchableOpacity onPress={()=>{editProductCategory({id:item.id, category:item.category, img_url:item.img_url})}}>
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
@@ -168,11 +179,18 @@ const ProductCategories = () => {
         closeModal={closeAddProductCategoryModal}
       />
 
-      {selectedItem && (<UpdateProductCategoryModal
+      {selectedCategory && (<UpdateProductCategoryModal
         isModalVisible={isUpdateModalVisible}
-        item = {selectedItem}
+        item = {selectedCategory}
         setUpdateProductCategoryTrigger = {setUpdateProductCategoryTrigger} 
         closeModal={closeUpdateProductCategoryModal}
+      />)}
+
+      {selectedCategory && (<AddProductFamilyModal
+        isModalVisible={isAddFamilyModalVisible}
+        categoryId={selectedCategory.id}
+        setUpdateProductFamilyTrigger = {setUpdateProductCategoryTrigger} 
+        closeModal={closeAddProductFamilyModal}
       />)}
     </View>
   );

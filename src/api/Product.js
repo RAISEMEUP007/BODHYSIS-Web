@@ -21,3 +21,7 @@ export const deleteProductCategory = (id, callback) => {
   const payload = { id };
   postAPICall('product/deleteproductcategory', payload, callback);
 }
+
+export const createProductFamily = (payload, callback) => {
+  basePostAPICall('product/createproductfamily', {}, payload, callback);
+};
