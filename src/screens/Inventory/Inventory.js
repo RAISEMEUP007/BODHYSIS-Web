@@ -7,6 +7,7 @@ import PriceTables from './pricetables/PriceTables';
 import PriceLogic from './pricelogic/PriceLogic';
 import Seasons from './seasons/Seasons';
 import Brands from './brands/Brands';
+import ProductCategories from './product/productcategories/ProductCategories';
 
 const Inventory = ({initalItem = null}) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);
@@ -17,6 +18,8 @@ const Inventory = ({initalItem = null}) => {
     
     if(selectedItem) {
         switch (selectedItem) {
+            case 'Add/Manage Items':
+                return <ProductCategories/>;
             case 'Price Tables':
                 return <PriceTables/>;
             case 'Price Logic':
