@@ -8,7 +8,7 @@ export const productCategoryModalstyles = StyleSheet.create({
     borderWidth: 1,
     marginVertical: 10,
     padding: 8,
-    width: 320,
+    width: 300,
   },
   select: {
     height: 40,
@@ -41,5 +41,41 @@ export const productCategoryModalstyles = StyleSheet.create({
     height: '100%',
     top: 0,
     left: 0,
+  },
+  imagePicker: {
+    position: 'relative',
+    width: 300,
+    height: 300,
+    backgroundColor: '#eee',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageUpload: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#eee',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  preView: {
+    width: '100%',
+    height: '100%',
+    opacity: 0,
+  },
+  fileInput: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    Top: 0,
+    opacity: 0,
+  },
+  previewImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  boxText: {
+    fontWeight: 'bold',
   },
 });

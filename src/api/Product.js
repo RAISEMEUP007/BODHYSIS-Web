@@ -1,8 +1,12 @@
-import { getAPICall, postAPICall } from './BaseAPI';
+import { getAPICall, postAPICall, basePostAPICall } from './BaseAPI';
 
 export const getProductCategoriesData = (callback) => {
   getAPICall('product/getproductcategoriesdata', callback);
 }
+
+export const createProductCategory = (payload, callback) => {
+  basePostAPICall('product/createproductcategory', {}, payload, callback);
+};
 
 export const saveProductCategoryCell = (id, column, value, callback) => {
   const payload = {id, column, value};

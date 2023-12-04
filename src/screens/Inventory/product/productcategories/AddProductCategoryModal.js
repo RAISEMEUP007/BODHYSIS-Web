@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform } from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform, Image } from 'react-native';
 
-import { saveProductCategoryCell } from '../../../../api/Product';
+import { createProductCategory } from '../../../../api/Product';
 import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../../common/components/basicmodal/ModalBody';
@@ -16,8 +16,12 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
 
   const [_productCategory, setProductCategory] = useState('');
+
+  const inputRef = useRef(null); 
 
   useEffect(() => {
     if(Platform.web){
@@ -35,6 +39,14 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
     }
   }, [closeModal]);
 
+  const handleImageSelection = (event) => {
+    const file = Platform.OS == 'web' ? event.target.files[0] : event.nativeEvent.target.files[0];
+
+    const imagePreviewUrl = URL.createObjectURL(file);
+    setSelectedImage(file);
+    setImagePreviewUrl(imagePreviewUrl); 
+  };
+
   const handleAddButtonClick = () => {
     if (!_productCategory.trim()) {
       setValidMessage(msgStr('emptyField'));
@@ -43,9 +55,14 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
 
     setIsLoading(true);
 
-    saveProductCategoryCell(-1, 'category', _productCategory, (jsonRes, status, error)=>{
+    const formData = new FormData();
+    formData.append('category', _productCategory);
+    formData.append('img', selectedImage);
+    formData.append('description', 'dd');
+
+    createProductCategory(formData, (jsonRes, status, error)=>{
       switch(status){
-        case 200:
+        case 201:
           showAlert('success', jsonRes.message);
           setUpdateProductCategoryTrigger(true);
           closeModal();
@@ -76,7 +93,13 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
       animationType="none"
       transparent={true}
       visible={isModalVisible}
-      onShow={()=>{setValidMessage(''); setProductCategory('')}}
+      onShow={()=>{
+        setValidMessage(''); 
+        setProductCategory(''); 
+        inputRef.current = null;
+        setImagePreviewUrl(null);
+        setSelectedImage(null);
+      }}
     >
       <BasicModalContainer>
         <ModalHeader label={"Product Category"} closeModal={closeModal} />
@@ -91,6 +114,23 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
             onBlur={checkInput}
           />
           {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
+          <View style={styles.imagePicker}>
+            <TouchableOpacity style={styles.imageUpload} onPress={() => inputRef.current.click()}>
+              {imagePreviewUrl ? (
+                <Image source={{ uri: imagePreviewUrl }} style={styles.previewImage} />
+              ) : (
+                <View style={styles.imageBox}>
+                  <Text style={styles.boxText}>Click to choose an image</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+            <input
+              type="file" 
+              ref={inputRef} 
+              style={styles.fileInput} 
+              onChange={handleImageSelection} 
+            />
+          </View>
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={handleAddButtonClick}>

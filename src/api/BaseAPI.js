@@ -26,11 +26,11 @@ export const getAPICall = (route, callback) => {
   baseGetAPICall(route, {'Content-Type': 'application/json'}, callback);
 };
 
-export const basePostAPICall = (route, headers, payload, callback) => {
+export const basePostAPICall = (route, headers, body, callback) => {
   fetch(`${API_URL}/${route}`, {
     method: 'POST',
     headers: headers,
-    body: JSON.stringify(payload),
+    body: body,
   })
   .then(async res => {
     try {
@@ -50,5 +50,5 @@ export const basePostAPICall = (route, headers, payload, callback) => {
 };
 
 export const postAPICall = (route, payload, callback) => {
-  basePostAPICall(route, {'Content-Type': 'application/json'}, payload, callback);
+  basePostAPICall(route, {'Content-Type': 'application/json'}, JSON.stringify(payload), callback);
 };
