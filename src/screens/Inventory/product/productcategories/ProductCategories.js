@@ -2,7 +2,7 @@ import React, { useEffect, useState} from 'react';
 import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, Image } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import {getProductCategoriesData, saveProductCategoryCell, deleteProductCategory } from '../../../../api/Product';
+import {getProductCategoriesData, saveProductCategoryCell, deleteProductCategory, deleteProductFamily } from '../../../../api/Product';
 import { msgStr } from '../../../../common/constants/Message';
 import { API_URL } from '../../../../common/constants/AppConstants';
 import { TextMediumSize, TextSmallSize } from '../../../../common/constants/Fonts';
@@ -13,6 +13,7 @@ import { productCategoriesStyle } from './styles/ProductCategoriesStyle';
 import AddProductCategoryModal from './AddProductCategoryModal';
 import UpdateProductCategoryModal from './UpdateProductCategoryModal';
 import AddProductFamilyModal from './AddProductFamilyModal';
+import UpdateProductFamilyModal from './UpdateProductFamilyModal';
 
 const ProductCategories = () => {
   const { showAlert } = useAlertModal();
@@ -36,6 +37,8 @@ const ProductCategories = () => {
   
   const openAddProductFamilyModal = (item) => { setSelectedCategory(item); setAddFamilyModalVisible(true); };
   const closeAddProductFamilyModal = () => { setAddFamilyModalVisible(false); }
+  const editProductFamily = (item) => { setSelectedFamily(item); setUpdateFamilyModalVisible(true); }
+  const closeUpdateProductFamilyModal = () => { setUpdateFamilyModalVisible(false); }
 
   useEffect(()=>{
     if(updateProductCategoryTrigger == true) getTable();
@@ -86,6 +89,23 @@ const ProductCategories = () => {
     });
   }
 
+  const removeProductFamily = (id) => {
+    showConfirm(msgStr('deleteConfirmStr'), ()=>{
+      deleteProductFamily(id, (jsonRes, status, error)=>{
+        switch(status){
+          case 200:
+            setUpdateProductCategoryTrigger(true);
+            showAlert('success', jsonRes.message);
+            break;
+          default:
+            if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+            else showAlert('error', msgStr('unknownError'));
+            break;
+        }
+      })
+    });
+  }
+
   const getTable = () => {
     getProductCategoriesData((jsonRes, status, error) => {
       switch(status){
@@ -117,7 +137,6 @@ const ProductCategories = () => {
   }
 
   const renderFamilyData = (familyData) => {
-    console.log(familyData);
     const rows = [];
     if(familyData.length > 0){
       familyData.map((item, index) => {
@@ -144,12 +163,12 @@ const ProductCategories = () => {
               </TouchableOpacity>
             </View>
             <View style={[styles.familyIconCell]}>
-              <TouchableOpacity onPress={()=>{editProductCategory({id:item.id, category:item.category, img_url:item.img_url})}}>
+              <TouchableOpacity onPress={()=>{editProductFamily({id:item.id, family:item.family, category_id:item.category_id, img_url:item.img_url})}}>
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
             </View>
             <View style={[styles.familyIconCell]}>
-              <TouchableOpacity onPress={()=>{removeProductCategory(item.id)}}>
+              <TouchableOpacity onPress={()=>{removeProductFamily(item.id)}}>
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />
               </TouchableOpacity>
             </View>
@@ -245,6 +264,13 @@ const ProductCategories = () => {
         categoryId={selectedCategory.id}
         setUpdateProductFamilyTrigger = {setUpdateProductCategoryTrigger} 
         closeModal={closeAddProductFamilyModal}
+      />)}
+
+      {selectedFamily && (<UpdateProductFamilyModal
+        isModalVisible={isUpdateFamilyModalVisible}
+        item = {selectedFamily}
+        setUpdateProductFamilyTrigger = {setUpdateProductCategoryTrigger} 
+        closeModal={closeUpdateProductFamilyModal}
       />)}
     </View>
   );
