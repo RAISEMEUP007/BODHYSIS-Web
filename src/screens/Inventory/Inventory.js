@@ -8,6 +8,7 @@ import PriceLogic from './pricelogic/PriceLogic';
 import Seasons from './seasons/Seasons';
 import Brands from './brands/Brands';
 import ProductCategories from './product/productcategories/ProductCategories';
+import ProductFamilies from './product/productfamilies/ProductFamilies';
 
 const Inventory = ({initalItem = null}) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);

@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import { TextMediumSize, TextSmallSize } from '../../../../../common/constants/Fonts';
 import { TextdefaultSize } from '../../../../../common/constants/Fonts';
 
-export const productCategoriesStyle = StyleSheet.create({
+export const productFamiliesStyle = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
@@ -99,7 +99,7 @@ export const productCategoriesStyle = StyleSheet.create({
   },
   cellInput: {
     width: 150,
-    paddingHorizontal: 6,
+    paddingHorizontal: 12,
     paddingVertical: 6,
   },
   categoryCell: {

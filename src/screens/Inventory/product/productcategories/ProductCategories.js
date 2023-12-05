@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, Image } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Image } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import {getProductCategoriesData, saveProductCategoryCell, deleteProductCategory, deleteProductFamily } from '../../../../api/Product';
@@ -224,10 +224,12 @@ const ProductCategories = () => {
         </TouchableHighlight>
       </View>
       <View style={styles.tableContainer}>
-        {/* <View style={styles.tableHeader}>
-          <Text style={styles.columnHeader}>{"Category"}</Text>
-          <Text style={[styles.IconCell]}>{""}</Text>
-        </View> */}
+        <View style={styles.tableHeader}>
+          <Text style={[styles.columnHeader, styles.categoryCell]}>{"Category"}</Text>
+          <Text style={[styles.columnHeader, styles.imageCell]}>{"Image"}</Text>
+          <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
+          <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
+        </View>
         <ScrollView>
             {renderTableData()}
         </ScrollView>
