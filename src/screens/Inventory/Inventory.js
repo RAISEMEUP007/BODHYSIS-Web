@@ -45,6 +45,7 @@ const Inventory = ({initalItem = null}) => {
             ]} handleItemClick={handleItemClick} />
             <TouchNavGroup sectionTitle="Price Management" items={[
                 { title: "Price Tables",  icon: 'table'  },
+                { title: "Price Logic",  icon: 'table'  },
                 { title: "Seasons", icon: 'tree'  },
                 { title: "Brands",  icon: 'tags' }
             ]} handleItemClick={handleItemClick} />
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        width: '80%',
+        width: '90%',
         maxWidth: 1000,
         margin: 'auto',
         marginTop: 80,
