@@ -17,7 +17,15 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
 image: node:latest
+services:
+  - mysql:5.7
 
+variables:
+    DATABASE_HOST: "db_name"
+    DATABASE_PASSWORD: "dbpass"
+    DATABASE_USERNAME: "username"
+    DATABASEW_PASSWORD: "dbpass"
+    
 stages:          # List of stages for jobs, and their order of execution
   - build
   - test
