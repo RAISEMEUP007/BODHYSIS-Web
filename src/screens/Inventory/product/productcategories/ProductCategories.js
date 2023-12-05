@@ -186,41 +186,28 @@ const ProductCategories = () => {
     if(tableData.length > 0){
       tableData.map((item, index) => {
         rows.push( 
-          <>
-            <View key={index} style={styles.tableRow}>
-              <View style={[styles.familyIconCell, {width:40}]}>
-                <TouchableOpacity onPress={()=>{}}>
-                  <FontAwesome5 size={TextSmallSize} name="chevron-down" color="black" />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.categoryCell}>
-                <Text style={styles.categoryCell}>{item.category}</Text>
-              </View>
-              <View style={[styles.IconCell]}>
-                {item.img_url ? (
-                  <Image source={{ uri: API_URL+item.img_url }} style={styles.cellImage}/>
-                ) : (
-                  <Text >no image</Text>
-                )}
-              </View>
-              <View style={[styles.IconCell]}>
-                <TouchableOpacity onPress={()=>{openAddProductFamilyModal({id:item.id, category:item.category, img_url:item.img_url})}}>
-                  <FontAwesome5 size={TextMediumSize} name="plus-square" color="black" />
-                </TouchableOpacity>
-              </View>
-              <View style={[styles.IconCell]}>
-                <TouchableOpacity onPress={()=>{editProductCategory({id:item.id, category:item.category, img_url:item.img_url})}}>
-                  <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
-                </TouchableOpacity>
-              </View>
-              <View style={[styles.IconCell]}>
-                <TouchableOpacity onPress={()=>{removeProductCategory(item.id)}}>
-                  <FontAwesome5 size={TextMediumSize} name="times" color="black" />
-                </TouchableOpacity>
-              </View>
+          <View key={index} style={styles.tableRow}>
+            <View style={styles.categoryCell}>
+              <Text style={styles.categoryCell}>{item.category}</Text>
             </View>
-            {item.product_families.length > 0 && renderFamilyData(item.product_families)}
-          </>
+            <View style={[styles.imageCell]}>
+              {item.img_url ? (
+                <Image source={{ uri: API_URL+item.img_url }} style={styles.cellImage}/>
+              ) : (
+                <Text >no image</Text>
+              )}
+            </View>
+            <View style={[styles.IconCell]}>
+              <TouchableOpacity onPress={()=>{editProductCategory({id:item.id, category:item.category, img_url:item.img_url})}}>
+                <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.IconCell]}>
+              <TouchableOpacity onPress={()=>{removeProductCategory(item.id)}}>
+                <FontAwesome5 size={TextMediumSize} name="times" color="black" />
+              </TouchableOpacity>
+            </View>
+          </View>
         );
       });
     }else{

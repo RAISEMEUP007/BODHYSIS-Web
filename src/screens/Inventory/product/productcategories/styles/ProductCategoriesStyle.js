@@ -103,9 +103,10 @@ export const productCategoriesStyle = StyleSheet.create({
     paddingVertical: 6,
   },
   categoryCell: {
-    width: 220,
+    width: 400,
     paddingHorizontal: 12,
     paddingVertical: 6,
+    justifyContent: "center",
   },
   focusedCell: {
     borderWidth: 1,
@@ -145,8 +146,14 @@ export const productCategoriesStyle = StyleSheet.create({
     justifyContent: 'center',
     textAlign: 'center',
   },
+  imageCell: {
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+  },
   cellImage: { 
-    width: 50, 
+    width: "100%", 
     height: 50, 
     resizeMode: 'cover'
   },

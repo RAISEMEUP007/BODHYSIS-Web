@@ -18,8 +18,10 @@ const Inventory = ({initalItem = null}) => {
     
     if(selectedItem) {
         switch (selectedItem) {
-            case 'Add/Manage Items':
+            case 'Product Categories':
                 return <ProductCategories/>;
+            case 'Product Families':
+                return <ProductFamilies/>;
             case 'Price Tables':
                 return <PriceTables/>;
             case 'Price Logic':
@@ -43,7 +45,8 @@ const Inventory = ({initalItem = null}) => {
     return (
         <View style={styles.container}>
             <TouchNavGroup sectionTitle="General" items={[
-                { title: "Add/Manage Items", icon: 'check' },
+                { title: "Product Categories", icon: 'check' },
+                { title: "Product Families", icon: 'check'  },
                 { title: "Search", icon: 'search'  }
             ]} handleItemClick={handleItemClick} />
             <TouchNavGroup sectionTitle="Price Management" items={[
