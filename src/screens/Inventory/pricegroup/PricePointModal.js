@@ -12,7 +12,7 @@ import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { priceModalstyles } from './styles/PriceModalStyle';
 
-const PricePointModal = ({ isModalVisible, setUpdatePointTrigger, closeModal }) => {
+const PricePointModal = ({ isModalVisible, tableId, setUpdatePointTrigger, closeModal }) => {
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
@@ -45,7 +45,7 @@ const PricePointModal = ({ isModalVisible, setUpdatePointTrigger, closeModal }) 
     
     setIsLoading(true);
 
-    createPricePoint(duration, selectedOption, (jsonRes, status, error)=>{
+    createPricePoint(duration, selectedOption, tableId, (jsonRes, status, error)=>{
       switch(status){
         case 200:
           showAlert('success', jsonRes.message);

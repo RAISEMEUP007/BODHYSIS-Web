@@ -81,7 +81,7 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
   };
   
   const getHeader = () => {
-    getHeaderData((jsonRes, status, error)=>{
+    getHeaderData(tableId, (jsonRes, status, error)=>{
       switch(status){
         case 200:
           setHeaderData(jsonRes);
@@ -378,6 +378,7 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
 
       <CreateGroupModal
         isModalVisible={isGroupModalVisible}
+        tableId={tableId}
         groupName={""}
         setUpdateGroupTrigger = {setUpdateGroupTrigger} 
         closeModal={closeGroupModal}
@@ -385,6 +386,7 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
 
       <UpdateGroupModal
         isModalVisible={isUpdateGroupModalVisible}
+        tableId={tableId}
         groupName={groupName}
         setUpdateGroupTrigger = {setUpdateGroupTrigger} 
         closeModal={closeUpdateGroupModal}
@@ -392,6 +394,7 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
 
       <PricePointModal
         isModalVisible={isAddPriceModalVisible}
+        tableId={tableId}
         setUpdatePointTrigger = {setUpdatePointTrigger} 
         closeModal={closePriceModal}
       />

@@ -11,7 +11,7 @@ import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { priceModalstyles } from './styles/PriceModalStyle';
 
-const CreateGroupModal = ({ isModalVisible, groupName, setUpdateGroupTrigger, closeModal }) => {
+const CreateGroupModal = ({ isModalVisible, tableId, groupName, setUpdateGroupTrigger, closeModal }) => {
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
@@ -43,7 +43,7 @@ const CreateGroupModal = ({ isModalVisible, groupName, setUpdateGroupTrigger, cl
 
     setIsLoading(true);
 
-    createGroup(_groupName, (jsonRes, status, error)=>{
+    createGroup(_groupName, tableId, (jsonRes, status, error)=>{
       switch(status){
         case 200:
           showAlert('success', jsonRes.message);
