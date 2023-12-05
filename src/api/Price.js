@@ -1,7 +1,7 @@
 import { getAPICall, postAPICall } from './BaseAPI';
 
-export const getHeaderData = (callback) => {
-  getAPICall('price/getheaderdata', callback);
+export const getHeaderData = (tableId, callback) => {
+  getAPICall('price/getheaderdata/' + tableId, callback);
 }
 
 export const getTableData = (tableId, callback) => {
@@ -28,18 +28,19 @@ export const setExtraDay = (group, extraDay, callback) => {
   postAPICall('price/setextraday', payload, callback);
 }
 
-export const createGroup = (group, callback) => {
-  const payload = { group };
+export const createGroup = (group, tableId, callback) => {
+  const payload = { group, tableId };
+  console.log(payload);
   postAPICall('price/creategroup', payload, callback);
 }
 
-export const updateGroup = (oldName, newName, callback) => {
-  const payload = { oldName, newName };
+export const updateGroup = (oldName, newName, tableId, callback) => {
+  const payload = { oldName, newName, tableId };
   postAPICall('price/updategroup', payload, callback);
 }
 
-export const createPricePoint = (duration, durationType, callback) => {
-  const payload = { duration, durationType };
+export const createPricePoint = (duration, durationType, tableId, callback) => {
+  const payload = { duration, durationType, tableId };
   postAPICall('price/addpricepoint', payload, callback);
 }
 
