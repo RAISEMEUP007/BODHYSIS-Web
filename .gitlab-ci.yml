@@ -21,15 +21,23 @@ services:
   - mysql:5.7
 
 variables:
-    DATABASE_HOST: "db_name"
-    DATABASE_PASSWORD: "dbpass"
-    DATABASE_USERNAME: "username"
-    DATABASEW_PASSWORD: "dbpass"
+    DATABASE_HOST: "localhost"
+    DATABASE_PASSWORD: ""
+    DATABASE_USERNAME: "root"
+    DATABASE_NAME: "bohdisys"
     
 stages:          # List of stages for jobs, and their order of execution
+  - db-setup
   - build
   - test
   - deploy
+
+db-setup:
+  stage: db-setup
+  script:
+    - echo "DB SET UP:"
+    - mysql --user=root --host=localhost --execute "CREATE DATABASE "bohdisys"
+
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
