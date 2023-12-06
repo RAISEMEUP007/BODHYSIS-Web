@@ -34,6 +34,7 @@ build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
     - yarn
+    - export NODE_OPTIONS=--openssl-legacy-provider 
     - npx expo export:web
 
 unit-test-job:   # This job runs in the test stage.
