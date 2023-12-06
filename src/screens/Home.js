@@ -4,6 +4,7 @@ import { createDrawerNavigator, DrawerItemList,  DrawerItem,} from '@react-navig
 
 import Dashboard from './Dashboard';
 import Inventory from './Inventory/Inventory';
+import Settings from './settings/Settings';
 
 const MainDrawer = ({navigation}) => {
   const dimensions = useWindowDimensions();
@@ -16,14 +17,12 @@ const MainDrawer = ({navigation}) => {
   }
   
   const InventoryScreen = ({ navigation }) => {
-    return <Inventory navigation={navigation} />;
+    return <Inventory/>;
   }
   
   const SettingsScreen = ({ navigation }) => {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Settings</Text>
-      </View>
+      <Settings/>
     );
   }
   
@@ -59,7 +58,7 @@ const MainDrawer = ({navigation}) => {
   return (
     <Drawer.Navigator 
       useLegacyImplementation
-      initialRouteName="Inventory" 
+      initialRouteName="Settings" 
       drawerContent={(props) => <DrawerContent {...props} />}
       screenOptions={{
         drawerType: (Platform.OS == 'web' && isLargeScreen) ? 'permanent' : 'front',
