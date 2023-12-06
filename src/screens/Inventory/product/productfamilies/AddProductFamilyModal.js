@@ -68,7 +68,7 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
           break;
       }
     })
-  }, [])
+  }, [isModalVisible])
 
   useEffect(()=>{
     getPriceGroupsData((jsonRes, status, error) => {
@@ -88,7 +88,7 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
           break;
       }
     })
-  }, [])
+  }, [isModalVisible])
   
   const handleImageSelection = (event) => {
     const file = Platform.OS == 'web' ? event.target.files[0] : event.nativeEvent.target.files[0];
@@ -210,8 +210,8 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
                 selectCategory(categories[itemIndex]);
               }}>
             {categories.length>0 && (
-              categories.map((item, index) => {
-                return <Picker.Item key={index} label={item.category} value={item.id} />
+              categories.map((category, index) => {
+                return <Picker.Item key={index} label={category.category} value={category.id} />
               })
             )}
           </Picker>

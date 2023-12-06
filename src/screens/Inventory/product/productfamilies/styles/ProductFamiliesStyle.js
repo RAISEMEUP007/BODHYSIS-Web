@@ -83,7 +83,7 @@ export const productFamiliesStyle = StyleSheet.create({
     fontWeight: 'bold',
     backgroundColor: '#f5f5f5',
     alignItems: 'flex-start',
-    paddingHorizontal: 14,
+    paddingHorizontal: 10,
     paddingVertical: 8,
     width: 200,
     borderLeftWidth: 1,
@@ -95,6 +95,7 @@ export const productFamiliesStyle = StyleSheet.create({
     width: 200,
     alignItems: 'flex-start',
     justifyContent: 'center',
+    paddingLeft: 6,
   },
   cellInput: {
     width: 150,

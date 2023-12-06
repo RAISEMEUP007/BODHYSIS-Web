@@ -69,7 +69,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
           break;
       }
     })
-  }, [])
+  }, [isModalVisible])
 
   useEffect(()=>{
     console.log('bbb');
@@ -112,7 +112,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
           break;
       }
     })
-  }, [])
+  }, [isModalVisible])
 
   const AddLineButtonHandler = () => {
     if (!LineTxt.trim()) {
@@ -214,8 +214,8 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
                 selectCategory(categories[itemIndex]);
               }}>
             {categories.length>0 && (
-              categories.map((item, index) => {
-                return <Picker.Item key={index} label={item.category} value={item.id} />
+              categories.map((category, index) => {
+                return <Picker.Item key={index} label={category.category} value={category.id} />
               })
             )}
           </Picker>
@@ -229,8 +229,8 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
                 selectFamily(families[itemIndex]);
               }}>
             {families.length>0 && (
-              families.map((item, index) => {
-                return <Picker.Item key={index} label={item.family} value={item.id} />
+              families.map((family, index) => {
+                return <Picker.Item key={index} label={family.family} value={family.id} />
               })
             )}
           </Picker>
