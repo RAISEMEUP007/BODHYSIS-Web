@@ -15,7 +15,6 @@ export const productLinesStyle = StyleSheet.create({
     marginBottom: 16,
     marginTop: 10,
     overflow: 'hidden',
-    borderTopWidth: 1,
     borderTopColor: '#ddd',
   },
   

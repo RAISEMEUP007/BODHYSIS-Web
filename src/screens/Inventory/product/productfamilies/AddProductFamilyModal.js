@@ -3,6 +3,7 @@ import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Plat
 import {launchImageLibrary} from 'react-native-image-picker';
 
 import { createProductFamily, updateProductFamily, getProductCategoriesData } from '../../../../api/Product';
+import { getPriceGroupsData } from '../../../../api/Price';
 import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../../common/components/basicmodal/ModalBody';
@@ -20,13 +21,16 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
+  
+  const [categories, setCategories] = useState([]);
+  const [PriceGroups, setPriceGroups] = useState([]);
+  
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
-
-  const [categories, setCategories] = useState([]);
   const [familyTxt, setFamilyTxt] = useState('');
   const [summaryTxt, setSummaryTxt] = useState('');
   const [selectedCategory, selectCategory] = useState({});
+  const [selectedPriceGroup, selectPriceGroup] = useState({});
 
   const inputRef = useRef(null);
 
@@ -53,6 +57,26 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
           setCategories(jsonRes);
           if(jsonRes.length> 0){
             selectCategory(jsonRes[0])
+          }
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }, [])
+
+  useEffect(()=>{
+    getPriceGroupsData((jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          setPriceGroups(jsonRes);
+          if(jsonRes.length> 0){
+            selectPriceGroup(jsonRes[0])
           }
           break;
         case 500:
@@ -109,6 +133,7 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
     formData.append('category_id', selectedCategory.id);
     if(selectedImage) formData.append('img', selectedImage);
     formData.append('summary', summaryTxt);
+    formData.append('price_group_id', selectedPriceGroup.id);
 
     const handleResponse = (jsonRes, status) => {
       switch(status){
@@ -166,11 +191,17 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
         setImagePreviewUrl(family?API_URL + family.img_url:'');
         setSelectedImage(null);
         inputRef.current = null;
+
+        if(family && PriceGroups){
+          const initalGroup = PriceGroups.find(priceGroup => {return priceGroup.id == family.price_group_id});
+          if(initalGroup) selectPriceGroup(initalGroup);
+        }else selectPriceGroup('');
       }}
     >
       <BasicModalContainer>
         <ModalHeader label={"Product Family"} closeModal={closeModal} />
         <ModalBody>
+          <Text style={styles.label}>Category</Text>
           <Picker
             style={styles.select}
             selectedValue={selectedCategory.id}
@@ -185,6 +216,7 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
             )}
           </Picker>
 
+          <Text style={styles.label}>Family</Text>
           <TextInput style={styles.input} placeholder="Family" value={familyTxt} onChangeText={setFamilyTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>
           {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
 
@@ -216,6 +248,7 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
             </>
           )}
     
+          <Text style={styles.label}>Summary</Text>
           <TextInput
             style={[styles.input, styles.textarea]}
             placeholder="Summary"
@@ -226,13 +259,19 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
             onChangeText={setSummaryTxt}
           />
 
+          <Text style={styles.label}>Price Group</Text>
           <Picker
             style={styles.select}
-            selectedValue={0}
-            onValueChange={()=>{}}>
-            <Picker.Item label="group1" value="group1" />
-            <Picker.Item label="group2" value="group2" />
-            <Picker.Item label="group3" value="group3" />
+            selectedValue={selectedPriceGroup.id}
+            onValueChange={(itemValue, itemIndex) =>
+              {
+                selectPriceGroup(PriceGroups[itemIndex]);
+              }}>
+            {PriceGroups.length>0 && (
+              PriceGroups.map((item, index) => {
+                return <Picker.Item key={index} label={item.price_group} value={item.id} />
+              })
+            )}
           </Picker>
         </ModalBody>
         <ModalFooter>

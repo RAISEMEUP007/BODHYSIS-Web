@@ -15,7 +15,6 @@ export const productCategoriesStyle = StyleSheet.create({
     marginBottom: 16,
     marginTop: 10,
     overflow: 'hidden',
-    borderTopWidth: 1,
     borderTopColor: '#ddd',
   },
   
@@ -162,8 +161,6 @@ export const productCategoriesStyle = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-    borderLeftWidth: 1,
-    borderLeftColor: '#06685ea3',
     borderRightWidth: 1,
     borderRightColor: '#06685ea3',
   },

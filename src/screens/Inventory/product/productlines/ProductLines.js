@@ -4,7 +4,6 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 import {getProductLinesData, deleteProductLine } from '../../../../api/Product';
 import { msgStr } from '../../../../common/constants/Message';
-import { API_URL } from '../../../../common/constants/AppConstants';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
@@ -115,7 +114,7 @@ const ProductLines = () => {
           <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
         </View>
         <ScrollView>
-            {renderTableData()}
+          {renderTableData()}
         </ScrollView>
       </View>
 
