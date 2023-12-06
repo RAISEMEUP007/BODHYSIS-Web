@@ -17,7 +17,12 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
 image: node:latest
-
+variables:
+    DATABASE_HOST: "localhost"
+    DATABASE_PASSWORD: ""
+    DATABASE_USERNAME: "root"
+    DATABASE_NAME: "bohdisys"
+    
     
 stages:          # List of stages for jobs, and their order of execution
   - build
