@@ -7,6 +7,9 @@ import PriceTables from './pricetables/PriceTables';
 import PriceLogic from './pricelogic/PriceLogic';
 import Seasons from './seasons/Seasons';
 import Brands from './brands/Brands';
+import ProductCategories from './product/productcategories/ProductCategories';
+import ProductFamilies from './product/productfamilies/ProductFamilies';
+import ProductLines from './product/productlines/ProductLines';
 
 const Inventory = ({initalItem = null}) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);
@@ -17,6 +20,12 @@ const Inventory = ({initalItem = null}) => {
     
     if(selectedItem) {
         switch (selectedItem) {
+            case 'Product Categories':
+                return <ProductCategories/>;
+            case 'Product Families':
+                return <ProductFamilies/>;
+            case 'Product Lines':
+                return <ProductLines/>;
             case 'Price Tables':
                 return <PriceTables/>;
             case 'Price Logic':
@@ -40,7 +49,9 @@ const Inventory = ({initalItem = null}) => {
     return (
         <View style={styles.container}>
             <TouchNavGroup sectionTitle="General" items={[
-                { title: "Add/Manage Items", icon: 'check' },
+                { title: "Product Categories", icon: 'check' },
+                { title: "Product Families", icon: 'check'  },
+                { title: "Product Lines", icon: 'check'  },
                 { title: "Search", icon: 'search'  }
             ]} handleItemClick={handleItemClick} />
             <TouchNavGroup sectionTitle="Price Management" items={[

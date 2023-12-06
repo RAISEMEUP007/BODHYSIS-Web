@@ -5,9 +5,7 @@ import { createDrawerNavigator, DrawerItemList,  DrawerItem,} from '@react-navig
 import Dashboard from './Dashboard';
 import Inventory from './Inventory/Inventory';
 
-
 const MainDrawer = ({navigation}) => {
-
   const dimensions = useWindowDimensions();
   const isLargeScreen = dimensions.width >= 1080;
 

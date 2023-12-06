@@ -5,6 +5,7 @@ export const getHeaderData = (tableId, callback) => {
 }
 
 export const getTableData = (tableId, callback) => {
+  if(!categoryId) categoryId = 0;
   getAPICall('price/gettabledata/' + tableId, callback);
 }
 
@@ -26,6 +27,10 @@ export const setPriceData = (groupId, tableId, pointId, value, callback) => {
 export const setExtraDay = (group, extraDay, callback) => {
   const payload = { group, extraDay, };
   postAPICall('price/setextraday', payload, callback);
+}
+
+export const getPriceGroupsData = (callback) => {
+  getAPICall('price/getpricegroupsdata', callback);
 }
 
 export const createGroup = (group, tableId, callback) => {

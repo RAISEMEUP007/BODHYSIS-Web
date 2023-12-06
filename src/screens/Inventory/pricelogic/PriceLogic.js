@@ -1,9 +1,9 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, ActivityIndicator, TouchableOpacity } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import {createPriceLogic, getPriceLogicData, savePriceLogicCell, deletePriceLogic, getSeasonsData, getBrandsData, getPriceTablesData } from '../../../api/Price';
+import {createPriceLogic, getPriceLogicData, deletePriceLogic, getSeasonsData, getBrandsData, getPriceTablesData } from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
@@ -237,10 +237,10 @@ const PriceLogic = () => {
         rows.push( 
           <View key={index} style={styles.tableRow}>
             <View style={styles.cell}>
-              <Text style={styles.cellText}>{item.brand.brand}</Text>
+              <Text style={styles.cellText}>{item.brand?item.brand.brand:""}</Text>
             </View>
             <View style={styles.cell}>
-              <Text style={styles.cellText}>{item.season.season}</Text>
+              <Text style={styles.cellText}>{item.season?item.season.season:""}</Text>
             </View>
             <View style={styles.cell}>
               <Text style={styles.cellText}>{item.priceTable.table_name}</Text>
