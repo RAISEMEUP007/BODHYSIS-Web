@@ -22,8 +22,9 @@ export const deleteProductCategory = (id, callback) => {
   postAPICall('product/deleteproductcategory', payload, callback);
 }
 
-export const getProductFamiliesData = (callback) => {
-  getAPICall('product/getproductfamiliesdata', callback);
+export const getProductFamiliesData = (categoryId, callback) => {
+  if(!categoryId) categoryId = 0;
+  getAPICall('product/getproductfamiliesdata/'+categoryId, callback);
 }
 
 export const createProductFamily = (payload, callback) => {
@@ -37,4 +38,22 @@ export const updateProductFamily = (payload, callback) => {
 export const deleteProductFamily = (id, callback) => {
   const payload = { id };
   postAPICall('product/deleteproductfamily', payload, callback);
+}
+
+export const getProductLinesData = (callback) => {
+  getAPICall('product/getproductlinesdata', callback);
+}
+
+export const updateProductLine = (payload, callback) => {
+  console.log(payload);
+  postAPICall('product/updateproductline', payload, callback);
+};
+
+export const createProductLine = (payload, callback) => {
+  postAPICall('product/createproductline', payload, callback);
+};
+
+export const deleteProductLine = (id, callback) => {
+  const payload = { id };
+  postAPICall('product/deleteproductline', payload, callback);
 }

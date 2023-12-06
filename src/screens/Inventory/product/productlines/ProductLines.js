@@ -2,40 +2,40 @@ import React, { useEffect, useState} from 'react';
 import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, Image } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import {getProductFamiliesData, deleteProductFamily } from '../../../../api/Product';
+import {getProductLinesData, deleteProductLine } from '../../../../api/Product';
 import { msgStr } from '../../../../common/constants/Message';
 import { API_URL } from '../../../../common/constants/AppConstants';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
 
-import { productFamiliesStyle } from './styles/ProductFamiliesStyle';
-import AddProductFamilyModal from './AddProductFamilyModal';
+import { productLinesStyle } from './styles/ProductLinesStyle';
+import AddProductLineModal from './AddProductLineModal';
 
-const ProductFamilies = () => {
+const ProductLines = () => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
   const [tableData, setTableData] = useState([]);
-  const [updateProductFamilyTrigger, setUpdateProductFamilyTrigger] = useState(true);
+  const [updateProductLineTrigger, setUpdateProductLineTrigger] = useState(true);
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
-  const [selectedFamily, setSelectedFamily] = useState(null);
+  const [selectedLine, setSelectedLine] = useState(null);
 
-  const openAddProductFamilyModal = () => { setAddModalVisible(true); setSelectedFamily(null)}
-  const closeAddProductFamilyModal = () => { setAddModalVisible(false); setSelectedFamily(null)}
-  const editProductFamily = (item) => { setSelectedFamily(item); setAddModalVisible(true); }
+  const openAddProductLineModal = () => { setAddModalVisible(true); setSelectedLine(null)}
+  const closeAddProductLineModal = () => { setAddModalVisible(false); setSelectedLine(null)}
+  const editProductLine = (item) => { setSelectedLine(item); setAddModalVisible(true); }
 
   useEffect(()=>{
-    if(updateProductFamilyTrigger == true) getTable();
-  }, [updateProductFamilyTrigger]);
+    if(updateProductLineTrigger == true) getTable();
+  }, [updateProductLineTrigger]);
 
-  const removeProductFamily = (id) => {
+  const removeProductLine = (id) => {
     showConfirm(msgStr('deleteConfirmStr'), ()=>{
-      deleteProductFamily(id, (jsonRes, status, error)=>{
+      deleteProductLine(id, (jsonRes, status, error)=>{
         switch(status){
           case 200:
-            setUpdateProductFamilyTrigger(true);
+            setUpdateProductLineTrigger(true);
             showAlert('success', jsonRes.message);
             break;
           default:
@@ -48,10 +48,10 @@ const ProductFamilies = () => {
   }
 
   const getTable = () => {
-    getProductFamiliesData(null, (jsonRes, status, error) => {
+    getProductLinesData((jsonRes, status, error) => {
       switch(status){
         case 200:
-          setUpdateProductFamilyTrigger(false);
+          setUpdateProductLineTrigger(false);
           setTableData(jsonRes);
           break;
         case 500:
@@ -64,6 +64,7 @@ const ProductFamilies = () => {
       }
     })
   }
+
   const renderTableData = () => {
     const rows = [];
     if(tableData.length > 0){
@@ -71,25 +72,21 @@ const ProductFamilies = () => {
         rows.push( 
           <View key={index} style={styles.tableRow}>
             <View style={styles.categoryCell}>
-              <Text style={styles.categoryCell}>{item.family}</Text>
+              <Text style={styles.categoryCell}>{item.line}</Text>
             </View>
             <View style={styles.cell}>
-              <Text style={styles.cell}>{item.category.category}</Text>
+              <Text style={styles.cell}>{item.category? item.category.category: ''}</Text>
             </View>
-            <View style={[styles.imageCell]}>
-              {item.img_url ? (
-                <Image source={{ uri: API_URL+item.img_url }} style={styles.cellImage}/>
-              ) : (
-                <Text >no image</Text>
-              )}
+            <View style={styles.cell}>
+              <Text style={styles.cell}>{item.family? item.family.family: ''}</Text>
             </View>
             <View style={[styles.IconCell]}>
-              <TouchableOpacity onPress={()=>{editProductFamily(item)}}>
+              <TouchableOpacity onPress={()=>{editProductLine(item)}}>
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
             </View>
             <View style={[styles.IconCell]}>
-              <TouchableOpacity onPress={()=>{removeProductFamily(item.id)}}>
+              <TouchableOpacity onPress={()=>{removeProductLine(item.id)}}>
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />
               </TouchableOpacity>
             </View>
@@ -105,15 +102,15 @@ const ProductFamilies = () => {
   return (
     <View style={styles.container}>
       <View style={styles.toolbar}>
-        <TouchableHighlight style={styles.button} onPress={openAddProductFamilyModal}>
+        <TouchableHighlight style={styles.button} onPress={openAddProductLineModal}>
           <Text style={styles.buttonText}>Add</Text>
         </TouchableHighlight>
       </View>
       <View style={styles.tableContainer}>
         <View style={styles.tableHeader}>
-          <Text style={[styles.columnHeader, styles.categoryCell]}>{"Family"}</Text>
+          <Text style={[styles.columnHeader, styles.categoryCell]}>{"Line"}</Text>
           <Text style={[styles.columnHeader]}>{"Category"}</Text>
-          <Text style={[styles.columnHeader, styles.imageCell]}>{"Image"}</Text>
+          <Text style={[styles.columnHeader]}>{"Family"}</Text>
           <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
           <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
         </View>
@@ -122,16 +119,16 @@ const ProductFamilies = () => {
         </ScrollView>
       </View>
 
-      <AddProductFamilyModal
+      <AddProductLineModal
         isModalVisible={isAddModalVisible}
-        family={selectedFamily}
-        setUpdateProductFamilyTrigger = {setUpdateProductFamilyTrigger} 
-        closeModal={closeAddProductFamilyModal}
+        Line={selectedLine}
+        setUpdateProductLineTrigger = {setUpdateProductLineTrigger} 
+        closeModal={closeAddProductLineModal}
       />
     </View>
   );
 };
 
-const styles = productFamiliesStyle;
+const styles = productLinesStyle;
 
-export default ProductFamilies;
+export default ProductLines;
