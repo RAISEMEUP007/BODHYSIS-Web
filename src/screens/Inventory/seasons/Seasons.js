@@ -1,7 +1,6 @@
 import React, { useEffect, useState} from 'react';
 import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { RadioButton } from 'react-native-paper';
 
 import {getSeasonsData, saveSeasonCell, deleteSeason } from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';

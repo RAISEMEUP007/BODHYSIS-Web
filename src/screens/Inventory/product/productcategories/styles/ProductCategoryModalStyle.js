@@ -8,7 +8,7 @@ export const productCategoryModalstyles = StyleSheet.create({
     borderWidth: 1,
     marginVertical: 10,
     padding: 8,
-    width: 300,
+    width: 400,
   },
   select: {
     height: 40,
@@ -44,11 +44,12 @@ export const productCategoryModalstyles = StyleSheet.create({
   },
   imagePicker: {
     position: 'relative',
-    width: 300,
+    width: 400,
     height: 300,
     backgroundColor: '#eee',
     justifyContent: 'center',
     alignItems: 'center',
+    marginVertical: 6,
   },
   imageUpload: {
     position: 'relative',
@@ -73,7 +74,7 @@ export const productCategoryModalstyles = StyleSheet.create({
   previewImage: {
     width: '100%',
     height: '100%',
-    resizeMode: 'cover',
+    resizeMode: 'contain',
   },
   boxText: {
     fontWeight: 'bold',
