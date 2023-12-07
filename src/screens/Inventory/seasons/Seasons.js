@@ -7,11 +7,12 @@ import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
+import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { seasonsStyle } from './styles/SeasonsStyle';
 import AddSeasonModal from './AddSeasonModal';
 
-const Seasons = () => {
+const Seasons = ({navigation, openInventory}) => {
   const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
@@ -144,30 +145,38 @@ const Seasons = () => {
   };
 
   return (
-    <ScrollView horizontal={true}>
-      <View style={styles.container}>
-        <View style={styles.toolbar}>
-          <TouchableHighlight style={styles.button} onPress={openAddSeasonModal}>
-            <Text style={styles.buttonText}>Add</Text>
-          </TouchableHighlight>
-        </View>
-        <View style={styles.tableContainer}>
-          <View style={styles.tableHeader}>
-            <Text style={styles.columnHeader}>{"Season"}</Text>
-            <Text style={[styles.columnHeader, styles.radioButtonCell]}>{"Active"}</Text>
+    <BasicLayout
+      navigation = {navigation}
+      goBack={()=>{
+        openInventory(null)
+      }}
+      screenName={'Seasons'}
+    >
+      <ScrollView horizontal={true}>
+        <View style={styles.container}>
+          <View style={styles.toolbar}>
+            <TouchableHighlight style={styles.button} onPress={openAddSeasonModal}>
+              <Text style={styles.buttonText}>Add</Text>
+            </TouchableHighlight>
           </View>
-          <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
-            {renderTableData()}
-          </ScrollView>
-        </View>
+          <View style={styles.tableContainer}>
+            <View style={styles.tableHeader}>
+              <Text style={styles.columnHeader}>{"Season"}</Text>
+              <Text style={[styles.columnHeader, styles.radioButtonCell]}>{"Active"}</Text>
+            </View>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
+              {renderTableData()}
+            </ScrollView>
+          </View>
 
-        <AddSeasonModal
-          isModalVisible={isAddModalVisible}
-          setUpdateSeasonTrigger = {setUpdateSeasonTrigger} 
-          closeModal={closeAddSeasonModal}
-        />
-      </View>
-    </ScrollView>
+          <AddSeasonModal
+            isModalVisible={isAddModalVisible}
+            setUpdateSeasonTrigger = {setUpdateSeasonTrigger} 
+            closeModal={closeAddSeasonModal}
+          />
+        </View>
+      </ScrollView>
+    </BasicLayout>
   );
 };
 

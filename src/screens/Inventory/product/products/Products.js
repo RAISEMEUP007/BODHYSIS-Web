@@ -7,11 +7,12 @@ import { msgStr } from '../../../../common/constants/Message';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
+import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout';
 
 import { productsStyle } from './styles/ProductsStyle';
 import AddProductModal from './AddProductModal';
 
-const Products = () => {
+const Products = ({navigation, openInventory}) => {
   const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
@@ -104,35 +105,43 @@ const Products = () => {
   };
   
   return (
-    <ScrollView horizontal={true}>
-      <View style={styles.container}>
-        <View style={styles.toolbar}>
-          <TouchableHighlight style={styles.button} onPress={openAddProductModal}>
-            <Text style={styles.buttonText}>Add</Text>
-          </TouchableHighlight>
-        </View>
-        <View style={styles.tableContainer}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.columnHeader, {width:400}]}>{"Product"}</Text>
-            <Text style={[styles.columnHeader]}>{"Category"}</Text>
-            <Text style={[styles.columnHeader]}>{"Family"}</Text>
-            <Text style={[styles.columnHeader]}>{"Line"}</Text>
-            <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
-            <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
+    <BasicLayout
+      navigation = {navigation}
+      goBack={()=>{
+        openInventory(null)
+      }}
+      screenName={'Products'}
+    >
+      <ScrollView horizontal={true}>
+        <View style={styles.container}>
+          <View style={styles.toolbar}>
+            <TouchableHighlight style={styles.button} onPress={openAddProductModal}>
+              <Text style={styles.buttonText}>Add</Text>
+            </TouchableHighlight>
           </View>
-          <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
-            {renderTableData()}
-          </ScrollView>
-        </View>
+          <View style={styles.tableContainer}>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.columnHeader, {width:400}]}>{"Product"}</Text>
+              <Text style={[styles.columnHeader]}>{"Category"}</Text>
+              <Text style={[styles.columnHeader]}>{"Family"}</Text>
+              <Text style={[styles.columnHeader]}>{"Line"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
+            </View>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
+              {renderTableData()}
+            </ScrollView>
+          </View>
 
-        <AddProductModal
-          isModalVisible={isAddModalVisible}
-          Product={selectedProduct}
-          setUpdateProductsTrigger = {setUpdateProductsTrigger} 
-          closeModal={closeAddProductModal}
-        />
-      </View>
-    </ScrollView>
+          <AddProductModal
+            isModalVisible={isAddModalVisible}
+            Product={selectedProduct}
+            setUpdateProductsTrigger = {setUpdateProductsTrigger} 
+            closeModal={closeAddProductModal}
+          />
+        </View>
+      </ScrollView>
+    </BasicLayout>
   );
 };
 

@@ -30,7 +30,7 @@ const GlobalModals = () => {
 }
 
 export default function App() {
-  const [initialRoute, setInitalRoute] = useState('Home');
+  const [initialRoute, setInitalRoute] = useState('Auth');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

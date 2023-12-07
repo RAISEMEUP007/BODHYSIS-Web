@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Platform, useWindowDimensions } from 'react-native';
 import { createDrawerNavigator, DrawerItemList,  DrawerItem,} from '@react-navigation/drawer';
 
@@ -17,12 +17,12 @@ const MainDrawer = ({navigation}) => {
   }
   
   const InventoryScreen = ({ navigation }) => {
-    return <Inventory/>;
+    return <Inventory navigation={navigation}/>;
   }
   
   const SettingsScreen = ({ navigation }) => {
     return (
-      <Settings/>
+      <Settings navigation={navigation}/>
     );
   }
   
@@ -58,7 +58,7 @@ const MainDrawer = ({navigation}) => {
   return (
     <Drawer.Navigator 
       useLegacyImplementation
-      initialRouteName="Inventory" 
+      initialRouteName="Dashboard" 
       drawerContent={(props) => <DrawerContent {...props} />}
       screenOptions={{
         drawerType: (Platform.OS == 'web' && isLargeScreen) ? 'permanent' : 'front',
@@ -75,32 +75,55 @@ const MainDrawer = ({navigation}) => {
               console.log('Drawer icon clicked');
             }} 
           />
-        )
+        ),
+        headerShown: false,
       }}
     >
       <Drawer.Screen
         name="Dashboard"
         component={DashboardScreen}
-        options={{ drawerLabel: 'Dashboard' }}
+        options={{ 
+          drawerLabel: 'Dashboard',
+          unmountOnBlur: true,
+          headerShown: false,
+        }}
         onPress={()=>{console.log('ddd');}}
       />
       <Drawer.Screen
         name="Inventory"
         component={InventoryScreen}
-        options={{ drawerLabel: 'Inventory', unmountOnBlur: true }}
+        options={{ 
+          drawerLabel: 'Inventory', 
+          unmountOnBlur: true,
+          headerShown: false,
+        }}
       />
       <Drawer.Screen
         name="Settings"
         component={SettingsScreen}
-        options={{ drawerLabel: 'Settings' }}
+        options={{ 
+          drawerLabel: 'Settings',
+          unmountOnBlur: true,
+          headerShown: false,
+        }}
       />
     </Drawer.Navigator>
   );
 }
 
-const Home = ({navigation}) => {
+const Home = ({ navigation }) => {
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('state', () => {
+      setRefreshKey(prevKey => prevKey + 1);
+    });
+
+    return unsubscribe();
+  }, [navigation]); // Ensure that navigation is listed as a dependency
+
   return (
-      <MainDrawer navigation={navigation}/>
+    <MainDrawer key={refreshKey} navigation={navigation} />
   );
 };
 

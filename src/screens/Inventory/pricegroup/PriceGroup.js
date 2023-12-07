@@ -2,12 +2,12 @@ import React, { useEffect, useState} from 'react';
 import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import CheckBox from 'expo-checkbox';
 import { FontAwesome5 } from '@expo/vector-icons';
-import {Picker} from '@react-native-picker/picker';
 
 import {getHeaderData, getTableData, setFree, setPriceData, setExtraDay, deleteGroup, deletePricePoint, getSeasonsData, getBrandsData } from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
+import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { priceGroupStyles } from './styles/PriceGroupStyle';
 import CreateGroupModal from './CreateGroupModal';
@@ -22,8 +22,6 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
   const { showConfirm } = useConfirmModal();
 
   const [groupName, setGroupName] = useState('');
-  const [seasonId, setSeasonId] = useState(0);
-  const [brandId, setBrandId] = useState(0);
   const [isGroupModalVisible, setGroupModalVisible] = useState(false);
   const [isUpdateGroupModalVisible, setUpdateGroupModalVisible] = useState(false);
   const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
@@ -32,8 +30,6 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
   
   const [headerData, setHeaderData] = useState([]);
   const [tableData, setTableData] = useState({});
-  const [seasonData, setSeasonData] = useState([]);
-  const [brandData, setBrandData] = useState([]);
   
   useEffect(()=>{
     if(updatePointTrigger == true){
@@ -309,93 +305,58 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
     return <>{rows}</>;
   };
 
-  const renderSeasonPicker = () => {
-    return (
-      <Picker
-        selectedValue={seasonId}
-        style={styles.select}
-        onValueChange={(itemValue, itemIndex) =>
-        {
-          setSeasonId(itemValue); setUpdateGroupTrigger(true);
-        }
-      }>
-        <Picker.Item label="Default" value={0} />
-        {seasonData.map((item, index) => (
-          <Picker.Item key={index} label={item.season} value={item.id} />
-        ))}
-      </Picker>
-    );
-  }
-
-  const renderBrandPicker = () => {
-    return (
-      <Picker
-        selectedValue={brandId}
-        style={styles.select}
-        onValueChange={(itemValue, itemIndex) =>
-        {
-          setBrandId(itemValue); setUpdateGroupTrigger(true);
-        }
-      }>
-        <Picker.Item label="Default" value={0} />
-        {brandData.map((item, index) => (
-          <Picker.Item key={index} label={item.brand} value={item.id} />
-        ))}
-      </Picker>
-    );
-  }
-
   return (
-    <ScrollView horizontal={true}>
-      <View style={styles.container}>
-        <View style={styles.toolbar}>
-          <TouchableOpacity style={styles.backButton} onPress={()=>{openPriceTable(null)}}>
-            <FontAwesome5 name="arrow-left" size={15} color="#000" />
-          </TouchableOpacity>
-          <Text style={styles.tableName}>{tableName}</Text>
+    <BasicLayout
+      goBack={()=>{
+        openPriceTable(null)
+      }}
+      screenName={tableName}
+    >
+      <ScrollView horizontal={true}>
+        <View style={styles.container}>
+          <View style={styles.toolbar}>
+            <TouchableHighlight style={styles.button} onPress={openGroupModal}>
+              <Text style={styles.buttonText}>Create price group</Text>
+            </TouchableHighlight>
+            <TouchableHighlight style={styles.button} onPress={openPriceModal}>
+              <Text style={styles.buttonText}>Add Duration</Text>
+            </TouchableHighlight>
+          </View>
+          <View style={styles.tableContainer}>
+              <View style={styles.table}>
+                {renderTableHeader()}
+                <ScrollView style={{ flex: 1, maxHeight: screenHeight-280 }}>
+                  {renderTableData()}
+                </ScrollView>
+              </View>
+          </View>
+
+          <CreateGroupModal
+            isModalVisible={isGroupModalVisible}
+            tableId={tableId}
+            groupName={""}
+            setUpdateGroupTrigger = {setUpdateGroupTrigger} 
+            closeModal={closeGroupModal}
+          />
+
+          <UpdateGroupModal
+            isModalVisible={isUpdateGroupModalVisible}
+            tableId={tableId}
+            groupName={groupName}
+            setUpdateGroupTrigger = {setUpdateGroupTrigger} 
+            closeModal={closeUpdateGroupModal}
+          />
+
+          <PricePointModal
+            isModalVisible={isAddPriceModalVisible}
+            tableId={tableId}
+            setUpdatePointTrigger = {setUpdatePointTrigger} 
+            closeModal={closePriceModal}
+          />
+
         </View>
-        <View style={styles.toolbar}>
-          <TouchableHighlight style={styles.button} onPress={openGroupModal}>
-            <Text style={styles.buttonText}>Create price group</Text>
-          </TouchableHighlight>
-          <TouchableHighlight style={styles.button} onPress={openPriceModal}>
-            <Text style={styles.buttonText}>Add Duration</Text>
-          </TouchableHighlight>
-        </View>
-        <View style={styles.tableContainer}>
-            <View style={styles.table}>
-              {renderTableHeader()}
-              <ScrollView style={{ flex: 1, maxHeight: screenHeight-280 }}>
-                {renderTableData()}
-              </ScrollView>
-            </View>
-        </View>
-
-        <CreateGroupModal
-          isModalVisible={isGroupModalVisible}
-          tableId={tableId}
-          groupName={""}
-          setUpdateGroupTrigger = {setUpdateGroupTrigger} 
-          closeModal={closeGroupModal}
-        />
-
-        <UpdateGroupModal
-          isModalVisible={isUpdateGroupModalVisible}
-          tableId={tableId}
-          groupName={groupName}
-          setUpdateGroupTrigger = {setUpdateGroupTrigger} 
-          closeModal={closeUpdateGroupModal}
-        />
-
-        <PricePointModal
-          isModalVisible={isAddPriceModalVisible}
-          tableId={tableId}
-          setUpdatePointTrigger = {setUpdatePointTrigger} 
-          closeModal={closePriceModal}
-        />
-
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </BasicLayout>
   );
 };
 

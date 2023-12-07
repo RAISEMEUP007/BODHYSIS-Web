@@ -7,11 +7,12 @@ import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
+import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { ManufacturesStyle } from './styles/ManufacturesStyle';
 import AddManufactureModal from './AddManufactureModal';
 
-const Manufactures = () => {
+const Manufactures = ({navigation, openInventory}) => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -93,30 +94,38 @@ const Manufactures = () => {
   };
   
   return (
-    <View style={styles.container}>
-      <View style={styles.toolbar}>
-        <TouchableHighlight style={styles.button} onPress={openAddManufactureModal}>
-          <Text style={styles.buttonText}>Add</Text>
-        </TouchableHighlight>
-      </View>
-      <View style={styles.tableContainer}>
-        <View style={styles.tableHeader}>
-          <Text style={[styles.columnHeader, {width:400}]}>{"Manufacture"}</Text>
-          <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
-          <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
+    <BasicLayout
+      navigation = {navigation}
+      goBack={()=>{
+        openInventory(null)
+      }}
+      screenName={'Manufactures'}
+    >
+      <View style={styles.container}>
+        <View style={styles.toolbar}>
+          <TouchableHighlight style={styles.button} onPress={openAddManufactureModal}>
+            <Text style={styles.buttonText}>Add</Text>
+          </TouchableHighlight>
         </View>
-        <ScrollView>
-          {renderTableData()}
-        </ScrollView>
-      </View>
+        <View style={styles.tableContainer}>
+          <View style={styles.tableHeader}>
+            <Text style={[styles.columnHeader, {width:400}]}>{"Manufacture"}</Text>
+            <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
+            <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
+          </View>
+          <ScrollView>
+            {renderTableData()}
+          </ScrollView>
+        </View>
 
-      <AddManufactureModal
-        isModalVisible={isAddModalVisible}
-        Manufacture={selectedManufacture}
-        setUpdateManufacturesTrigger = {setUpdateManufacturesTrigger} 
-        closeModal={closeAddManufactureModal}
-      />
-    </View>
+        <AddManufactureModal
+          isModalVisible={isAddModalVisible}
+          Manufacture={selectedManufacture}
+          setUpdateManufacturesTrigger = {setUpdateManufacturesTrigger} 
+          closeModal={closeAddManufactureModal}
+        />
+      </View>
+    </BasicLayout>
   );
 };
 

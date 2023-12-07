@@ -10,8 +10,9 @@ import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
 
 import { brandsStyle } from './styles/BrandsStyle';
 import AddBrandModal from './AddBrandModal';
+import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
-const Brands = () => {
+const Brands = ({navigation, openInventory}) => {
   const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
@@ -124,29 +125,37 @@ const Brands = () => {
   };
 
   return (
-    <ScrollView horizontal={true}>
-      <View style={styles.container}>
-        <View style={styles.toolbar}>
-          <TouchableHighlight style={styles.button} onPress={openAddBrandModal}>
-            <Text style={styles.buttonText}>Add</Text>
-          </TouchableHighlight>
-        </View>
-        <View style={styles.tableContainer}>
-          <View style={styles.tableHeader}>
-            <Text style={styles.columnHeader}>{"Brand"}</Text>
+    <BasicLayout
+      navigation = {navigation}
+      goBack={()=>{
+        openInventory(null)
+      }}
+      screenName={'Brands'}
+    >
+      <ScrollView horizontal={true}>
+        <View style={styles.container}>
+          <View style={styles.toolbar}>
+            <TouchableHighlight style={styles.button} onPress={openAddBrandModal}>
+              <Text style={styles.buttonText}>Add</Text>
+            </TouchableHighlight>
           </View>
-          <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
-              {renderTableData()}
-          </ScrollView>
-        </View>
+          <View style={styles.tableContainer}>
+            <View style={styles.tableHeader}>
+              <Text style={styles.columnHeader}>{"Brand"}</Text>
+            </View>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
+                {renderTableData()}
+            </ScrollView>
+          </View>
 
-        <AddBrandModal
-          isModalVisible={isAddModalVisible}
-          setUpdateBrandTrigger = {setUpdateBrandTrigger} 
-          closeModal={closeAddBrandModal}
-        />
-      </View>
-    </ScrollView>
+          <AddBrandModal
+            isModalVisible={isAddModalVisible}
+            setUpdateBrandTrigger = {setUpdateBrandTrigger} 
+            closeModal={closeAddBrandModal}
+          />
+        </View>
+      </ScrollView>
+    </BasicLayout>
   );
 };
 

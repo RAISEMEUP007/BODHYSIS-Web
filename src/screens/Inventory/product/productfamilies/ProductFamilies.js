@@ -8,11 +8,12 @@ import { API_URL } from '../../../../common/constants/AppConstants';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
+import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout';
 
 import { productFamiliesStyle } from './styles/ProductFamiliesStyle';
 import AddProductFamilyModal from './AddProductFamilyModal';
 
-const ProductFamilies = () => {
+const ProductFamilies = ({navigation, openInventory}) => {
   const screenHeight = Dimensions.get('window').height;
   
   const { showAlert } = useAlertModal();
@@ -105,34 +106,42 @@ const ProductFamilies = () => {
   };
   
   return (
-    <ScrollView horizontal={true}>
-      <View style={styles.container}>
-        <View style={styles.toolbar}>
-          <TouchableHighlight style={styles.button} onPress={openAddProductFamilyModal}>
-            <Text style={styles.buttonText}>Add</Text>
-          </TouchableHighlight>
-        </View>
-        <View style={styles.tableContainer}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.columnHeader, styles.categoryCell]}>{"Family"}</Text>
-            <Text style={[styles.columnHeader]}>{"Category"}</Text>
-            <Text style={[styles.columnHeader, styles.imageCell]}>{"Image"}</Text>
-            <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
-            <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
+    <BasicLayout
+      navigation = {navigation}
+      goBack={()=>{
+        openInventory(null)
+      }}
+      screenName={'Product Families'}
+    >
+      <ScrollView horizontal={true}>
+        <View style={styles.container}>
+          <View style={styles.toolbar}>
+            <TouchableHighlight style={styles.button} onPress={openAddProductFamilyModal}>
+              <Text style={styles.buttonText}>Add</Text>
+            </TouchableHighlight>
           </View>
-          <ScrollView>
-              {renderTableData()}
-          </ScrollView>
-        </View>
+          <View style={styles.tableContainer}>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.columnHeader, styles.categoryCell]}>{"Family"}</Text>
+              <Text style={[styles.columnHeader]}>{"Category"}</Text>
+              <Text style={[styles.columnHeader, styles.imageCell]}>{"Image"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
+            </View>
+            <ScrollView>
+                {renderTableData()}
+            </ScrollView>
+          </View>
 
-        <AddProductFamilyModal
-          isModalVisible={isAddModalVisible}
-          family={selectedFamily}
-          setUpdateProductFamilyTrigger = {setUpdateProductFamilyTrigger} 
-          closeModal={closeAddProductFamilyModal}
-        />
-      </View>
-    </ScrollView>
+          <AddProductFamilyModal
+            isModalVisible={isAddModalVisible}
+            family={selectedFamily}
+            setUpdateProductFamilyTrigger = {setUpdateProductFamilyTrigger} 
+            closeModal={closeAddProductFamilyModal}
+          />
+        </View>
+      </ScrollView>
+    </BasicLayout>
   );
 };
 
