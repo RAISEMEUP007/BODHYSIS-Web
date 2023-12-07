@@ -17,6 +17,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
   const isUpdate = Line ? true : false;
 
   const [StartInitalizing, setStartInitalizing] = useState(false); 
+  const [CategoryChanged, setCategoryChanged] = useState(false); 
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
@@ -87,9 +88,10 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
   }, [StartInitalizing])
 
   useEffect(()=>{
-    if(!StartInitalizing && selectedCategory.id){
+    if(CategoryChanged && selectedCategory.id){
       loadProductFamiliesData(selectedCategory.id, (jsonRes)=>{
         setFamilies(jsonRes);
+        console.log(jsonRes);
         if(jsonRes.length>0) selectFamily(jsonRes[0]);
       });
     }
@@ -99,7 +101,12 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
     if(isModalVisible){
       loadPriceGroupsData(()=>{
         loadProductCategoriesData((categories)=>{
-          loadProductFamiliesData(categories[0]?categories[0].id:null, (families)=>{
+          let categoryId = null;
+          if(Line) categoryId = Line.category_id;
+          else categoryId = categories[0]?categories[0].id:null;
+          loadProductFamiliesData(categoryId, (families)=>{
+            setCategories(categories);
+            setFamilies(families);
             setStartInitalizing(true);
           });
         });
@@ -111,7 +118,6 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
     getProductCategoriesData((jsonRes, status, error) => {
       switch(status){
         case 200:
-          setCategories(jsonRes);
           callback(jsonRes);
           break;
         case 500:
@@ -126,10 +132,9 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
   }
   
   const loadProductFamiliesData = (categoryId, callback) => {
-    getProductFamiliesData(selectedCategory.id, (jsonRes, status, error) => {
+    getProductFamiliesData(categoryId, (jsonRes, status, error) => {
       switch(status){
         case 200:
-          setFamilies(jsonRes);
           callback(jsonRes);
           break;
         case 500:
@@ -226,6 +231,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
       visible={isModalVisible}
       onShow={()=>{
         setStartInitalizing(false);
+        setCategoryChanged(false);
       }}
     >
       <BasicModalContainer>
@@ -238,6 +244,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
             onValueChange={(itemValue, itemIndex) =>
               {
                 selectCategory(categories[itemIndex]);
+                setCategoryChanged(true);
               }}>
             {categories.length>0 && (
               categories.map((category, index) => {

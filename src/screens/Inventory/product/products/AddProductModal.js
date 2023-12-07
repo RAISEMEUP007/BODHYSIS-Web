@@ -16,11 +16,12 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
 
   const isUpdate = Product ? true : false;
 
-  const [isInital, setIsInitial] = useState(true); 
+  const [StartInitalizing, setStartInitalizing] = useState(false); 
+  const [CategoryChanged, setCategoryChanged] = useState(false);
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(false); 
   
   const [categories, setCategories] = useState([]);
   const [families, setFamilies] = useState([]);
@@ -66,87 +67,94 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   }, [closeModal]);
 
   useEffect(()=>{
-    if(isModalVisible){
-      getProductCategoriesData((jsonRes, status, error) => {
-        switch(status){
-          case 200:
-            setCategories(jsonRes);
-            if(jsonRes.length> 0){
-              selectCategory(jsonRes[0])
-            }
-            break;
-          case 500:
-            showAlert('error', msgStr('serverError'));
-            break;
-          default:
-            if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-            else showAlert('error', msgStr('unknownError'));
-            break;
-        }
-      })
+    if(StartInitalizing){
+      setValidMessage('');
+      if(Product && categories){
+        const initalCategory = categories.find(category => {return category.id == Product.category_id});
+        if(initalCategory) selectCategory(initalCategory);
+      }else if(categories.length>0) {
+        selectCategory(categories[0]);
+      }
+  
+      if(Product && families){
+        const initalFamily = families.find(family => {return family.id == Product.family_id});
+        if(initalFamily) selectFamily(initalFamily);
+      }else if(families.length[0]){
+        selectFamily(families[0]);
+      }
+  
+      setProductTxt(Product?Product.product:'');
+      setSizeTxt(Product?Product.size:'');
+      setDescriptionTxt(Product?Product.description:'');
+      setItemIdTxt(Product?Product.item_id:'');
+      setBarcodeTxt(Product?Product.barcode:'');
+      setSerialNumber(Product?Product.serial_number:'');
+      setHomeLocation(Product?Product.home_location:'');
+      setCurrentLocation(Product?Product.current_location:'');
+        
+      if(Product && PriceGroups){
+        const initalGroup = PriceGroups.find(priceGroup => {return priceGroup.id == Product.price_group_id});
+        if(initalGroup) selectPriceGroup(initalGroup);
+      }else if(PriceGroups.length>0){
+        selectPriceGroup(PriceGroups[0]);
+      }
+      
+      if(Product && StatusArr){
+        const initalStatus = StatusArr.find(status => {return status.id == Product.status});
+        if(initalStatus) selectStatus(initalStatus);
+      }
+
+      setIsLoading(false);
     }
-  }, [isModalVisible])
+  }, [StartInitalizing])
 
   useEffect(()=>{
-    if(selectedCategory.id){
-      getProductFamiliesData(selectedCategory.id, (jsonRes, status, error) => {
-        switch(status){
-          case 200:
-            setFamilies(jsonRes);
-            if(jsonRes.length> 0){
-              if(!isInital) selectFamily(jsonRes[0])
-              else{
-                if(Product){
-                  const initalFamily = families.find(family => {return family.id == Product.family_id});
-                  if(initalFamily) selectFamily(initalFamily);
-                }else selectFamily('');
-              }
-            }else{
-              if(!isInital) setIsInitial(false);
-            }
-            break;
-          case 500:
-            showAlert('error', msgStr('serverError'));
-            break;
-          default:
-            if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-            else showAlert('error', msgStr('unknownError'));
-            break;
-        }
-      })
+    if(CategoryChanged && selectedCategory.id){
+      loadProductFamiliesData(selectedCategory.id, (jsonRes)=>{
+        setFamilies(jsonRes);
+        if(jsonRes.length>0) selectFamily(jsonRes[0]);
+      });
     }
   }, [selectedCategory])
 
   useEffect(()=>{
-    if(selectedFamily.id){
-      getProductLinesData(selectedFamily.id, (jsonRes, status, error) => {
-        switch(status){
-          case 200:
-            setLines(jsonRes);
-            if(jsonRes.length> 0){
-              if(!isLoading) selectLine(jsonRes[0])
-            }
-            break;
-          case 500:
-            showAlert('error', msgStr('serverError'));
-            break;
-          default:
-            if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-            else showAlert('error', msgStr('unknownError'));
-            break;
-        }
+    if(CategoryChanged && selectedFamily.id){
+      loadProductLinesData(selectedFamily.id, (jsonRes)=>{
+        console.log(jsonRes);
+        setLines(jsonRes);
+        if(jsonRes.length>0) selectLine(jsonRes[0]);
       })
     }
   }, [selectedFamily])
 
   useEffect(()=>{
-    getPriceGroupsData((jsonRes, status, error) => {
+    if(isModalVisible){
+      loadPriceGroupsData(()=>{
+        loadProductCategoriesData((categories)=>{
+          let categoryId = null;
+          if(Product) categoryId = Product.category_id;
+          else categoryId = categories[0]?categories[0].id:null;
+          loadProductFamiliesData(categoryId, (families)=>{
+            let familyId = null;
+            if(Product) familyId = Product.family_id;
+            else familyId = families[0]?families[0].id:null;
+            loadProductLinesData(familyId, (lines)=>{
+              setCategories(categories);
+              setFamilies(families);
+              setLines(lines);
+              setStartInitalizing(true);
+            })
+          });
+        });
+      });
+    }
+  }, [isModalVisible])
+
+  const loadProductCategoriesData = (callback) =>{
+    getProductCategoriesData((jsonRes, status, error) => {
       switch(status){
         case 200:
-          setPriceGroups(jsonRes);
-          if(jsonRes.length> 0){
-            selectPriceGroup(jsonRes[0])
-          }
+          callback(jsonRes);
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -157,7 +165,64 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
           break;
       }
     })
-  }, [isModalVisible])
+  }
+  
+  const loadProductFamiliesData = (categoryId, callback) => {
+    getProductFamiliesData(categoryId, (jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          callback(jsonRes);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
+
+  const loadPriceGroupsData = (callback) =>{
+    getPriceGroupsData((jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          setPriceGroups(jsonRes);
+          callback();
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
+
+  const loadProductLinesData = (familyId, callback) =>{
+    console.log(familyId);
+    getProductLinesData(familyId, (jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          callback(jsonRes);
+          // setLines(jsonRes);
+          // if(jsonRes.length> 0){
+          //   if(!isLoading) selectLine(jsonRes[0])
+          // }
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
 
   const AddProductButtonHandler = () => {
     if (!ProductTxt.trim()) {
@@ -182,7 +247,6 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
       price_group_id : selectedPriceGroup.id,
       status : selectedStatus.id,
     }
-    console.log(payload);
     const handleResponse = (jsonRes, status) => {
       switch(status){
         case 201:
@@ -228,36 +292,8 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
       transparent={true}
       visible={isModalVisible}
       onShow={()=>{
-        setValidMessage('');
-        if(Product && categories){
-          const initalCategory = categories.find(category => {return category.id == Product.category_id});
-          if(initalCategory) selectCategory(initalCategory);
-        }else selectCategory('');
-
-
-        if(Product && lines){
-          const initalLine = lines.find(line => {return line.id == Product.line_id});
-          if(initalLine) selectLine(initalLine);
-        }else selectLine('');
-
-        setProductTxt(Product?Product.product:'');
-        setSizeTxt(Product?Product.size:'');
-        setDescriptionTxt(Product?Product.description:'');
-        setItemIdTxt(Product?Product.item_id:'');
-        setBarcodeTxt(Product?Product.barcode:'');
-        setSerialNumber(Product?Product.serial_number:'');
-        setHomeLocation(Product?Product.home_location:'');
-        setCurrentLocation(Product?Product.current_location:'');
-
-        if(Product && PriceGroups){
-          const initalGroup = PriceGroups.find(priceGroup => {return priceGroup.id == Product.price_group_id});
-          if(initalGroup) selectPriceGroup(initalGroup);
-        }else selectPriceGroup('');
-
-        if(Product && StatusArr){
-          const initalStatus = StatusArr.find(status => {return status.id == Product.status});
-          if(initalStatus) selectStatus(initalStatus);
-        }else selectPriceGroup('');
+        setStartInitalizing(false);
+        setCategoryChanged(false);
       }}
     >
       <BasicModalContainer>
@@ -272,6 +308,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                 onValueChange={(itemValue, itemIndex) =>
                   {
                     selectCategory(categories[itemIndex]);
+                    setCategoryChanged(true);
                   }}>
                 {categories.length>0 && (
                   categories.map((category, index) => {
@@ -287,6 +324,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                 onValueChange={(itemValue, itemIndex) =>
                   {
                     selectFamily(families[itemIndex]);
+                    setCategoryChanged(true);
                   }}>
                 {families.length>0 && (
                   families.map((family, index) => {
