@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import BasicLayout from '../common/components/CustomLayout/BasicLayout';
 
 const Dashboard = () => {
     const navigation = useNavigation();
@@ -10,12 +11,17 @@ const Dashboard = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.heading}>Dashboard</Text>
-            <TouchableOpacity onPress={onLogout} style={styles.button}>
-                <Text style={styles.buttonText}>Logout</Text>
-            </TouchableOpacity>
-        </View>
+        <BasicLayout
+           navigation={navigation}
+            screenName={"Dashboard"}
+        >
+            <View style={styles.container}>
+                <Text style={styles.heading}>Dashboard</Text>
+                <TouchableOpacity onPress={onLogout} style={styles.button}>
+                    <Text style={styles.buttonText}>Logout</Text>
+                </TouchableOpacity>
+            </View>
+        </BasicLayout>
     );
 };
 

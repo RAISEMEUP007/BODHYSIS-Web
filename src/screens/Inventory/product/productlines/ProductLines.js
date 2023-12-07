@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, Image } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import {getProductLinesData, deleteProductLine } from '../../../../api/Product';
@@ -7,11 +7,14 @@ import { msgStr } from '../../../../common/constants/Message';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
+import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout';
 
 import { productLinesStyle } from './styles/ProductLinesStyle';
 import AddProductLineModal from './AddProductLineModal';
 
-const ProductLines = () => {
+const ProductLines = ({navigation, openInventory}) => {
+  const screenHeight = Dimensions.get('window').height;
+  
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -99,32 +102,42 @@ const ProductLines = () => {
   };
   
   return (
-    <View style={styles.container}>
-      <View style={styles.toolbar}>
-        <TouchableHighlight style={styles.button} onPress={openAddProductLineModal}>
-          <Text style={styles.buttonText}>Add</Text>
-        </TouchableHighlight>
-      </View>
-      <View style={styles.tableContainer}>
-        <View style={styles.tableHeader}>
-          <Text style={[styles.columnHeader, styles.categoryCell]}>{"Line"}</Text>
-          <Text style={[styles.columnHeader]}>{"Category"}</Text>
-          <Text style={[styles.columnHeader]}>{"Family"}</Text>
-          <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
-          <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
-        </View>
-        <ScrollView>
-          {renderTableData()}
-        </ScrollView>
-      </View>
+    <BasicLayout
+      navigation = {navigation}
+      goBack={()=>{
+        openInventory(null)
+      }}
+      screenName={'Product Lines'}
+    >
+      <ScrollView horizontal={true}>
+        <View style={styles.container}>
+          <View style={styles.toolbar}>
+            <TouchableHighlight style={styles.button} onPress={openAddProductLineModal}>
+              <Text style={styles.buttonText}>Add</Text>
+            </TouchableHighlight>
+          </View>
+          <View style={styles.tableContainer}>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.columnHeader, styles.categoryCell]}>{"Line"}</Text>
+              <Text style={[styles.columnHeader]}>{"Category"}</Text>
+              <Text style={[styles.columnHeader]}>{"Family"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
+            </View>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
+              {renderTableData()}
+            </ScrollView>
+          </View>
 
-      <AddProductLineModal
-        isModalVisible={isAddModalVisible}
-        Line={selectedLine}
-        setUpdateProductLineTrigger = {setUpdateProductLineTrigger} 
-        closeModal={closeAddProductLineModal}
-      />
-    </View>
+          <AddProductLineModal
+            isModalVisible={isAddModalVisible}
+            Line={selectedLine}
+            setUpdateProductLineTrigger = {setUpdateProductLineTrigger} 
+            closeModal={closeAddProductLineModal}
+          />
+        </View>
+      </ScrollView>
+    </BasicLayout>
   );
 };
 

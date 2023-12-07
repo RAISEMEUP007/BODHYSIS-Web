@@ -19,7 +19,7 @@ export const priceGroupStyles = StyleSheet.create({
   toolbar: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginTop: 10,
   },
  
@@ -124,7 +124,6 @@ export const priceGroupStyles = StyleSheet.create({
   backButton: {
     padding: 10,
     borderRadius: 5,
-    backgroundColor: '#f0f0f0',
     marginRight: 10,
     // Add any other styles you'd like for the back button
   },

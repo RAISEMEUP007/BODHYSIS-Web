@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform,  Picker } from 'react-native';
+import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform, Image } from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 
 import { createProduct, updateProduct, getProductCategoriesData, getProductFamiliesData, getProductLinesData } from '../../../../api/Product';
 import { getPriceGroupsData } from '../../../../api/Price';
@@ -120,7 +121,6 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   useEffect(()=>{
     if(CategoryChanged && selectedFamily.id){
       loadProductLinesData(selectedFamily.id, (jsonRes)=>{
-        console.log(jsonRes);
         setLines(jsonRes);
         if(jsonRes.length>0) selectLine(jsonRes[0]);
       })
@@ -203,7 +203,6 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   }
 
   const loadProductLinesData = (familyId, callback) =>{
-    console.log(familyId);
     getProductLinesData(familyId, (jsonRes, status, error) => {
       switch(status){
         case 200:

@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Image } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { getProductCategoriesData, deleteProductCategory } from '../../../../api/Product';
@@ -8,12 +8,15 @@ import { API_URL } from '../../../../common/constants/AppConstants';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
+import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout';
 
 import { productCategoriesStyle } from './styles/ProductCategoriesStyle';
 import AddProductCategoryModal from './AddProductCategoryModal';
 import UpdateProductCategoryModal from './UpdateProductCategoryModal';
 
-const ProductCategories = () => {
+const ProductCategories = ({navigation, openInventory}) => {
+  const screenHeight = Dimensions.get('window').height;
+  
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -113,37 +116,47 @@ const ProductCategories = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.toolbar}>
-        <TouchableHighlight style={styles.button} onPress={openAddProductCategoryModal}>
-          <Text style={styles.buttonText}>Add</Text>
-        </TouchableHighlight>
-      </View>
-      <View style={styles.tableContainer}>
-        <View style={styles.tableHeader}>
-          <Text style={[styles.columnHeader, styles.categoryCell]}>{"Category"}</Text>
-          <Text style={[styles.columnHeader, styles.imageCell]}>{"Image"}</Text>
-          <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
-          <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
+    <BasicLayout
+      navigation = {navigation}
+      goBack={()=>{
+        openInventory(null)
+      }}
+      screenName={'Product Categories'}
+    >
+      <ScrollView horizontal={true}>
+        <View style={styles.container}>
+          <View style={styles.toolbar}>
+            <TouchableHighlight style={styles.button} onPress={openAddProductCategoryModal}>
+              <Text style={styles.buttonText}>Add</Text>
+            </TouchableHighlight>
+          </View>
+          <View style={styles.tableContainer}>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.columnHeader, styles.categoryCell]}>{"Category"}</Text>
+              <Text style={[styles.columnHeader, styles.imageCell]}>{"Image"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
+            </View>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
+                {renderTableData()}
+            </ScrollView>
+          </View>
+
+          <AddProductCategoryModal
+            isModalVisible={isAddModalVisible}
+            setUpdateProductCategoryTrigger = {setUpdateProductCategoryTrigger} 
+            closeModal={closeAddProductCategoryModal}
+          />
+
+          {selectedCategory && (<UpdateProductCategoryModal
+            isModalVisible={isUpdateModalVisible}
+            item = {selectedCategory}
+            setUpdateProductCategoryTrigger = {setUpdateProductCategoryTrigger} 
+            closeModal={closeUpdateProductCategoryModal}
+          />)}
         </View>
-        <ScrollView>
-            {renderTableData()}
-        </ScrollView>
-      </View>
-
-      <AddProductCategoryModal
-        isModalVisible={isAddModalVisible}
-        setUpdateProductCategoryTrigger = {setUpdateProductCategoryTrigger} 
-        closeModal={closeAddProductCategoryModal}
-      />
-
-      {selectedCategory && (<UpdateProductCategoryModal
-        isModalVisible={isUpdateModalVisible}
-        item = {selectedCategory}
-        setUpdateProductCategoryTrigger = {setUpdateProductCategoryTrigger} 
-        closeModal={closeUpdateProductCategoryModal}
-      />)}
-    </View>
+      </ScrollView>
+    </BasicLayout>
   );
 };
 

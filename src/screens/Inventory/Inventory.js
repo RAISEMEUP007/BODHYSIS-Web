@@ -11,8 +11,11 @@ import Products from './product/products/Products';
 import ProductCategories from './product/productcategories/ProductCategories';
 import ProductFamilies from './product/productfamilies/ProductFamilies';
 import ProductLines from './product/productlines/ProductLines';
+import { ScrollView } from 'react-native-gesture-handler';
+import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 
-const Inventory = ({initalItem = null}) => {
+const Inventory = ({navigation, initalItem = null}) => {
+
     const [selectedItem, setSelectedItem] = useState(initalItem);
     
     const handleItemClick = (itemName) => {
@@ -22,21 +25,21 @@ const Inventory = ({initalItem = null}) => {
     if(selectedItem) {
         switch (selectedItem) {
             case 'Products':
-                return <Products/>;
+                return <Products navigation={navigation} openInventory={handleItemClick}/>;
             case 'Product Categories':
-                return <ProductCategories/>;
+                return <ProductCategories navigation={navigation} openInventory={handleItemClick}/>;
             case 'Product Families':
-                return <ProductFamilies/>;
+                return <ProductFamilies navigation={navigation} openInventory={handleItemClick}/>;
             case 'Product Lines':
-                return <ProductLines/>;
+                return <ProductLines navigation={navigation} openInventory={handleItemClick}/>;
             case 'Price Tables':
-                return <PriceTables/>;
+                return <PriceTables navigation={navigation} openInventory={handleItemClick}/>;
             case 'Price Logic':
-                return <PriceLogic/>;
+                return <PriceLogic navigation={navigation} openInventory={handleItemClick}/>;
             case 'Seasons':
-                return <Seasons/>;
+                return <Seasons navigation={navigation} openInventory={handleItemClick}/>;
             case 'Brands':
-                return <Brands/>;
+                return <Brands navigation={navigation} openInventory={handleItemClick}/>;
             default:
                 return (
                     <View style={{ flexs: 1, border:'1px solid #d54545', marginRights: 20, paddingHorizontal: 10, paddingVertical:2, marginTop: 8, height: 28, justifyContent: 'center', flexDirection: 'row', marginTop: 100, }}>
@@ -50,27 +53,34 @@ const Inventory = ({initalItem = null}) => {
     };
 
     return (
-        <View style={styles.container}>
-            <TouchNavGroup sectionTitle="General" items={[
-                { title: "Products", icon: 'check'  },
-                { title: "Product Categories", icon: 'check' },
-                { title: "Product Families", icon: 'check'  },
-                { title: "Product Lines", icon: 'check'  },
-                { title: "Search", icon: 'search'  }
-            ]} handleItemClick={handleItemClick} />
-            <TouchNavGroup sectionTitle="Price Management" items={[
-                { title: "Price Tables",  icon: 'table'  },
-                { title: "Price Logic",  icon: 'table'  },
-                { title: "Seasons", icon: 'tree'  },
-                { title: "Brands",  icon: 'tags' }
-            ]} handleItemClick={handleItemClick} />
-            <TouchNavGroup sectionTitle="Bulk Update" items={[
-                { title: "Bulk Update", icon: 'wrench' }
-            ]} handleItemClick={handleItemClick} />
-            <TouchNavGroup sectionTitle="Print" items={[
-                { title: "Print Snapshot", icon: 'print'  }
-            ]} handleItemClick={handleItemClick} />
-        </View>
+        <BasicLayout
+            navigation={navigation}
+            screenName={"Inventory"}
+        >
+            <ScrollView>
+                <View style={styles.container}>
+                    <TouchNavGroup sectionTitle="General" items={[
+                        { title: "Products", icon: 'check'  },
+                        { title: "Product Categories", icon: 'check' },
+                        { title: "Product Families", icon: 'check'  },
+                        { title: "Product Lines", icon: 'check'  },
+                        { title: "Search", icon: 'search'  }
+                    ]} handleItemClick={handleItemClick} />
+                    <TouchNavGroup sectionTitle="Price Management" items={[
+                        { title: "Price Tables",  icon: 'table'  },
+                        { title: "Price Logic",  icon: 'table'  },
+                        { title: "Seasons", icon: 'tree'  },
+                        { title: "Brands",  icon: 'tags' }
+                    ]} handleItemClick={handleItemClick} />
+                    <TouchNavGroup sectionTitle="Bulk Update" items={[
+                        { title: "Bulk Update", icon: 'wrench' }
+                    ]} handleItemClick={handleItemClick} />
+                    <TouchNavGroup sectionTitle="Print" items={[
+                        { title: "Print Snapshot", icon: 'print'  }
+                    ]} handleItemClick={handleItemClick} />
+                </View>
+            </ScrollView>
+        </BasicLayout>
     );
 }
 
@@ -81,7 +91,7 @@ const styles = StyleSheet.create({
         width: '90%',
         maxWidth: 1000,
         margin: 'auto',
-        marginTop: 80,
+        marginTop: 40,
     },
 });
 

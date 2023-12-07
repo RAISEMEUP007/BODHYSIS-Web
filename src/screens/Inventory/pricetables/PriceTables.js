@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, TouchableWithoutFeedback, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import {getPriceTablesData, savePriceTableCell, deletePriceTable } from '../../../api/Price';
@@ -7,12 +7,16 @@ import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
+import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { priceTablesStyle } from './styles/PriceTablesStyle';
 import AddPriceTableModal from './AddPriceTableModal';
 import PriceGroup from '../pricegroup/PriceGroup';
 
-const PriceTables = ({selectedTableId = null}) => {
+const PriceTables = ({navigation, openInventory, selectedTableId = null}) => {
+
+  const screenHeight = Dimensions.get('window').height;
+
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -141,28 +145,38 @@ const PriceTables = ({selectedTableId = null}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.toolbar}>
-        <TouchableHighlight style={styles.button} onPress={openAddPriceTableModal}>
-          <Text style={styles.buttonText}>Add</Text>
-        </TouchableHighlight>
-      </View>
-      <View style={styles.tableContainer}>
-        <View style={styles.tableHeader}>
-          <Text style={styles.columnHeader}>{"PriceTable"}</Text>
-          <Text style={[styles.columnHeader, styles.radioButtonCell]}>{"Options"}</Text>
-        </View>
-        <ScrollView>
-            {renderTableData()}
-        </ScrollView>
-      </View>
+    <BasicLayout
+      navigation = {navigation}
+      goBack={()=>{
+        openInventory(null)
+      }}
+      screenName={'Price Tables'}
+    >
+      <ScrollView horizontal={true}>
+        <View style={styles.container}>
+          <View style={styles.toolbar}>
+            <TouchableHighlight style={styles.button} onPress={openAddPriceTableModal}>
+              <Text style={styles.buttonText}>Add</Text>
+            </TouchableHighlight>
+          </View>
+          <View style={styles.tableContainer}>
+            <View style={styles.tableHeader}>
+              <Text style={styles.columnHeader}>{"PriceTable"}</Text>
+              <Text style={[styles.columnHeader, styles.radioButtonCell]}>{"Options"}</Text>
+            </View>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
+                {renderTableData()}
+            </ScrollView>
+          </View>
 
-      <AddPriceTableModal
-        isModalVisible={isAddModalVisible}
-        setUpdatePriceTableTrigger = {setUpdatePriceTableTrigger} 
-        closeModal={closeAddPriceTableModal}
-      />
-    </View>
+          <AddPriceTableModal
+            isModalVisible={isAddModalVisible}
+            setUpdatePriceTableTrigger = {setUpdatePriceTableTrigger} 
+            closeModal={closeAddPriceTableModal}
+          />
+        </View>
+      </ScrollView>
+    </BasicLayout>
   );
 };
 

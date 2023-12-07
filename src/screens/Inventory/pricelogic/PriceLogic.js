@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -8,10 +8,13 @@ import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
+import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { priceLogicStyle } from './styles/PriceLogicStyle';
 
-const PriceLogic = () => {
+const PriceLogic = ({navigation, openInventory}) => {
+  const screenHeight = Dimensions.get('window').height;
+  
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -260,35 +263,45 @@ const PriceLogic = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.toolbar}>
-        <Text style={styles.toolbarLabel}>Brands</Text>
-        {renderBrandPicker()}
-        <Text style={styles.toolbarLabel}>Seasons</Text>
-        {renderSeasonPicker()}
-        <Text style={styles.toolbarLabel}>Price Table</Text>
-        {renderPriceTablePicker()}
-        <TouchableHighlight style={styles.button} onPress={()=>{addPriceLogic()}}>
-          <Text style={styles.buttonText}>Add</Text>
-        </TouchableHighlight>
-      </View>
-      <View style={styles.tableContainer}>
-        <View style={styles.tableHeader}>
-          <Text style={styles.columnHeader}>{"Brand"}</Text>
-          <Text style={styles.columnHeader}>{"Season"}</Text>
-          <Text style={styles.columnHeader}>{"Price Table"}</Text>
-          <Text style={[styles.columnHeader, styles.radioButtonCell]}></Text>
+    <BasicLayout
+      navigation = {navigation}
+      goBack={()=>{
+        openInventory(null)
+      }}
+      screenName={'Price Logic'}
+    >
+      <ScrollView horizontal={true}>
+        <View style={styles.container}>
+          <View style={styles.toolbar}>
+            <Text style={styles.toolbarLabel}>Brands</Text>
+            {renderBrandPicker()}
+            <Text style={styles.toolbarLabel}>Seasons</Text>
+            {renderSeasonPicker()}
+            <Text style={styles.toolbarLabel}>Price Table</Text>
+            {renderPriceTablePicker()}
+            <TouchableHighlight style={styles.button} onPress={()=>{addPriceLogic()}}>
+              <Text style={styles.buttonText}>Add</Text>
+            </TouchableHighlight>
+          </View>
+          <View style={styles.tableContainer}>
+            <View style={styles.tableHeader}>
+              <Text style={styles.columnHeader}>{"Brand"}</Text>
+              <Text style={styles.columnHeader}>{"Season"}</Text>
+              <Text style={styles.columnHeader}>{"Price Table"}</Text>
+              <Text style={[styles.columnHeader, styles.radioButtonCell]}></Text>
+            </View>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
+                {renderTableData()}
+            </ScrollView>
+          </View>
+          {isLoading && (
+            <View style={styles.overlay}>
+              <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+          )}
         </View>
-        <ScrollView>
-            {renderTableData()}
-        </ScrollView>
-      </View>
-      {isLoading && (
-        <View style={styles.overlay}>
-          <ActivityIndicator size="large" color="#0000ff" />
-        </View>
-      )}
-    </View>
+      </ScrollView>
+    </BasicLayout>
   );
 };
 

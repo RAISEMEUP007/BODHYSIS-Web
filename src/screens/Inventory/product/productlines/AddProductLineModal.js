@@ -1,5 +1,6 @@
-import React, {useState, useEffect, useRef} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform,  Picker } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform, Image } from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 
 import { createProductLine, updateProductLine, getProductCategoriesData, getProductFamiliesData } from '../../../../api/Product';
 import { getPriceGroupsData } from '../../../../api/Price';

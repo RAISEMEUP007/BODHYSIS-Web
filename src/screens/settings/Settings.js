@@ -3,8 +3,11 @@ import { View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
 import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 import Manufactures from './manufactures/Manufactures';
+import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 
-const Settings = ({initalItem = null}) => {
+import { ScrollView } from 'react-native-gesture-handler';
+
+const Settings = ({navigation, initalItem = null}) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);
     
     const handleItemClick = (itemName) => {
@@ -14,7 +17,7 @@ const Settings = ({initalItem = null}) => {
     if(selectedItem) {
         switch (selectedItem) {
             case 'Manufactures':
-                return <Manufactures/>;
+                return <Manufactures navigation={navigation} openInventory={handleItemClick}/>;
             default:
                 return (
                     <View style={{ flexs: 1, border:'1px solid #d54545', marginRights: 20, paddingHorizontal: 10, paddingVertical:2, marginTop: 8, height: 28, justifyContent: 'center', flexDirection: 'row', marginTop: 100, }}>
@@ -28,11 +31,18 @@ const Settings = ({initalItem = null}) => {
     };
 
     return (
-        <View style={styles.container}>
-            <TouchNavGroup sectionTitle="Settings" items={[
-                { title: "Manufactures", icon: 'check'  },
-            ]} handleItemClick={handleItemClick} />
-        </View>
+        <BasicLayout
+            navigation={navigation}
+            screenName={"Settings"}
+        >
+            <ScrollView>
+                <View style={styles.container}>
+                    <TouchNavGroup sectionTitle="Settings" items={[
+                        { title: "Manufactures", icon: 'check'  },
+                    ]} handleItemClick={handleItemClick} />
+                </View>
+            </ScrollView>
+        </BasicLayout>
     );
 }
 

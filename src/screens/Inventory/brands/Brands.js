@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import {getBrandsData, saveBrandCell, deleteBrand } from '../../../api/Price';
@@ -10,8 +10,11 @@ import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
 
 import { brandsStyle } from './styles/BrandsStyle';
 import AddBrandModal from './AddBrandModal';
+import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
-const Brands = () => {
+const Brands = ({navigation, openInventory}) => {
+  const screenHeight = Dimensions.get('window').height;
+
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -122,27 +125,37 @@ const Brands = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.toolbar}>
-        <TouchableHighlight style={styles.button} onPress={openAddBrandModal}>
-          <Text style={styles.buttonText}>Add</Text>
-        </TouchableHighlight>
-      </View>
-      <View style={styles.tableContainer}>
-        <View style={styles.tableHeader}>
-          <Text style={styles.columnHeader}>{"Brand"}</Text>
-        </View>
-        <ScrollView>
-            {renderTableData()}
-        </ScrollView>
-      </View>
+    <BasicLayout
+      navigation = {navigation}
+      goBack={()=>{
+        openInventory(null)
+      }}
+      screenName={'Brands'}
+    >
+      <ScrollView horizontal={true}>
+        <View style={styles.container}>
+          <View style={styles.toolbar}>
+            <TouchableHighlight style={styles.button} onPress={openAddBrandModal}>
+              <Text style={styles.buttonText}>Add</Text>
+            </TouchableHighlight>
+          </View>
+          <View style={styles.tableContainer}>
+            <View style={styles.tableHeader}>
+              <Text style={styles.columnHeader}>{"Brand"}</Text>
+            </View>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
+                {renderTableData()}
+            </ScrollView>
+          </View>
 
-      <AddBrandModal
-        isModalVisible={isAddModalVisible}
-        setUpdateBrandTrigger = {setUpdateBrandTrigger} 
-        closeModal={closeAddBrandModal}
-      />
-    </View>
+          <AddBrandModal
+            isModalVisible={isAddModalVisible}
+            setUpdateBrandTrigger = {setUpdateBrandTrigger} 
+            closeModal={closeAddBrandModal}
+          />
+        </View>
+      </ScrollView>
+    </BasicLayout>
   );
 };
 
