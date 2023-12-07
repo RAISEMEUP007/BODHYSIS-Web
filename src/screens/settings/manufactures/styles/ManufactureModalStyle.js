@@ -1,20 +1,30 @@
 import { StyleSheet } from 'react-native';
-import { TextSmallSize } from '../../../../../common/constants/Fonts';
+import { TextSmallSize, TextdefaultSize } from '../../../../common/constants/Fonts';
 
-export const productCategoryModalstyles = StyleSheet.create({
+export const ManufactureModalstyles = StyleSheet.create({
+  label: {
+    color: "#555",
+    fontSize: TextSmallSize,
+  },
   input: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    marginVertical: 10,
+    marginTop: 4,
+    marginBottom: 10,
     padding: 8,
-    width: 400,
+    width: 500,
+  },
+  inputDisable: {
+    borderColor: "#ddd",
   },
   select: {
+    width: 500,
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    marginVertical: 10,
+    marginTop: 4,
+    marginBottom: 10,
     padding: 8,
   },
   addButton: {
@@ -44,18 +54,20 @@ export const productCategoryModalstyles = StyleSheet.create({
   },
   imagePicker: {
     position: 'relative',
-    width: 400,
-    height: 300,
-    backgroundColor: '#eee',
+    width: "100%",
+    height: 280,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 6,
+    borderColor: '#80C0FF80', // Warm color border with transparency
+    borderWidth: 2, // Border width
+    borderStyle: 'solid', // Border style
   },
   imageUpload: {
     position: 'relative',
     width: '100%',
     height: '100%',
-    backgroundColor: '#eee',
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -79,4 +91,7 @@ export const productCategoryModalstyles = StyleSheet.create({
   boxText: {
     fontWeight: 'bold',
   },
+  textarea: {
+    height: TextdefaultSize * 6,
+  }
 });

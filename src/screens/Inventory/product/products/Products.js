@@ -1,40 +1,40 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, Image } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import {getProductLinesData, deleteProductLine } from '../../../../api/Product';
+import {getProductsData, deleteProduct } from '../../../../api/Product';
 import { msgStr } from '../../../../common/constants/Message';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
 
-import { productLinesStyle } from './styles/ProductLinesStyle';
-import AddProductLineModal from './AddProductLineModal';
+import { productsStyle } from './styles/ProductsStyle';
+import AddProductModal from './AddProductModal';
 
-const ProductLines = () => {
+const Products = () => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
   const [tableData, setTableData] = useState([]);
-  const [updateProductLineTrigger, setUpdateProductLineTrigger] = useState(true);
+  const [updateProductTrigger, setUpdateProductsTrigger] = useState(true);
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
-  const [selectedLine, setSelectedLine] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const openAddProductLineModal = () => { setAddModalVisible(true); setSelectedLine(null)}
-  const closeAddProductLineModal = () => { setAddModalVisible(false); setSelectedLine(null)}
-  const editProductLine = (item) => { setSelectedLine(item); setAddModalVisible(true); }
+  const openAddProductModal = () => { setAddModalVisible(true); setSelectedProduct(null)}
+  const closeAddProductModal = () => { setAddModalVisible(false); setSelectedProduct(null)}
+  const editProduct = (item) => { setSelectedProduct(item); setAddModalVisible(true); }
 
   useEffect(()=>{
-    if(updateProductLineTrigger == true) getTable();
-  }, [updateProductLineTrigger]);
+    if(updateProductTrigger == true) getTable();
+  }, [updateProductTrigger]);
 
-  const removeProductLine = (id) => {
+  const removeProduct = (id) => {
     showConfirm(msgStr('deleteConfirmStr'), ()=>{
-      deleteProductLine(id, (jsonRes, status, error)=>{
+      deleteProduct(id, (jsonRes, status, error)=>{
         switch(status){
           case 200:
-            setUpdateProductLineTrigger(true);
+            setUpdateProductsTrigger(true);
             showAlert('success', jsonRes.message);
             break;
           default:
@@ -47,10 +47,10 @@ const ProductLines = () => {
   }
 
   const getTable = () => {
-    getProductLinesData(null, (jsonRes, status, error) => {
+    getProductsData((jsonRes, status, error) => {
       switch(status){
         case 200:
-          setUpdateProductLineTrigger(false);
+          setUpdateProductsTrigger(false);
           setTableData(jsonRes);
           break;
         case 500:
@@ -70,8 +70,8 @@ const ProductLines = () => {
       tableData.map((item, index) => {
         rows.push( 
           <View key={index} style={styles.tableRow}>
-            <View style={styles.categoryCell}>
-              <Text style={styles.categoryCell}>{item.line}</Text>
+            <View style={[styles.cell, styles.categoryCell]}>
+              <Text style={styles.categoryCell}>{item.product}</Text>
             </View>
             <View style={styles.cell}>
               <Text style={styles.cell}>{item.category? item.category.category: ''}</Text>
@@ -79,13 +79,16 @@ const ProductLines = () => {
             <View style={styles.cell}>
               <Text style={styles.cell}>{item.family? item.family.family: ''}</Text>
             </View>
+            <View style={styles.cell}>
+              <Text style={styles.cell}>{item.line? item.line.line: ''}</Text>
+            </View>
             <View style={[styles.IconCell]}>
-              <TouchableOpacity onPress={()=>{editProductLine(item)}}>
+              <TouchableOpacity onPress={()=>{editProduct(item)}}>
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
             </View>
             <View style={[styles.IconCell]}>
-              <TouchableOpacity onPress={()=>{removeProductLine(item.id)}}>
+              <TouchableOpacity onPress={()=>{removeProduct(item.id)}}>
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />
               </TouchableOpacity>
             </View>
@@ -101,15 +104,16 @@ const ProductLines = () => {
   return (
     <View style={styles.container}>
       <View style={styles.toolbar}>
-        <TouchableHighlight style={styles.button} onPress={openAddProductLineModal}>
+        <TouchableHighlight style={styles.button} onPress={openAddProductModal}>
           <Text style={styles.buttonText}>Add</Text>
         </TouchableHighlight>
       </View>
       <View style={styles.tableContainer}>
         <View style={styles.tableHeader}>
-          <Text style={[styles.columnHeader, styles.categoryCell]}>{"Line"}</Text>
+          <Text style={[styles.columnHeader, {width:400}]}>{"Product"}</Text>
           <Text style={[styles.columnHeader]}>{"Category"}</Text>
           <Text style={[styles.columnHeader]}>{"Family"}</Text>
+          <Text style={[styles.columnHeader]}>{"Line"}</Text>
           <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
           <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
         </View>
@@ -118,16 +122,16 @@ const ProductLines = () => {
         </ScrollView>
       </View>
 
-      <AddProductLineModal
+      <AddProductModal
         isModalVisible={isAddModalVisible}
-        Line={selectedLine}
-        setUpdateProductLineTrigger = {setUpdateProductLineTrigger} 
-        closeModal={closeAddProductLineModal}
+        Product={selectedProduct}
+        setUpdateProductsTrigger = {setUpdateProductsTrigger} 
+        closeModal={closeAddProductModal}
       />
     </View>
   );
 };
 
-const styles = productLinesStyle;
+const styles = productsStyle;
 
-export default ProductLines;
+export default Products;

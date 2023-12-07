@@ -20,7 +20,8 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(true); 
+  const [callInit, setCallInit] = useState(false); 
   
   const [categories, setCategories] = useState([]);
   const [PriceGroups, setPriceGroups] = useState([]);
@@ -51,13 +52,47 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
   }, [closeModal]);
 
   useEffect(()=>{
+    if(callInit){
+      setValidMessage('');
+      if(family && categories){
+        const initalCategory = categories.find(category => {return category.id == family.category_id});
+        if(initalCategory) selectCategory(initalCategory);
+      }else if(categories.length>0) {
+        selectCategory(categories[0]);
+      }
+  
+      setFamilyTxt(family?family.family:'');
+      setSummaryTxt(family?family.summary:'');
+      setImagePreviewUrl(family?API_URL + family.img_url:'');
+      setSelectedImage(null);
+      inputRef.current = null;
+      
+      if(family && PriceGroups){
+        const initalGroup = PriceGroups.find(priceGroup => {return priceGroup.id == family.price_group_id});
+        if(initalGroup) selectPriceGroup(initalGroup);
+      }else if(PriceGroups.length>0){
+        selectPriceGroup(PriceGroups[0]);
+      }
+      setIsLoading(false);
+    }
+  }, [callInit])
+
+  useEffect(()=>{
+    if(isModalVisible){
+      loadProductCategoriesData(()=>{
+        loadPriceGroupsData(()=>{
+          setCallInit(true);
+        });
+      });
+    }
+  }, [isModalVisible])
+
+  const loadProductCategoriesData = (callback) =>{
     getProductCategoriesData((jsonRes, status, error) => {
       switch(status){
         case 200:
           setCategories(jsonRes);
-          if(jsonRes.length> 0){
-            selectCategory(jsonRes[0])
-          }
+          callback();
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -68,16 +103,14 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
           break;
       }
     })
-  }, [])
+  }
 
-  useEffect(()=>{
+  const loadPriceGroupsData = (callback) =>{
     getPriceGroupsData((jsonRes, status, error) => {
       switch(status){
         case 200:
           setPriceGroups(jsonRes);
-          if(jsonRes.length> 0){
-            selectPriceGroup(jsonRes[0])
-          }
+          callback();
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -88,7 +121,7 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
           break;
       }
     })
-  }, [])
+  }
   
   const handleImageSelection = (event) => {
     const file = Platform.OS == 'web' ? event.target.files[0] : event.nativeEvent.target.files[0];
@@ -124,7 +157,6 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
       setValidMessage(msgStr('emptyField'));
       return;
     } 
-    console.log('wef');
     
     setIsLoading(true);
     
@@ -179,23 +211,11 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
       animationType="none"
       transparent={true}
       visible={isModalVisible}
-      onShow={()=>{
-        console.log(family);
-        setValidMessage('');
-        if(family && categories){
-          const initalCategory = categories.find(category => {return category.id == family.category_id});
-          if(initalCategory) selectCategory(initalCategory);
-        }else selectCategory('');
-        setFamilyTxt(family?family.family:'');
-        setSummaryTxt(family?family.summary:'');
-        setImagePreviewUrl(family?API_URL + family.img_url:'');
-        setSelectedImage(null);
-        inputRef.current = null;
-
-        if(family && PriceGroups){
-          const initalGroup = PriceGroups.find(priceGroup => {return priceGroup.id == family.price_group_id});
-          if(initalGroup) selectPriceGroup(initalGroup);
-        }else selectPriceGroup('');
+      onShow={() => {
+        setCallInit(false);
+      }}
+      onRequestClose={() => {
+        setCallInit(false);
       }}
     >
       <BasicModalContainer>
@@ -210,8 +230,8 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
                 selectCategory(categories[itemIndex]);
               }}>
             {categories.length>0 && (
-              categories.map((item, index) => {
-                return <Picker.Item key={index} label={item.category} value={item.id} />
+              categories.map((category, index) => {
+                return <Picker.Item key={index} label={category.category} value={category.id} />
               })
             )}
           </Picker>

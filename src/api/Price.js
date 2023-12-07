@@ -5,7 +5,7 @@ export const getHeaderData = (tableId, callback) => {
 }
 
 export const getTableData = (tableId, callback) => {
-  if(!categoryId) categoryId = 0;
+  if(!tableId) tableId = 0;
   getAPICall('price/gettabledata/' + tableId, callback);
 }
 

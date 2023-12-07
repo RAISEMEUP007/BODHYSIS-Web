@@ -7,6 +7,7 @@ import PriceTables from './pricetables/PriceTables';
 import PriceLogic from './pricelogic/PriceLogic';
 import Seasons from './seasons/Seasons';
 import Brands from './brands/Brands';
+import Products from './product/products/Products';
 import ProductCategories from './product/productcategories/ProductCategories';
 import ProductFamilies from './product/productfamilies/ProductFamilies';
 import ProductLines from './product/productlines/ProductLines';
@@ -20,6 +21,8 @@ const Inventory = ({initalItem = null}) => {
     
     if(selectedItem) {
         switch (selectedItem) {
+            case 'Products':
+                return <Products/>;
             case 'Product Categories':
                 return <ProductCategories/>;
             case 'Product Families':
@@ -49,6 +52,7 @@ const Inventory = ({initalItem = null}) => {
     return (
         <View style={styles.container}>
             <TouchNavGroup sectionTitle="General" items={[
+                { title: "Products", icon: 'check'  },
                 { title: "Product Categories", icon: 'check' },
                 { title: "Product Families", icon: 'check'  },
                 { title: "Product Lines", icon: 'check'  },

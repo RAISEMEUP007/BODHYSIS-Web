@@ -16,6 +16,9 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
 
   const isUpdate = Line ? true : false;
 
+  const [StartInitalizing, setStartInitalizing] = useState(false); 
+  const [CategoryChanged, setCategoryChanged] = useState(false); 
+
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
@@ -51,57 +54,71 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
   }, [closeModal]);
 
   useEffect(()=>{
-    console.log('aaa');
-    getProductCategoriesData((jsonRes, status, error) => {
-      switch(status){
-        case 200:
-          setCategories(jsonRes);
-          if(jsonRes.length> 0){
-            selectCategory(jsonRes[0])
-          }
-          break;
-        case 500:
-          showAlert('error', msgStr('serverError'));
-          break;
-        default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
+    if(StartInitalizing){
+      setValidMessage('');
+      if(Line && categories){
+        const initalCategory = categories.find(category => {return category.id == Line.category_id});
+        if(initalCategory) selectCategory(initalCategory);
+      }else if(categories.length>0) {
+        selectCategory(categories[0]);
       }
-    })
-  }, [])
+  
+      if(Line && families){
+        const initalFamily = families.find(family => {return family.id == Line.family_id});
+        if(initalFamily) selectFamily(initalFamily);
+      }else if(families.length[0]){
+        selectFamily(families[0]);
+      }
+  
+      setLineTxt(Line?Line.line:'');
+      setSizeTxt(Line?Line.size:'');
+      setSuitabilityTxt(Line?Line.suitability:'');
+      setQuantityTxt('');
+      setHoldbackTxt(Line?Line.holdback:'');
+      setShortCodeTxt(Line?Line.shortcode:'');
+        
+      if(Line && PriceGroups){
+        const initalGroup = PriceGroups.find(priceGroup => {return priceGroup.id == Line.price_group_id});
+        if(initalGroup) selectPriceGroup(initalGroup);
+      }else if(PriceGroups.length>0){
+        selectPriceGroup(PriceGroups[0]);
+      }
+      setIsLoading(false);
+    }
+  }, [StartInitalizing])
 
   useEffect(()=>{
-    console.log('bbb');
-    if(selectedCategory.id){
-      getProductFamiliesData(selectedCategory.id, (jsonRes, status, error) => {
-        switch(status){
-          case 200:
-            setFamilies(jsonRes);
-            if(jsonRes.length> 0){
-              selectFamily(jsonRes[0])
-            }
-            break;
-          case 500:
-            showAlert('error', msgStr('serverError'));
-            break;
-          default:
-            if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-            else showAlert('error', msgStr('unknownError'));
-            break;
-        }
-      })
+    if(CategoryChanged && selectedCategory.id){
+      loadProductFamiliesData(selectedCategory.id, (jsonRes)=>{
+        setFamilies(jsonRes);
+        console.log(jsonRes);
+        if(jsonRes.length>0) selectFamily(jsonRes[0]);
+      });
     }
   }, [selectedCategory])
 
   useEffect(()=>{
-    getPriceGroupsData((jsonRes, status, error) => {
+    if(isModalVisible){
+      loadPriceGroupsData(()=>{
+        loadProductCategoriesData((categories)=>{
+          let categoryId = null;
+          if(Line) categoryId = Line.category_id;
+          else categoryId = categories[0]?categories[0].id:null;
+          loadProductFamiliesData(categoryId, (families)=>{
+            setCategories(categories);
+            setFamilies(families);
+            setStartInitalizing(true);
+          });
+        });
+      });
+    }
+  }, [isModalVisible])
+
+  const loadProductCategoriesData = (callback) =>{
+    getProductCategoriesData((jsonRes, status, error) => {
       switch(status){
         case 200:
-          setPriceGroups(jsonRes);
-          if(jsonRes.length> 0){
-            selectPriceGroup(jsonRes[0])
-          }
+          callback(jsonRes);
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -112,7 +129,42 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
           break;
       }
     })
-  }, [])
+  }
+  
+  const loadProductFamiliesData = (categoryId, callback) => {
+    getProductFamiliesData(categoryId, (jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          callback(jsonRes);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
+
+  const loadPriceGroupsData = (callback) =>{
+    getPriceGroupsData((jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          setPriceGroups(jsonRes);
+          callback();
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
 
   const AddLineButtonHandler = () => {
     if (!LineTxt.trim()) {
@@ -178,28 +230,8 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
       transparent={true}
       visible={isModalVisible}
       onShow={()=>{
-        setValidMessage('');
-        if(Line && categories){
-          const initalCategory = categories.find(category => {return category.id == Line.category_id});
-          if(initalCategory) selectCategory(initalCategory);
-        }else selectCategory('');
-
-        if(Line && families){
-          const initalFamily = families.find(family => {return family.id == Line.family_id});
-          if(initalFamily) selectFamily(initalFamily);
-        }else selectFamily('');
-
-        setLineTxt(Line?Line.line:'');
-        setSizeTxt(Line?Line.size:'');
-        setSuitabilityTxt(Line?Line.suitability:'');
-        setQuantityTxt('');
-        setHoldbackTxt(Line?Line.holdback:'');
-        setShortCodeTxt(Line?Line.shortcode:'');
-
-        if(Line && PriceGroups){
-          const initalGroup = PriceGroups.find(priceGroup => {return priceGroup.id == Line.price_group_id});
-          if(initalGroup) selectPriceGroup(initalGroup);
-        }else selectPriceGroup('');
+        setStartInitalizing(false);
+        setCategoryChanged(false);
       }}
     >
       <BasicModalContainer>
@@ -212,10 +244,11 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
             onValueChange={(itemValue, itemIndex) =>
               {
                 selectCategory(categories[itemIndex]);
+                setCategoryChanged(true);
               }}>
             {categories.length>0 && (
-              categories.map((item, index) => {
-                return <Picker.Item key={index} label={item.category} value={item.id} />
+              categories.map((category, index) => {
+                return <Picker.Item key={index} label={category.category} value={category.id} />
               })
             )}
           </Picker>
@@ -229,8 +262,8 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
                 selectFamily(families[itemIndex]);
               }}>
             {families.length>0 && (
-              families.map((item, index) => {
-                return <Picker.Item key={index} label={item.family} value={item.id} />
+              families.map((family, index) => {
+                return <Picker.Item key={index} label={family.family} value={family.id} />
               })
             )}
           </Picker>

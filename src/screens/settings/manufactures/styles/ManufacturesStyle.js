@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
-import { TextMediumSize, TextSmallSize } from '../../../../../common/constants/Fonts';
-import { TextdefaultSize } from '../../../../../common/constants/Fonts';
+import { TextMediumSize, TextSmallSize } from '../../../../common/constants/Fonts';
+import { TextdefaultSize } from '../../../../common/constants/Fonts';
 
-export const productLinesStyle = StyleSheet.create({
+export const ManufacturesStyle = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
