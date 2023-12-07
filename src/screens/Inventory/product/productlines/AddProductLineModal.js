@@ -12,6 +12,7 @@ import { msgStr } from '../../../../common/constants/Message';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 
 import { productLineModalstyles } from './styles/ProductLineModalStyle';
+import NumericInput from '../../../../common/components/formcomponents/NumericInput';
 
 const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger, closeModal }) => {
 
@@ -279,7 +280,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
           <Text style={styles.label}>Quantity</Text>
           <TextInput style={[styles.input, styles.inputDisable]} placeholder="Quantity" value={QuantityTxt} placeholderTextColor="#ccc" editable={false}/>
           <Text style={styles.label}>Holdback Percentage</Text>
-          <TextInput style={styles.input} placeholder="Holdback Percentage" value={HoldbackTxt} onChangeText={setHoldbackTxt} placeholderTextColor="#ccc"/>
+          <NumericInput placeholder="Holdback Percentage" value={HoldbackTxt} onChangeText={setHoldbackTxt} validMinNumber={1} validMaxNumber={100}></NumericInput>
           <Text style={styles.label}>Short Code / Name Stem</Text>
           <TextInput style={styles.input} placeholder="Short Code / Name Stem" value={ShortCodeTxt} onChangeText={setShortCodeTxt} placeholderTextColor="#ccc"/>
 

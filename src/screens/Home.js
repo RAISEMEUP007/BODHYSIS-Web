@@ -58,7 +58,7 @@ const MainDrawer = ({navigation}) => {
   return (
     <Drawer.Navigator 
       useLegacyImplementation
-      initialRouteName="Dashboard" 
+      initialRouteName="Inventory" 
       drawerContent={(props) => <DrawerContent {...props} />}
       screenOptions={{
         drawerType: (Platform.OS == 'web' && isLargeScreen) ? 'permanent' : 'front',

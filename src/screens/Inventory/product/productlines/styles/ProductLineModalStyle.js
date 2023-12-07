@@ -7,12 +7,12 @@ export const productLineModalstyles = StyleSheet.create({
     fontSize: TextSmallSize,
   },
   input: {
-    height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     marginTop: 4,
     marginBottom: 10,
-    padding: 8,
+    padding: 10,
+    paddingHorizontal: 8,
     width: 700,
   },
   inputDisable: {
