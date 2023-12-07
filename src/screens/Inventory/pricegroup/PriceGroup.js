@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import CheckBox from 'expo-checkbox';
 import { FontAwesome5 } from '@expo/vector-icons';
 import {Picker} from '@react-native-picker/picker';
@@ -16,6 +16,8 @@ import UpdateGroupModal from './UpdateGroupModal';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 
 const PriceGroup = ({tableId, tableName, openPriceTable}) => {
+  const screenHeight = Dimensions.get('window').height;
+
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -344,62 +346,56 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.toolbar}>
-        <TouchableOpacity style={styles.backButton} onPress={()=>{openPriceTable(null)}}>
-          <FontAwesome5 name="arrow-left" size={15} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.tableName}>{tableName}</Text>
+    <ScrollView horizontal={true}>
+      <View style={styles.container}>
+        <View style={styles.toolbar}>
+          <TouchableOpacity style={styles.backButton} onPress={()=>{openPriceTable(null)}}>
+            <FontAwesome5 name="arrow-left" size={15} color="#000" />
+          </TouchableOpacity>
+          <Text style={styles.tableName}>{tableName}</Text>
+        </View>
+        <View style={styles.toolbar}>
+          <TouchableHighlight style={styles.button} onPress={openGroupModal}>
+            <Text style={styles.buttonText}>Create price group</Text>
+          </TouchableHighlight>
+          <TouchableHighlight style={styles.button} onPress={openPriceModal}>
+            <Text style={styles.buttonText}>Add Duration</Text>
+          </TouchableHighlight>
+        </View>
+        <View style={styles.tableContainer}>
+            <View style={styles.table}>
+              {renderTableHeader()}
+              <ScrollView style={{ flex: 1, maxHeight: screenHeight-280 }}>
+                {renderTableData()}
+              </ScrollView>
+            </View>
+        </View>
+
+        <CreateGroupModal
+          isModalVisible={isGroupModalVisible}
+          tableId={tableId}
+          groupName={""}
+          setUpdateGroupTrigger = {setUpdateGroupTrigger} 
+          closeModal={closeGroupModal}
+        />
+
+        <UpdateGroupModal
+          isModalVisible={isUpdateGroupModalVisible}
+          tableId={tableId}
+          groupName={groupName}
+          setUpdateGroupTrigger = {setUpdateGroupTrigger} 
+          closeModal={closeUpdateGroupModal}
+        />
+
+        <PricePointModal
+          isModalVisible={isAddPriceModalVisible}
+          tableId={tableId}
+          setUpdatePointTrigger = {setUpdatePointTrigger} 
+          closeModal={closePriceModal}
+        />
+
       </View>
-      <View style={styles.toolbar}>
-        <TouchableHighlight style={styles.button} onPress={openGroupModal}>
-          <Text style={styles.buttonText}>Create price group</Text>
-        </TouchableHighlight>
-        <TouchableHighlight style={styles.button} onPress={openPriceModal}>
-          <Text style={styles.buttonText}>Add Duration</Text>
-        </TouchableHighlight>
-      </View>
-      {/* <View style={styles.toolbar}>
-        <Text style={styles.toolbarLabel}>Seasons</Text>
-        {renderSeasonPicker()}
-        <Text style={styles.toolbarLabel}>Brands</Text>
-        {renderBrandPicker()}
-      </View> */}
-      <View style={styles.tableContainer}>
-        <ScrollView horizontal={true}>
-          <View style={styles.table}>
-            {renderTableHeader()}
-            <ScrollView>
-              {renderTableData()}
-            </ScrollView>
-          </View>
-        </ScrollView>
-      </View>
-
-      <CreateGroupModal
-        isModalVisible={isGroupModalVisible}
-        tableId={tableId}
-        groupName={""}
-        setUpdateGroupTrigger = {setUpdateGroupTrigger} 
-        closeModal={closeGroupModal}
-      />
-
-      <UpdateGroupModal
-        isModalVisible={isUpdateGroupModalVisible}
-        tableId={tableId}
-        groupName={groupName}
-        setUpdateGroupTrigger = {setUpdateGroupTrigger} 
-        closeModal={closeUpdateGroupModal}
-      />
-
-      <PricePointModal
-        isModalVisible={isAddPriceModalVisible}
-        tableId={tableId}
-        setUpdatePointTrigger = {setUpdatePointTrigger} 
-        closeModal={closePriceModal}
-      />
-
-    </View>
+    </ScrollView>
   );
 };
 

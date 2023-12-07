@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, TouchableWithoutFeedback, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import {getSeasonsData, saveSeasonCell, deleteSeason } from '../../../api/Price';
@@ -12,6 +12,8 @@ import { seasonsStyle } from './styles/SeasonsStyle';
 import AddSeasonModal from './AddSeasonModal';
 
 const Seasons = () => {
+  const screenHeight = Dimensions.get('window').height;
+
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -142,28 +144,30 @@ const Seasons = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.toolbar}>
-        <TouchableHighlight style={styles.button} onPress={openAddSeasonModal}>
-          <Text style={styles.buttonText}>Add</Text>
-        </TouchableHighlight>
-      </View>
-      <View style={styles.tableContainer}>
-        <View style={styles.tableHeader}>
-          <Text style={styles.columnHeader}>{"Season"}</Text>
-          <Text style={[styles.columnHeader, styles.radioButtonCell]}>{"Active"}</Text>
+    <ScrollView horizontal={true}>
+      <View style={styles.container}>
+        <View style={styles.toolbar}>
+          <TouchableHighlight style={styles.button} onPress={openAddSeasonModal}>
+            <Text style={styles.buttonText}>Add</Text>
+          </TouchableHighlight>
         </View>
-        <ScrollView>
+        <View style={styles.tableContainer}>
+          <View style={styles.tableHeader}>
+            <Text style={styles.columnHeader}>{"Season"}</Text>
+            <Text style={[styles.columnHeader, styles.radioButtonCell]}>{"Active"}</Text>
+          </View>
+          <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
             {renderTableData()}
-        </ScrollView>
-      </View>
+          </ScrollView>
+        </View>
 
-      <AddSeasonModal
-        isModalVisible={isAddModalVisible}
-        setUpdateSeasonTrigger = {setUpdateSeasonTrigger} 
-        closeModal={closeAddSeasonModal}
-      />
-    </View>
+        <AddSeasonModal
+          isModalVisible={isAddModalVisible}
+          setUpdateSeasonTrigger = {setUpdateSeasonTrigger} 
+          closeModal={closeAddSeasonModal}
+        />
+      </View>
+    </ScrollView>
   );
 };
 

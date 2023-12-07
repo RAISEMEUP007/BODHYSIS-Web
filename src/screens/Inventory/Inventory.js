@@ -11,6 +11,7 @@ import Products from './product/products/Products';
 import ProductCategories from './product/productcategories/ProductCategories';
 import ProductFamilies from './product/productfamilies/ProductFamilies';
 import ProductLines from './product/productlines/ProductLines';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const Inventory = ({initalItem = null}) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);
@@ -51,25 +52,27 @@ const Inventory = ({initalItem = null}) => {
 
     return (
         <View style={styles.container}>
-            <TouchNavGroup sectionTitle="General" items={[
-                { title: "Products", icon: 'check'  },
-                { title: "Product Categories", icon: 'check' },
-                { title: "Product Families", icon: 'check'  },
-                { title: "Product Lines", icon: 'check'  },
-                { title: "Search", icon: 'search'  }
-            ]} handleItemClick={handleItemClick} />
-            <TouchNavGroup sectionTitle="Price Management" items={[
-                { title: "Price Tables",  icon: 'table'  },
-                { title: "Price Logic",  icon: 'table'  },
-                { title: "Seasons", icon: 'tree'  },
-                { title: "Brands",  icon: 'tags' }
-            ]} handleItemClick={handleItemClick} />
-            <TouchNavGroup sectionTitle="Bulk Update" items={[
-                { title: "Bulk Update", icon: 'wrench' }
-            ]} handleItemClick={handleItemClick} />
-            <TouchNavGroup sectionTitle="Print" items={[
-                { title: "Print Snapshot", icon: 'print'  }
-            ]} handleItemClick={handleItemClick} />
+            <ScrollView>
+                <TouchNavGroup sectionTitle="General" items={[
+                    { title: "Products", icon: 'check'  },
+                    { title: "Product Categories", icon: 'check' },
+                    { title: "Product Families", icon: 'check'  },
+                    { title: "Product Lines", icon: 'check'  },
+                    { title: "Search", icon: 'search'  }
+                ]} handleItemClick={handleItemClick} />
+                <TouchNavGroup sectionTitle="Price Management" items={[
+                    { title: "Price Tables",  icon: 'table'  },
+                    { title: "Price Logic",  icon: 'table'  },
+                    { title: "Seasons", icon: 'tree'  },
+                    { title: "Brands",  icon: 'tags' }
+                ]} handleItemClick={handleItemClick} />
+                <TouchNavGroup sectionTitle="Bulk Update" items={[
+                    { title: "Bulk Update", icon: 'wrench' }
+                ]} handleItemClick={handleItemClick} />
+                <TouchNavGroup sectionTitle="Print" items={[
+                    { title: "Print Snapshot", icon: 'print'  }
+                ]} handleItemClick={handleItemClick} />
+            </ScrollView>
         </View>
     );
 }

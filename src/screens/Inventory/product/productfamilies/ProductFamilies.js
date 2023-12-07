@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, Image } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Image, Dimensions, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import {getProductFamiliesData, deleteProductFamily } from '../../../../api/Product';
@@ -13,6 +13,8 @@ import { productFamiliesStyle } from './styles/ProductFamiliesStyle';
 import AddProductFamilyModal from './AddProductFamilyModal';
 
 const ProductFamilies = () => {
+  const screenHeight = Dimensions.get('window').height;
+  
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -103,32 +105,34 @@ const ProductFamilies = () => {
   };
   
   return (
-    <View style={styles.container}>
-      <View style={styles.toolbar}>
-        <TouchableHighlight style={styles.button} onPress={openAddProductFamilyModal}>
-          <Text style={styles.buttonText}>Add</Text>
-        </TouchableHighlight>
-      </View>
-      <View style={styles.tableContainer}>
-        <View style={styles.tableHeader}>
-          <Text style={[styles.columnHeader, styles.categoryCell]}>{"Family"}</Text>
-          <Text style={[styles.columnHeader]}>{"Category"}</Text>
-          <Text style={[styles.columnHeader, styles.imageCell]}>{"Image"}</Text>
-          <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
-          <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
+    <ScrollView horizontal={true}>
+      <View style={styles.container}>
+        <View style={styles.toolbar}>
+          <TouchableHighlight style={styles.button} onPress={openAddProductFamilyModal}>
+            <Text style={styles.buttonText}>Add</Text>
+          </TouchableHighlight>
         </View>
-        <ScrollView>
-            {renderTableData()}
-        </ScrollView>
-      </View>
+        <View style={styles.tableContainer}>
+          <View style={styles.tableHeader}>
+            <Text style={[styles.columnHeader, styles.categoryCell]}>{"Family"}</Text>
+            <Text style={[styles.columnHeader]}>{"Category"}</Text>
+            <Text style={[styles.columnHeader, styles.imageCell]}>{"Image"}</Text>
+            <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
+            <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
+          </View>
+          <ScrollView>
+              {renderTableData()}
+          </ScrollView>
+        </View>
 
-      <AddProductFamilyModal
-        isModalVisible={isAddModalVisible}
-        family={selectedFamily}
-        setUpdateProductFamilyTrigger = {setUpdateProductFamilyTrigger} 
-        closeModal={closeAddProductFamilyModal}
-      />
-    </View>
+        <AddProductFamilyModal
+          isModalVisible={isAddModalVisible}
+          family={selectedFamily}
+          setUpdateProductFamilyTrigger = {setUpdateProductFamilyTrigger} 
+          closeModal={closeAddProductFamilyModal}
+        />
+      </View>
+    </ScrollView>
   );
 };
 
