@@ -68,7 +68,6 @@ const styles = {
     marginTop: 4,
     padding: 10,
     paddingHorizontal: 8,
-    width: 700,
   },
   validationMessage: {
     position: 'relative',
