@@ -2,7 +2,7 @@ import React, { useEffect, useState} from 'react';
 import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Image, Dimensions, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import {getProductFamiliesData, deleteProductFamily } from '../../../../api/Product';
+import {getProductFamiliesData, deleteProductFamily, getQuantitiesByFamily } from '../../../../api/Product';
 import { msgStr } from '../../../../common/constants/Message';
 import { API_URL } from '../../../../common/constants/AppConstants';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
@@ -55,7 +55,7 @@ const ProductFamilies = ({navigation, openInventory}) => {
       switch(status){
         case 200:
           setUpdateProductFamilyTrigger(false);
-          setTableData(jsonRes);
+          setQuantities(jsonRes);
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -67,6 +67,32 @@ const ProductFamilies = ({navigation, openInventory}) => {
       }
     })
   }
+
+  const setQuantities = (tableData) =>{
+    getQuantitiesByFamily((jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          if(jsonRes){
+            for (let i = 0; i < tableData.length; i++) {
+              let id = tableData[i].id;
+              if (jsonRes[id] !== undefined) {  
+                tableData[i].quantity = jsonRes[id];
+              }
+            }
+          }
+          setTableData(tableData);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    });
+  }
+
   const renderTableData = () => {
     const rows = [];
     if(tableData.length > 0){
@@ -78,6 +104,9 @@ const ProductFamilies = ({navigation, openInventory}) => {
             </View>
             <View style={styles.cell}>
               <Text style={styles.cell}>{item.category.category}</Text>
+            </View>
+            <View style={[styles.cell, {width:100, paddingRight:6, alignItems:'flex-end'}]}>
+              <Text>{item.quantity? item.quantity: '0'}</Text>
             </View>
             <View style={[styles.imageCell]}>
               {item.img_url ? (
@@ -124,6 +153,7 @@ const ProductFamilies = ({navigation, openInventory}) => {
             <View style={styles.tableHeader}>
               <Text style={[styles.columnHeader, styles.categoryCell]}>{"Family"}</Text>
               <Text style={[styles.columnHeader]}>{"Category"}</Text>
+              <Text style={[styles.columnHeader, {width:100}]}>{"Quantity"}</Text>
               <Text style={[styles.columnHeader, styles.imageCell]}>{"Image"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>

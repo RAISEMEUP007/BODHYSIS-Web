@@ -45,7 +45,6 @@ export const getProductLinesData = (familyId, callback) => {
 }
 
 export const updateProductLine = (payload, callback) => {
-  console.log(payload);
   postAPICall('product/updateproductline', payload, callback);
 };
 
@@ -63,7 +62,6 @@ export const getProductsData = (callback) => {
 }
 
 export const updateProduct = (payload, callback) => {
-  console.log(payload);
   postAPICall('product/updateproduct', payload, callback);
 };
 
@@ -74,4 +72,16 @@ export const createProduct = (payload, callback) => {
 export const deleteProduct = (id, callback) => {
   const payload = { id };
   postAPICall('product/deleteproduct', payload, callback);
+}
+
+export const getQuantitiesByLine = (callback) => {
+  getAPICall('product/getquantitiesbyline', callback);
+}
+
+export const getQuantitiesByFamily = (callback) => {
+  getAPICall('product/getquantitiesbyfamily', callback);
+}
+
+export const getQuantitiesByCategory = (callback) => {
+  getAPICall('product/getquantitiesbycategory', callback);
 }
