@@ -2,7 +2,7 @@ import React, { useEffect, useState} from 'react';
 import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import {getProductLinesData, deleteProductLine } from '../../../../api/Product';
+import {getProductLinesData, deleteProductLine, getQuantitiesByLine } from '../../../../api/Product';
 import { msgStr } from '../../../../common/constants/Message';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
@@ -54,7 +54,7 @@ const ProductLines = ({navigation, openInventory}) => {
       switch(status){
         case 200:
           setUpdateProductLineTrigger(false);
-          setTableData(jsonRes);
+          setQuantities(jsonRes);
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -67,6 +67,31 @@ const ProductLines = ({navigation, openInventory}) => {
     })
   }
 
+  const setQuantities = (tableData) =>{
+    getQuantitiesByLine((jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          if(jsonRes){
+            for (let i = 0; i < tableData.length; i++) {
+              let id = tableData[i].id;
+              if (jsonRes[id] !== undefined) {  
+                tableData[i].quantity = jsonRes[id];
+              }
+            }
+          }
+          setTableData(tableData);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    });
+  }
+  
   const renderTableData = () => {
     const rows = [];
     if(tableData.length > 0){
@@ -77,10 +102,13 @@ const ProductLines = ({navigation, openInventory}) => {
               <Text style={styles.categoryCell}>{item.line}</Text>
             </View>
             <View style={styles.cell}>
-              <Text style={styles.cell}>{item.category? item.category.category: ''}</Text>
+              <Text>{item.category? item.category.category: ''}</Text>
             </View>
             <View style={styles.cell}>
-              <Text style={styles.cell}>{item.family? item.family.family: ''}</Text>
+              <Text>{item.family? item.family.family: ''}</Text>
+            </View>
+            <View style={[styles.cell, {width:100, paddingRight:6, alignItems:'flex-end'}]}>
+              <Text>{item.quantity? item.quantity: '0'}</Text>
             </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity onPress={()=>{editProductLine(item)}}>
@@ -121,6 +149,7 @@ const ProductLines = ({navigation, openInventory}) => {
               <Text style={[styles.columnHeader, styles.categoryCell]}>{"Line"}</Text>
               <Text style={[styles.columnHeader]}>{"Category"}</Text>
               <Text style={[styles.columnHeader]}>{"Family"}</Text>
+              <Text style={[styles.columnHeader, {width:100}]}>{"Quantity"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
             </View>

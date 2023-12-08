@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform, Image } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 
@@ -14,7 +14,7 @@ import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 import { productModalstyles } from './styles/ProductModalStyle';
 import NumericInput from '../../../../common/components/formcomponents/NumericInput';
 
-const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, closeModal }) => {
+const QuickAddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, closeModal }) => {
 
   const isUpdate = Product ? true : false;
 
@@ -46,7 +46,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   const [DescriptionTxt, setDescriptionTxt] = useState('');
   const [ItemIdTxt, setItemIdTxt] = useState('');
   const [BarcodeTxt, setBarcodeTxt] = useState('');
-  const [QuantityTxt, setQuantityTxt] = useState('');
+  const [QuantityTxt, setQuantityTxt] = useState('');  
   const [SerialNumber, setSerialNumber] = useState('');
   const [HomeLocation, setHomeLocation] = useState('');
   const [CurrentLocation, setCurrentLocation] = useState('');
@@ -79,12 +79,12 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
         selectCategory(categories[0]);
       }
   
-      if(Product && families){
-        const initalFamily = families.find(family => {return family.id == Product.family_id});
-        if(initalFamily) selectFamily(initalFamily);
-      }else if(families.length[0]){
-        selectFamily(families[0]);
-      }
+      // if(Product && families){
+      //   const initalFamily = families.find(family => {return family.id == Product.family_id});
+      //   if(initalFamily) selectFamily(initalFamily);
+      // }else if(families.length[0]){
+      //   selectFamily(families[0]);
+      // }
   
       setProductTxt(Product?Product.product:'');
       setSizeTxt(Product?Product.size:'');
@@ -96,12 +96,12 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
       setHomeLocation(Product?Product.home_location:'');
       setCurrentLocation(Product?Product.current_location:'');
         
-      if(Product && PriceGroups){
-        const initalGroup = PriceGroups.find(priceGroup => {return priceGroup.id == Product.price_group_id});
-        if(initalGroup) selectPriceGroup(initalGroup);
-      }else if(PriceGroups.length>0){
-        selectPriceGroup(PriceGroups[0]);
-      }
+      // if(Product && PriceGroups){
+      //   const initalGroup = PriceGroups.find(priceGroup => {return priceGroup.id == Product.price_group_id});
+      //   if(initalGroup) selectPriceGroup(initalGroup);
+      // }else if(PriceGroups.length>0){
+      //   selectPriceGroup(PriceGroups[0]);
+      // }
       
       if(Product && StatusArr){
         const initalStatus = StatusArr.find(status => {return status.id == Product.status});
@@ -328,7 +328,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                 )}
               </Picker>
 
-              <Text style={styles.label}>Family</Text>
+              {/* <Text style={styles.label}>Family</Text>
               <Picker
                 style={styles.select}
                 selectedValue={selectedFamily.id}
@@ -357,30 +357,13 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                     return <Picker.Item key={index} label={line.line} value={line.id} />
                   })
                 )}
-              </Picker>
+              </Picker> */}
             
               <Text style={styles.label}>Product</Text>
               <TextInput style={styles.input} placeholder="Product" value={ProductTxt} onChangeText={setProductTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>
               {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
               <Text style={styles.label}>Size</Text>
               <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} placeholderTextColor="#ccc"/>
-              <Text style={styles.label}>Description</Text>
-              <TextInput style={styles.input} placeholder="Description" value={DescriptionTxt} onChangeText={setDescriptionTxt} placeholderTextColor="#ccc"/>
-              <Text style={styles.label}>Item Id</Text>
-              <TextInput style={styles.input} placeholder="Description" value={ItemIdTxt} onChangeText={setItemIdTxt} placeholderTextColor="#ccc"/>
-            </View>
-            <View style={{flex: 1, paddingLeft: 10}}>
-              <Text style={styles.label}>Quantity</Text>
-              <NumericInput   placeholder="Holdback Percentage" value={QuantityTxt} onChangeText={setQuantityTxt}></NumericInput>
-              <Text style={styles.label}>Barcode</Text>
-              <TextInput style={[styles.input]} placeholder="Barcode" value={BarcodeTxt} onChangeText={setBarcodeTxt} placeholderTextColor="#ccc"/>
-              <Text style={styles.label}>Serial Number</Text>
-              <TextInput style={styles.input} placeholder="Serial Number" value={SerialNumber} onChangeText={setSerialNumber} placeholderTextColor="#ccc"/>
-              <Text style={styles.label}>Home Location</Text>
-              <TextInput style={styles.input} placeholder="Home Location" value={HomeLocation} onChangeText={setHomeLocation} placeholderTextColor="#ccc"/>
-              <Text style={styles.label}>Current Location</Text>
-              <TextInput style={styles.input} placeholder="Current Location" value={CurrentLocation} onChangeText={setCurrentLocation} placeholderTextColor="#ccc"/>
-              <Text style={styles.label}>Price Group</Text>
               <Picker
                 style={styles.select}
                 selectedValue={selectedPriceGroup.id}
@@ -392,23 +375,10 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                   PriceGroups.map((group, index) => {
                     return <Picker.Item key={index} label={group.price_group} value={group.id} />
                   })
-                )}
+                  )}
               </Picker>
-
-              <Text style={styles.label}>Status</Text>
-              <Picker
-                style={styles.select}
-                selectedValue={selectedStatus.id}
-                onValueChange={(itemValue, itemIndex) =>
-                  {
-                    selectStatus(StatusArr[itemIndex]);
-                  }}>
-                {StatusArr.length>0 && (
-                  StatusArr.map((statusItem, index) => {
-                    return <Picker.Item key={index} label={statusItem.status} value={statusItem.id} />
-                  })
-                )}
-              </Picker>
+              <Text style={styles.label}>Quantity</Text>
+              <TextInput style={[styles.input]} placeholder="Quantity" value={QuantityTxt} onChangeText={setQuantityTxt} placeholderTextColor="#ccc"/>
             </View>
           </View>
         </ModalBody>
@@ -429,4 +399,4 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
 
 const styles = productModalstyles;
 
-export default AddProductModal;
+export default QuickAddProductModal;

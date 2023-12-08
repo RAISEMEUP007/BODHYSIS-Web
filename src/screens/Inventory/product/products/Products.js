@@ -11,6 +11,7 @@ import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout'
 
 import { productsStyle } from './styles/ProductsStyle';
 import AddProductModal from './AddProductModal';
+import QuickAddProductModal from './QuickAddProductModal';
 
 const Products = ({navigation, openInventory}) => {
   const screenHeight = Dimensions.get('window').height;
@@ -22,11 +23,15 @@ const Products = ({navigation, openInventory}) => {
   const [updateProductTrigger, setUpdateProductsTrigger] = useState(true);
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
+  const [isQuickAddModalVisible, setQuickAddModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const openAddProductModal = () => { setAddModalVisible(true); setSelectedProduct(null)}
   const closeAddProductModal = () => { setAddModalVisible(false); setSelectedProduct(null)}
   const editProduct = (item) => { setSelectedProduct(item); setAddModalVisible(true); }
+
+  const openQuickAddProductModal = () => { setQuickAddModalVisible(true); setSelectedProduct(null)}
+  const closeQuickAddProductModal = () => { setQuickAddModalVisible(false); setSelectedProduct(null)}
 
   useEffect(()=>{
     if(updateProductTrigger == true) getTable();
@@ -118,6 +123,9 @@ const Products = ({navigation, openInventory}) => {
             <TouchableHighlight style={styles.button} onPress={openAddProductModal}>
               <Text style={styles.buttonText}>Add</Text>
             </TouchableHighlight>
+            <TouchableHighlight style={styles.button} onPress={openQuickAddProductModal}>
+              <Text style={styles.buttonText}>Quick Add</Text>
+            </TouchableHighlight>
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
@@ -138,6 +146,12 @@ const Products = ({navigation, openInventory}) => {
             Product={selectedProduct}
             setUpdateProductsTrigger = {setUpdateProductsTrigger} 
             closeModal={closeAddProductModal}
+          />
+          <QuickAddProductModal
+            isModalVisible={isQuickAddModalVisible}
+            Product={selectedProduct}
+            setUpdateProductsTrigger = {setUpdateProductsTrigger} 
+            closeModal={closeQuickAddProductModal}
           />
         </View>
       </ScrollView>
