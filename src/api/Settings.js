@@ -17,3 +17,21 @@ export const deleteManufacture = (id, callback) => {
   const payload = { id };
   postAPICall('settings/deletemanufacture', payload, callback);
 }
+
+export const getTagsData = (callback) => {
+  getAPICall('settings/gettagsdata/', callback);
+}
+
+export const updateTag = (payload, callback) => {
+  console.log(payload);
+  postAPICall('settings/updatetag', payload, callback);
+};
+
+export const createTag = (payload, callback) => {
+  postAPICall('settings/createtag', payload, callback);
+};
+
+export const deleteTag = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletetag', payload, callback);
+}
