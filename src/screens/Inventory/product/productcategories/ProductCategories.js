@@ -97,7 +97,7 @@ const ProductCategories = ({navigation, openInventory}) => {
               )}
             </View>
             <View style={[styles.IconCell]}>
-              <TouchableOpacity onPress={()=>{editProductCategory({id:item.id, category:item.category, img_url:item.img_url})}}>
+              <TouchableOpacity onPress={()=>{editProductCategory(item)}}>
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
             </View>

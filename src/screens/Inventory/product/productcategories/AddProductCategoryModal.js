@@ -10,6 +10,8 @@ import { msgStr } from '../../../../common/constants/Message';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 
 import { productCategoryModalstyles } from './styles/ProductCategoryModalStyle';
+import { getTagsData } from '../../../../api/Settings';
+import { Picker } from 'react-native-web';
 
 const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigger, closeModal }) => {
 
@@ -20,6 +22,8 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
 
   const [_productCategory, setProductCategory] = useState('');
+  const [Tags, setTags] = useState([]);
+  const [selectedTag, selectTag] = useState({});
 
   const inputRef = useRef(null); 
 
@@ -38,6 +42,10 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
       };
     }
   }, [closeModal]);
+
+  useEffect(() => {
+    loadTagData();
+  }, [isModalVisible])
 
   const handleImageSelection = (event) => {
     const file = Platform.OS == 'web' ? event.target.files[0] : event.nativeEvent.target.files[0];
@@ -59,6 +67,7 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
     formData.append('category', _productCategory);
     formData.append('img', selectedImage);
     formData.append('description', 'dd');
+    if(selectedTag && selectedTag.id) formData.append('tag_id', selectedTag.id);
 
     createProductCategory(formData, (jsonRes, status, error)=>{
       switch(status){
@@ -79,6 +88,24 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
       setIsLoading(false);
     });
   };
+
+  const loadTagData = (callback) =>{
+    getTagsData((jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          setTags(jsonRes);
+          selectTag(jsonRes[0]);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
 
   const checkInput = () => {
     if (!_productCategory.trim()) {
@@ -131,6 +158,19 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
               onChange={handleImageSelection} 
             />
           </View>
+          <Picker
+            style={styles.select}
+            selectedValue={selectedTag.id}
+            onValueChange={(itemValue, itemIndex) =>
+              {
+                selectTag(Tags[itemIndex]);
+              }}>
+            {Tags.length>0 && (
+              Tags.map((item, index) => {
+                return <Picker.Item key={index} label={item.tag} value={item.id} />
+              })
+            )}
+          </Picker>
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={handleAddButtonClick}>
