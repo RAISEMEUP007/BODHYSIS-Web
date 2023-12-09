@@ -90,6 +90,9 @@ const Products = ({navigation, openInventory}) => {
             <View style={styles.cell}>
               <Text style={styles.cell}>{item.line? item.line.line: ''}</Text>
             </View>
+            <View style={[styles.cell, {width:100, paddingRight:6, alignItems:'flex-end'}]}>
+              <Text>{item.quantity? item.quantity: ''}</Text>
+            </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity onPress={()=>{editProduct(item)}}>
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
@@ -133,6 +136,7 @@ const Products = ({navigation, openInventory}) => {
               <Text style={[styles.columnHeader]}>{"Category"}</Text>
               <Text style={[styles.columnHeader]}>{"Family"}</Text>
               <Text style={[styles.columnHeader]}>{"Line"}</Text>
+              <Text style={[styles.columnHeader, {width:100}]}>{"Quantity"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
             </View>

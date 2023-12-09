@@ -75,7 +75,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
       setLineTxt(Line?Line.line:'');
       setSizeTxt(Line?Line.size:'');
       setSuitabilityTxt(Line?Line.suitability:'');
-      setQuantityTxt('');
+      setQuantityTxt(Line.quantity?Line.quantity:'');
       setHoldbackTxt(Line?Line.holdback:'');
       setShortCodeTxt(Line?Line.shortcode:'');
         
