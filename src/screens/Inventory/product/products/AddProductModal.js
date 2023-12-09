@@ -371,7 +371,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
             </View>
             <View style={{flex: 1, paddingLeft: 10}}>
               <Text style={styles.label}>Quantity</Text>
-              <NumericInput   placeholder="Holdback Percentage" value={QuantityTxt} onChangeText={setQuantityTxt}></NumericInput>
+              <NumericInput   placeholder="Quantity" value={QuantityTxt} onChangeText={setQuantityTxt}></NumericInput>
               <Text style={styles.label}>Barcode</Text>
               <TextInput style={[styles.input]} placeholder="Barcode" value={BarcodeTxt} onChangeText={setBarcodeTxt} placeholderTextColor="#ccc"/>
               <Text style={styles.label}>Serial Number</Text>
