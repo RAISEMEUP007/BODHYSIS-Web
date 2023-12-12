@@ -90,7 +90,7 @@ const Products = ({navigation, openInventory}) => {
             <View style={styles.cell}>
               <Text style={styles.cell}>{item.line?( item.line.line): ''}</Text>
             </View>
-            <View style={[styles.cell, {width:100, paddingRight:6, alignItems:'flex-end'}]}>
+            <View style={[styles.cell, {width:100}]}>
               <Text>{item.line? item.line.size: ''}</Text>
             </View>
             <View style={styles.cell}>
