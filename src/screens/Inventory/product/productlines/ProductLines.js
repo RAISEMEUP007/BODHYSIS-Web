@@ -26,7 +26,7 @@ const ProductLines = ({navigation, openInventory}) => {
 
   const openAddProductLineModal = () => { setAddModalVisible(true); setSelectedLine(null)}
   const closeAddProductLineModal = () => { setAddModalVisible(false); setSelectedLine(null)}
-  const editProductLine = (item) => { setSelectedLine(item); setAddModalVisible(true); }
+  const editProductLine = (index) => { setSelectedLine(tableData[index]); setAddModalVisible(true); }
 
   useEffect(()=>{
     if(updateProductLineTrigger == true) getTable();
@@ -111,7 +111,7 @@ const ProductLines = ({navigation, openInventory}) => {
               <Text>{item.quantity? item.quantity: '0'}</Text>
             </View>
             <View style={[styles.IconCell]}>
-              <TouchableOpacity onPress={()=>{editProductLine(item)}}>
+              <TouchableOpacity onPress={()=>{editProductLine(index)}}>
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
             </View>

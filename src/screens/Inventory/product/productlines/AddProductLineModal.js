@@ -75,7 +75,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
       setLineTxt(Line?Line.line:'');
       setSizeTxt(Line?Line.size:'');
       setSuitabilityTxt(Line?Line.suitability:'');
-      setQuantityTxt('');
+      setQuantityTxt(Line.quantity?Line.quantity:'');
       setHoldbackTxt(Line?Line.holdback:'');
       setShortCodeTxt(Line?Line.shortcode:'');
         
@@ -273,8 +273,8 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
           <Text style={styles.label}>Line</Text>
           <TextInput style={styles.input} placeholder="Line" value={LineTxt} onChangeText={setLineTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>
           {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
-          <Text style={styles.label}>Size</Text>
-          <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} placeholderTextColor="#ccc"/>
+          {/* <Text style={styles.label}>Size</Text>
+          <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} placeholderTextColor="#ccc"/> */}
           <Text style={styles.label}>Suitability</Text>
           <TextInput style={styles.input} placeholder="Suitability" value={SuitabilityTxt} onChangeText={setSuitabilityTxt} placeholderTextColor="#ccc"/>
           <Text style={styles.label}>Quantity</Text>

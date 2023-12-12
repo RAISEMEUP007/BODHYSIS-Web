@@ -26,7 +26,8 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
   const [selectedTag, selectTag] = useState({});
 
   const inputRef = useRef(null); 
-
+  const defaultInputRef = useRef(null);
+  
   useEffect(() => {
     if(Platform.web){
       const handleKeyDown = (event) => {
@@ -34,15 +35,21 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
           closeModal();
         }
       };
-  
+      
       window.addEventListener('keydown', handleKeyDown);
-  
+      
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
       };
     }
   }, [closeModal]);
 
+  useEffect(() => {
+    if (isModalVisible) {
+      defaultInputRef.current && defaultInputRef.current.focus();
+    }
+  }, [isModalVisible]);
+  
   useEffect(() => {
     loadTagData();
   }, [isModalVisible])
@@ -132,6 +139,7 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
         <ModalHeader label={"Product Category"} closeModal={closeModal} />
         <ModalBody>
           <TextInput
+            ref={defaultInputRef}
             style={styles.input}
             onChangeText={setProductCategory}
             value={_productCategory}

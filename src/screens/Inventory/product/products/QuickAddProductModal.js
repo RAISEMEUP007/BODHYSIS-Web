@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform, Image } from 'react-native';
+import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 
-import { createProduct, updateProduct, getProductCategoriesData, getProductFamiliesData, getProductLinesData } from '../../../../api/Product';
+import { getProductCategoriesData, getProductFamiliesData, getProductLinesData, QuickAddProduct } from '../../../../api/Product';
 import { getPriceGroupsData } from '../../../../api/Price';
 import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
@@ -235,7 +235,7 @@ const QuickAddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigge
   }
 
   const AddProductButtonHandler = () => {
-    if (!ProductTxt.trim()) {
+    if (!SizeTxt.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
     } 
@@ -243,15 +243,17 @@ const QuickAddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigge
     setIsLoading(true);
     
     const payload  = {
-      product: ProductTxt,
+      product: selectedLine.line + " " + SizeTxt + " " + selectedCategory.category,
       category_id : selectedCategory.id,
       family_id : selectedFamily.id,
       line_id : selectedLine.id,
+      line: selectedLine.line,
       size : SizeTxt,
       description : DescriptionTxt,
       item_id : ItemIdTxt,
       barcode : BarcodeTxt,
-      quantity : QuantityTxt,
+      quantity : 1,
+      rowcounts: QuantityTxt,
       serial_number : SerialNumber,
       home_location : HomeLocation,
       current_location : CurrentLocation,
@@ -277,20 +279,22 @@ const QuickAddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigge
       setIsLoading(false);
     };
     
-    if (isUpdate) {
-      payload.id = Product.id
-      updateProduct(payload, (jsonRes, status) => {
+    console.log(selectedCategory);
+    // return;
+    // if (isUpdate) {
+    //   payload.id = Product.id
+    //   updateProduct(payload, (jsonRes, status) => {
+    //     handleResponse(jsonRes, status);
+    //   });
+    // } else {
+      QuickAddProduct(payload, (jsonRes, status) => {
         handleResponse(jsonRes, status);
       });
-    } else {
-      createProduct(payload, (jsonRes, status) => {
-        handleResponse(jsonRes, status);
-      });
-    }
+    // }
   };
 
   const checkInput = () => {
-    if (!ProductTxt.trim()) {
+    if (!SizeTxt.trim()) {
       setValidMessage(msgStr('emptyField'));
     } else {
       setValidMessage('');
@@ -308,7 +312,7 @@ const QuickAddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigge
       }}
     >
       <BasicModalContainer>
-        <ModalHeader label={"Product"} closeModal={closeModal} />
+        <ModalHeader label={"Quick Add"} closeModal={closeModal} />
         <ModalBody>
           <View style={{flexDirection:'row'}}>
             <View style={{flex: 1, paddingRight: 10}}>
@@ -328,7 +332,7 @@ const QuickAddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigge
                 )}
               </Picker>
 
-              {/* <Text style={styles.label}>Family</Text>
+              <Text style={styles.label}>Family</Text>
               <Picker
                 style={styles.select}
                 selectedValue={selectedFamily.id}
@@ -357,13 +361,16 @@ const QuickAddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigge
                     return <Picker.Item key={index} label={line.line} value={line.id} />
                   })
                 )}
-              </Picker> */}
+              </Picker>
             
-              <Text style={styles.label}>Product</Text>
+              {/* <Text style={styles.label}>Product</Text>
               <TextInput style={styles.input} placeholder="Product" value={ProductTxt} onChangeText={setProductTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>
-              {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
+              {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>} */}
               <Text style={styles.label}>Size</Text>
-              <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} placeholderTextColor="#ccc"/>
+              <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} onBlur={checkInput} placeholderTextColor="#ccc"/>
+              {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
+              
+              <Text style={styles.label}>Price Group</Text>
               <Picker
                 style={styles.select}
                 selectedValue={selectedPriceGroup.id}

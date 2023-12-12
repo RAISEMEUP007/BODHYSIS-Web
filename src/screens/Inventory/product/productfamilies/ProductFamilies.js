@@ -112,7 +112,7 @@ const ProductFamilies = ({navigation, openInventory}) => {
               {item.img_url ? (
                 <Image source={{ uri: API_URL+item.img_url }} style={styles.cellImage}/>
               ) : (
-                <Text >no image</Text>
+                <FontAwesome5 name="image" size={26} color="#666"></FontAwesome5>
               )}
             </View>
             <View style={[styles.IconCell]}>

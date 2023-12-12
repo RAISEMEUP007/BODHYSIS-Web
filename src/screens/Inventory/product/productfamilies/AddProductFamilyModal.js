@@ -35,6 +35,7 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
   const [selectedPriceGroup, selectPriceGroup] = useState({});
 
   const inputRef = useRef(null);
+  const defaultInputRef = useRef(null);
 
   useEffect(() => {
     if(Platform.web){
@@ -51,6 +52,12 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
       };
     }
   }, [closeModal]);
+  
+  useEffect(() => {
+    if (isModalVisible) {
+      defaultInputRef.current && defaultInputRef.current.focus();
+    }
+  }, [isModalVisible]);
 
   useEffect(()=>{
     if(callInit){
@@ -238,7 +245,7 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
           </Picker>
 
           <Text style={styles.label}>Family</Text>
-          <TextInput style={styles.input} placeholder="Family" value={familyTxt} onChangeText={setFamilyTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>
+          <TextInput style={styles.input} placeholder="Family" value={familyTxt} onChangeText={setFamilyTxt} placeholderTextColor="#ccc" onBlur={checkInput} ref={defaultInputRef}/>
           {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
 
           {Platform.OS == 'web' && (
