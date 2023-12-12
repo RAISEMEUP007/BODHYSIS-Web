@@ -71,13 +71,22 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
       }else if(families.length[0]){
         selectFamily(families[0]);
       }
-  
-      setLineTxt(Line?Line.line:'');
-      setSizeTxt(Line?Line.size:'');
-      setSuitabilityTxt(Line?Line.suitability:'');
-      setQuantityTxt(Line.quantity?Line.quantity:'');
-      setHoldbackTxt(Line?Line.holdback:'');
-      setShortCodeTxt(Line?Line.shortcode:'');
+      
+      if(Line){
+        setLineTxt(Line?Line.line:'');
+        setSizeTxt(Line?Line.size:'');
+        setSuitabilityTxt(Line?Line.suitability:'');
+        setQuantityTxt(Line.quantity?Line.quantity:'');
+        setHoldbackTxt(Line?Line.holdback:'');
+        setShortCodeTxt(Line?Line.shortcode:'');
+      }else {
+        setLineTxt('');
+        setSizeTxt('');
+        setSuitabilityTxt('');
+        setQuantityTxt('');
+        setHoldbackTxt('');
+        setShortCodeTxt('');
+      }
         
       if(Line && PriceGroups){
         const initalGroup = PriceGroups.find(priceGroup => {return priceGroup.id == Line.price_group_id});
@@ -273,12 +282,12 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
           <Text style={styles.label}>Line</Text>
           <TextInput style={styles.input} placeholder="Line" value={LineTxt} onChangeText={setLineTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>
           {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
-          {/* <Text style={styles.label}>Size</Text>
-          <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} placeholderTextColor="#ccc"/> */}
+          <Text style={styles.label}>Size</Text>
+          <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} placeholderTextColor="#ccc"/>
           <Text style={styles.label}>Suitability</Text>
           <TextInput style={styles.input} placeholder="Suitability" value={SuitabilityTxt} onChangeText={setSuitabilityTxt} placeholderTextColor="#ccc"/>
           <Text style={styles.label}>Quantity</Text>
-          <TextInput style={[styles.input, styles.inputDisable]} placeholder="Quantity" value={QuantityTxt} placeholderTextColor="#ccc" editable={false}/>
+          <TextInput style={[styles.input, styles.inputDisable]} placeholder="Quantity" placeholderTextColor="#ccc" editable={false}/>
           <Text style={styles.label}>Holdback Percentage</Text>
           <NumericInput placeholder="Holdback Percentage" value={HoldbackTxt} onChangeText={setHoldbackTxt} validMinNumber={1} validMaxNumber={100}></NumericInput>
           <Text style={styles.label}>Short Code / Name Stem</Text>

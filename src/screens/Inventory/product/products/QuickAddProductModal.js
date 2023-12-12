@@ -354,11 +354,11 @@ const QuickAddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigge
                 selectedValue={selectedLine.id}
                 onValueChange={(itemValue, itemIndex) =>
                   {
-                    selectFamily(lines[itemIndex]);
+                    selectLine(lines[itemIndex]);
                   }}>
                 {lines.length>0 && (
                   lines.map((line, index) => {
-                    return <Picker.Item key={index} label={line.line} value={line.id} />
+                    return <Picker.Item key={index} label={line.line + " " + line.size} value={line.id} />
                   })
                 )}
               </Picker>

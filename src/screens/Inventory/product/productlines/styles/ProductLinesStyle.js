@@ -54,7 +54,7 @@ export const productLinesStyle = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ced4da',
     borderRadius: 5,
-    width: 150,
+    width: 200,
     paddingVertical: 5,
     paddingHorizontal: 10,
   },
@@ -93,12 +93,12 @@ export const productLinesStyle = StyleSheet.create({
     paddingLeft: 6,
   },
   cellInput: {
-    width: 150,
+    width: 200,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
   categoryCell: {
-    width: 400,
+    width: 300,
     paddingHorizontal: 6,
     paddingVertical: 6,
     justifyContent: "center",

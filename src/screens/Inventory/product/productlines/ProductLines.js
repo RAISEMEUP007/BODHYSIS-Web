@@ -107,6 +107,9 @@ const ProductLines = ({navigation, openInventory}) => {
             <View style={styles.cell}>
               <Text>{item.family? item.family.family: ''}</Text>
             </View>
+            <View style={[styles.cell, {width:100}]}>
+              <Text>{item.size? item.size: ''}</Text>
+            </View>
             <View style={[styles.cell, {width:100, paddingRight:6, alignItems:'flex-end'}]}>
               <Text>{item.quantity? item.quantity: '0'}</Text>
             </View>
@@ -149,6 +152,7 @@ const ProductLines = ({navigation, openInventory}) => {
               <Text style={[styles.columnHeader, styles.categoryCell]}>{"Line"}</Text>
               <Text style={[styles.columnHeader]}>{"Category"}</Text>
               <Text style={[styles.columnHeader]}>{"Family"}</Text>
+              <Text style={[styles.columnHeader, {width:100}]}>{"Size"}</Text>
               <Text style={[styles.columnHeader, {width:100}]}>{"Quantity"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>

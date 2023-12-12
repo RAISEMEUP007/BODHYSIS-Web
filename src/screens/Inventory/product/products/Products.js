@@ -88,11 +88,11 @@ const Products = ({navigation, openInventory}) => {
               <Text style={styles.cell}>{item.family? item.family.family: ''}</Text>
             </View>
             <View style={styles.cell}>
-              <Text style={styles.cell}>{item.line? item.line.line: ''}</Text>
+              <Text style={styles.cell}>{item.line?( item.line.line + " " + item.line.size): ''}</Text>
             </View>
-            <View style={[styles.cell, {width:100, paddingRight:6, alignItems:'flex-end'}]}>
+            {/* <View style={[styles.cell, {width:100, paddingRight:6, alignItems:'flex-end'}]}>
               <Text>{item.quantity? item.quantity: ''}</Text>
-            </View>
+            </View> */}
             <View style={styles.cell}>
               <Text style={styles.cell}>{item.barcode? item.barcode: ''}</Text>
             </View>
@@ -148,7 +148,7 @@ const Products = ({navigation, openInventory}) => {
               <Text style={[styles.columnHeader]}>{"Category"}</Text>
               <Text style={[styles.columnHeader]}>{"Family"}</Text>
               <Text style={[styles.columnHeader]}>{"Line"}</Text>
-              <Text style={[styles.columnHeader, {width:100}]}>{"Quantity"}</Text>
+              {/* <Text style={[styles.columnHeader, {width:100}]}>{"Quantity"}</Text> */}
               <Text style={[styles.columnHeader]}>{"Barcode"}</Text>
               <Text style={[styles.columnHeader]}>{"Serial Number"}</Text>
               <Text style={[styles.columnHeader]}>{"Home Location"}</Text>
