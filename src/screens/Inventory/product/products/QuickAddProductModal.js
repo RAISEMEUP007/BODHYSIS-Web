@@ -366,8 +366,8 @@ const QuickAddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigge
               {/* <Text style={styles.label}>Product</Text>
               <TextInput style={styles.input} placeholder="Product" value={ProductTxt} onChangeText={setProductTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>
               {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>} */}
-              <Text style={styles.label}>Size</Text>
-              <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} onBlur={checkInput} placeholderTextColor="#ccc"/>
+              {/* <Text style={styles.label}>Size</Text>
+              <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} onBlur={checkInput} placeholderTextColor="#ccc"/> */}
               {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
               
               <Text style={styles.label}>Price Group</Text>

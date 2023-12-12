@@ -362,8 +362,8 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
               <Text style={styles.label}>Product</Text>
               <TextInput style={styles.input} placeholder="Product" value={ProductTxt} onChangeText={setProductTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>
               {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
-              <Text style={styles.label}>Size</Text>
-              <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} placeholderTextColor="#ccc"/>
+              {/* <Text style={styles.label}>Size</Text>
+              <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} placeholderTextColor="#ccc"/> */}
               <Text style={styles.label}>Description</Text>
               <TextInput style={styles.input} placeholder="Description" value={DescriptionTxt} onChangeText={setDescriptionTxt} placeholderTextColor="#ccc"/>
               {/* <Text style={styles.label}>Item Id</Text>
