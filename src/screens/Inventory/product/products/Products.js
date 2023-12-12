@@ -93,6 +93,18 @@ const Products = ({navigation, openInventory}) => {
             <View style={[styles.cell, {width:100, paddingRight:6, alignItems:'flex-end'}]}>
               <Text>{item.quantity? item.quantity: ''}</Text>
             </View>
+            <View style={styles.cell}>
+              <Text style={styles.cell}>{item.barcode? item.barcode: ''}</Text>
+            </View>
+            <View style={styles.cell}>
+              <Text style={styles.cell}>{item.serial_number? item.serial_number: ''}</Text>
+            </View>
+            <View style={styles.cell}>
+              <Text style={styles.cell}>{item.current_location? item.current_location: ''}</Text>
+            </View>
+            <View style={styles.cell}>
+              <Text style={styles.cell}>{item.home_location? item.home_location: ''}</Text>
+            </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity onPress={()=>{editProduct(item)}}>
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
@@ -132,11 +144,15 @@ const Products = ({navigation, openInventory}) => {
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader, {width:400}]}>{"Product"}</Text>
+              <Text style={[styles.columnHeader, {width:250}]}>{"Product"}</Text>
               <Text style={[styles.columnHeader]}>{"Category"}</Text>
               <Text style={[styles.columnHeader]}>{"Family"}</Text>
               <Text style={[styles.columnHeader]}>{"Line"}</Text>
               <Text style={[styles.columnHeader, {width:100}]}>{"Quantity"}</Text>
+              <Text style={[styles.columnHeader]}>{"Barcode"}</Text>
+              <Text style={[styles.columnHeader]}>{"Serial Number"}</Text>
+              <Text style={[styles.columnHeader]}>{"Home Location"}</Text>
+              <Text style={[styles.columnHeader]}>{"Current Location"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
             </View>

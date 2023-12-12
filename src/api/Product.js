@@ -74,6 +74,10 @@ export const deleteProduct = (id, callback) => {
   postAPICall('product/deleteproduct', payload, callback);
 }
 
+export const QuickAddProduct = (payload, callback) => {
+  postAPICall('product/quickaddproduct', payload, callback);
+};
+
 export const getQuantitiesByLine = (callback) => {
   getAPICall('product/getquantitiesbyline', callback);
 }
