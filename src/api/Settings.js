@@ -35,3 +35,20 @@ export const deleteTag = (id, callback) => {
   const payload = { id };
   postAPICall('settings/deletetag', payload, callback);
 }
+
+export const getLocationsData = (callback) => {
+  getAPICall('settings/getlocationsdata/', callback);
+}
+
+export const updateLocation = (payload, callback) => {
+  postAPICall('settings/updatelocation', payload, callback);
+};
+
+export const createLocation = (payload, callback) => {
+  postAPICall('settings/createlocation', payload, callback);
+};
+
+export const deleteLocation = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletelocation', payload, callback);
+}

@@ -5,6 +5,7 @@ import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 import Manufactures from './manufactures/Manufactures';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import Tags from './tags/Tags';
+import Locations from './locations/Locations';
 
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -21,6 +22,8 @@ const Settings = ({navigation, initalItem = null}) => {
                 return <Manufactures navigation={navigation} openInventory={handleItemClick}/>;
             case 'Tag Management':
                 return <Tags navigation={navigation} openInventory={handleItemClick}/>;
+            case 'Locations':
+                return <Locations navigation={navigation} openInventory={handleItemClick}/>;
             default:
                 return (
                     <View style={{ flexs: 1, border:'1px solid #d54545', marginRights: 20, paddingHorizontal: 10, paddingVertical:2, marginTop: 8, height: 28, justifyContent: 'center', flexDirection: 'row', marginTop: 100, }}>
@@ -41,8 +44,9 @@ const Settings = ({navigation, initalItem = null}) => {
             <ScrollView>
                 <View style={styles.container}>
                     <TouchNavGroup sectionTitle="Settings" items={[
-                        { title: "Manufactures", icon: 'check'  },
-                        { title: "Tag Management", icon: 'check'  },
+                        { title: "Manufactures", icon: 'industry' },
+                        { title: "Tag Management", icon: 'tags' },
+                        { title: "Locations", icon: 'map-marker-alt' },
                     ]} handleItemClick={handleItemClick} />
                 </View>
             </ScrollView>
