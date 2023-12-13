@@ -354,11 +354,11 @@ const QuickAddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigge
                 selectedValue={selectedLine.id}
                 onValueChange={(itemValue, itemIndex) =>
                   {
-                    selectFamily(lines[itemIndex]);
+                    selectLine(lines[itemIndex]);
                   }}>
                 {lines.length>0 && (
                   lines.map((line, index) => {
-                    return <Picker.Item key={index} label={line.line} value={line.id} />
+                    return <Picker.Item key={index} label={line.line + " " + line.size} value={line.id} />
                   })
                 )}
               </Picker>
@@ -366,8 +366,8 @@ const QuickAddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigge
               {/* <Text style={styles.label}>Product</Text>
               <TextInput style={styles.input} placeholder="Product" value={ProductTxt} onChangeText={setProductTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>
               {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>} */}
-              <Text style={styles.label}>Size</Text>
-              <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} onBlur={checkInput} placeholderTextColor="#ccc"/>
+              {/* <Text style={styles.label}>Size</Text>
+              <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} onBlur={checkInput} placeholderTextColor="#ccc"/> */}
               {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
               
               <Text style={styles.label}>Price Group</Text>

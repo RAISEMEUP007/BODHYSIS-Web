@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
-import { TextMediumSize, TextSmallSize } from '../../../../../common/constants/Fonts';
-import { TextdefaultSize } from '../../../../../common/constants/Fonts';
+import { TextMediumSize, TextSmallSize } from '../../../../common/constants/Fonts';
+import { TextdefaultSize } from '../../../../common/constants/Fonts';
 
-export const productLinesStyle = StyleSheet.create({
+export const LocationsStyle = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
@@ -11,17 +11,11 @@ export const productLinesStyle = StyleSheet.create({
   },
 
   tableContainer: {
+    borderRadius: 4,
     marginBottom: 16,
     marginTop: 10,
     overflow: 'hidden',
-    borderTopWidth: 1,
-    borderTopColor: '#bfbfbf',
-    borderLeftWidth: 1,
-    borderLeftColor: '#06685ea3',
-    borderRightWidth: 1,
-    borderRightColor: '#06685ea3',
-    borderBottomWidth: 1,
-    borderBottomColor: '#bfbfbf',
+    borderTopColor: '#ddd',
   },
   
   toolbar: {
@@ -54,7 +48,7 @@ export const productLinesStyle = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ced4da',
     borderRadius: 5,
-    width: 200,
+    width: 150,
     paddingVertical: 5,
     paddingHorizontal: 10,
   },
@@ -65,24 +59,35 @@ export const productLinesStyle = StyleSheet.create({
     flexDirection: 'column',
   },
   tableHeader: {
+    marginTop: 10,
     flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    borderLeftWidth: 1,
+    borderLeftColor: '#06685ea3',
+    borderRightWidth: 1,
+    borderRightColor: '#06685ea3',
   },
   tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    borderLeftWidth: 1,
+    borderLeftColor: '#06685ea3',
+    borderRightWidth: 1,
+    borderRightColor: '#06685ea3',
   },
   columnHeader: {
     fontWeight: 'bold',
     backgroundColor: '#f5f5f5',
     alignItems: 'flex-start',
-    paddingHorizontal: 14,
+    paddingHorizontal: 10,
     paddingVertical: 8,
     width: 200,
-    borderRightWidth: 1,
-    borderRightColor: '#ccc',
+    borderLeftWidth: 1,
+    borderLeftColor: '#ccc',
   },
   cell: {
     position: 'relative',
@@ -93,12 +98,12 @@ export const productLinesStyle = StyleSheet.create({
     paddingLeft: 6,
   },
   cellInput: {
-    width: 200,
+    width: 150,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
   categoryCell: {
-    width: 300,
+    width: 400,
     paddingHorizontal: 6,
     paddingVertical: 6,
     justifyContent: "center",

@@ -92,6 +92,6 @@ export const productModalstyles = StyleSheet.create({
     fontWeight: 'bold',
   },
   textarea: {
-    height: TextdefaultSize * 6,
+    height: 114,
   }
 });

@@ -88,10 +88,10 @@ const Products = ({navigation, openInventory}) => {
               <Text style={styles.cell}>{item.family? item.family.family: ''}</Text>
             </View>
             <View style={styles.cell}>
-              <Text style={styles.cell}>{item.line? item.line.line: ''}</Text>
+              <Text style={styles.cell}>{item.line?( item.line.line): ''}</Text>
             </View>
-            <View style={[styles.cell, {width:100, paddingRight:6, alignItems:'flex-end'}]}>
-              <Text>{item.quantity? item.quantity: ''}</Text>
+            <View style={[styles.cell, {width:100}]}>
+              <Text>{item.line? item.line.size: ''}</Text>
             </View>
             <View style={styles.cell}>
               <Text style={styles.cell}>{item.barcode? item.barcode: ''}</Text>
@@ -100,10 +100,10 @@ const Products = ({navigation, openInventory}) => {
               <Text style={styles.cell}>{item.serial_number? item.serial_number: ''}</Text>
             </View>
             <View style={styles.cell}>
-              <Text style={styles.cell}>{item.current_location? item.current_location: ''}</Text>
+              <Text style={styles.cell}>{item.home_location_tbl? item.home_location_tbl.location: ''}</Text>
             </View>
             <View style={styles.cell}>
-              <Text style={styles.cell}>{item.home_location? item.home_location: ''}</Text>
+              <Text style={styles.cell}>{item.current_location_tbl? item.current_location_tbl.location: ''}</Text>
             </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity onPress={()=>{editProduct(item)}}>
@@ -123,7 +123,7 @@ const Products = ({navigation, openInventory}) => {
     }
     return <>{rows}</>;
   };
-  
+  console.log(tableData);
   return (
     <BasicLayout
       navigation = {navigation}
@@ -148,7 +148,7 @@ const Products = ({navigation, openInventory}) => {
               <Text style={[styles.columnHeader]}>{"Category"}</Text>
               <Text style={[styles.columnHeader]}>{"Family"}</Text>
               <Text style={[styles.columnHeader]}>{"Line"}</Text>
-              <Text style={[styles.columnHeader, {width:100}]}>{"Quantity"}</Text>
+              <Text style={[styles.columnHeader, {width:100}]}>{"Size"}</Text>
               <Text style={[styles.columnHeader]}>{"Barcode"}</Text>
               <Text style={[styles.columnHeader]}>{"Serial Number"}</Text>
               <Text style={[styles.columnHeader]}>{"Home Location"}</Text>

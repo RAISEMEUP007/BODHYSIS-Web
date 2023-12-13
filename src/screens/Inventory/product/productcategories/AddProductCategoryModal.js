@@ -138,6 +138,7 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
       <BasicModalContainer>
         <ModalHeader label={"Product Category"} closeModal={closeModal} />
         <ModalBody>
+          <Text style={styles.label}>Category</Text>
           <TextInput
             ref={defaultInputRef}
             style={styles.input}
@@ -166,6 +167,7 @@ const AddProductCategoryModal = ({ isModalVisible, setUpdateProductCategoryTrigg
               onChange={handleImageSelection} 
             />
           </View>
+          <Text style={styles.label}>Tag</Text>
           <Picker
             style={styles.select}
             selectedValue={selectedTag.id}

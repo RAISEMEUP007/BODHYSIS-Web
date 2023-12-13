@@ -4,6 +4,7 @@ import {Picker} from '@react-native-picker/picker';
 
 import { createProduct, updateProduct, getProductCategoriesData, getProductFamiliesData, getProductLinesData } from '../../../../api/Product';
 import { getPriceGroupsData } from '../../../../api/Price';
+import { getLocationsData } from '../../../../api/Settings';
 import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../../common/components/basicmodal/ModalBody';
@@ -29,6 +30,8 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   const [families, setFamilies] = useState([]);
   const [lines, setLines] = useState([]);
   const [PriceGroups, setPriceGroups] = useState([]);
+  const [Locations, setLocations] = useState([]);
+  
   const StatusArr = [
     {id:1, status:'Ordered'},
     {id:2, status:'Ready'},
@@ -51,6 +54,8 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   const [HomeLocation, setHomeLocation] = useState('');
   const [CurrentLocation, setCurrentLocation] = useState('');
   const [selectedPriceGroup, selectPriceGroup] = useState({});
+  const [selectedHomeLocation, selectHomeLocation] = useState({});
+  const [selectedCurrentLocation, selectCurrentLocation] = useState({});
   const [selectedStatus, selectStatus] = useState({});
 
   useEffect(() => {
@@ -72,18 +77,25 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   useEffect(()=>{
     if(StartInitalizing){
       setValidMessage('');
-      if(Product && categories){
+      if(Product && Product.category_id && categories){
         const initalCategory = categories.find(category => {return category.id == Product.category_id});
         if(initalCategory) selectCategory(initalCategory);
       }else if(categories.length>0) {
         selectCategory(categories[0]);
       }
   
-      if(Product && families){
+      if(Product && Product.family_id && families){
         const initalFamily = families.find(family => {return family.id == Product.family_id});
         if(initalFamily) selectFamily(initalFamily);
       }else if(families.length[0]){
         selectFamily(families[0]);
+      }
+
+      if(Product && Product.line_id && lines.length>0){
+        const initalLine = lines.find(line => {return line.id == Product.line_id});
+        if(initalLine) selectLine(initalLine);
+      }else if(lines.length[0]){
+        selectLine(lines[0]);
       }
   
       setProductTxt(Product?Product.product:'');
@@ -96,11 +108,25 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
       setHomeLocation(Product?Product.home_location:'');
       setCurrentLocation(Product?Product.current_location:'');
         
-      if(Product && PriceGroups){
+      if(Product && Product.price_group_id && PriceGroups){
         const initalGroup = PriceGroups.find(priceGroup => {return priceGroup.id == Product.price_group_id});
         if(initalGroup) selectPriceGroup(initalGroup);
       }else if(PriceGroups.length>0){
         selectPriceGroup(PriceGroups[0]);
+      }
+      
+      if(Product && Product.home_location && Locations){
+        const initalHomeLocation = Locations.find(location => {return location.id == Product.home_location});
+        if(initalHomeLocation) selectHomeLocation(initalHomeLocation);
+      }else if(Locations.length>0){
+        selectHomeLocation(Locations[0]);
+      }
+
+      if(Product && Product.current_location && Locations){
+        const initalCurrentLocation = Locations.find(location => {return location.id == Product.current_location});
+        if(initalCurrentLocation) selectCurrentLocation(initalCurrentLocation);
+      }else if(Locations.length>0){
+        selectCurrentLocation(Locations[0]);
       }
       
       if(Product && StatusArr){
@@ -111,6 +137,10 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
       setIsLoading(false);
     }
   }, [StartInitalizing])
+
+  console.log(Product);
+  console.log(selectedHomeLocation);
+  console.log(selectedCurrentLocation);
 
   useEffect(()=>{
     if(CategoryChanged)
@@ -138,25 +168,27 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   useEffect(()=>{
     if(isModalVisible){
       loadPriceGroupsData(()=>{
-        loadProductCategoriesData((categories)=>{
-          let categoryId = null;
-          if(Product) categoryId = Product.category_id;
-          else categoryId = categories[0]?categories[0].id:null;
-          loadProductFamiliesData(categoryId, (families)=>{
-            let familyId = null;
-            if(Product) familyId = Product.family_id;
-            else familyId = families[0]?families[0].id:null;
-            loadProductLinesData(familyId, (lines)=>{
-              if(categories.length) setCategories(categories);
-              else setCategories([]);
-              if(families.length) setFamilies(families);
-              else setFamilies([]);
-              if(lines.length) setLines(lines);
-              else setLines([]);
-              setStartInitalizing(true);
-            })
+        loadLocationsData(()=>{
+          loadProductCategoriesData((categories)=>{
+            let categoryId = null;
+            if(Product) categoryId = Product.category_id;
+            else categoryId = categories[0]?categories[0].id:null;
+            loadProductFamiliesData(categoryId, (families)=>{
+              let familyId = null;
+              if(Product) familyId = Product.family_id;
+              else familyId = families[0]?families[0].id:null;
+              loadProductLinesData(familyId, (lines)=>{
+                if(categories.length) setCategories(categories);
+                else setCategories([]);
+                if(families.length) setFamilies(families);
+                else setFamilies([]);
+                if(lines.length) setLines(lines);
+                else setLines([]);
+                setStartInitalizing(true);
+              })
+            });
           });
-        });
+        })
       });
     }
   }, [isModalVisible])
@@ -234,6 +266,24 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
     })
   }
 
+  const loadLocationsData = (callback) =>{
+    getLocationsData((jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          setLocations(jsonRes);
+          callback();
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
+
   const AddProductButtonHandler = () => {
     if (!ProductTxt.trim()) {
       setValidMessage(msgStr('emptyField'));
@@ -253,8 +303,8 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
       barcode : BarcodeTxt,
       quantity : QuantityTxt,
       serial_number : SerialNumber,
-      home_location : HomeLocation,
-      current_location : CurrentLocation,
+      home_location : selectedHomeLocation.id,
+      current_location : selectedCurrentLocation.id,
       price_group_id : selectedPriceGroup.id,
       status : selectedStatus.id,
     }
@@ -350,11 +400,11 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                 selectedValue={selectedLine.id}
                 onValueChange={(itemValue, itemIndex) =>
                   {
-                    selectFamily(lines[itemIndex]);
+                    selectLine(lines[itemIndex]);
                   }}>
                 {lines.length>0 && (
                   lines.map((line, index) => {
-                    return <Picker.Item key={index} label={line.line} value={line.id} />
+                    return <Picker.Item key={index} label={line.line + " " + line.size} value={line.id} />
                   })
                 )}
               </Picker>
@@ -362,10 +412,10 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
               <Text style={styles.label}>Product</Text>
               <TextInput style={styles.input} placeholder="Product" value={ProductTxt} onChangeText={setProductTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>
               {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
-              <Text style={styles.label}>Size</Text>
-              <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} placeholderTextColor="#ccc"/>
+              {/* <Text style={styles.label}>Size</Text>
+              <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} placeholderTextColor="#ccc"/> */}
               <Text style={styles.label}>Description</Text>
-              <TextInput style={styles.input} placeholder="Description" value={DescriptionTxt} onChangeText={setDescriptionTxt} placeholderTextColor="#ccc"/>
+              <TextInput style={[styles.input, styles.textarea]} placeholder="Description" value={DescriptionTxt} multiline={true} onChangeText={setDescriptionTxt} placeholderTextColor="#ccc"/>
               {/* <Text style={styles.label}>Item Id</Text>
               <TextInput style={styles.input} placeholder="Description" value={ItemIdTxt} onChangeText={setItemIdTxt} placeholderTextColor="#ccc"/> */}
               {/* <Text style={styles.label}>Quantity</Text>
@@ -376,10 +426,40 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
               <TextInput style={[styles.input]} placeholder="Barcode" value={BarcodeTxt} onChangeText={setBarcodeTxt} placeholderTextColor="#ccc"/>
               <Text style={styles.label}>Serial Number</Text>
               <TextInput style={styles.input} placeholder="Serial Number" value={SerialNumber} onChangeText={setSerialNumber} placeholderTextColor="#ccc"/>
-              <Text style={styles.label}>Home Location</Text>
+              {/* <Text style={styles.label}>Home Location</Text>
               <TextInput style={styles.input} placeholder="Home Location" value={HomeLocation} onChangeText={setHomeLocation} placeholderTextColor="#ccc"/>
               <Text style={styles.label}>Current Location</Text>
-              <TextInput style={styles.input} placeholder="Current Location" value={CurrentLocation} onChangeText={setCurrentLocation} placeholderTextColor="#ccc"/>
+              <TextInput style={styles.input} placeholder="Current Location" value={CurrentLocation} onChangeText={setCurrentLocation} placeholderTextColor="#ccc"/> */}
+              <Text style={styles.label}>Home Location</Text>
+              <Picker
+                style={styles.select}
+                selectedValue={selectedHomeLocation.id}
+                onValueChange={(itemValue, itemIndex) =>
+                  {
+                    selectHomeLocation(Locations[itemIndex]);
+                  }}>
+                {Locations.length>0 && (
+                  Locations.map((location, index) => {
+                    return <Picker.Item key={index} label={location.location} value={location.id} />
+                  })
+                )}
+              </Picker>
+
+              <Text style={styles.label}>Current Location</Text>
+              <Picker
+                style={styles.select}
+                selectedValue={selectedCurrentLocation.id}
+                onValueChange={(itemValue, itemIndex) =>
+                  {
+                    selectCurrentLocation(Locations[itemIndex]);
+                  }}>
+                {Locations.length>0 && (
+                  Locations.map((location, index) => {
+                    return <Picker.Item key={index} label={location.location} value={location.id} />
+                  })
+                )}
+              </Picker>
+
               <Text style={styles.label}>Price Group</Text>
               <Picker
                 style={styles.select}

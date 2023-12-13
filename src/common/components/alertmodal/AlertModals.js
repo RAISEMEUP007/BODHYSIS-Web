@@ -37,6 +37,7 @@ const AlertModals = () => {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
+        style={styles.modal}
       >
         <View style={styles.centeredView}>
         <View style={[styles.modalView, { backgroundColor: modalBackgroundColor }]}>
@@ -54,6 +55,9 @@ const AlertModals = () => {
 };
 
 const styles = StyleSheet.create({
+  modal: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
