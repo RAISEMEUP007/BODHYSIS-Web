@@ -100,10 +100,10 @@ const Products = ({navigation, openInventory}) => {
               <Text style={styles.cell}>{item.serial_number? item.serial_number: ''}</Text>
             </View>
             <View style={styles.cell}>
-              <Text style={styles.cell}>{item.current_location? item.current_location: ''}</Text>
+              <Text style={styles.cell}>{item.home_location_tbl? item.home_location_tbl.location: ''}</Text>
             </View>
             <View style={styles.cell}>
-              <Text style={styles.cell}>{item.home_location? item.home_location: ''}</Text>
+              <Text style={styles.cell}>{item.current_location_tbl? item.current_location_tbl.location: ''}</Text>
             </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity onPress={()=>{editProduct(item)}}>
@@ -123,7 +123,7 @@ const Products = ({navigation, openInventory}) => {
     }
     return <>{rows}</>;
   };
-  
+  console.log(tableData);
   return (
     <BasicLayout
       navigation = {navigation}

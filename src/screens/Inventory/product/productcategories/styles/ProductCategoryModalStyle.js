@@ -2,11 +2,16 @@ import { StyleSheet } from 'react-native';
 import { TextSmallSize } from '../../../../../common/constants/Fonts';
 
 export const productCategoryModalstyles = StyleSheet.create({
+  label: {
+    color: "#555",
+    fontSize: TextSmallSize,
+  },
   input: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    marginVertical: 10,
+    marginTop: 4,
+    marginBottom: 10,
     padding: 8,
     width: 400,
   },
@@ -14,7 +19,8 @@ export const productCategoryModalstyles = StyleSheet.create({
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    marginVertical: 10,
+    marginTop: 4,
+    marginBottom: 10,
     padding: 8,
   },
   addButton: {
@@ -49,7 +55,7 @@ export const productCategoryModalstyles = StyleSheet.create({
     backgroundColor: '#eee',
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 6,
+    marginVertical: 10,
   },
   imageUpload: {
     position: 'relative',
