@@ -16,6 +16,16 @@ import QuickAddProductModal from './QuickAddProductModal';
 const Products = ({navigation, openInventory}) => {
   const screenHeight = Dimensions.get('window').height;
 
+  const StatusObj = {
+    1: 'Ordered',
+    2: 'Ready',
+    3: 'Checked out',
+    4: 'Broken',
+    5: 'Sold',
+    6: 'Transferred',
+  };
+  
+
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -105,6 +115,9 @@ const Products = ({navigation, openInventory}) => {
             <View style={styles.cell}>
               <Text style={styles.cell}>{item.current_location_tbl? item.current_location_tbl.location: ''}</Text>
             </View>
+            <View style={styles.cell}>
+              <Text style={styles.cell}>{item.status? StatusObj[item.status]: ''}</Text>
+            </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity onPress={()=>{editProduct(item)}}>
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
@@ -153,6 +166,7 @@ const Products = ({navigation, openInventory}) => {
               <Text style={[styles.columnHeader]}>{"Serial Number"}</Text>
               <Text style={[styles.columnHeader]}>{"Home Location"}</Text>
               <Text style={[styles.columnHeader]}>{"Current Location"}</Text>
+              <Text style={[styles.columnHeader]}>{"Status"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
             </View>
