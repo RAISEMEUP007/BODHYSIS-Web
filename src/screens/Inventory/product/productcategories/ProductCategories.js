@@ -91,7 +91,12 @@ const ProductCategories = ({navigation, openInventory}) => {
             </View>
             <View style={[styles.imageCell]}>
               {item.img_url ? (
-                <Image source={{ uri: API_URL+item.img_url }} style={styles.cellImage}/>
+                <Image source={
+                  { uri: API_URL+item.img_url }} 
+                  style={styles.cellImage}
+                  onError={() => {
+                    changeCellData(index, 'img_url', null);
+                }}/>
               ) : (
                 <FontAwesome5 name="image" size={26} color="#666"></FontAwesome5>
               )}
