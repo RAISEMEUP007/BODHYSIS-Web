@@ -46,7 +46,7 @@ const Products = ({navigation, openInventory}) => {
 
   const [searchProduct, setSearchProduct] = useState('');
   const [searchBarcode, setSearchBarcode] = useState('');
-  const [searchSerialNumber, setSearchSerialNumber] = useState('');
+  const [searchSize, setSearchSize] = useState('');
 
   useEffect(()=>{
     if(updateProductTrigger == true) getTable();
@@ -90,9 +90,9 @@ const Products = ({navigation, openInventory}) => {
   const renderTableData = () => {
     const filteredData = tableData.filter(item => {
       const productMatches = item.product.toLowerCase().includes(searchProduct.trim().toLowerCase());
-      const barcodeMatches = item.barcode && item.barcode.toLowerCase().includes(searchBarcode.toLowerCase());
-      const serialNumberMatches = item.serial_number && item.serial_number.toLowerCase().includes(searchSerialNumber.toLowerCase());
-      return productMatches && barcodeMatches && serialNumberMatches;
+      const barcodeMatches = item.barcode && item.barcode.toLowerCase().includes(searchBarcode.trim().toLowerCase());
+      const sizeMatches = item.line && item.line.size.toLowerCase().includes(searchSize.trim().toLowerCase());
+      return productMatches && barcodeMatches && sizeMatches;
     });
 
     const rows = [];
@@ -170,21 +170,21 @@ const Products = ({navigation, openInventory}) => {
               />
             </View>
             <View style={styles.searchBox}>
+              <Text style={styles.searchLabel}>Size</Text>
+              <TextInput
+                style={styles.searchInput}
+                placeholder=""
+                value={searchSize}
+                onChangeText={setSearchSize}
+              />
+            </View>
+            <View style={styles.searchBox}>
               <Text style={styles.searchLabel}>Barcode</Text>
               <TextInput
                 style={styles.searchInput}
                 placeholder=""
                 value={searchBarcode}
                 onChangeText={setSearchBarcode}
-              />
-            </View>
-            <View style={styles.searchBox}>
-              <Text style={styles.searchLabel}>Serial Number</Text>
-              <TextInput
-                style={styles.searchInput}
-                placeholder=""
-                value={searchSerialNumber}
-                onChangeText={setSearchSerialNumber}
               />
             </View>
           </View>
