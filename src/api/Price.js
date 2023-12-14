@@ -96,6 +96,11 @@ export const savePriceTableCell = (id, column, value, callback) => {
   postAPICall('price/savepricetablecell', payload, callback);
 }
 
+export const clonePriceTableCell = (sourceId, tblName, callback) => {
+  const payload = {sourceId, tblName};
+  postAPICall('price/clonepricetablecell', payload, callback);
+}
+
 export const deletePriceTable = (id, callback) => {
   const payload = { id };
   postAPICall('price/deletepricetable', payload, callback);
