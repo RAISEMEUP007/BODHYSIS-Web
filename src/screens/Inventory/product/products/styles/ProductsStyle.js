@@ -58,6 +58,25 @@ export const productsStyle = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
   },
+  searchBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  searchLabel: {
+    marginHorizontal: 10,
+    fontSize: TextdefaultSize,
+  },
+  searchInput: {
+    borderWidth: 1,
+    borderColor: '#999',
+    fontSize: TextSmallSize,
+    paddingVertical: 5,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    paddingLeft: 10,
+    flex: 1,
+  },
 
   table: {
     borderWidth: 0,
