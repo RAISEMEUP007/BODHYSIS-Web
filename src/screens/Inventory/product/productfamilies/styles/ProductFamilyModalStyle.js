@@ -13,7 +13,7 @@ export const productFamilyModalstyles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 10,
     padding: 8,
-    width: 700,
+    width: "100%",
   },
   select: {
     height: 40,
@@ -88,6 +88,36 @@ export const productFamilyModalstyles = StyleSheet.create({
     fontWeight: 'bold',
   },
   textarea: {
-    height: TextdefaultSize * 6,
-  }
+    height: 200,
+  },
+  richTextContainer: {
+    display: "flex",
+    flexDirection: "column-reverse",
+    width: "100%",
+    marginBottom: 10,
+  },
+
+  richTextEditorStyle: {
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ccaf9b",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+    fontSize: 20,
+  },
+
+  richTextToolbarStyle: {
+    backgroundColor: "#c6c3b3",
+    borderColor: "#c6c3b3",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderWidth: 1,
+  },
 });

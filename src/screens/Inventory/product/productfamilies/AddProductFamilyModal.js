@@ -14,6 +14,9 @@ import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 
 import { productFamilyModalstyles } from './styles/ProductFamilyModalStyle';
 import { API_URL } from '../../../../common/constants/AppConstants';
+import {actions, RichEditor, RichToolbar} from "react-native-pell-rich-editor";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Editor } from 'primereact/editor';
 
 const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyTrigger, closeModal }) => {
 
@@ -31,11 +34,38 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [familyTxt, setFamilyTxt] = useState('');
   const [summaryTxt, setSummaryTxt] = useState('');
+  const [notesTxt, setNotesTxt] = useState('');
   const [selectedCategory, selectCategory] = useState({});
   const [selectedPriceGroup, selectPriceGroup] = useState({});
 
   const inputRef = useRef(null);
   const defaultInputRef = useRef(null);
+
+  const richText = useRef();
+
+  const [descHTML, setDescHTML] = useState("");
+  const [showDescError, setShowDescError] = useState(false);
+
+  const richTextHandle = (descriptionText) => {
+    if (descriptionText) {
+      setShowDescError(false);
+      setDescHTML(descriptionText);
+    } else {
+      setShowDescError(true);
+      setDescHTML("");
+    }
+  };
+
+  const submitContentHandle = () => {
+    const replaceHTML = descHTML.replace(/<(.|\n)*?>/g, "").trim();
+    const replaceWhiteSpace = replaceHTML.replace(/&nbsp;/g, "").trim();
+
+    if (replaceWhiteSpace.length <= 0) {
+      setShowDescError(true);
+    } else {
+      // send data to your server!
+    }
+  };
 
   useEffect(() => {
     if(Platform.web){
@@ -71,6 +101,7 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
   
       setFamilyTxt(family?family.family:'');
       setSummaryTxt(family?family.summary:'');
+      setNotesTxt(family?family.notes:'');
       setImagePreviewUrl(family?API_URL + family.img_url:'');
       setSelectedImage(null);
       inputRef.current = null;
@@ -173,6 +204,7 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
     formData.append('category_id', selectedCategory.id);
     if(selectedImage) formData.append('img', selectedImage);
     formData.append('summary', summaryTxt);
+    formData.append('notes', notesTxt);
     formData.append('price_group_id', selectedPriceGroup.id);
 
     const handleResponse = (jsonRes, status) => {
@@ -229,78 +261,120 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
       <BasicModalContainer>
         <ModalHeader label={"Product Family"} closeModal={closeModal} />
         <ModalBody>
-          <Text style={styles.label}>Category</Text>
-          <Picker
-            style={styles.select}
-            selectedValue={selectedCategory.id}
-            onValueChange={(itemValue, itemIndex) =>
-              {
-                selectCategory(categories[itemIndex]);
-              }}>
-            {categories.length>0 && (
-              categories.map((category, index) => {
-                return <Picker.Item key={index} label={category.category} value={category.id} />
-              })
-            )}
-          </Picker>
-
-          <Text style={styles.label}>Family</Text>
-          <TextInput style={styles.input} placeholder="Family" value={familyTxt} onChangeText={setFamilyTxt} placeholderTextColor="#ccc" onBlur={checkInput} ref={defaultInputRef}/>
-          {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
-
-          {Platform.OS == 'web' && (
-            <View style={styles.imagePicker}>
-              <TouchableOpacity style={styles.imageUpload} onPress={() => inputRef.current.click()}>
-                {imagePreviewUrl ? (
-                  <Image source={{ uri: imagePreviewUrl }} style={styles.previewImage} />
-                ) : (
-                  <View style={styles.imageBox}>
-                    <Text style={styles.boxText}>Click to choose an image</Text>
-                  </View>
+          <View style={{flexDirection:'row'}}>
+            <View style={{paddingRight: 20, width:400}}>
+              <Text style={styles.label}>Category</Text>
+              <Picker
+                style={styles.select}
+                selectedValue={selectedCategory.id}
+                onValueChange={(itemValue, itemIndex) =>
+                  {
+                    selectCategory(categories[itemIndex]);
+                  }}>
+                {categories.length>0 && (
+                  categories.map((category, index) => {
+                    return <Picker.Item key={index} label={category.category} value={category.id} />
+                  })
                 )}
-              </TouchableOpacity>
-              <input
-                type="file" 
-                ref={inputRef} 
-                style={styles.fileInput} 
-                onChange={handleImageSelection} 
-              />
-            </View>
-          )}
-          {Platform.OS != 'web' && (
-            <>
-              <TouchableOpacity onPress={handleImageUpload}>
-                <Text>Upload Image</Text>
-              </TouchableOpacity>
-              {imagePreviewUrl && <Image source={{ uri: imagePreviewUrl }} style={{ width: 200, height: 200 }} />}
-            </>
-          )}
-    
-          <Text style={styles.label}>Summary</Text>
-          <TextInput
-            style={[styles.input, styles.textarea]}
-            placeholder="Summary"
-            placeholderTextColor="#ccc"
-            multiline={true}
-            numberOfLines={4}
-            value={summaryTxt}
-            onChangeText={setSummaryTxt}
-          />
+              </Picker>
 
-          <Text style={styles.label}>Price Group</Text>
-          <Picker
-            style={styles.select}
-            selectedValue={selectedPriceGroup.id}
-            onValueChange={(itemValue, itemIndex) =>
-              {
-                selectPriceGroup(PriceGroups[itemIndex]);
-              }}>
-            {PriceGroups.length>0 && (
-              PriceGroups.map((item, index) => {
-                return <Picker.Item key={index} label={item.price_group} value={item.id} />
-              })
-            )}
-          </Picker>
+              <Text style={styles.label}>Family</Text>
+              <TextInput style={styles.input} placeholder="Family" value={familyTxt} onChangeText={setFamilyTxt} placeholderTextColor="#ccc" onBlur={checkInput} ref={defaultInputRef}/>
+              {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
+              {Platform.OS == 'web' && (
+                <View style={styles.imagePicker}>
+                  <TouchableOpacity style={styles.imageUpload} onPress={() => inputRef.current.click()}>
+                    {imagePreviewUrl ? (
+                      <Image source={{ uri: imagePreviewUrl }} style={styles.previewImage} />
+                    ) : (
+                      <View style={styles.imageBox}>
+                        <Text style={styles.boxText}>Click to choose an image</Text>
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                  <input
+                    type="file" 
+                    ref={inputRef} 
+                    style={styles.fileInput} 
+                    onChange={handleImageSelection} 
+                  />
+                </View>
+              )}
+              {Platform.OS != 'web' && (
+                <>
+                  <TouchableOpacity onPress={handleImageUpload}>
+                    <Text>Upload Image</Text>
+                  </TouchableOpacity>
+                  {imagePreviewUrl && <Image source={{ uri: imagePreviewUrl }} style={{ width: 200, height: 200 }} />}
+                </>
+              )}
+
+              <Text style={styles.label}>Price Group</Text>
+              <Picker
+                style={styles.select}
+                selectedValue={selectedPriceGroup.id}
+                onValueChange={(itemValue, itemIndex) =>
+                  {
+                    selectPriceGroup(PriceGroups[itemIndex]);
+                  }}>
+                {PriceGroups.length>0 && (
+                  PriceGroups.map((item, index) => {
+                    return <Picker.Item key={index} label={item.price_group} value={item.id} />
+                  })
+                )}
+              </Picker>
+            </View>
+            <View style={{paddingRight: 10, width:660}}>
+              <Text style={styles.label}>Summary</Text>
+              {/* <TextInput
+                style={[styles.input, styles.textarea]}
+                placeholder="Summary"
+                placeholderTextColor="#ccc"
+                multiline={true}
+                numberOfLines={4}
+                value={summaryTxt}
+                onChangeText={setSummaryTxt}
+              /> */}
+              { (Platform.OS == 'android' || Platform.OS == 'ios') && (
+                <SafeAreaView>
+                  <View style={styles.richTextContainer}>
+                    <RichEditor
+                      ref={richText}
+                      onChange={richTextHandle}
+                      placeholder="Write your cool content here :)"
+                      androidHardwareAccelerationDisabled={true}
+                      style={styles.richTextEditorStyle}
+                      initialHeight={250}
+                    />
+                    <RichToolbar
+                      editor={richText}
+                      selectedIconTint="#873c1e"
+                      iconTint="#312921"
+                      actions={[
+                        actions.insertImage,
+                        actions.setBold,
+                        actions.setItalic,
+                        actions.insertBulletsList,
+                        actions.insertOrderedList,
+                        actions.insertLink,
+                        actions.setStrikethrough,
+                        actions.setUnderline,
+                      ]}
+                      style={styles.richTextToolbarStyle}
+                    />
+                  </View>
+                </SafeAreaView>
+              )}
+              {Platform.OS == 'web' && (
+                <Editor value={summaryTxt} onTextChange={(e) => setSummaryTxt(e.htmlValue)} style={{height: 185, marginBottom: '10px',}} />
+              )}
+              
+              <Text style={styles.label}>Notes</Text>
+              {Platform.OS == 'web' && (
+                <Editor value={notesTxt} onTextChange={(e) => setNotesTxt(e.htmlValue)} style={{height: 185, marginBottom: '10px',}} />
+              )}
+            </View>
+          </View>
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={AddFamilyButtonHandler}>
