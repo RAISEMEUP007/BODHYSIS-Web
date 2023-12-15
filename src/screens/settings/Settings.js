@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
 import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
-import Manufactures from './manufactures/Manufactures';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
+
+import Manufactures from './manufactures/Manufactures';
 import Tags from './tags/Tags';
 import Locations from './locations/Locations';
+import Customers from './customers/Customers';
 
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -24,6 +26,8 @@ const Settings = ({navigation, initalItem = null}) => {
                 return <Tags navigation={navigation} openInventory={handleItemClick}/>;
             case 'Locations':
                 return <Locations navigation={navigation} openInventory={handleItemClick}/>;
+            case 'Customers':
+                return <Customers navigation={navigation} openInventory={handleItemClick}/>;
             default:
                 return (
                     <View style={{ flexs: 1, border:'1px solid #d54545', marginRights: 20, paddingHorizontal: 10, paddingVertical:2, marginTop: 8, height: 28, justifyContent: 'center', flexDirection: 'row', marginTop: 100, }}>
@@ -47,6 +51,7 @@ const Settings = ({navigation, initalItem = null}) => {
                         { title: "Manufactures", icon: 'industry' },
                         { title: "Tag Management", icon: 'tags' },
                         { title: "Locations", icon: 'map-marker-alt' },
+                        { title: "Customers", icon: 'users' },
                     ]} handleItemClick={handleItemClick} />
                 </View>
             </ScrollView>
