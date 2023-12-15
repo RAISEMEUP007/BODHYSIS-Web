@@ -69,14 +69,18 @@ export const productsStyle = StyleSheet.create({
     fontSize: TextdefaultSize,
   },
   searchInput: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingVertical: 4,
+    paddingHorizontal: 6,
     borderWidth: 1,
     borderColor: '#999',
-    fontSize: TextSmallSize,
-    paddingVertical: 5,
-    backgroundColor: 'white',
     borderRadius: 5,
-    paddingLeft: 10,
-    flex: 1,
+    fontSize: TextSmallSize,
+    // width:  160,
+  },
+  searchPicker: {
+    minWidth: 240,
   },
 
   table: {
