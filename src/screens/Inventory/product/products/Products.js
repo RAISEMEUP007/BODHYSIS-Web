@@ -1,8 +1,9 @@
-import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useEffect, useState, useRef} from 'react';
+import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions, Picker, TextInput  } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import {getProductsData, deleteProduct } from '../../../../api/Product';
+import {getProductsData, deleteProduct, getProductCategoriesData, getProductFamiliesData, getProductLinesData } from '../../../../api/Product';
+import { getLocationsData } from '../../../../api/Settings';
 import { msgStr } from '../../../../common/constants/Message';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
@@ -12,11 +13,10 @@ import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout'
 import { productsStyle } from './styles/ProductsStyle';
 import AddProductModal from './AddProductModal';
 import QuickAddProductModal from './QuickAddProductModal';
-import { TextInput } from 'react-native-web';
 
 const Products = ({navigation, openInventory}) => {
+  const initialMount = useRef(true);
   const screenHeight = Dimensions.get('window').height;
-
   const StatusObj = {
     1: 'Ordered',
     2: 'Ready',
@@ -25,13 +25,12 @@ const Products = ({navigation, openInventory}) => {
     5: 'Sold',
     6: 'Transferred',
   };
-  
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
   const [tableData, setTableData] = useState([]);
-  const [updateProductTrigger, setUpdateProductsTrigger] = useState(true);
+  const [updateProductTrigger, setUpdateProductsTrigger] = useState(false);
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [isQuickAddModalVisible, setQuickAddModalVisible] = useState(false);
@@ -44,17 +43,147 @@ const Products = ({navigation, openInventory}) => {
   const openQuickAddProductModal = () => { setQuickAddModalVisible(true); setSelectedProduct(null)}
   const closeQuickAddProductModal = () => { setQuickAddModalVisible(false); setSelectedProduct(null)}
 
+  const [searchCategory, setSearchCategory] = useState(0);
+  const [searchFamily, setSearchFamily] = useState(0);
+  const [searchProductLine, setSearchProductLine] = useState(0);
   const [searchProduct, setSearchProduct] = useState('');
   const [searchBarcode, setSearchBarcode] = useState('');
   const [searchSize, setSearchSize] = useState('');
-  const [searchCategory, setSearchCategory] = useState('');
-  const [searchFamily, setSearchFamily] = useState('');
-  const [searchLocation, setSearchLocation] = useState('');
-  const [searchProductLine, setSearchProductLine] = useState('');
+  const [searchLocation, setSearchLocation] = useState(0);
+
+  const [categories, setCategories] = useState([]);
+  const [families, setFamilies] = useState([]);
+  const [lines, setLines] = useState([]);
+  const [Locations, setLocations] = useState([]);
 
   useEffect(()=>{
     if(updateProductTrigger == true) getTable();
   }, [updateProductTrigger]);
+
+  useEffect(()=>{
+    if(initialMount.current == false){
+      let timeoutId = setTimeout(() => {
+        getTable();
+      }, 100); // Adjust the debounce time as needed
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [searchCategory, searchFamily, searchProductLine]);
+
+  useEffect(()=>{
+    if(initialMount.current == false){
+      if(searchCategory != 0){
+        loadProductFamiliesData(searchCategory, (jsonRes)=>{
+          setFamilies(jsonRes);
+          if(jsonRes.length>0) setSearchFamily(jsonRes[0].id);
+          else { setSearchFamily(0);}
+        });
+      }else{
+        setFamilies([]); 
+        setSearchFamily(0);
+      }
+    }
+  }, [searchCategory])
+
+  useEffect(()=>{
+    if(initialMount.current == false){
+      if(searchFamily != 0){
+        loadProductLinesData(searchFamily, (jsonRes)=>{
+          setLines(jsonRes);
+          if(jsonRes.length>0) setSearchProductLine(jsonRes[0].id);
+          else { setSearchProductLine(0); }
+        })
+      }else{ 
+        setLines([]);
+        setSearchProductLine(0);
+      }
+    }
+  }, [searchFamily])
+
+  useEffect(()=>{
+    loadProductCategoriesData((categories)=>{
+      const categoryId = categories[0]?categories[0].id:null;
+      loadProductFamiliesData(categoryId, (families)=>{
+        const familyId = families[0]?families[0].id:null;
+        loadProductLinesData(familyId, (lines)=>{
+          if(categories.length) {
+            setCategories(categories);
+            // setSearchCategory(categories[0].id);
+          }
+          else setCategories([]);
+
+          if(families.length) {
+            setFamilies(families);
+            // setSearchFamily(families[0].id);
+          }
+          else setFamilies([]);
+
+          if(lines.length){
+            setLines(lines);
+            // setSearchProductLine(lines[0].id);
+          }
+          else setLines([]);
+
+          setUpdateProductsTrigger(true);
+          initialMount.current = false;
+        })
+      });
+    });
+    getLocationsData((jsonRes, status, error) => {
+      if( status == 200 ) setLocations(jsonRes);
+    })
+  }, [])
+
+  const loadProductCategoriesData = (callback) =>{
+    getProductCategoriesData((jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          callback(jsonRes);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
+  
+  const loadProductFamiliesData = (categoryId, callback) => {
+    getProductFamiliesData(categoryId, (jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          callback(jsonRes);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
+
+  const loadProductLinesData = (familyId, callback) =>{
+    getProductLinesData(familyId, (jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          callback(jsonRes);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
 
   const removeProduct = (id) => {
     showConfirm(msgStr('deleteConfirmStr'), ()=>{
@@ -74,7 +203,14 @@ const Products = ({navigation, openInventory}) => {
   }
 
   const getTable = () => {
-    getProductsData((jsonRes, status, error) => {
+    console.log('loadTable');
+    const CFLOption = {
+      category_id : searchCategory,
+      family_id : searchFamily,
+      line_id : searchProductLine,
+    }
+
+    getProductsData(CFLOption, (jsonRes, status, error) => {
       switch(status){
         case 200:
           setUpdateProductsTrigger(false);
@@ -93,25 +229,18 @@ const Products = ({navigation, openInventory}) => {
 
   const renderTableData = () => {
     const filteredData = tableData.filter(item => {
-      const isCategoryMatch = searchCategory.trim() ? item.category && item.category.category.toLowerCase().includes(searchCategory.trim().toLowerCase()) : true;
-      const isFamilyMatch = searchFamily.trim() ? item.family && item.family.family.toLowerCase().includes(searchFamily.trim().toLowerCase()) : true;
-      const isProductLineMatch = searchProductLine.trim() ? item.line && item.line.line.toLowerCase().includes(searchProductLine.trim().toLowerCase()) : true;
-    
       const isProductMatch = searchProduct.trim() ? item.product.toLowerCase().includes(searchProduct.trim().toLowerCase()) : true;
       const isBarcodeMatch = searchBarcode.trim() ? item.barcode && item.barcode.toLowerCase().includes(searchBarcode.trim().toLowerCase()) : true;
       const isSizeMatch = searchSize.trim() ? item.line && item.line.size.toLowerCase().includes(searchSize.trim().toLowerCase()) : true;
-      const isLocationMatch = searchLocation.trim() ? 
-        (item.home_location_tbl && item.home_location_tbl.location.toLowerCase().includes(searchLocation.trim().toLowerCase())) || 
-        (item.current_location_tbl && item.current_location_tbl.location.toLowerCase().includes(searchLocation.trim().toLowerCase())) : true;
+      const isLocationMatch = searchLocation != 0 ? 
+        (item.home_location && item.home_location == searchLocation) || 
+        (item.current_location && item.current_location == searchLocation) : true;
       
       return (
-        isProductMatch &&
-        isCategoryMatch &&
-        isFamilyMatch &&
-        isProductLineMatch &&
-        isBarcodeMatch &&
-        isSizeMatch &&
-        isLocationMatch
+        isProductMatch 
+        && isBarcodeMatch 
+        && isSizeMatch 
+        && isLocationMatch
       );
     });
 
@@ -182,30 +311,48 @@ const Products = ({navigation, openInventory}) => {
           <View style={styles.toolbar}>
           <View style={styles.searchBox}>
             <Text style={styles.searchLabel}>Category</Text>
-            <TextInput
-              style={styles.searchInput}
-              placeholder=""
-              value={searchCategory}
-              onChangeText={setSearchCategory}
-            />
+            <Picker
+              style={[styles.searchInput, styles.searchPicker]}
+              selectedValue={searchCategory}
+              onValueChange={setSearchCategory}
+            >
+              <Picker.Item label={""} value={0} />
+              {categories.length>0 && (
+                categories.map((category, index) => {
+                  return <Picker.Item key={index} label={category.category} value={category.id} />
+                })
+              )}
+            </Picker>
           </View>
           <View style={styles.searchBox}>
             <Text style={styles.searchLabel}>Family</Text>
-            <TextInput
-              style={styles.searchInput}
-              placeholder=""
-              value={searchFamily}
-              onChangeText={setSearchFamily}
-            />
+            <Picker
+              style={[styles.searchInput, styles.searchPicker]}
+              selectedValue={searchFamily}
+              onValueChange={setSearchFamily}
+            >
+              <Picker.Item label={""} value={0} />
+              {families.length>0 && (
+                families.map((family, index) => {
+                  return <Picker.Item key={index} label={family.family} value={family.id} />
+                })
+              )}
+            </Picker>
           </View>
           <View style={styles.searchBox}>
             <Text style={styles.searchLabel}>Line</Text>
-            <TextInput
-              style={styles.searchInput}
-              placeholder=""
-              value={searchProductLine}
-              onChangeText={setSearchProductLine}
-            />
+            <Picker
+              style={[styles.searchInput, styles.searchPicker]}
+              selectedValue={searchProductLine}
+              onValueChange={setSearchProductLine}
+            >
+              <Picker.Item label={""} value={0} />
+              {lines.length>0 && (
+                lines.map((line, index) => {
+                  return <Picker.Item key={index} label={line.line + " " + line.size} value={line.id} />
+                })
+              )}
+            </Picker>
           </View>
           </View>
           <View style={styles.toolbar}>
@@ -238,12 +385,18 @@ const Products = ({navigation, openInventory}) => {
             </View>
             <View style={styles.searchBox}>
               <Text style={styles.searchLabel}>Location</Text>
-              <TextInput
-                style={styles.searchInput}
-                placeholder=""
-                value={searchLocation}
-                onChangeText={setSearchLocation}
-              />
+              <Picker
+                style={[styles.searchInput]}
+                selectedValue={searchLocation}
+                onValueChange={setSearchLocation}
+              >
+                <Picker.Item label={""} value={0} />
+                {Locations.length>0 && (
+                  Locations.map((location, index) => {
+                    return <Picker.Item key={index} label={location.location} value={location.id} />
+                  })
+                )}
+              </Picker>
             </View>
           </View>
           <View style={styles.toolbar}>

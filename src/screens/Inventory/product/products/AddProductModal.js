@@ -146,7 +146,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
           if(jsonRes.length>0) selectFamily(jsonRes[0]);
           else { selectFamily({});}
         });
-      }else{ setLines([]); selectLine({});}
+      }else{ setFamilies([]); selectFamily({});}
   }, [selectedCategory])
 
   useEffect(()=>{
@@ -246,10 +246,6 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
       switch(status){
         case 200:
           callback(jsonRes);
-          // setLines(jsonRes);
-          // if(jsonRes.length> 0){
-          //   if(!isLoading) selectLine(jsonRes[0])
-          // }
           break;
         case 500:
           showAlert('error', msgStr('serverError'));

@@ -57,8 +57,8 @@ export const deleteProductLine = (id, callback) => {
   postAPICall('product/deleteproductline', payload, callback);
 }
 
-export const getProductsData = (callback) => {
-  getAPICall('product/getproductsdata/', callback);
+export const getProductsData = (CFLOpiton, callback) => {
+  postAPICall('product/getproductsdata/', CFLOpiton, callback);
 }
 
 export const updateProduct = (payload, callback) => {
