@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform, CheckBox, Pressable } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 
@@ -16,13 +16,12 @@ import NumericInput from '../../../common/components/formcomponents/NumericInput
 const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, closeModal }) => {
 
   const isUpdate = Customer ? true : false;
+  //const initialMount = useRef(true);
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
 
-  const [selectedCategory, selectCategory] = useState({});
-  const [selectedFamily, selectFamily] = useState({});
   const [FirstNameTxt, setFirstNameTxt] = useState('');
   const [LastNameTxt, setLastNameTxt] = useState('');
   const [EmailTxt, setEmailTxt] = useState('');
@@ -65,21 +64,48 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
       getCountriesData((jsonRes, status, error) => {
         if( status == 200 ){
           setCountries(jsonRes);
-          if(jsonRes[0]) setCountry(jsonRes[0].id);
+          if(jsonRes[0]){
+            if(Customer) setCountry(Customer.country_id);
+            else setCountry(jsonRes[0].id);
+          }else setCountry(0);
         }
       })
       getLanguagesData((jsonRes, status, error) => {
         if( status == 200 ){
           setLanguages(jsonRes);
-          if(jsonRes[0]) setLanguage(jsonRes[0].id);
+          if(jsonRes[0]) {
+            setLanguage(jsonRes[0].id);
+            setLanguage(Customer.language_id);
+
+          }else setLanguage(0);
         }
       })
       getLocationsData((jsonRes, status, error) => {
         if( status == 200 ){
           setLocations(jsonRes);
-          if(jsonRes[0]) setHomeLocation(jsonRes[0].id);
+          if(jsonRes[0]) {
+            setHomeLocation(jsonRes[0].id);
+            setHomeLocation(Customer.home_location);
+
+          }else setHomeLocation(0);
         }
       })
+
+      if(Customer){
+        setFirstNameTxt(Customer.first_name);
+        setLastNameTxt(Customer.last_name);
+        setEmailTxt(Customer.email);
+        setPhoneNumber(Customer.phone_number);
+        setHomeAddress(Customer.home_address);
+        setCityTxt(Customer.city);
+        setStateTxt(Customer.state);
+        setZipcodeTxt(Customer.zipcode);
+        setMobilePhoneTxt(Customer.mobile_phone);
+        setDeliveryStreetNumberTxt(Customer.delivery_street_number);
+        setDeliveryStreetPropertyNameTxt(Customer.delivery_street_property_name);
+        setDeliveryAreaPlantationTxt(Customer.delivery_area_plantation);
+        changeOptedIn(Customer.marketing_opt_in);
+      }
     }
   }, [isModalVisible])
 
@@ -130,7 +156,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
     };
     
     if (isUpdate) {
-      payload.id = FirstName.id
+      payload.id = Customer.id
       updateCustomer(payload, (jsonRes, status) => {
         handleResponse(jsonRes, status);
       });
@@ -164,7 +190,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
             <View style={{flex: 1, marginRight: 30}}>
               <Text style={styles.label}>First Name</Text>
               <TextInput style={styles.input} placeholder="First Name" value={FirstNameTxt} onChangeText={setFirstNameTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>
-              {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
+              {/* {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>} */}
               <Text style={styles.label}>Last Name</Text>
               <TextInput style={styles.input} placeholder="Last Name" value={LastNameTxt} onChangeText={setLastNameTxt} placeholderTextColor="#ccc"/>
               <Text style={styles.label}>Email</Text>

@@ -51,7 +51,7 @@ const Settings = ({navigation, initalItem = null}) => {
                         { title: "Manufactures", icon: 'industry' },
                         { title: "Tag Management", icon: 'tags' },
                         { title: "Locations", icon: 'map-marker-alt' },
-                        { title: "Customers", icon: 'users' },
+                        // { title: "Customers", icon: 'users' },
                     ]} handleItemClick={handleItemClick} />
                 </View>
             </ScrollView>

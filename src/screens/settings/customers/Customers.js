@@ -22,11 +22,11 @@ const Customers = ({navigation, openInventory}) => {
   const [updateCustomerTrigger, setUpdateCustomerTrigger] = useState(true);
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
-  const [selectedLine, setSelectedLine] = useState(null);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-  const openAddCustomerModal = () => { setAddModalVisible(true); setSelectedLine(null)}
-  const closeAddCustomerModal = () => { setAddModalVisible(false); setSelectedLine(null)}
-  const editCustomer = (index) => { setSelectedLine(tableData[index]); setAddModalVisible(true); }
+  const openAddCustomerModal = () => { setAddModalVisible(true); setSelectedCustomer(null)}
+  const closeAddCustomerModal = () => { setAddModalVisible(false); setSelectedCustomer(null)}
+  const editCustomer = (index) => { setSelectedCustomer(tableData[index]); setAddModalVisible(true); }
 
   useEffect(()=>{
     if(updateCustomerTrigger == true) getTable();
@@ -120,9 +120,9 @@ const Customers = ({navigation, openInventory}) => {
   return (
     <BasicLayout
       navigation = {navigation}
-      goBack={()=>{
-        openInventory(null)
-      }}
+      // goBack={()=>{
+      //   openInventory(null)
+      // }}
       screenName={'Customers'}
     >
       <ScrollView horizontal={true}>
@@ -152,7 +152,7 @@ const Customers = ({navigation, openInventory}) => {
 
           <AddCustomerModal
             isModalVisible={isAddModalVisible}
-            Line={selectedLine}
+            Customer={selectedCustomer}
             setUpdateCustomerTrigger = {setUpdateCustomerTrigger} 
             closeModal={closeAddCustomerModal}
           />
