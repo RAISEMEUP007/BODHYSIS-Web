@@ -5,6 +5,7 @@ import { createDrawerNavigator, DrawerItemList,  DrawerItem,} from '@react-navig
 import Dashboard from './Dashboard';
 import Inventory from './Inventory/Inventory';
 import Settings from './settings/Settings';
+import Customers from './settings/customers/Customers';
 
 const MainDrawer = ({navigation}) => {
   const dimensions = useWindowDimensions();
@@ -18,6 +19,10 @@ const MainDrawer = ({navigation}) => {
   
   const InventoryScreen = ({ navigation }) => {
     return <Inventory navigation={navigation}/>;
+  }
+
+  const CustomerScreen = ({ navigation }) => {
+    return <Customers navigation={navigation}/>;
   }
   
   const SettingsScreen = ({ navigation }) => {
@@ -58,7 +63,7 @@ const MainDrawer = ({navigation}) => {
   return (
     <Drawer.Navigator 
       useLegacyImplementation
-      initialRouteName="Inventory" 
+      initialRouteName="Customer" 
       drawerContent={(props) => <DrawerContent {...props} />}
       screenOptions={{
         drawerType: (Platform.OS == 'web' && isLargeScreen) ? 'permanent' : 'front',
@@ -94,6 +99,15 @@ const MainDrawer = ({navigation}) => {
         component={InventoryScreen}
         options={{ 
           drawerLabel: 'Inventory', 
+          unmountOnBlur: true,
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="Customer"
+        component={CustomerScreen}
+        options={{ 
+          drawerLabel: 'Customer',
           unmountOnBlur: true,
           headerShown: false,
         }}

@@ -64,7 +64,7 @@ const Products = ({navigation, openInventory}) => {
     if(initialMount.current == false){
       let timeoutId = setTimeout(() => {
         getTable();
-      }, 100); // Adjust the debounce time as needed
+      }, 100);
 
       return () => clearTimeout(timeoutId);
     }

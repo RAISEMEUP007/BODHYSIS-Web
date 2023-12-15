@@ -52,3 +52,54 @@ export const deleteLocation = (id, callback) => {
   const payload = { id };
   postAPICall('settings/deletelocation', payload, callback);
 }
+
+export const getCountriesData = (callback) => {
+  getAPICall('settings/getcountriesdata/', callback);
+}
+
+export const updateCountry = (payload, callback) => {
+  postAPICall('settings/updatecountry', payload, callback);
+};
+
+export const createCountry = (payload, callback) => {
+  postAPICall('settings/createcountry', payload, callback);
+};
+
+export const deleteCountry = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletecountry', payload, callback);
+}
+
+export const getLanguagesData = (callback) => {
+  getAPICall('settings/getlanguagesdata/', callback);
+}
+
+export const updateLanguage = (payload, callback) => {
+  postAPICall('settings/updatelanguage', payload, callback);
+};
+
+export const createLanguage = (payload, callback) => {
+  postAPICall('settings/createlanguage', payload, callback);
+};
+
+export const deleteLanguage = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletelanguage', payload, callback);
+}
+
+export const getCustomersData = (callback) => {
+  getAPICall('settings/getcustomersdata/', callback);
+}
+
+export const updateCustomer = (payload, callback) => {
+  postAPICall('settings/updatecustomer', payload, callback);
+};
+
+export const createCustomer = (payload, callback) => {
+  postAPICall('settings/createcustomer', payload, callback);
+};
+
+export const deleteCustomer = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletecustomer', payload, callback);
+}
