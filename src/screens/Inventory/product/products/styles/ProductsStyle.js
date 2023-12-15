@@ -62,6 +62,7 @@ export const productsStyle = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    marginRight: 20,
   },
   searchLabel: {
     marginHorizontal: 10,

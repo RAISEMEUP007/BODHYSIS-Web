@@ -47,6 +47,10 @@ const Products = ({navigation, openInventory}) => {
   const [searchProduct, setSearchProduct] = useState('');
   const [searchBarcode, setSearchBarcode] = useState('');
   const [searchSize, setSearchSize] = useState('');
+  const [searchCategory, setSearchCategory] = useState('');
+  const [searchFamily, setSearchFamily] = useState('');
+  const [searchLocation, setSearchLocation] = useState('');
+  const [searchProductLine, setSearchProductLine] = useState('');
 
   useEffect(()=>{
     if(updateProductTrigger == true) getTable();
@@ -89,10 +93,26 @@ const Products = ({navigation, openInventory}) => {
 
   const renderTableData = () => {
     const filteredData = tableData.filter(item => {
-      const productMatches = item.product.toLowerCase().includes(searchProduct.trim().toLowerCase());
-      const barcodeMatches = item.barcode && item.barcode.toLowerCase().includes(searchBarcode.trim().toLowerCase());
-      const sizeMatches = item.line && item.line.size.toLowerCase().includes(searchSize.trim().toLowerCase());
-      return productMatches && barcodeMatches && sizeMatches;
+      const isCategoryMatch = searchCategory.trim() ? item.category && item.category.category.toLowerCase().includes(searchCategory.trim().toLowerCase()) : true;
+      const isFamilyMatch = searchFamily.trim() ? item.family && item.family.family.toLowerCase().includes(searchFamily.trim().toLowerCase()) : true;
+      const isProductLineMatch = searchProductLine.trim() ? item.line && item.line.line.toLowerCase().includes(searchProductLine.trim().toLowerCase()) : true;
+    
+      const isProductMatch = searchProduct.trim() ? item.product.toLowerCase().includes(searchProduct.trim().toLowerCase()) : true;
+      const isBarcodeMatch = searchBarcode.trim() ? item.barcode && item.barcode.toLowerCase().includes(searchBarcode.trim().toLowerCase()) : true;
+      const isSizeMatch = searchSize.trim() ? item.line && item.line.size.toLowerCase().includes(searchSize.trim().toLowerCase()) : true;
+      const isLocationMatch = searchLocation.trim() ? 
+        (item.home_location_tbl && item.home_location_tbl.location.toLowerCase().includes(searchLocation.trim().toLowerCase())) || 
+        (item.current_location_tbl && item.current_location_tbl.location.toLowerCase().includes(searchLocation.trim().toLowerCase())) : true;
+      
+      return (
+        isProductMatch &&
+        isCategoryMatch &&
+        isFamilyMatch &&
+        isProductLineMatch &&
+        isBarcodeMatch &&
+        isSizeMatch &&
+        isLocationMatch
+      );
     });
 
     const rows = [];
@@ -160,6 +180,35 @@ const Products = ({navigation, openInventory}) => {
       <ScrollView horizontal={true}>
         <View style={styles.container}>
           <View style={styles.toolbar}>
+          <View style={styles.searchBox}>
+            <Text style={styles.searchLabel}>Category</Text>
+            <TextInput
+              style={styles.searchInput}
+              placeholder=""
+              value={searchCategory}
+              onChangeText={setSearchCategory}
+            />
+          </View>
+          <View style={styles.searchBox}>
+            <Text style={styles.searchLabel}>Family</Text>
+            <TextInput
+              style={styles.searchInput}
+              placeholder=""
+              value={searchFamily}
+              onChangeText={setSearchFamily}
+            />
+          </View>
+          <View style={styles.searchBox}>
+            <Text style={styles.searchLabel}>Line</Text>
+            <TextInput
+              style={styles.searchInput}
+              placeholder=""
+              value={searchProductLine}
+              onChangeText={setSearchProductLine}
+            />
+          </View>
+          </View>
+          <View style={styles.toolbar}>
             <View style={styles.searchBox}>
               <Text style={styles.searchLabel}>Product</Text>
               <TextInput
@@ -187,6 +236,15 @@ const Products = ({navigation, openInventory}) => {
                 onChangeText={setSearchBarcode}
               />
             </View>
+            <View style={styles.searchBox}>
+              <Text style={styles.searchLabel}>Location</Text>
+              <TextInput
+                style={styles.searchInput}
+                placeholder=""
+                value={searchLocation}
+                onChangeText={setSearchLocation}
+              />
+            </View>
           </View>
           <View style={styles.toolbar}>
             <TouchableHighlight style={styles.button} onPress={openAddProductModal}>
@@ -211,7 +269,7 @@ const Products = ({navigation, openInventory}) => {
               <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
             </View>
-            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 280 }}>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 350 }}>
               {renderTableData()}
             </ScrollView>
           </View>
