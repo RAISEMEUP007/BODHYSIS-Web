@@ -11,6 +11,7 @@ import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { priceTablesStyle } from './styles/PriceTablesStyle';
 import AddPriceTableModal from './AddPriceTableModal';
+import ClonePriceTableModal from './ClonePriceTableModal';
 import PriceGroup from '../pricegroup/PriceGroup';
 
 const PriceTables = ({navigation, openInventory, selectedTableId = null}) => {
@@ -27,6 +28,11 @@ const PriceTables = ({navigation, openInventory, selectedTableId = null}) => {
   const [updatePriceTableTrigger, setUpdatePriceTableTrigger] = useState(true);
   const [selectedTable, setSelectedTable] = useState(selectedTableId);
   const [selectedTableName, setSelectedTableName] = useState("");
+
+  const [isCloneModalVisible, setCloneModalVisible] = useState(false);
+  const openClonePriceTableModal = () => { setCloneModalVisible(true); };
+  const closeClonePriceTableModal = () => { setCloneModalVisible(false); }
+  const [cloneSource, setCloneSource] = useState({});
   
   useEffect(()=>{
     if(updatePriceTableTrigger == true) getTable();
@@ -100,6 +106,11 @@ const PriceTables = ({navigation, openInventory, selectedTableId = null}) => {
     setSelectedTableName(tableName);
   }
 
+  const clonePriceTable = (item) =>{
+    setCloneSource(item);
+    openClonePriceTableModal(true);
+  }
+
   if(selectedTable){
     return <PriceGroup tableId={selectedTable} tableName={selectedTableName} openPriceTable={openPriceTable}/>
   }
@@ -110,7 +121,7 @@ const PriceTables = ({navigation, openInventory, selectedTableId = null}) => {
       tableData.map((item, index) => {
         rows.push( 
           <View key={index} style={styles.tableRow}>
-            <View style={styles.cell}>
+            <View style={[styles.cell, styles.categoryCell]}>
               <TextInput style={styles.cellInput}
                 value={item.table_name}
                 onChangeText={(value) => {
@@ -120,20 +131,29 @@ const PriceTables = ({navigation, openInventory, selectedTableId = null}) => {
                   saveCellData(item.id, 'table_name', item.table_name);
                 }}
               />
-              <View style={styles.deleteRow}>
-                <TouchableOpacity onPress={()=>{removePriceTable(item.id)}}>
-                  <FontAwesome5 style={styles.deleteRow} size={TextMediumSize} name="times" color="black" />
-                </TouchableOpacity>
-              </View>
             </View>
-            <View style={[styles.cell, styles.radioButtonCell]}>
-              <TouchableWithoutFeedback onPress={()=>{openPriceTable(item.id, item.table_name)}}>
+            <View style={[styles.IconCell]}>
+              <TouchableOpacity style={{cursor:'pointer'}} onPress={()=>{openPriceTable(item.id, item.table_name)}}>
                 <FontAwesome5
                   name={'edit'}
                   size={15}
-                  color={"#6c757d"}
+                  color={"black"}
                 />
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.IconCell]}>
+              <TouchableOpacity style={{cursor:'pointer'}} onPress={()=>{clonePriceTable(item)}}>
+                <FontAwesome5
+                  name={'clone'}
+                  size={15}
+                  color={"black"}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.IconCell]}>
+              <TouchableOpacity  onPress={()=>{removePriceTable(item.id)}}>
+                <FontAwesome5 size={15} name="times" color="black" />
+              </TouchableOpacity>
             </View>
           </View>
         );
@@ -161,8 +181,10 @@ const PriceTables = ({navigation, openInventory, selectedTableId = null}) => {
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
-              <Text style={styles.columnHeader}>{"PriceTable"}</Text>
-              <Text style={[styles.columnHeader, styles.radioButtonCell]}>{"Options"}</Text>
+              <Text style={[styles.columnHeader, {width:250}]}>{"Price Table"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{"Options"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{"Clone"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
             </View>
             <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
                 {renderTableData()}
@@ -173,6 +195,13 @@ const PriceTables = ({navigation, openInventory, selectedTableId = null}) => {
             isModalVisible={isAddModalVisible}
             setUpdatePriceTableTrigger = {setUpdatePriceTableTrigger} 
             closeModal={closeAddPriceTableModal}
+          />
+
+          <ClonePriceTableModal
+            cloneSource = {cloneSource}
+            isModalVisible={isCloneModalVisible}
+            setUpdatePriceTableTrigger = {setUpdatePriceTableTrigger} 
+            closeModal={closeClonePriceTableModal}
           />
         </View>
       </ScrollView>

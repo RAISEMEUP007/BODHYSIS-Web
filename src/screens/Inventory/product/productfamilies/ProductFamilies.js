@@ -29,6 +29,15 @@ const ProductFamilies = ({navigation, openInventory}) => {
   const closeAddProductFamilyModal = () => { setAddModalVisible(false); setSelectedFamily(null)}
   const editProductFamily = (item) => { setSelectedFamily(item); setAddModalVisible(true); }
 
+  const changeCellData = (index, key, newVal) => {
+    const updatedTableData = [ ...tableData ];
+    updatedTableData[index] = {
+      ...updatedTableData[index],
+      [key]: newVal 
+    };
+    setTableData(updatedTableData);
+  };  
+
   useEffect(()=>{
     if(updateProductFamilyTrigger == true) getTable();
   }, [updateProductFamilyTrigger]);
@@ -110,7 +119,12 @@ const ProductFamilies = ({navigation, openInventory}) => {
             </View>
             <View style={[styles.imageCell]}>
               {item.img_url ? (
-                <Image source={{ uri: API_URL+item.img_url }} style={styles.cellImage}/>
+                <Image 
+                  source={{ uri: API_URL+item.img_url }}
+                  style={styles.cellImage} 
+                  onError={() => {
+                    changeCellData(index, 'img_url', null);
+                }}/>
               ) : (
                 <FontAwesome5 name="image" size={26} color="#666"></FontAwesome5>
               )}

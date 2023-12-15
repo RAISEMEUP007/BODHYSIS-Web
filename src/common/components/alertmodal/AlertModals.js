@@ -39,24 +39,24 @@ const AlertModals = () => {
         visible={modalVisible}
         style={styles.modal}
       >
-        <View style={styles.centeredView}>
-        <View style={[styles.modalView, { backgroundColor: modalBackgroundColor }]}>
-          <Text style={styles.modalText}>{modalText}</Text>
-          <Pressable
-            style={[styles.button, styles.buttonClose, { backgroundColor: modalBtnColor }]}
-            onPress={closeAlert}
-          >
-          <Text style={[styles.textStyle, { color: '#fff' }]}>{modalBtnText}</Text>
+        <Pressable style={styles.centeredView} onPress={closeAlert} >
+          <Pressable style={[styles.modalView, { backgroundColor: modalBackgroundColor }]} onPress={(event)=>{event.preventDefault();}} >
+            <Text style={styles.modalText}>{modalText}</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose, { backgroundColor: modalBtnColor }]}
+              onPress={closeAlert}
+            >
+            <Text style={[styles.textStyle, { color: '#fff' }]}>{modalBtnText}</Text>
+            </Pressable>
           </Pressable>
-        </View>
-        </View>
+        </Pressable>
       </Modal>
     );
 };
 
 const styles = StyleSheet.create({
   modal: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    //backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   centeredView: {
     flex: 1,

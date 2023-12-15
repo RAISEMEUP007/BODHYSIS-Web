@@ -2,7 +2,7 @@ import React, { useEffect, useState} from 'react';
 import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { getProductCategoriesData, deleteProductCategory } from '../../../../api/Product';
+import { getProductCategoriesData, deleteProductCategory, getQuantitiesByCategory } from '../../../../api/Product';
 import { msgStr } from '../../../../common/constants/Message';
 import { API_URL } from '../../../../common/constants/AppConstants';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
@@ -67,7 +67,7 @@ const ProductCategories = ({navigation, openInventory}) => {
       switch(status){
         case 200:
           setUpdateProductCategoryTrigger(false);
-          setTableData(jsonRes);
+          setQuantities(jsonRes);
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -80,6 +80,31 @@ const ProductCategories = ({navigation, openInventory}) => {
     })
   }
 
+  const setQuantities = (tableData) =>{
+    getQuantitiesByCategory((jsonRes, status, error) => {
+      switch(status){
+        case 200:
+          if(jsonRes){
+            for (let i = 0; i < tableData.length; i++) {
+              let id = tableData[i].id;
+              if (jsonRes[id] !== undefined) {  
+                tableData[i].quantity = jsonRes[id];
+              }
+            }
+          }
+          setTableData(tableData);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    });
+  }
+
   const renderTableData = () => {
     const rows = [];
     if(tableData.length > 0){
@@ -89,9 +114,17 @@ const ProductCategories = ({navigation, openInventory}) => {
             <View style={styles.categoryCell}>
               <Text style={styles.categoryCell}>{item.category}</Text>
             </View>
+            <View style={[styles.cell, {width:100, paddingRight:6, alignItems:'flex-end'}]}>
+              <Text>{item.quantity? item.quantity: '0'}</Text>
+            </View>
             <View style={[styles.imageCell]}>
               {item.img_url ? (
-                <Image source={{ uri: API_URL+item.img_url }} style={styles.cellImage}/>
+                <Image source={
+                  { uri: API_URL+item.img_url }} 
+                  style={styles.cellImage}
+                  onError={() => {
+                    changeCellData(index, 'img_url', null);
+                }}/>
               ) : (
                 <FontAwesome5 name="image" size={26} color="#666"></FontAwesome5>
               )}
@@ -133,6 +166,7 @@ const ProductCategories = ({navigation, openInventory}) => {
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
               <Text style={[styles.columnHeader, styles.categoryCell]}>{"Category"}</Text>
+              <Text style={[styles.columnHeader, {width:100}]}>{"Quantity"}</Text>
               <Text style={[styles.columnHeader, styles.imageCell]}>{"Image"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>

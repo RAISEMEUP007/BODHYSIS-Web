@@ -11,8 +11,8 @@ const ConfirmModal = () => {
       transparent={true}
       visible={modalVisible}
     >
-      <View style={styles.centeredView}>
-        <View style={[styles.modalView, styles.bootstrapModalView]}>
+      <Pressable style={styles.centeredView} onPress={closeConfirm} >
+        <Pressable style={[styles.modalView, styles.bootstrapModalView]} onPress={(event)=>{event.preventDefault();}} >
           <Text style={styles.modalText}>{modalText}</Text>
           <View style={styles.buttonContainer}>
             <Pressable
@@ -28,8 +28,8 @@ const ConfirmModal = () => {
               <Text style={[styles.textStyle, styles.confirmButtonText]}>{"OK"}</Text>
             </Pressable>
           </View>
-        </View>
-      </View>
+        </Pressable>
+      </Pressable>
     </Modal>
   );
 };

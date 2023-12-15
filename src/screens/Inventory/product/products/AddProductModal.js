@@ -138,10 +138,6 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
     }
   }, [StartInitalizing])
 
-  console.log(Product);
-  console.log(selectedHomeLocation);
-  console.log(selectedCurrentLocation);
-
   useEffect(()=>{
     if(CategoryChanged)
       if(selectedCategory.id){

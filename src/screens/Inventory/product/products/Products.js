@@ -12,9 +12,20 @@ import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout'
 import { productsStyle } from './styles/ProductsStyle';
 import AddProductModal from './AddProductModal';
 import QuickAddProductModal from './QuickAddProductModal';
+import { TextInput } from 'react-native-web';
 
 const Products = ({navigation, openInventory}) => {
   const screenHeight = Dimensions.get('window').height;
+
+  const StatusObj = {
+    1: 'Ordered',
+    2: 'Ready',
+    3: 'Checked out',
+    4: 'Broken',
+    5: 'Sold',
+    6: 'Transferred',
+  };
+  
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
@@ -32,6 +43,14 @@ const Products = ({navigation, openInventory}) => {
 
   const openQuickAddProductModal = () => { setQuickAddModalVisible(true); setSelectedProduct(null)}
   const closeQuickAddProductModal = () => { setQuickAddModalVisible(false); setSelectedProduct(null)}
+
+  const [searchProduct, setSearchProduct] = useState('');
+  const [searchBarcode, setSearchBarcode] = useState('');
+  const [searchSize, setSearchSize] = useState('');
+  const [searchCategory, setSearchCategory] = useState('');
+  const [searchFamily, setSearchFamily] = useState('');
+  const [searchLocation, setSearchLocation] = useState('');
+  const [searchProductLine, setSearchProductLine] = useState('');
 
   useEffect(()=>{
     if(updateProductTrigger == true) getTable();
@@ -73,9 +92,32 @@ const Products = ({navigation, openInventory}) => {
   }
 
   const renderTableData = () => {
+    const filteredData = tableData.filter(item => {
+      const isCategoryMatch = searchCategory.trim() ? item.category && item.category.category.toLowerCase().includes(searchCategory.trim().toLowerCase()) : true;
+      const isFamilyMatch = searchFamily.trim() ? item.family && item.family.family.toLowerCase().includes(searchFamily.trim().toLowerCase()) : true;
+      const isProductLineMatch = searchProductLine.trim() ? item.line && item.line.line.toLowerCase().includes(searchProductLine.trim().toLowerCase()) : true;
+    
+      const isProductMatch = searchProduct.trim() ? item.product.toLowerCase().includes(searchProduct.trim().toLowerCase()) : true;
+      const isBarcodeMatch = searchBarcode.trim() ? item.barcode && item.barcode.toLowerCase().includes(searchBarcode.trim().toLowerCase()) : true;
+      const isSizeMatch = searchSize.trim() ? item.line && item.line.size.toLowerCase().includes(searchSize.trim().toLowerCase()) : true;
+      const isLocationMatch = searchLocation.trim() ? 
+        (item.home_location_tbl && item.home_location_tbl.location.toLowerCase().includes(searchLocation.trim().toLowerCase())) || 
+        (item.current_location_tbl && item.current_location_tbl.location.toLowerCase().includes(searchLocation.trim().toLowerCase())) : true;
+      
+      return (
+        isProductMatch &&
+        isCategoryMatch &&
+        isFamilyMatch &&
+        isProductLineMatch &&
+        isBarcodeMatch &&
+        isSizeMatch &&
+        isLocationMatch
+      );
+    });
+
     const rows = [];
-    if(tableData.length > 0){
-      tableData.map((item, index) => {
+    if(filteredData.length > 0){
+      filteredData.map((item, index) => {
         rows.push( 
           <View key={index} style={styles.tableRow}>
             <View style={[styles.cell, styles.categoryCell]}>
@@ -105,6 +147,9 @@ const Products = ({navigation, openInventory}) => {
             <View style={styles.cell}>
               <Text style={styles.cell}>{item.current_location_tbl? item.current_location_tbl.location: ''}</Text>
             </View>
+            <View style={styles.cell}>
+              <Text style={styles.cell}>{item.status? StatusObj[item.status]: ''}</Text>
+            </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity onPress={()=>{editProduct(item)}}>
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
@@ -123,7 +168,7 @@ const Products = ({navigation, openInventory}) => {
     }
     return <>{rows}</>;
   };
-  console.log(tableData);
+
   return (
     <BasicLayout
       navigation = {navigation}
@@ -134,6 +179,73 @@ const Products = ({navigation, openInventory}) => {
     >
       <ScrollView horizontal={true}>
         <View style={styles.container}>
+          <View style={styles.toolbar}>
+          <View style={styles.searchBox}>
+            <Text style={styles.searchLabel}>Category</Text>
+            <TextInput
+              style={styles.searchInput}
+              placeholder=""
+              value={searchCategory}
+              onChangeText={setSearchCategory}
+            />
+          </View>
+          <View style={styles.searchBox}>
+            <Text style={styles.searchLabel}>Family</Text>
+            <TextInput
+              style={styles.searchInput}
+              placeholder=""
+              value={searchFamily}
+              onChangeText={setSearchFamily}
+            />
+          </View>
+          <View style={styles.searchBox}>
+            <Text style={styles.searchLabel}>Line</Text>
+            <TextInput
+              style={styles.searchInput}
+              placeholder=""
+              value={searchProductLine}
+              onChangeText={setSearchProductLine}
+            />
+          </View>
+          </View>
+          <View style={styles.toolbar}>
+            <View style={styles.searchBox}>
+              <Text style={styles.searchLabel}>Product</Text>
+              <TextInput
+                style={styles.searchInput}
+                placeholder=""
+                value={searchProduct}
+                onChangeText={setSearchProduct}
+              />
+            </View>
+            <View style={styles.searchBox}>
+              <Text style={styles.searchLabel}>Size</Text>
+              <TextInput
+                style={styles.searchInput}
+                placeholder=""
+                value={searchSize}
+                onChangeText={setSearchSize}
+              />
+            </View>
+            <View style={styles.searchBox}>
+              <Text style={styles.searchLabel}>Barcode</Text>
+              <TextInput
+                style={styles.searchInput}
+                placeholder=""
+                value={searchBarcode}
+                onChangeText={setSearchBarcode}
+              />
+            </View>
+            <View style={styles.searchBox}>
+              <Text style={styles.searchLabel}>Location</Text>
+              <TextInput
+                style={styles.searchInput}
+                placeholder=""
+                value={searchLocation}
+                onChangeText={setSearchLocation}
+              />
+            </View>
+          </View>
           <View style={styles.toolbar}>
             <TouchableHighlight style={styles.button} onPress={openAddProductModal}>
               <Text style={styles.buttonText}>Add</Text>
@@ -153,10 +265,11 @@ const Products = ({navigation, openInventory}) => {
               <Text style={[styles.columnHeader]}>{"Serial Number"}</Text>
               <Text style={[styles.columnHeader]}>{"Home Location"}</Text>
               <Text style={[styles.columnHeader]}>{"Current Location"}</Text>
+              <Text style={[styles.columnHeader]}>{"Status"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
             </View>
-            <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 350 }}>
               {renderTableData()}
             </ScrollView>
           </View>

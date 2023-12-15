@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform } from 'react-native';
 
-import { savePriceTableCell } from '../../../api/Price';
+import { clonePriceTableCell } from '../../../api/Price';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
@@ -11,7 +11,7 @@ import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { priceModalstyles } from './styles/PriceTableModalStyle';
 
-const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeModal }) => {
+const ClonePriceTableModal = ({ cloneSource, isModalVisible, setUpdatePriceTableTrigger, closeModal }) => {
   const inputRef = useRef(null);
 
   const { showAlert } = useAlertModal();
@@ -42,7 +42,7 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
     }
   }, [isModalVisible]);
 
-  const handleAddButtonClick = () => {
+  const handleCloneButtonClick = () => {
     if (!_priceTable.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
@@ -50,7 +50,7 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
 
     setIsLoading(true);
 
-    savePriceTableCell(-1, 'table_name', _priceTable, (jsonRes, status, error)=>{
+    clonePriceTableCell(cloneSource.id, _priceTable, (jsonRes, status, error)=>{
       switch(status){
         case 200:
           showAlert('success', jsonRes.message);
@@ -86,23 +86,23 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
       onShow={()=>{setValidMessage(''); setPriceTable('')}}
     >
       <BasicModalContainer>
-        <ModalHeader label={"Price Table"} closeModal={closeModal} />
+        <ModalHeader label={("Copy " + cloneSource.table_name)} closeModal={closeModal} />
         <ModalBody>
           <TextInput
             ref={inputRef} 
             style={styles.input}
             onChangeText={setPriceTable}
             value={_priceTable}
-            placeholder="priceTable"
+            placeholder={"New Table Name"}
             placeholderTextColor="#ccc"
-            onSubmitEditing={handleAddButtonClick}
+            onSubmitEditing={handleCloneButtonClick}
             onBlur={checkInput}
           />
           {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
         </ModalBody>
         <ModalFooter>
-          <TouchableOpacity onPress={handleAddButtonClick}>
-            <Text style={styles.addButton}>Add</Text>
+          <TouchableOpacity onPress={handleCloneButtonClick}>
+            <Text style={styles.addButton}>Copy</Text>
           </TouchableOpacity>
         </ModalFooter>
       </BasicModalContainer>
@@ -117,4 +117,4 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
 
 const styles = priceModalstyles;
 
-export default AddPriceTableModal;
+export default ClonePriceTableModal;
