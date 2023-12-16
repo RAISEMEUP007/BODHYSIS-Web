@@ -74,8 +74,8 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
         if( status == 200 ){
           setLanguages(jsonRes);
           if(jsonRes[0]) {
+            if(Customer) setLanguage(Customer.language_id);
             setLanguage(jsonRes[0].id);
-            setLanguage(Customer.language_id);
 
           }else setLanguage(0);
         }
@@ -84,8 +84,8 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
         if( status == 200 ){
           setLocations(jsonRes);
           if(jsonRes[0]) {
+            if(Customer) setHomeLocation(Customer.home_location);
             setHomeLocation(jsonRes[0].id);
-            setHomeLocation(Customer.home_location);
 
           }else setHomeLocation(0);
         }
@@ -236,7 +236,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
                 style={styles.select}
                 selectedValue={HomeLocation}
                 onValueChange={setHomeLocation}>
-                {Locations.length>0 && (
+                {Locations.length >0 && (
                   Locations.map((location, index) => {
                     return <Picker.Item key={index} label={location.location} value={location.id} />
                   })

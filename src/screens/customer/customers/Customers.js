@@ -2,7 +2,7 @@ import React, { useEffect, useState} from 'react';
 import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import {getCustomersData, deleteCustomer, getQuantitiesByLine } from '../../../api/Settings';
+import { getCustomersData, deleteCustomer, } from '../../../api/Customer';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
@@ -67,7 +67,6 @@ const Customers = ({navigation, openInventory}) => {
     })
   }
   
-  console.log(tableData);
   const renderTableData = () => {
     const rows = [];
     if(tableData.length > 0){

@@ -5,7 +5,7 @@ import { createDrawerNavigator, DrawerItemList,  DrawerItem,} from '@react-navig
 import Dashboard from './Dashboard';
 import Inventory from './Inventory/Inventory';
 import Settings from './settings/Settings';
-import Customers from './settings/customers/Customers';
+import Customers from './customer/customers/Customers';
 
 const MainDrawer = ({navigation}) => {
   const dimensions = useWindowDimensions();

@@ -86,20 +86,3 @@ export const deleteLanguage = (id, callback) => {
   const payload = { id };
   postAPICall('settings/deletelanguage', payload, callback);
 }
-
-export const getCustomersData = (callback) => {
-  getAPICall('settings/getcustomersdata/', callback);
-}
-
-export const updateCustomer = (payload, callback) => {
-  postAPICall('settings/updatecustomer', payload, callback);
-};
-
-export const createCustomer = (payload, callback) => {
-  postAPICall('settings/createcustomer', payload, callback);
-};
-
-export const deleteCustomer = (id, callback) => {
-  const payload = { id };
-  postAPICall('settings/deletecustomer', payload, callback);
-}
