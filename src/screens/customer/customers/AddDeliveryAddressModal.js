@@ -14,7 +14,7 @@ import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { customerModalstyles } from './styles/CustomerModalStyle';
 
-const AddDeliveryAddressModal = ({ isModalVisible, DeliveryAddress, setUpdateDeliveryAddressTrigger, closeModal }) => {
+const AddDeliveryAddressModal = ({ isModalVisible, DeliveryAddress, customerId, setUpdateDeliveryAddressTrigger, closeModal }) => {
   const isUpdate = DeliveryAddress ? true : false;
 
   const { showAlert } = useAlertModal();
@@ -84,7 +84,8 @@ const AddDeliveryAddressModal = ({ isModalVisible, DeliveryAddress, setUpdateDel
       city : CityTxt,
       state : StateTxt,
       postal_code : PostalCodeTxt,
-      country_id : Country
+      country_id : Country,
+      customer_id: customerId,
     }
 
     const handleResponse = (jsonRes, status) => {

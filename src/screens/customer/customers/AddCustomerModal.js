@@ -1,9 +1,11 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform, CheckBox, Pressable } from 'react-native';
+import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform, Pressable } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
+import CheckBox from 'expo-checkbox';
+import { v4 as uuidv4 } from 'uuid';
 
 import { getLocationsData, getCountriesData, getLanguagesData } from '../../../api/Settings';
-import { createCustomer, updateCustomer } from '../../../api/Customer';
+import { createCustomer, deleteDeliveryAddressByCId, updateCustomer } from '../../../api/Customer';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
@@ -17,9 +19,18 @@ import DeliveryAddress from './DeliveryAddressModal';
 
 const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, closeModal }) => {
   const isUpdate = Customer ? true : false;
+  const customerId = useRef();
+
+  useEffect(() => {
+    if (Customer) customerId.current = Customer.id;
+    else {
+      customerId.current = parseInt(uuidv4(), 16);
+    }
+  }, [Customer]);
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
+  const [emailValidMessage, setEmailValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
   const [isDeliverModalVisible, setDeliveryModalVisible] = useState(false);
 
@@ -179,11 +190,35 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
         handleResponse(jsonRes, status);
       });
     } else {
+      payload.tmpId = customerId.current;
       createCustomer(payload, (jsonRes, status) => {
         handleResponse(jsonRes, status);
       });
     }
   };
+
+  const closeModalhandler = () =>{
+    if(!Customer){
+      deleteDeliveryAddressByCId(customerId.current, ()=>{
+        closeModal();
+      });
+    }else closeModal();
+  }
+  
+  const checkEmailInput = () => {
+    if (!EmailTxt.trim()) {
+        setEmailValidMessage(msgStr('emptyField'));
+    } else if (!isValidEmailFormat(EmailTxt)) {
+        setEmailValidMessage(msgStr('invalidEmailFormat'));
+    } else {
+        setEmailValidMessage('');
+    }
+  };
+
+  const isValidEmailFormat = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
 
   const checkInput = () => {
     if (!FirstNameTxt.trim()) {
@@ -197,7 +232,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
     isModalVisible?(
     <View style={{position:'absolute', width:"100%", height:"100%"}}>
       <BasicModalContainer>
-        <ModalHeader label={"Customer"} closeModal={closeModal} />
+        <ModalHeader label={"Customer"} closeModal={()=>{ closeModalhandler();}} />
         <ModalBody>
           <View style={{flexDirection:'row'}}>
             <View style={{flex: 1, marginRight: 30}}>
@@ -207,7 +242,8 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
               <Text style={styles.label}>Last Name</Text>
               <TextInput style={styles.input} placeholder="Last Name" value={LastNameTxt} onChangeText={setLastNameTxt} placeholderTextColor="#ccc"/>
               <Text style={styles.label}>Email</Text>
-              <TextInput style={styles.input} placeholder="Email" value={EmailTxt} onChangeText={setEmailTxt} placeholderTextColor="#ccc"/>
+              <TextInput style={styles.input} placeholder="Email" value={EmailTxt} onChangeText={setEmailTxt} placeholderTextColor="#ccc" onBlur={checkEmailInput}/>
+              {(emailValidMessage.trim() != '') && <Text style={styles.message}>{emailValidMessage}</Text>}
               <Text style={styles.label}>Phone Number</Text>
               <NumericInput placeholder="Phone Number" value={PhoneNumber} onChangeText={setPhoneNumber}></NumericInput>
               <Text style={styles.label}>Billing/Home Address</Text>
@@ -285,6 +321,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
 
       <DeliveryAddress
         isModalVisible={isDeliverModalVisible}
+        customerId={customerId.current}
         closeModal={closeDeliveryModal}
       />
     </View >)

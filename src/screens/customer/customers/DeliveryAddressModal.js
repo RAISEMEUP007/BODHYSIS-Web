@@ -1,8 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform, TouchableHighlight, ScrollView } from 'react-native';
+import { Text, TextInput, TouchableOpacity, Modal, View, TouchableWithoutFeedback, Platform, TouchableHighlight, ScrollView } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { getDeliveryAddressesData, deleteDeliveryAddress, } from '../../../api/Customer';
+import { getDeliveryAddressesData, deleteDeliveryAddress, updateDeliveryAddress, } from '../../../api/Customer';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
@@ -14,7 +14,7 @@ import { customersStyle } from './styles/CustomersStyle';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import AddDeliveryAddressModal from './AddDeliveryAddressModal';
 
-const DeliveryAddress = ({ isModalVisible, closeModal }) => {
+const DeliveryAddress = ({ isModalVisible, customerId, closeModal }) => {
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
@@ -32,6 +32,10 @@ const DeliveryAddress = ({ isModalVisible, closeModal }) => {
   useEffect(()=>{
     if(updateDeliveryAddressTrigger == true) getTable();
   }, [updateDeliveryAddressTrigger]);
+
+  useEffect(()=>{
+    if(isModalVisible == true) getTable();
+  }, [isModalVisible]);
 
   useEffect(() => {
     if(Platform.web){
@@ -67,7 +71,7 @@ const DeliveryAddress = ({ isModalVisible, closeModal }) => {
   }
 
   const getTable = () => {
-    getDeliveryAddressesData((jsonRes, status, error) => {
+    getDeliveryAddressesData(customerId, (jsonRes, status, error) => {
       switch(status){
         case 200:
           setUpdateDeliveryAddressTrigger(false);
@@ -83,6 +87,19 @@ const DeliveryAddress = ({ isModalVisible, closeModal }) => {
       }
     })
   }
+
+  const resetUsedAddress = (id) => {
+    updateDeliveryAddress({is_used:true, id:id}, ()=>{
+      tableData.map((item, index) => {
+        if(item.is_used){
+          updateDeliveryAddress({is_used:false, id:item.id}, ()=>{
+            setUpdateDeliveryAddressTrigger(true);
+          });
+        }
+      })
+      setUpdateDeliveryAddressTrigger(true);
+    });
+  }
   
   const renderTableData = () => {
     const rows = [];
@@ -92,6 +109,15 @@ const DeliveryAddress = ({ isModalVisible, closeModal }) => {
           <View key={index} style={styles.tableRow}>
             <View style={[styles.cell, {width:300}]}>
               <Text>{item.address1}</Text>
+            </View>
+            <View style={[styles.IconCell]}>
+              <TouchableWithoutFeedback onPress={()=>{resetUsedAddress(item.id)}}>
+                <FontAwesome5
+                  name={item.is_used?'dot-circle':'circle'}
+                  size={15}
+                  color={item.is_used ? "#007bff" : "#6c757d"}
+                />
+              </TouchableWithoutFeedback>
             </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity onPress={()=>{editAddress(index)}}>
@@ -127,6 +153,7 @@ const DeliveryAddress = ({ isModalVisible, closeModal }) => {
             <View style={[styles.tableContainer]}>
               <View style={styles.tableHeader}>
                 <Text style={[styles.columnHeader, {width:300}]}>{"Delivery Address"}</Text>
+                <Text style={[styles.columnHeader, styles.IconCell]}>{"Is_used"}</Text>
                 <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
                 <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
               </View>
@@ -141,6 +168,7 @@ const DeliveryAddress = ({ isModalVisible, closeModal }) => {
       <AddDeliveryAddressModal
         isModalVisible={isAddDeliveryModalVisible}
         DeliveryAddress={selectedAddress}
+        customerId={customerId}
         setUpdateDeliveryAddressTrigger = {setUpdateDeliveryAddressTrigger} 
         closeModal={closeAdDeliverydAddressModal}
       />

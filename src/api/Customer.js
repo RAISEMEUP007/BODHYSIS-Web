@@ -17,11 +17,13 @@ export const deleteCustomer = (id, callback) => {
   postAPICall('customer/deletecustomer', payload, callback);
 }
 
-export const getDeliveryAddressesData = (callback) => {
-  getAPICall('customer/getdeliverydddressesdata/', callback);
+export const getDeliveryAddressesData = (customerId, callback) => {
+  console.log(customerId);
+  postAPICall('customer/getdeliveryaddressesdata/', {customer_id: customerId}, callback);
 }
 
 export const updateDeliveryAddress = (payload, callback) => {
+  console.log(payload);
   postAPICall('customer/updatedeliverydddress', payload, callback);
 };
 
@@ -32,4 +34,9 @@ export const createDeliveryAddress = (payload, callback) => {
 export const deleteDeliveryAddress = (id, callback) => {
   const payload = { id };
   postAPICall('customer/deletedeliverydddress', payload, callback);
+}
+
+export const deleteDeliveryAddressByCId = (customerId, callback) => {
+  const payload = { customerId };
+  postAPICall('customer/deletedeliveryaddressbycid', payload, callback);
 }

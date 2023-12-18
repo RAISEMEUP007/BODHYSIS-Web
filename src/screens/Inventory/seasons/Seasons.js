@@ -93,15 +93,16 @@ const Seasons = ({navigation, openInventory}) => {
   }
 
   const resetActiveSeason = (id) => {
-    tableData.map((item, index) => {
-      if(item.is_active){
-        saveCellData(item.id, 'is_active', 0, ()=>{
-          saveCellData(id, 'is_active', 1, ()=>{
-            setUpdateSeasonTrigger(true);
+    saveCellData(id, 'is_active', 1, ()=>{
+      tableData.map((item, index) => {
+        if(item.is_active){
+          saveCellData(item.id, 'is_active', 0, ()=>{
+            //setUpdateSeasonTrigger(true);
           });
-        });
-      }
-    })
+        }
+      })
+      setUpdateSeasonTrigger(true);
+    });
   }
 
   const renderTableData = () => {
