@@ -36,12 +36,14 @@ const ConfirmModal = () => {
 
 const styles = StyleSheet.create({
   centeredView: {
+    cursor: 'default',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
   },
   modalView: {
+    cursor: 'default',
     margin: 20,
     borderRadius: 20,
     padding: 35,

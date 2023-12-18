@@ -22,10 +22,10 @@ const LoadingIndicator = () => {
 
 const GlobalModals = () => {
   return (
-    <>
+    <View style={{zIndex: 1000}}>
       <AlertModals/>
       <ConfirmModal/>
-    </>
+    </View>
   );
 }
 

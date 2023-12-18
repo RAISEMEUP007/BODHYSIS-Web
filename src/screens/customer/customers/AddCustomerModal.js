@@ -2,25 +2,26 @@ import React, {useState, useEffect, useRef} from 'react';
 import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform, CheckBox, Pressable } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 
-import { getLocationsData, getCountriesData, getLanguagesData, createCustomer, updateCustomer } from '../../../api/Settings';
+import { getLocationsData, getCountriesData, getLanguagesData } from '../../../api/Settings';
+import { createCustomer, updateCustomer } from '../../../api/Customer';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
 import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
+import NumericInput from '../../../common/components/formcomponents/NumericInput';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { customerModalstyles } from './styles/CustomerModalStyle';
-import NumericInput from '../../../common/components/formcomponents/NumericInput';
+import DeliveryAddress from './DeliveryAddressModal';
 
 const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, closeModal }) => {
-
   const isUpdate = Customer ? true : false;
-  //const initialMount = useRef(true);
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
+  const [isDeliverModalVisible, setDeliveryModalVisible] = useState(false);
 
   const [FirstNameTxt, setFirstNameTxt] = useState('');
   const [LastNameTxt, setLastNameTxt] = useState('');
@@ -42,6 +43,9 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
   const [Countries, setCountries] = useState([]);
   const [Languages, setLanguages] = useState([]);
   const [Locations, setLocations] = useState([]);
+
+  const openDeliveryModal = () => { setDeliveryModalVisible(true);}
+  const closeDeliveryModal = () => { setDeliveryModalVisible(false);}
 
   useEffect(() => {
     if(Platform.web){
@@ -105,6 +109,20 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
         setDeliveryStreetPropertyNameTxt(Customer.delivery_street_property_name);
         setDeliveryAreaPlantationTxt(Customer.delivery_area_plantation);
         changeOptedIn(Customer.marketing_opt_in);
+      }else{
+        setFirstNameTxt('');
+        setLastNameTxt('');
+        setEmailTxt('');
+        setPhoneNumber('');
+        setHomeAddress('');
+        setCityTxt('');
+        setStateTxt('');
+        setZipcodeTxt('');
+        setMobilePhoneTxt('');
+        setDeliveryStreetNumberTxt('');
+        setDeliveryStreetPropertyNameTxt('');
+        setDeliveryAreaPlantationTxt('');
+        changeOptedIn('');
       }
     }
   }, [isModalVisible])
@@ -176,13 +194,8 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
   };
 
   return (
-    <Modal
-      animationType="none"
-      transparent={true}
-      visible={isModalVisible}
-      onShow={()=>{
-      }}
-    >
+    isModalVisible?(
+    <View style={{position:'absolute', width:"100%", height:"100%"}}>
       <BasicModalContainer>
         <ModalHeader label={"Customer"} closeModal={closeModal} />
         <ModalBody>
@@ -252,7 +265,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
                 <CheckBox value={isOptedIn} style={{marginRight:10}}/> 
                 <Text>{"Marketing Opt-In"}</Text>
               </Pressable>
-              <TouchableOpacity style={styles.deliveryButton}>
+              <TouchableOpacity style={styles.deliveryButton} onPress={openDeliveryModal}>
                 <Text>{"Delivery Address"}</Text>
               </TouchableOpacity>
             </View>
@@ -269,7 +282,13 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       )}
-    </Modal>
+
+      <DeliveryAddress
+        isModalVisible={isDeliverModalVisible}
+        closeModal={closeDeliveryModal}
+      />
+    </View >)
+    :null
   );
 };
 

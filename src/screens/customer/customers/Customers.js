@@ -119,9 +119,6 @@ const Customers = ({navigation, openInventory}) => {
   return (
     <BasicLayout
       navigation = {navigation}
-      // goBack={()=>{
-      //   openInventory(null)
-      // }}
       screenName={'Customers'}
     >
       <ScrollView horizontal={true}>
@@ -148,15 +145,15 @@ const Customers = ({navigation, openInventory}) => {
               {renderTableData()}
             </ScrollView>
           </View>
-
-          <AddCustomerModal
-            isModalVisible={isAddModalVisible}
-            Customer={selectedCustomer}
-            setUpdateCustomerTrigger = {setUpdateCustomerTrigger} 
-            closeModal={closeAddCustomerModal}
-          />
         </View>
       </ScrollView>
+      
+      <AddCustomerModal
+        isModalVisible={isAddModalVisible}
+        Customer={selectedCustomer}
+        setUpdateCustomerTrigger = {setUpdateCustomerTrigger} 
+        closeModal={closeAddCustomerModal}
+      />
     </BasicLayout>
   );
 };

@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@expo/webpack-config": "^0.17.0",
+    "@react-native-community/checkbox": "^0.5.16",
     "@react-native-picker/picker": "2.4.2",
     "@react-navigation/bottom-tabs": "^6.4.0",
     "@react-navigation/drawer": "^6.5.0",
