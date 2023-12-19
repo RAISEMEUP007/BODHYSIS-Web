@@ -1,4 +1,4 @@
-import { getAPICall, postAPICall } from './BaseAPI';
+import { basePostAPICall, getAPICall, postAPICall } from './BaseAPI';
 
 export const getManufacturesData = (callback) => {
   getAPICall('settings/getmanufacturesdata/', callback);
@@ -85,4 +85,21 @@ export const createLanguage = (payload, callback) => {
 export const deleteLanguage = (id, callback) => {
   const payload = { id };
   postAPICall('settings/deletelanguage', payload, callback);
+}
+
+export const getDocumentsData = (callback) => {
+  getAPICall('settings/getdocumentsdata', callback);
+}
+
+export const createDocument = (payload, callback) => {
+  basePostAPICall('settings/createdocument', {}, payload, callback);
+};
+
+export const updateDocument = (payload, callback) => {
+  basePostAPICall('settings/updatedocument', {}, payload, callback);
+};
+
+export const deleteDocument = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletedocument', payload, callback);
 }
