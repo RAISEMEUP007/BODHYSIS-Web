@@ -1,26 +1,38 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform, CheckBox, Pressable } from 'react-native';
+import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform, Pressable } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
+import CheckBox from 'expo-checkbox';
+import { v4 as uuidv4 } from 'uuid';
 
-import { getLocationsData, getCountriesData, getLanguagesData, createCustomer, updateCustomer } from '../../../api/Settings';
+import { getLocationsData, getCountriesData, getLanguagesData } from '../../../api/Settings';
+import { createCustomer, deleteDeliveryAddressByCId, updateCustomer } from '../../../api/Customer';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
 import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
+import NumericInput from '../../../common/components/formcomponents/NumericInput';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { customerModalstyles } from './styles/CustomerModalStyle';
-import NumericInput from '../../../common/components/formcomponents/NumericInput';
+import DeliveryAddress from './DeliveryAddressModal';
 
 const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, closeModal }) => {
-
   const isUpdate = Customer ? true : false;
-  //const initialMount = useRef(true);
+  const customerId = useRef();
+
+  useEffect(() => {
+    if (Customer) customerId.current = Customer.id;
+    else {
+      customerId.current = parseInt(uuidv4(), 16);
+    }
+  }, [Customer]);
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
+  const [emailValidMessage, setEmailValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
+  const [isDeliverModalVisible, setDeliveryModalVisible] = useState(false);
 
   const [FirstNameTxt, setFirstNameTxt] = useState('');
   const [LastNameTxt, setLastNameTxt] = useState('');
@@ -42,6 +54,9 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
   const [Countries, setCountries] = useState([]);
   const [Languages, setLanguages] = useState([]);
   const [Locations, setLocations] = useState([]);
+
+  const openDeliveryModal = () => { setDeliveryModalVisible(true);}
+  const closeDeliveryModal = () => { setDeliveryModalVisible(false);}
 
   useEffect(() => {
     if(Platform.web){
@@ -74,8 +89,8 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
         if( status == 200 ){
           setLanguages(jsonRes);
           if(jsonRes[0]) {
+            if(Customer) setLanguage(Customer.language_id);
             setLanguage(jsonRes[0].id);
-            setLanguage(Customer.language_id);
 
           }else setLanguage(0);
         }
@@ -84,8 +99,8 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
         if( status == 200 ){
           setLocations(jsonRes);
           if(jsonRes[0]) {
+            if(Customer) setHomeLocation(Customer.home_location);
             setHomeLocation(jsonRes[0].id);
-            setHomeLocation(Customer.home_location);
 
           }else setHomeLocation(0);
         }
@@ -105,6 +120,20 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
         setDeliveryStreetPropertyNameTxt(Customer.delivery_street_property_name);
         setDeliveryAreaPlantationTxt(Customer.delivery_area_plantation);
         changeOptedIn(Customer.marketing_opt_in);
+      }else{
+        setFirstNameTxt('');
+        setLastNameTxt('');
+        setEmailTxt('');
+        setPhoneNumber('');
+        setHomeAddress('');
+        setCityTxt('');
+        setStateTxt('');
+        setZipcodeTxt('');
+        setMobilePhoneTxt('');
+        setDeliveryStreetNumberTxt('');
+        setDeliveryStreetPropertyNameTxt('');
+        setDeliveryAreaPlantationTxt('');
+        changeOptedIn('');
       }
     }
   }, [isModalVisible])
@@ -161,11 +190,35 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
         handleResponse(jsonRes, status);
       });
     } else {
+      payload.tmpId = customerId.current;
       createCustomer(payload, (jsonRes, status) => {
         handleResponse(jsonRes, status);
       });
     }
   };
+
+  const closeModalhandler = () =>{
+    if(!Customer){
+      deleteDeliveryAddressByCId(customerId.current, ()=>{
+        closeModal();
+      });
+    }else closeModal();
+  }
+  
+  const checkEmailInput = () => {
+    if (!EmailTxt.trim()) {
+        setEmailValidMessage(msgStr('emptyField'));
+    } else if (!isValidEmailFormat(EmailTxt)) {
+        setEmailValidMessage(msgStr('invalidEmailFormat'));
+    } else {
+        setEmailValidMessage('');
+    }
+  };
+
+  const isValidEmailFormat = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
 
   const checkInput = () => {
     if (!FirstNameTxt.trim()) {
@@ -176,15 +229,10 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
   };
 
   return (
-    <Modal
-      animationType="none"
-      transparent={true}
-      visible={isModalVisible}
-      onShow={()=>{
-      }}
-    >
+    isModalVisible?(
+    <View style={{position:'absolute', width:"100%", height:"100%"}}>
       <BasicModalContainer>
-        <ModalHeader label={"Customer"} closeModal={closeModal} />
+        <ModalHeader label={"Customer"} closeModal={()=>{ closeModalhandler();}} />
         <ModalBody>
           <View style={{flexDirection:'row'}}>
             <View style={{flex: 1, marginRight: 30}}>
@@ -194,7 +242,8 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
               <Text style={styles.label}>Last Name</Text>
               <TextInput style={styles.input} placeholder="Last Name" value={LastNameTxt} onChangeText={setLastNameTxt} placeholderTextColor="#ccc"/>
               <Text style={styles.label}>Email</Text>
-              <TextInput style={styles.input} placeholder="Email" value={EmailTxt} onChangeText={setEmailTxt} placeholderTextColor="#ccc"/>
+              <TextInput style={styles.input} placeholder="Email" value={EmailTxt} onChangeText={setEmailTxt} placeholderTextColor="#ccc" onBlur={checkEmailInput}/>
+              {(emailValidMessage.trim() != '') && <Text style={styles.message}>{emailValidMessage}</Text>}
               <Text style={styles.label}>Phone Number</Text>
               <NumericInput placeholder="Phone Number" value={PhoneNumber} onChangeText={setPhoneNumber}></NumericInput>
               <Text style={styles.label}>Billing/Home Address</Text>
@@ -236,7 +285,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
                 style={styles.select}
                 selectedValue={HomeLocation}
                 onValueChange={setHomeLocation}>
-                {Locations.length>0 && (
+                {Locations.length >0 && (
                   Locations.map((location, index) => {
                     return <Picker.Item key={index} label={location.location} value={location.id} />
                   })
@@ -252,7 +301,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
                 <CheckBox value={isOptedIn} style={{marginRight:10}}/> 
                 <Text>{"Marketing Opt-In"}</Text>
               </Pressable>
-              <TouchableOpacity style={styles.deliveryButton}>
+              <TouchableOpacity style={styles.deliveryButton} onPress={openDeliveryModal}>
                 <Text>{"Delivery Address"}</Text>
               </TouchableOpacity>
             </View>
@@ -269,7 +318,14 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       )}
-    </Modal>
+
+      <DeliveryAddress
+        isModalVisible={isDeliverModalVisible}
+        customerId={customerId.current}
+        closeModal={closeDeliveryModal}
+      />
+    </View >)
+    :null
   );
 };
 

@@ -7,9 +7,9 @@ import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import Manufactures from './manufactures/Manufactures';
 import Tags from './tags/Tags';
 import Locations from './locations/Locations';
-import Customers from './customers/Customers';
 
 import { ScrollView } from 'react-native-gesture-handler';
+import Documents from './documents/Documents';
 
 const Settings = ({navigation, initalItem = null}) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);
@@ -26,8 +26,8 @@ const Settings = ({navigation, initalItem = null}) => {
                 return <Tags navigation={navigation} openInventory={handleItemClick}/>;
             case 'Locations':
                 return <Locations navigation={navigation} openInventory={handleItemClick}/>;
-            case 'Customers':
-                return <Customers navigation={navigation} openInventory={handleItemClick}/>;
+            case 'Document Management':
+                return <Documents navigation={navigation} openInventory={handleItemClick}/>;
             default:
                 return (
                     <View style={{ flexs: 1, border:'1px solid #d54545', marginRights: 20, paddingHorizontal: 10, paddingVertical:2, marginTop: 8, height: 28, justifyContent: 'center', flexDirection: 'row', marginTop: 100, }}>
@@ -51,7 +51,7 @@ const Settings = ({navigation, initalItem = null}) => {
                         { title: "Manufactures", icon: 'industry' },
                         { title: "Tag Management", icon: 'tags' },
                         { title: "Locations", icon: 'map-marker-alt' },
-                        // { title: "Customers", icon: 'users' },
+                        { title: "Document Management", icon: 'sticky-note' },
                     ]} handleItemClick={handleItemClick} />
                 </View>
             </ScrollView>

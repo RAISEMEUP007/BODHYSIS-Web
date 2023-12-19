@@ -2,42 +2,42 @@ import React, { useEffect, useState} from 'react';
 import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import {getCustomersData, deleteCustomer, getQuantitiesByLine } from '../../../api/Settings';
+import { getDocumentsData, deleteDocument, } from '../../../api/Settings';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
 import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
-import { customersStyle } from './styles/CustomersStyle';
-import AddCustomerModal from './AddCustomerModal';
+import { documentsStyle } from './styles/DocumentsStyle';
+import AddDocumentModal from './AddDocumentModal';
 
-const Customers = ({navigation, openInventory}) => {
+const Documents = ({navigation, openInventory}) => {
   const screenHeight = Dimensions.get('window').height;
   
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
   const [tableData, setTableData] = useState([]);
-  const [updateCustomerTrigger, setUpdateCustomerTrigger] = useState(true);
+  const [updateDocumentTrigger, setUpdateDocumentTrigger] = useState(true);
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [selectedDocument, setSelectedDocument] = useState(null);
 
-  const openAddCustomerModal = () => { setAddModalVisible(true); setSelectedCustomer(null)}
-  const closeAddCustomerModal = () => { setAddModalVisible(false); setSelectedCustomer(null)}
-  const editCustomer = (index) => { setSelectedCustomer(tableData[index]); setAddModalVisible(true); }
+  const openAddDocumentModal = () => { setAddModalVisible(true); setSelectedDocument(null)}
+  const closeAddDocumentModal = () => { setAddModalVisible(false); setSelectedDocument(null)}
+  const editDocument = (index) => { setSelectedDocument(tableData[index]); setAddModalVisible(true); }
 
   useEffect(()=>{
-    if(updateCustomerTrigger == true) getTable();
-  }, [updateCustomerTrigger]);
+    if(updateDocumentTrigger == true) getTable();
+  }, [updateDocumentTrigger]);
 
-  const removeCustomer = (id) => {
+  const removeDocument = (id) => {
     showConfirm(msgStr('deleteConfirmStr'), ()=>{
-      deleteCustomer(id, (jsonRes, status, error)=>{
+      deleteDocument(id, (jsonRes, status, error)=>{
         switch(status){
           case 200:
-            setUpdateCustomerTrigger(true);
+            setUpdateDocumentTrigger(true);
             showAlert('success', jsonRes.message);
             break;
           default:
@@ -50,10 +50,10 @@ const Customers = ({navigation, openInventory}) => {
   }
 
   const getTable = () => {
-    getCustomersData((jsonRes, status, error) => {
+    getDocumentsData((jsonRes, status, error) => {
       switch(status){
         case 200:
-          setUpdateCustomerTrigger(false);
+          setUpdateDocumentTrigger(false);
           setTableData(jsonRes);
           break;
         case 500:
@@ -67,44 +67,29 @@ const Customers = ({navigation, openInventory}) => {
     })
   }
   
-  console.log(tableData);
   const renderTableData = () => {
     const rows = [];
     if(tableData.length > 0){
       tableData.map((item, index) => {
         rows.push( 
           <View key={index} style={styles.tableRow}>
-            <View style={styles.cell}>
-              <Text>{item.createdAt}</Text>
-            </View>
-            <View style={styles.cell}>
-              <Text>{item.first_name}</Text>
-            </View>
-            <View style={styles.cell}>
-              <Text>{item.last_name}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.email}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.phone_number}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.mobile_phone}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.country.country}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.home_location_tbl.location}</Text>
+            <View style={[styles.cell, {width: 300}]}>
+              <Text>{item.document_name}</Text>
             </View>
             <View style={[styles.IconCell]}>
-              <TouchableOpacity onPress={()=>{editCustomer(index)}}>
+              {(item.document_type == 0) ? (
+                <Text>{"INT"}</Text>
+              ):(
+                <FontAwesome5 size={TextMediumSize} name="file-pdf" color="black" />
+              )}
+            </View>
+            <View style={[styles.IconCell]}>
+              <TouchableOpacity onPress={()=>{editDocument(index)}}>
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
             </View>
             <View style={[styles.IconCell]}>
-              <TouchableOpacity onPress={()=>{removeCustomer(item.id)}}>
+              <TouchableOpacity onPress={()=>{removeDocument(item.id)}}>
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />
               </TouchableOpacity>
             </View>
@@ -120,28 +105,19 @@ const Customers = ({navigation, openInventory}) => {
   return (
     <BasicLayout
       navigation = {navigation}
-      // goBack={()=>{
-      //   openInventory(null)
-      // }}
-      screenName={'Customers'}
+      screenName={'Documents'}
     >
       <ScrollView horizontal={true}>
         <View style={styles.container}>
           <View style={styles.toolbar}>
-            <TouchableHighlight style={styles.button} onPress={openAddCustomerModal}>
+            <TouchableHighlight style={styles.button} onPress={openAddDocumentModal}>
               <Text style={styles.buttonText}>Add</Text>
             </TouchableHighlight>
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader]}>{"Created"}</Text>
-              <Text style={[styles.columnHeader]}>{"First name"}</Text>
-              <Text style={[styles.columnHeader]}>{"Last name"}</Text>
-              <Text style={[styles.columnHeader]}>{"Email"}</Text>
-              <Text style={[styles.columnHeader]}>{"Phone number"}</Text>
-              <Text style={[styles.columnHeader]}>{"Mobile number"}</Text>
-              <Text style={[styles.columnHeader]}>{"Country"}</Text>
-              <Text style={[styles.columnHeader]}>{"Location"}</Text>
+              <Text style={[styles.columnHeader, {width: 300}]}>{"Document Name"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{"Type"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
             </View>
@@ -149,19 +125,19 @@ const Customers = ({navigation, openInventory}) => {
               {renderTableData()}
             </ScrollView>
           </View>
-
-          <AddCustomerModal
-            isModalVisible={isAddModalVisible}
-            Customer={selectedCustomer}
-            setUpdateCustomerTrigger = {setUpdateCustomerTrigger} 
-            closeModal={closeAddCustomerModal}
-          />
         </View>
       </ScrollView>
+      
+      <AddDocumentModal
+        isModalVisible={isAddModalVisible}
+        Document={selectedDocument}
+        setUpdateDocumentTrigger = {setUpdateDocumentTrigger} 
+        closeModal={closeAddDocumentModal}
+      />
     </BasicLayout>
   );
 };
 
-const styles = customersStyle;
+const styles = documentsStyle;
 
-export default Customers;
+export default Documents;

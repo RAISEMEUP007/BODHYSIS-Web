@@ -2,6 +2,9 @@ import React, {useState, useEffect, useRef} from 'react';
 import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform, Image } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {launchImageLibrary} from 'react-native-image-picker';
+import { Editor } from 'primereact/editor';
+import {actions, RichEditor, RichToolbar} from "react-native-pell-rich-editor";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { createProductFamily, updateProductFamily, getProductCategoriesData } from '../../../../api/Product';
 import { getPriceGroupsData } from '../../../../api/Price';
@@ -9,14 +12,11 @@ import BasicModalContainer from '../../../../common/components/basicmodal/BasicM
 import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../../common/components/basicmodal/ModalBody';
 import ModalFooter from '../../../../common/components/basicmodal/ModalFooter';
+import { API_URL } from '../../../../common/constants/AppConstants';
 import { msgStr } from '../../../../common/constants/Message';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 
 import { productFamilyModalstyles } from './styles/ProductFamilyModalStyle';
-import { API_URL } from '../../../../common/constants/AppConstants';
-import {actions, RichEditor, RichToolbar} from "react-native-pell-rich-editor";
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Editor } from 'primereact/editor';
 
 const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyTrigger, closeModal }) => {
 
@@ -341,7 +341,7 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
                     <RichEditor
                       ref={richText}
                       onChange={richTextHandle}
-                      placeholder="Write your cool content here :)"
+                      placeholder=""
                       androidHardwareAccelerationDisabled={true}
                       style={styles.richTextEditorStyle}
                       initialHeight={250}

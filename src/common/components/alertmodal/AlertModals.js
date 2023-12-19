@@ -59,12 +59,14 @@ const styles = StyleSheet.create({
     //backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   centeredView: {
+    cursor: 'default',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
   },
   modalView: {
+    cursor: 'default',
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
