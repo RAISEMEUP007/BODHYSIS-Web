@@ -60,7 +60,7 @@ export const documentModalstyles = StyleSheet.create({
     top: 0,
     left: 0,
   },
-  imagePicker: {
+  filePicker: {
     position: 'relative',
     width: 650,
     height: 250,
@@ -71,7 +71,7 @@ export const documentModalstyles = StyleSheet.create({
     borderWidth: 2, // Border width
     borderStyle: 'solid', // Border style
   },
-  imageUpload: {
+  fileUpload: {
     position: 'relative',
     width: '100%',
     height: '100%',
@@ -86,10 +86,11 @@ export const documentModalstyles = StyleSheet.create({
   },
   fileInput: {
     position: 'absolute',
-    width: '100%',
-    height: '100%',
+    width: 0,
+    height: 0,
     Top: 0,
     opacity: 0,
+    pointerEvents: 'none',
   },
   previewImage: {
     width: '100%',

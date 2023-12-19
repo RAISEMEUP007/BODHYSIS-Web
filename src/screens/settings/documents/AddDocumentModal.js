@@ -1,8 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { Text, TextInput, TouchableOpacity, View, ActivityIndicator, Platform, Image } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View, ActivityIndicator, Platform, File } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import { Editor } from 'primereact/editor';
-import { Document, Page, pdfjs } from 'react-pdf';
 
 import { createDocument, updateDocument } from '../../../api/Settings';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
@@ -15,6 +14,8 @@ import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { documentModalstyles } from './styles/DocumentModalStyle';
 import { API_URL } from '../../../common/constants/AppConstants';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { TextMediumLargeSize } from '../../../common/constants/Fonts';
 
 const AddDocumentModal = ({ isModalVisible, Document, setUpdateDocumentTrigger, closeModal }) => {
   const isUpdate = Document ? true : false;
@@ -24,8 +25,8 @@ const AddDocumentModal = ({ isModalVisible, Document, setUpdateDocumentTrigger, 
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
 
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [filePreviewUrl, setFilePreviewUrl] = useState(null);
   const [DocumentNameTxt, setDocumentNameTxt] = useState('');
   const [documentType, setDocumentType] = useState(0);
   const [documentContentTxt, setDocumentContentTxt] = useState('');
@@ -52,20 +53,20 @@ const AddDocumentModal = ({ isModalVisible, Document, setUpdateDocumentTrigger, 
         setDocumentNameTxt(Document.document_name);
         setDocumentType(Document.document_type);
         setDocumentContentTxt(Document.document_content);
-        setImagePreviewUrl(API_URL + Document.document_file);
+        setFilePreviewUrl(Document.document_file?API_URL + Document.document_file:'');
       }else{
         setDocumentNameTxt('');
         setDocumentType(0);
         setDocumentContentTxt('');
-        setImagePreviewUrl(null);
+        setFilePreviewUrl(null);
       }
-      setSelectedImage(null);
+      setSelectedFile(null);
     }else{
       setDocumentType(-1);
     }
   }, [isModalVisible])
 
-  const handleImageSelection = (event) => {
+  const handleFileSelection = (event) => {
     const file = Platform.OS === 'web' ? event.target.files[0] : event.nativeEvent.target.files[0];
     
     if (file.type !== "application/pdf") {
@@ -73,9 +74,9 @@ const AddDocumentModal = ({ isModalVisible, Document, setUpdateDocumentTrigger, 
       return;
     }
   
-    const imagePreviewUrl = URL.createObjectURL(file);
-    setSelectedImage(file);
-    setImagePreviewUrl(imagePreviewUrl); 
+    const filePreviewUrl = URL.createObjectURL(file);
+    setSelectedFile(file);
+    setFilePreviewUrl(filePreviewUrl); 
   };
 
   const AddButtonHandler = () => {
@@ -89,7 +90,7 @@ const AddDocumentModal = ({ isModalVisible, Document, setUpdateDocumentTrigger, 
     const formData = new FormData();
     formData.append('document_name', DocumentNameTxt);
     formData.append('document_type', documentType);
-    if(selectedImage) formData.append('img', selectedImage);
+    if(selectedFile) formData.append('img', selectedFile);
     formData.append('document_content', documentContentTxt);
 
     const handleResponse = (jsonRes, status) => {
@@ -167,6 +168,9 @@ const AddDocumentModal = ({ isModalVisible, Document, setUpdateDocumentTrigger, 
           <View style={{flexDirection:'row', alignItems:'center', marginBottom: 10}}>
             <RadioButton value={1} status={documentType == 1 ? "checked" : "unchecked"} style={{marginRight:10}} onPress={() => setDocumentType(1)}/> 
             <Text>{"Upload file"}</Text>
+            <TouchableOpacity style={{marginLeft:20}} onPress={() => inputRef.current.click()}>
+              <FontAwesome5 size={TextMediumLargeSize} name="upload" color="black" />
+            </TouchableOpacity>
           </View>
           {documentType == 0 && (
             <>
@@ -178,26 +182,19 @@ const AddDocumentModal = ({ isModalVisible, Document, setUpdateDocumentTrigger, 
           {documentType == 1 && (
             <>
             {Platform.OS == 'web' && (
-              <View style={styles.imagePicker}>
-                <TouchableOpacity style={styles.imageUpload} onPress={() => inputRef.current.click()}>
-                  {imagePreviewUrl ? (
-                    <View style={styles.pdfContainer}>
-                      <Document file={imagePreviewUrl} onLoadSuccess={onDocumentLoadSuccess}>
-                        <Page pageNumber={"1"} />
-                      </Document>
-                      {/* <Text>Page {pageNumber} of {numPages}</Text> */}
-                    </View>
-                  ) : (
-                    <View style={styles.imageBox}>
-                      <Text style={styles.boxText}>Click to choose an image</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
+              <View style={styles.filePicker}>
+                {filePreviewUrl ? (
+                  <embed style={{width:"100%"}} src={filePreviewUrl} type="application/pdf" width="300" height="500" />
+                ) : (
+                  <TouchableOpacity style={styles.fileUpload} onPress={() => inputRef.current.click()}>
+                    <Text style={styles.boxText}>Click to choose an file</Text>
+                  </TouchableOpacity>
+                )}
                 <input
                   type="file" 
                   ref={inputRef} 
                   style={styles.fileInput} 
-                  onChange={handleImageSelection} 
+                  onChange={handleFileSelection} 
                   />
               </View>
             )}
