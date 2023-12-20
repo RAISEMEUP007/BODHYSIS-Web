@@ -103,3 +103,20 @@ export const deleteDocument = (id, callback) => {
   const payload = { id };
   postAPICall('settings/deletedocument', payload, callback);
 }
+
+export const getReservationTypesData = (callback) => {
+  getAPICall('settings/getreservationtypesdata', callback);
+}
+
+export const createReservationType = (payload, callback) => {
+  basePostAPICall('settings/createreservationtype', {}, payload, callback);
+};
+
+export const updateReservationType = (payload, callback) => {
+  basePostAPICall('settings/updatereservationtype', {}, payload, callback);
+};
+
+export const deleteReservationType = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletereservationtype', payload, callback);
+}
