@@ -36,7 +36,7 @@ export const documentModalstyles = StyleSheet.create({
     borderColor: '#6c757d',
   },
   addButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#007bff',
     color: 'white',
     padding: 10,
     textAlign: 'center',

@@ -18,7 +18,7 @@ export const priceModalstyles = StyleSheet.create({
     padding: 8,
   },
   addButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#007bff',
     color: 'white',
     padding: 10,
     textAlign: 'center',
