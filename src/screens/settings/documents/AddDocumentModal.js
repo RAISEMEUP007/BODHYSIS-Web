@@ -88,7 +88,7 @@ const AddDocumentModal = ({ isModalVisible, Document, setUpdateDocumentTrigger, 
           <title>${DocumentNameTxt}</title>
           <style>
             @page {
-              size: A4;
+              
             }
             body {
               font-family: Arial, sans-serif;
