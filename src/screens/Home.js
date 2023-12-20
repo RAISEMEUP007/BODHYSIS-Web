@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, Platform, useWindowDimensions } from 'react-native';
+import { View, Text, Image, Platform } from 'react-native';
 import { createDrawerNavigator, DrawerItemList,  DrawerItem,} from '@react-navigation/drawer';
 
+import { useScreenSize } from '../common/hooks/UseScreenDimention';
 import Dashboard from './Dashboard';
 import Inventory from './Inventory/Inventory';
 import Settings from './settings/Settings';
 import Customers from './customer/customers/Customers';
 
 const MainDrawer = ({navigation}) => {
-  const dimensions = useWindowDimensions();
-  const isLargeScreen = dimensions.width >= 1080;
+  const {isLargeScreen} = useScreenSize();
 
   const Drawer = createDrawerNavigator();
 
