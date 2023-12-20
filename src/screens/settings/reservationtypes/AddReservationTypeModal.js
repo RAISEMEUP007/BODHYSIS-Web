@@ -62,15 +62,15 @@ const AddReservationTypeModal = ({ isModalVisible, ReservationType, setUpdateRes
         if(initalStge) setSelectedStartStage(initalStge.id);
         else setSelectedStartStage(StartStageArr[0].id);
 
-        const initalPrintSize = StartStageArr.find(stage => {return stage.id == ReservationType.print_size});
+        const initalPrintSize = PrintSizeArr.find(stage => {return stage.id == ReservationType.print_size});
         if(initalPrintSize) setSelectedPageSize(initalPrintSize.id);
-        else setSelectedPageSize(StartStageArr[0].id);
+        else setSelectedPageSize(PrintSizeArr[0].id);
 
       }else{
         setReservationTypeNameTxt('');
         setFilePreviewUrl(null);
-        setSelectedStartStage(StartStageArr[0].id);
-        setSelectedPageSize(StartStageArr[0].id);
+        setSelectedStartStage(PrintSizeArr[0].id);
+        setSelectedPageSize(PrintSizeArr[0].id);
       }
       setSelectedFile(null);
     }else{
