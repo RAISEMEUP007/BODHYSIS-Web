@@ -22,7 +22,7 @@ const ProductLines = ({navigation, openInventory}) => {
   const [updateProductLineTrigger, setUpdateProductLineTrigger] = useState(true);
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
-  const [selectedLine, setSelectedLine] = useState(null);
+  const [selectedLine, setSelectedLine] = useState();
 
   const openAddProductLineModal = () => { setAddModalVisible(true); setSelectedLine(null)}
   const closeAddProductLineModal = () => { setAddModalVisible(false); setSelectedLine(null)}
@@ -31,6 +31,10 @@ const ProductLines = ({navigation, openInventory}) => {
   useEffect(()=>{
     if(updateProductLineTrigger == true) getTable();
   }, [updateProductLineTrigger]);
+
+  const viewSKUs = (searchOptions) => {
+    openInventory('Products', {searchOptions})
+  }
 
   const removeProductLine = (id) => {
     showConfirm(msgStr('deleteConfirmStr'), ()=>{
@@ -114,6 +118,11 @@ const ProductLines = ({navigation, openInventory}) => {
               <Text>{item.quantity? item.quantity: '0'}</Text>
             </View>
             <View style={[styles.IconCell]}>
+              <TouchableOpacity onPress={()=>{viewSKUs({categoryId: item.category_id, familyId:item.family_id, lineId:item.id})}}>
+                <FontAwesome5 size={TextMediumSize} name="search" color="black" />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.IconCell]}>
               <TouchableOpacity onPress={()=>{editProductLine(index)}}>
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
@@ -154,6 +163,7 @@ const ProductLines = ({navigation, openInventory}) => {
               <Text style={[styles.columnHeader]}>{"Family"}</Text>
               <Text style={[styles.columnHeader, {width:100}]}>{"Size"}</Text>
               <Text style={[styles.columnHeader, {width:100}]}>{"Quantity"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{"SKUs"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
             </View>

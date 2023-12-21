@@ -79,6 +79,32 @@ const AddDocumentModal = ({ isModalVisible, Document, setUpdateDocumentTrigger, 
     setFilePreviewUrl(filePreviewUrl); 
   };
 
+  const printDocument = () => {
+    const content = documentType == 0 ? documentContentTxt : (selectedFile ? filePreviewUrl : ''); // Use document content or file URL
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>${DocumentNameTxt}</title>
+          <style>
+            @page {
+              
+            }
+            body {
+              font-family: Arial, sans-serif;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>${DocumentNameTxt}</h1>
+          <p>${content}</p>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
   const AddButtonHandler = () => {
     if (!DocumentNameTxt.trim()) {
       setValidMessage(msgStr('emptyField'));
@@ -203,9 +229,14 @@ const AddDocumentModal = ({ isModalVisible, Document, setUpdateDocumentTrigger, 
           
         </ModalBody>
         <ModalFooter>
-          <TouchableOpacity onPress={AddButtonHandler}>
-            <Text style={styles.addButton}>{isUpdate?"Update":"Add"}</Text>
-          </TouchableOpacity>
+          <View style={{flexDirection:'row'}}>
+            <TouchableOpacity style={{ marginRight: 20 }} onPress={printDocument}>
+              <Text style={styles.addButton}>{"Print"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={AddButtonHandler}>
+              <Text style={styles.addButton}>{isUpdate?"Update":"Add"}</Text>
+            </TouchableOpacity>
+          </View>
         </ModalFooter>
       </BasicModalContainer>
       {isLoading && (

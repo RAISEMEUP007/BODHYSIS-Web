@@ -136,7 +136,7 @@ export const productLinesStyle = StyleSheet.create({
     top: -20,
   },
   IconCell: {
-    width: 60,
+    width: 70,
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',

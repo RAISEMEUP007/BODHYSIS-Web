@@ -1,31 +1,39 @@
 import { StyleSheet } from 'react-native';
 import { TextSmallSize, TextdefaultSize } from '../../../../common/constants/Fonts';
 
-export const TagModalstyles = StyleSheet.create({
+export const truckModalstyles = StyleSheet.create({
   label: {
     color: "#555",
     fontSize: TextSmallSize,
   },
   input: {
-    height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     marginTop: 4,
     marginBottom: 10,
-    padding: 8,
-    width: 500,
+    padding: 10,
+    paddingHorizontal: 8,
+    width: 400,
   },
   inputDisable: {
     borderColor: "#ddd",
   },
   select: {
-    width: 500,
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     marginTop: 4,
     marginBottom: 10,
     padding: 8,
+  },
+  deliveryButton: {
+    width: 140,
+    marginTop: 20,
+    padding: 8,
+    textAlign: 'center',
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: '#6c757d',
   },
   addButton: {
     backgroundColor: '#007bff',
@@ -62,6 +70,7 @@ export const TagModalstyles = StyleSheet.create({
     borderColor: '#80C0FF80', // Warm color border with transparency
     borderWidth: 2, // Border width
     borderStyle: 'solid', // Border style
+    marginVertical: 10,
   },
   imageUpload: {
     position: 'relative',
@@ -78,10 +87,11 @@ export const TagModalstyles = StyleSheet.create({
   },
   fileInput: {
     position: 'absolute',
-    width: '100%',
-    height: '100%',
+    width: 0,
+    height: 0,
     Top: 0,
     opacity: 0,
+    pointerEvents: 'none',
   },
   previewImage: {
     width: '100%',

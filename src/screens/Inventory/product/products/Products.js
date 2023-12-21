@@ -14,7 +14,7 @@ import { productsStyle } from './styles/ProductsStyle';
 import AddProductModal from './AddProductModal';
 import QuickAddProductModal from './QuickAddProductModal';
 
-const Products = ({navigation, openInventory}) => {
+const Products = ({navigation, openInventory, data}) => {
   const initialMount = useRef(true);
   const screenHeight = Dimensions.get('window').height;
   const StatusObj = {
@@ -57,7 +57,10 @@ const Products = ({navigation, openInventory}) => {
   const [Locations, setLocations] = useState([]);
 
   useEffect(()=>{
-    if(updateProductTrigger == true) getTable();
+    if(data == null && updateProductTrigger == true) 
+    {
+      getTable();
+    }
   }, [updateProductTrigger]);
 
   useEffect(()=>{
@@ -99,6 +102,22 @@ const Products = ({navigation, openInventory}) => {
       }
     }
   }, [searchFamily])
+
+  useEffect(()=>{
+    if(data)
+      if(data.searchOptions){
+        setTimeout(() => {
+          if(data.searchOptions.categoryId) setSearchCategory(data.searchOptions.categoryId);
+          setTimeout(() => {
+            if(data.searchOptions.familyId) setSearchFamily(data.searchOptions.familyId);
+            setTimeout(() => {
+              if(data.searchOptions.lineId) setSearchProductLine(data.searchOptions.lineId);
+              data = null;
+            }, 50);
+          }, 50);
+        }, 50);
+      }
+  }, [data])
 
   useEffect(()=>{
     loadProductCategoriesData((categories)=>{
@@ -302,7 +321,7 @@ const Products = ({navigation, openInventory}) => {
     <BasicLayout
       navigation = {navigation}
       goBack={()=>{
-        openInventory(null)
+        openInventory(data?.searchOptions? "Product Lines": null)
       }}
       screenName={'Products'}
     >

@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions, TextInput } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { getCustomersData, deleteCustomer, } from '../../../api/Customer';
@@ -23,6 +23,7 @@ const Customers = ({navigation, openInventory}) => {
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [searchKey, setSearchKey] = useState('');
 
   const openAddCustomerModal = () => { setAddModalVisible(true); setSelectedCustomer(null)}
   const closeAddCustomerModal = () => { setAddModalVisible(false); setSelectedCustomer(null)}
@@ -68,13 +69,32 @@ const Customers = ({navigation, openInventory}) => {
   }
   
   const renderTableData = () => {
+    let filteredData;
+    if (searchKey.trim() === "") {
+      filteredData = tableData;
+    } else {
+      filteredData = tableData.filter((item) => {
+        return (
+          Object.values(item).some((value) => {
+            if (value && typeof value === "string") {
+              return value.toLowerCase().includes(searchKey.trim().toLowerCase());
+            }
+            return false;
+          }) ||
+          item.country.country.toLowerCase().includes(searchKey.trim().toLowerCase()) ||
+          item.home_location_tbl.location.toLowerCase().includes(searchKey.trim().toLowerCase())
+        );
+      });
+    }
+
+    console.log();
     const rows = [];
-    if(tableData.length > 0){
-      tableData.map((item, index) => {
+    if(filteredData.length > 0){
+      filteredData.map((item, index) => {
         rows.push( 
           <View key={index} style={styles.tableRow}>
-            <View style={styles.cell}>
-              <Text>{item.createdAt}</Text>
+            <View style={[styles.cell, {width: 200}]}>
+              <Text>{new Date(item.createdAt).toLocaleString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true })}</Text>
             </View>
             <View style={styles.cell}>
               <Text>{item.first_name}</Text>
@@ -82,7 +102,7 @@ const Customers = ({navigation, openInventory}) => {
             <View style={styles.cell}>
               <Text>{item.last_name}</Text>
             </View>
-            <View style={[styles.cell]}>
+            <View style={[styles.cell, {width: 200}]}>
               <Text>{item.email}</Text>
             </View>
             <View style={[styles.cell]}>
@@ -127,13 +147,22 @@ const Customers = ({navigation, openInventory}) => {
             <TouchableHighlight style={styles.button} onPress={openAddCustomerModal}>
               <Text style={styles.buttonText}>Add</Text>
             </TouchableHighlight>
+            <View style={styles.searchBox}>
+              <Text style={styles.searchLabel}>Search</Text>
+              <TextInput
+                style={styles.searchInput}
+                placeholder=""
+                value={searchKey}
+                onChangeText={setSearchKey}
+              />
+            </View>
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader]}>{"Created"}</Text>
+              <Text style={[styles.columnHeader, {width: 200}]}>{"Created"}</Text>
               <Text style={[styles.columnHeader]}>{"First name"}</Text>
               <Text style={[styles.columnHeader]}>{"Last name"}</Text>
-              <Text style={[styles.columnHeader]}>{"Email"}</Text>
+              <Text style={[styles.columnHeader, {width: 200}]}>{"Email"}</Text>
               <Text style={[styles.columnHeader]}>{"Phone number"}</Text>
               <Text style={[styles.columnHeader]}>{"Mobile number"}</Text>
               <Text style={[styles.columnHeader]}>{"Country"}</Text>

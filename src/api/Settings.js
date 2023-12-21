@@ -103,3 +103,38 @@ export const deleteDocument = (id, callback) => {
   const payload = { id };
   postAPICall('settings/deletedocument', payload, callback);
 }
+
+export const getReservationTypesData = (callback) => {
+  getAPICall('settings/getreservationtypesdata', callback);
+}
+
+export const createReservationType = (payload, callback) => {
+  basePostAPICall('settings/createreservationtype', {}, payload, callback);
+};
+
+export const updateReservationType = (payload, callback) => {
+  basePostAPICall('settings/updatereservationtype', {}, payload, callback);
+};
+
+export const deleteReservationType = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletereservationtype', payload, callback);
+}
+
+export const getTrucksData = (callback) => {
+  getAPICall('settings/gettrucksdata/', callback);
+}
+
+export const updateTruck = (payload, callback) => {
+  console.log(payload);
+  postAPICall('settings/updatetruck', payload, callback);
+};
+
+export const createTruck = (payload, callback) => {
+  postAPICall('settings/createtruck', payload, callback);
+};
+
+export const deleteTruck = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletetruck', payload, callback);
+}
