@@ -17,15 +17,17 @@ import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 const Inventory = ({navigation, initalItem = null}) => {
 
     const [selectedItem, setSelectedItem] = useState(initalItem);
+    const [data, setData] = useState(null);
     
-    const handleItemClick = (itemName) => {
+    const handleItemClick = (itemName, data) => {
         setSelectedItem(itemName);
+        setData(data);
     };
     
     if(selectedItem) {
         switch (selectedItem) {
             case 'Products':
-                return <Products navigation={navigation} openInventory={handleItemClick}/>;
+                return <Products navigation={navigation} openInventory={handleItemClick} data={data}/>;
             case 'Product Categories':
                 return <ProductCategories navigation={navigation} openInventory={handleItemClick}/>;
             case 'Product Families':
