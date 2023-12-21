@@ -48,6 +48,26 @@ export const customersStyle = StyleSheet.create({
     margin: 5,
     paddingVertical: 5,
   }, 
+  searchBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 25,
+  },
+  searchLabel: {
+    marginHorizontal: 10,
+    fontSize: TextdefaultSize,
+  },
+  searchInput: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingVertical: 4,
+    paddingHorizontal: 6,
+    borderWidth: 1,
+    borderColor: '#999',
+    borderRadius: 5,
+    fontSize: TextSmallSize,
+    width:  250,
+  },
   select: {
     margin: 5,
     fontSize: TextdefaultSize,
