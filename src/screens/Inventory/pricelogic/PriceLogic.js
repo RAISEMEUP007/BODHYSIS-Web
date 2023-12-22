@@ -1,5 +1,5 @@
 import React, { useEffect, useState, forwardRef } from 'react';
-import { ScrollView, View, Text, TouchableHighlight, ActivityIndicator, TouchableOpacity, Dimensions, TextInput, TouchableWithoutFeedback } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, ActivityIndicator, TouchableOpacity, Dimensions, TextInput, TouchableWithoutFeedback, Platform } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import { FontAwesome5 } from '@expo/vector-icons';
 import DatePicker from "react-datepicker";
@@ -327,9 +327,9 @@ const PriceLogic = ({navigation, openInventory}) => {
           </View>
           <View style={styles.toolbar}>
             <Text style={styles.toolbarLabel}>Start date</Text>
-            {renderDatePicker(startDate, setStartDate)}
+            {Platform.OS == 'web' && renderDatePicker(startDate, setStartDate)}
             <Text style={styles.toolbarLabel}>End date</Text>
-            {renderDatePicker(endDate, setEndDate)}
+            {Platform.OS == 'web' && renderDatePicker(endDate, setEndDate)}
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
