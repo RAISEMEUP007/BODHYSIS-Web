@@ -13,7 +13,6 @@ import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
 import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { priceLogicStyle } from './styles/PriceLogicStyle';
-import "./styles/datepickerplus.css";
 
 const PriceLogic = ({navigation, openInventory}) => {
   const screenHeight = Dimensions.get('window').height;
