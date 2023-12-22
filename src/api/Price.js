@@ -110,8 +110,7 @@ export const getPriceLogicData = (callback) => {
   getAPICall('price/getpricelogicdata', callback);
 }
 
-export const createPriceLogic = (seasonId, brandId, tableId, callback) => {
-  const payload = {seasonId, brandId, tableId};
+export const createPriceLogic = (payload, callback) => {
   postAPICall('price/createpricelogic', payload, callback);
 }
 

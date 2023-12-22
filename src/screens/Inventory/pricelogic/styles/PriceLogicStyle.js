@@ -10,6 +10,19 @@ export const priceLogicStyle = StyleSheet.create({
     paddingTop: 32,
   },
 
+  input: {
+    width: 150,
+    padding: '0.375rem 0.rem',
+    fontSize: TextdefaultSize,
+    lineHeight: '1.5',
+    color: '#495057',
+    background: '#fff',
+    backgroundClip: 'padding-box',
+    border: '1px solid #ced4da',
+    borderRadius: '.25rem',
+    transition: 'border-color .15s ease-in-out, box-shadow 0.15s-in-out',
+  },
+
   tableContainer: {
     borderRadius: 4,
     marginTop: 12,
@@ -21,6 +34,7 @@ export const priceLogicStyle = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
+    zIndex: 1,
   },
  
   buttonText: {
@@ -100,6 +114,11 @@ export const priceLogicStyle = StyleSheet.create({
     width: 150,
     paddingHorizontal: 12,
     paddingVertical: 6,
+  },
+  dateCell: {
+    width: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   focusedCell: {
     borderWidth: 1,
