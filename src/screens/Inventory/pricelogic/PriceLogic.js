@@ -1,7 +1,9 @@
-import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useEffect, useState, forwardRef } from 'react';
+import { ScrollView, View, Text, TouchableHighlight, ActivityIndicator, TouchableOpacity, Dimensions, TextInput, TouchableWithoutFeedback, Platform } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import { FontAwesome5 } from '@expo/vector-icons';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import {createPriceLogic, getPriceLogicData, deletePriceLogic, getSeasonsData, getBrandsData, getPriceTablesData } from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';
@@ -31,6 +33,10 @@ const PriceLogic = ({navigation, openInventory}) => {
   const [seasonData, setSeasonData] = useState([]);
   const [brandData, setBrandData] = useState([]);
   const [priceTableData, setPriceTableData] = useState([]);
+
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
   
   const changeCellData = (index, key, newVal) => {
     const updatedTableData = [ ...tableData ];
@@ -55,7 +61,14 @@ const PriceLogic = ({navigation, openInventory}) => {
 
     setIsLoading(true);
 
-    createPriceLogic(seasonId, brandId, priceTableId, (jsonRes, status, error)=>{
+    const payload = {
+      seasonId, 
+      brandId, 
+      tableId : priceTableId, 
+      startDate, 
+      endDate};
+    
+    createPriceLogic(payload, (jsonRes, status, error)=>{
       switch(status){
         case 200:
           setUpdatePriceLogicTrigger(true);
@@ -233,6 +246,28 @@ const PriceLogic = ({navigation, openInventory}) => {
     );
   }
 
+  const CustomInput = forwardRef(({ value, onChange, onClick }, ref) => (
+    <input onClick={onClick} onChange={onChange} ref={ref} style={styles.input} value={value}>
+    </input>
+  ));
+
+  const renderDatePicker = (selectedDate, onChangeHandler) => {
+    return (
+      <View style={{marginRight: 20}}>
+        <DatePicker
+          selected={selectedDate}
+          onChange={date => onChangeHandler(date)}
+          dateFormat="MM/dd/yyyy"
+          customInput={<CustomInput />}
+          peekNextMonth
+          showMonthDropdown
+          showYearDropdown
+          dropdownMode="select"
+        />
+      </View>
+    );
+  };
+
   const renderTableData = () => {
     const rows = [];
     if(tableData.length > 0){
@@ -247,6 +282,12 @@ const PriceLogic = ({navigation, openInventory}) => {
             </View>
             <View style={styles.cell}>
               <Text style={styles.cellText}>{item.priceTable.table_name}</Text>
+            </View>
+            <View style={[styles.cell, styles.dateCell]}>
+              <Text>{item.start_date}</Text>
+            </View>
+            <View style={[styles.cell, styles.dateCell]}>
+              <Text>{item.end_date}</Text>
             </View>
             <View style={[styles.cell, styles.radioButtonCell]}>
               <TouchableOpacity onPress={()=>{removePriceLogic(item.id)}}>
@@ -268,7 +309,7 @@ const PriceLogic = ({navigation, openInventory}) => {
       goBack={()=>{
         openInventory(null)
       }}
-      screenName={'Price Logic'}
+      screenName={'Price logic'}
     >
       <ScrollView horizontal={true}>
         <View style={styles.container}>
@@ -277,17 +318,25 @@ const PriceLogic = ({navigation, openInventory}) => {
             {renderBrandPicker()}
             <Text style={styles.toolbarLabel}>Seasons</Text>
             {renderSeasonPicker()}
-            <Text style={styles.toolbarLabel}>Price Table</Text>
+            <Text style={styles.toolbarLabel}>Price table</Text>
             {renderPriceTablePicker()}
             <TouchableHighlight style={styles.button} onPress={()=>{addPriceLogic()}}>
               <Text style={styles.buttonText}>Add</Text>
             </TouchableHighlight>
           </View>
+          <View style={styles.toolbar}>
+            <Text style={styles.toolbarLabel}>Start date</Text>
+            {Platform.OS == 'web' && renderDatePicker(startDate, setStartDate)}
+            <Text style={styles.toolbarLabel}>End date</Text>
+            {Platform.OS == 'web' && renderDatePicker(endDate, setEndDate)}
+          </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
               <Text style={styles.columnHeader}>{"Brand"}</Text>
               <Text style={styles.columnHeader}>{"Season"}</Text>
-              <Text style={styles.columnHeader}>{"Price Table"}</Text>
+              <Text style={styles.columnHeader}>{"Price table"}</Text>
+              <Text style={[styles.columnHeader, styles.dateCell]}>{"Start date"}</Text>
+              <Text style={[styles.columnHeader, styles.dateCell]}>{"End date"}</Text>
               <Text style={[styles.columnHeader, styles.radioButtonCell]}></Text>
             </View>
             <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>

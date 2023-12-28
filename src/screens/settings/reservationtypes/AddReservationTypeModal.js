@@ -146,7 +146,7 @@ const AddReservationTypeModal = ({ isModalVisible, ReservationType, setUpdateRes
     isModalVisible?(
     <View style={{position:'absolute', width:"100%", height:"100%"}}>
       <BasicModalContainer>
-        <ModalHeader label={"ReservationType"} closeModal={()=>{ closeModalhandler();}} />
+        <ModalHeader label={"Reservation type"} closeModal={()=>{ closeModalhandler();}} />
         <ModalBody>
           <Text style={styles.label}>Name</Text>
           <TextInput style={styles.input} placeholder="Name" value={ReservationTypeNameTxt} onChangeText={setReservationTypeNameTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>

@@ -120,7 +120,7 @@ const ReservationTypes = ({navigation, openInventory}) => {
   return (
     <BasicLayout
       navigation = {navigation}
-      screenName={'ReservationTypes'}
+      screenName={'Reservation types'}
     >
       <ScrollView horizontal={true}>
         <View style={styles.container}>
