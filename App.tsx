@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Linking, View, ActivityIndicator  } from 'react-native';
+import { StyleSheet, Linking, View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -9,6 +9,8 @@ import { AlertModals } from './src/common/components/alertmodal/AlertModals';
 
 import { AuthScreen, Home, RecoverPass, ChangePass } from './src/screens';
 import { ConfirmModal } from './src/common/components/confirmmodal/ConfirmModals';
+import { store } from './src/redux/store';
+import { Provider } from 'react-redux';
 
 const Stack = createStackNavigator();
 
@@ -22,12 +24,12 @@ const LoadingIndicator = () => {
 
 const GlobalModals = () => {
   return (
-    <View style={{zIndex: 1000}}>
-      <AlertModals/>
-      <ConfirmModal/>
+    <View style={{ zIndex: 1000 }}>
+      <AlertModals />
+      <ConfirmModal />
     </View>
   );
-}
+};
 
 export default function App() {
   const [initialRoute, setInitalRoute] = useState('Home');
@@ -58,20 +60,29 @@ export default function App() {
 
   return (
     <Providers>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ presentation: 'modal' }}>
-          <Stack.Screen
-            name="Auth"
-            component={AuthScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-          <Stack.Screen name="RecoverPass" component={RecoverPass} options={{ headerShown: false }} />
-          <Stack.Screen name="changePass" component={ChangePass} options={{ headerShown: false }} />
-        </Stack.Navigator>
-        <StatusBar style="auto" />
-      </NavigationContainer>
-      <GlobalModals/>
+      <Provider store={store}>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName={initialRoute}
+            screenOptions={{ presentation: 'modal' }}
+          >
+            <Stack.Screen name="Auth" component={AuthScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+            <Stack.Screen
+              name="RecoverPass"
+              component={RecoverPass}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="changePass"
+              component={ChangePass}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+          <StatusBar style="auto" />
+        </NavigationContainer>
+        <GlobalModals />
+      </Provider>
     </Providers>
   );
 }
@@ -83,7 +94,7 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
