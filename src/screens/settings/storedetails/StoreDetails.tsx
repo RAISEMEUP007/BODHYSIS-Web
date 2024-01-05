@@ -19,7 +19,6 @@ import NumericInput from '../../../common/components/formcomponents/NumericInput
 const StoreDetails = ({navigation, openInventory}) => {
   
   const { showAlert } = useAlertModal();
-  const { showConfirm } = useConfirmModal();
 
   const [isLoading, setIsLoading] = useState(false); 
 
@@ -208,6 +207,9 @@ const StoreDetails = ({navigation, openInventory}) => {
   return (
     <BasicLayout
       navigation = {navigation}
+      goBack={()=>{
+        openInventory(null)
+      }}
       screenName={'Store Details'}
     >
       <ScrollView contentContainerStyle={{ alignItems: 'center' }}>

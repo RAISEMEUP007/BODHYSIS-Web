@@ -105,6 +105,9 @@ const Documents = ({navigation, openInventory}) => {
   return (
     <BasicLayout
       navigation = {navigation}
+      goBack={()=>{
+        openInventory(null)
+      }}
       screenName={'Documents'}
     >
       <ScrollView horizontal={true}>
