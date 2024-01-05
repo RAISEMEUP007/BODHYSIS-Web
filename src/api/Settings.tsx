@@ -138,3 +138,79 @@ export const deleteTruck = (id, callback) => {
   const payload = { id };
   postAPICall('settings/deletetruck', payload, callback);
 }
+
+export const getTimezonesData = (callback) => {
+  getAPICall('settings/gettimezonesdata/', callback);
+}
+
+export const updateTimezone = (payload, callback) => {
+  postAPICall('settings/updatetimezone', payload, callback);
+};
+
+export const createTimezone = (payload, callback) => {
+  postAPICall('settings/createtimezone', payload, callback);
+};
+
+export const deleteTimezone = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletetimezone', payload, callback);
+}
+
+export const getCurrenciesData = (callback) => {
+  getAPICall('settings/getcurrenciesdata/', callback);
+}
+
+export const updateCurrency = (payload, callback) => {
+  postAPICall('settings/updatecurrency', payload, callback);
+};
+
+export const createCurrency = (payload, callback) => {
+  postAPICall('settings/createcurrency', payload, callback);
+};
+
+export const deleteCurrency = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletecurrency', payload, callback);
+}
+
+export const getDateformatsData = (callback) => {
+  getAPICall('settings/getdateformatsdata/', callback);
+}
+
+export const updateDateformat = (payload, callback) => {
+  postAPICall('settings/updatedateformat', payload, callback);
+};
+
+export const createDateformat = (payload, callback) => {
+  postAPICall('settings/createdateformat', payload, callback);
+};
+
+export const deleteDateformat = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletedateformat', payload, callback);
+}
+
+export const getTimeformatsData = (callback) => {
+  getAPICall('settings/gettimeformatsdata/', callback);
+}
+
+export const updateTimeformat = (payload, callback) => {
+  postAPICall('settings/updatetimeformat', payload, callback);
+};
+
+export const createTimeformat = (payload, callback) => {
+  postAPICall('settings/createtimeformat', payload, callback);
+};
+
+export const deleteTimeformat = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletetimeformat', payload, callback);
+}
+
+export const getStoreDetail = (callback) => {
+  getAPICall('settings/getstoredetail/', callback);
+}
+
+export const updateStoreDetail = (payload, callback) => {
+  basePostAPICall('settings/updatestoredetail', {}, payload, callback);
+};

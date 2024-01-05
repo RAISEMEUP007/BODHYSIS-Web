@@ -68,7 +68,7 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
   };
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();

@@ -29,7 +29,7 @@ const UpdateProductCategoryModal = ({ isModalVisible, item, setUpdateProductCate
   const inputRef = useRef(null); 
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();

@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextInput, Text } from 'react-native';
-import { TextSmallSize, TextValidationMsgSize } from '../../constants/Fonts';
-import { View } from 'react-native-web';
+import { TextValidationMsgSize } from '../../constants/Fonts';
 
-const NumericInput = ({ validMinNumber, validMaxNumber, onChangeText, onBlur, value, ...rest }) => {
+const NumericInput = ({ validMinNumber, validMaxNumber, onChangeText, onBlur = null, value, ...rest }) => {
   const [inputValue, setInputValue] = useState(value);
   const [validationMessage, setValidationMessage] = useState("");
 
+  useEffect(() => {
+    handleInputChange(value);
+  }, [value]);
+
   const handleInputChange = (text) => {
+    text = String(text);
     if (text === "") {
       setInputValue(text);
       setValidationMessage("");
@@ -70,9 +74,6 @@ const styles = {
     paddingHorizontal: 8,
   },
   validationMessage: {
-    position: 'relative',
-    bottom: 0,
-    width: '100%',
     color: 'red',
     fontSize: TextValidationMsgSize,
     paddingLeft: 5,

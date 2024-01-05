@@ -25,7 +25,7 @@ const AddTruckModal = ({ isModalVisible, Truck, setUpdateTruckTrigger, closeModa
   const [TruckBarcodeTxt, setTruckBarcodeTxt] = useState('');
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();

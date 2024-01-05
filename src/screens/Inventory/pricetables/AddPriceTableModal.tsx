@@ -21,7 +21,7 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
   const [_priceTable, setPriceTable] = useState('');
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();

@@ -22,7 +22,7 @@ const AddTagModal = ({ isModalVisible, Tag, setUpdateTagsTrigger, closeModal }) 
   const [TagTxt, setTagTxt] = useState('');
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();

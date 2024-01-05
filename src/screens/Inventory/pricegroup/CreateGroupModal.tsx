@@ -20,7 +20,7 @@ const CreateGroupModal = ({ isModalVisible, tableId, groupName, setUpdateGroupTr
   const [_groupName, setGroupname] = useState(groupName);
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();

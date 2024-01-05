@@ -22,7 +22,7 @@ const PricePointModal = ({ isModalVisible, tableId, setUpdatePointTrigger, close
   const [selectedOption, setSelectedOption] = useState("Hour(s)");
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();

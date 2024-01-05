@@ -20,7 +20,7 @@ const AddSeasonModal = ({ isModalVisible, setUpdateSeasonTrigger, closeModal }) 
   const [_season, setSeason] = useState('');
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();

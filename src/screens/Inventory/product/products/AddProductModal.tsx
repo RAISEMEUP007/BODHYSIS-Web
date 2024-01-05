@@ -59,7 +59,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   const [selectedStatus, selectStatus] = useState({});
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();
