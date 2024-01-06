@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef, forwardRef} from 'react';
 import { Text, TextInput, TouchableOpacity, View, ActivityIndicator, Platform, Image, Picker } from 'react-native';
+import { v4 as uuidv4 } from 'uuid';
 
 import DatePicker from "react-datepicker";
 
@@ -11,7 +12,7 @@ if (Platform.OS === 'web') {
   document.head.appendChild(link);
 }
 
-import { createDiscountCode, updateDiscountCode } from '../../../api/Settings';
+import { createDiscountCode, deleteExclusionByDCId, updateDiscountCode } from '../../../api/Settings';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
@@ -20,7 +21,8 @@ import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { discountCodeModalstyles } from './styles/DiscountCodeModalStyle';
-import { API_URL } from '../../../common/constants/AppConstants';
+import Exclusions from './Exclusions';
+import AddExclusionModal from './AddExclusionModal';
 
 const AddDiscountCodeModal = ({ isModalVisible, DiscountCode, setUpdateDiscountCodeTrigger, closeModal }) => {
   const isUpdate = DiscountCode ? true : false;
@@ -29,6 +31,21 @@ const AddDiscountCodeModal = ({ isModalVisible, DiscountCode, setUpdateDiscountC
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
+  const DiscountCodeId = useRef();
+  const [updateExclusionTrigger, setUpdateExclusionTrigger] = useState(true);
+
+  useEffect(() => {
+    if (DiscountCode) DiscountCodeId.current = DiscountCode.id;
+    else {
+      DiscountCodeId.current = parseInt(uuidv4(), 16);
+    }
+  }, [DiscountCode]);
+
+  const [isExclusionModalVisible, setExclusionModalVisible] = useState(false);
+  const [selectedExclusion, setSelectedExclusion] = useState(null);
+  const openExclusionModal = () => { setExclusionModalVisible(true); setSelectedExclusion(null);}
+  const closeExclusionModal = () => { setExclusionModalVisible(false); setSelectedExclusion(null);}
+  const editExclusion = (exclusion) => { setSelectedExclusion(exclusion); setExclusionModalVisible(true); }
 
   const [types, setTypes] = useState([
     { id: 1, type: 'Percentage' },
@@ -117,6 +134,7 @@ const AddDiscountCodeModal = ({ isModalVisible, DiscountCode, setUpdateDiscountC
         handleResponse(jsonRes, status);
       });
     } else {
+      payload.tmpId = DiscountCodeId.current;
       createDiscountCode(payload, (jsonRes, status) => {
         handleResponse(jsonRes, status);
       });
@@ -124,7 +142,11 @@ const AddDiscountCodeModal = ({ isModalVisible, DiscountCode, setUpdateDiscountC
   };
 
   const closeModalhandler = () =>{
-    closeModal();
+    if(!DiscountCode){
+      deleteExclusionByDCId(DiscountCodeId.current, ()=>{
+        closeModal();
+      });
+    }else closeModal();
   }
 
   const checkInput = () => {
@@ -142,16 +164,18 @@ const AddDiscountCodeModal = ({ isModalVisible, DiscountCode, setUpdateDiscountC
 
   const renderDatePicker = (selectedDate, onChangeHandler) => {
     return (
-      <View style={{marginRight: 20}}>
+      <View style={{paddingRight: 22}}>
         <DatePicker
           selected={selectedDate}
           onChange={date => onChangeHandler(date)}
-          dateFormat="MM/dd/yyyy"
           customInput={<CustomInput />}
           peekNextMonth
           showMonthDropdown
           showYearDropdown
           dropdownMode="select"
+          timeInputLabel="Time:"
+          dateFormat="MM/dd/yyyy hh:mm aa"
+          showTimeSelect
         />
       </View>
     );
@@ -161,12 +185,12 @@ const AddDiscountCodeModal = ({ isModalVisible, DiscountCode, setUpdateDiscountC
     isModalVisible?(
     <View style={{position:'absolute', width:"100%", height:"100%"}}>
       <BasicModalContainer>
-        <ModalHeader label={"DiscountCode"} closeModal={()=>{ closeModalhandler();}} />
-        <ModalBody>
+        <ModalHeader label={"Discount Code"} closeModal={()=>{ closeModalhandler();}} />
+        <ModalBody style={{zIndex:10}}>
           <Text style={styles.label}>Code</Text>
           <TextInput style={styles.input} placeholder="Code" value={CodeTxt} onChangeText={setCodeTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>
           {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
-          <View style={{flexDirection:'row', width:600}}>
+          <View style={{flexDirection:'row', zIndex:10}}>
             <View style={{flex: 1, marginRight: 20}}>
               <Text style={styles.label}>Type</Text>
               <Picker style={styles.select} selectedValue={Type} onValueChange={setType}>
@@ -183,7 +207,8 @@ const AddDiscountCodeModal = ({ isModalVisible, DiscountCode, setUpdateDiscountC
               <Text style={styles.label}>End date</Text>
               {Platform.OS == 'web' && renderDatePicker(endDate, setEndDate)}
             </View>
-          </View>        
+          </View>   
+          <Exclusions DiscountCodeId={DiscountCodeId.current} updateExclusionTrigger={updateExclusionTrigger} setUpdateExclusionTrigger={setUpdateExclusionTrigger} openExclusionModal={openExclusionModal} editExclusion={editExclusion}></Exclusions>     
         </ModalBody>
         <ModalFooter>
           <View style={{flexDirection:'row'}}>
@@ -193,6 +218,14 @@ const AddDiscountCodeModal = ({ isModalVisible, DiscountCode, setUpdateDiscountC
           </View>
         </ModalFooter>
       </BasicModalContainer>
+
+      <AddExclusionModal
+        isModalVisible={isExclusionModalVisible}
+        DiscountCodeId={DiscountCodeId.current}
+        Exclusion={selectedExclusion}
+        setUpdateExclusionTrigger={setUpdateExclusionTrigger} 
+        closeModal={closeExclusionModal}
+      />
       {isLoading && (
         <View style={styles.overlay}>
           <ActivityIndicator size="large" color="#0000ff" />

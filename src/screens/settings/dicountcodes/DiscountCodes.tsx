@@ -125,7 +125,7 @@ const DiscountCodes = ({navigation, openInventory}) => {
       goBack={()=>{
         openInventory(null)
       }}
-      screenName={'DiscountCodes'}
+      screenName={'Discount Codes'}
     >
       <ScrollView horizontal={true}>
         <View style={styles.container}>

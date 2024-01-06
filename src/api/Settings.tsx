@@ -228,3 +228,25 @@ export const deleteDiscountCode = (id, callback) => {
   const payload = { id };
   postAPICall('settings/deletediscountcode', payload, callback);
 }
+
+export const getExclusionsData = (DiscountCodeId, callback) => {
+  postAPICall('settings/getexclusionsdata/', {discountcode_id: DiscountCodeId}, callback);
+}
+
+export const updateExclusion = (payload, callback) => {
+  postAPICall('settings/updateexclusion', payload, callback);
+};
+
+export const createExclusion = (payload, callback) => {
+  postAPICall('settings/createexclusion', payload, callback);
+};
+
+export const deleteExclusion = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deleteexclusion', payload, callback);
+}
+
+export const deleteExclusionByDCId = (DiscountCodeId, callback) => {
+  const payload = { DiscountCodeId };
+  postAPICall('settings/deleteexclusionbydcid', payload, callback);
+}

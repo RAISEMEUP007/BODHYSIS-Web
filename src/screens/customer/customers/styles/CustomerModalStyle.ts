@@ -30,7 +30,7 @@ export const customerModalstyles = StyleSheet.create({
     width: 140,
     marginTop: 20,
     padding: 8,
-    textAlign: 'center',
+    alignItems: 'center',
     borderRadius: 5,
     borderWidth: 2,
     borderColor: '#6c757d',
