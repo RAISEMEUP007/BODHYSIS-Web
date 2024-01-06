@@ -5,7 +5,6 @@ export const getManufacturesData = (callback) => {
 }
 
 export const updateManufacture = (payload, callback) => {
-  console.log(payload);
   postAPICall('settings/updatemanufacture', payload, callback);
 };
 
@@ -23,7 +22,6 @@ export const getTagsData = (callback) => {
 }
 
 export const updateTag = (payload, callback) => {
-  console.log(payload);
   postAPICall('settings/updatetag', payload, callback);
 };
 
@@ -126,7 +124,6 @@ export const getTrucksData = (callback) => {
 }
 
 export const updateTruck = (payload, callback) => {
-  console.log(payload);
   postAPICall('settings/updatetruck', payload, callback);
 };
 
@@ -214,3 +211,20 @@ export const getStoreDetail = (callback) => {
 export const updateStoreDetail = (payload, callback) => {
   basePostAPICall('settings/updatestoredetail', {}, payload, callback);
 };
+
+export const getDiscountCodesData = (callback) => {
+  getAPICall('settings/getdiscountcodesdata/', callback);
+}
+
+export const updateDiscountCode = (payload, callback) => {
+  postAPICall('settings/updatediscountcode', payload, callback);
+};
+
+export const createDiscountCode = (payload, callback) => {
+  postAPICall('settings/creatediscountcode', payload, callback);
+};
+
+export const deleteDiscountCode = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletediscountcode', payload, callback);
+}

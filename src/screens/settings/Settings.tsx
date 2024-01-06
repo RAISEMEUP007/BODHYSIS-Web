@@ -13,6 +13,7 @@ import Documents from './documents/Documents';
 import ReservationTypes from './reservationtypes/ReservationTypes';
 import Trucks from './trucks/Trucks';
 import StoreDetails from './storedetails/StoreDetails';
+import DiscountCodes from './dicountcodes/DiscountCodes';
 
 const Settings = ({navigation, initalItem = null}) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);
@@ -37,9 +38,11 @@ const Settings = ({navigation, initalItem = null}) => {
                 return <Trucks navigation={navigation} openInventory={handleItemClick}/>;
             case 'Store Details':
                 return <StoreDetails navigation={navigation} openInventory={handleItemClick}/>;
+            case 'Discount Codes':
+                return <DiscountCodes navigation={navigation} openInventory={handleItemClick}/>;
             default:
                 return (
-                    <View style={{ flexs: 1, border:'1px solid #d54545', marginRights: 20, paddingHorizontal: 10, paddingVertical:2, marginTop: 8, height: 28, justifyContent: 'center', flexDirection: 'row', marginTop: 100, }}>
+                    <View style={{ marginTop: 20, paddingHorizontal: 10, paddingVertical:2, height: 28, justifyContent: 'center', flexDirection: 'row',}}>
                         <TouchableOpacity  onPress={() => handleItemClick(null)}>
                             <Text>{'< Back'}</Text>
                         </TouchableOpacity>
@@ -64,6 +67,7 @@ const Settings = ({navigation, initalItem = null}) => {
                         { title: "Reservation Types", icon: 'calendar-check' },
                         { title: "Trucks", icon: 'truck' },
                         { title: "Store Details", icon: 'store' },
+                        { title: "Discount Codes", icon: 'check' },
                     ]} handleItemClick={handleItemClick} />
                 </View>
             </ScrollView>
