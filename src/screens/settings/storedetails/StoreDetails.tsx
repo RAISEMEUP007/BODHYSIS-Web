@@ -1,16 +1,13 @@
 import React, { useEffect, useRef, useState} from 'react';
 import { ScrollView, View, Text, TextInput, TouchableOpacity, Dimensions, Image, Platform, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { FontAwesome5 } from '@expo/vector-icons';
 import { Editor } from 'primereact/editor';
-import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 
 import { getTrucksData, deleteTruck, getLanguagesData, getCountriesData, getCurrenciesData, getTimezonesData, getDateformatsData, getTimeformatsData, updateStoreDetail, getStoreDetail, } from '../../../api/Settings';
 import { msgStr } from '../../../common/constants/Message';
 import { API_URL } from '../../../common/constants/AppConstants';
-import { TextMediumSize, TextdefaultSize } from '../../../common/constants/Fonts';
+import { TextMediumLargeSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
 import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { StoreDetailsStyle } from './styles/StoreDetailsStyle';
@@ -214,7 +211,8 @@ const StoreDetails = ({navigation, openInventory}) => {
     >
       <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
         <View style={{width: '60%', minWidth:500, marginVertical: 30, padding: 36, backgroundColor:'white', borderRadius:8}}>
-          <View style={{alignItems:'flex-end'}}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={{fontSize:TextMediumLargeSize, fontWeight:'bold'}}>Store Details</Text> 
             <TouchableOpacity onPress={SaveForm}>
               <Text style={styles.addButton}>{"Update"}</Text>
             </TouchableOpacity>

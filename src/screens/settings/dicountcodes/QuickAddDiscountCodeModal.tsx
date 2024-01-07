@@ -189,7 +189,7 @@ const AddDiscountCodeModal = ({ isModalVisible, DiscountCode, setUpdateDiscountC
     isModalVisible?(
     <View style={{position:'absolute', width:"100%", height:"100%"}}>
       <BasicModalContainer>
-        <ModalHeader label={"Discount Code"} closeModal={()=>{ closeModalhandler();}} />
+        <ModalHeader label={"Quick Add"} closeModal={()=>{ closeModalhandler();}} />
         <ModalBody style={{zIndex:10}}>
           <Text style={styles.label}>How many do you want to create?</Text>
           <TextInput style={[styles.input, {width:300}]} placeholder="How many?" value={CountsTxt} onChangeText={setCountsTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>
