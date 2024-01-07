@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import CommonInput from '../../../common/components/input/CommonInput';
 import { CommonButton } from '../../../common/components/CommonButton/CommonButton';
@@ -9,9 +9,10 @@ interface Props {
   width?: number;
   onChangeText: (value: string) => void;
   onSubmit: () => void;
+  value: string;
 }
 
-export const ProductIdInput = ({ width = 260, onChangeText, onSubmit }: Props) => {
+export const ProductIdInput = ({ width = 260, onChangeText, onSubmit, value }: Props) => {
   return (
     <View style={{ ...styles.container, width }}>
       <CommonInput
@@ -19,6 +20,7 @@ export const ProductIdInput = ({ width = 260, onChangeText, onSubmit }: Props) =
         containerStyle={styles.input}
         placeholder="Bike ID"
         width={160}
+        value={value}
       />
 
       <Pressable

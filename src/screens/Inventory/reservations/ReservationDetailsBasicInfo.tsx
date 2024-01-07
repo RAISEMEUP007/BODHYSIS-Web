@@ -63,11 +63,30 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding }: Props) => {
       </View>
       <View style={styles.rowInputContainer}>
         <CommonInput width={inputWidth} placeholder="Referer" title="Referer" />
-        <CommonInput width={inputWidth} placeholder="Group" title="Group" />
+        <CommonInput
+          value={
+            reservationInfo.selectedProducts.length > 0
+              ? reservationInfo.selectedProducts[0].value.price_group_id
+              : ''
+          }
+          width={inputWidth}
+          placeholder="Group"
+          title="Group"
+        />
       </View>
       <View style={styles.rowInputContainer}>
-        <CommonInput width={inputWidth} placeholder="Start Location" title="Start Location" />
-        <CommonInput width={inputWidth} placeholder="End Location" title="End Location" />
+        <CommonInput
+          value={reservationInfo.selectedLocation?.value?.location}
+          width={inputWidth}
+          placeholder="Start Location"
+          title="Start Location"
+        />
+        <CommonInput
+          value={reservationInfo.selectedLocation?.value?.location}
+          width={inputWidth}
+          placeholder="End Location"
+          title="End Location"
+        />
       </View>
       <View style={styles.rowInputContainer}>
         <CommonButton

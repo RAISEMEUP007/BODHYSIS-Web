@@ -21,9 +21,10 @@ export const CommonTabView = ({ tabs, width = 600 }: Props) => {
   const renderTabs = () => {
     return (
       <View style={styles.tabs}>
-        {tabs.map((tab) => {
+        {tabs.map((tab, index) => {
           return (
             <TouchableOpacity
+              key={index.toString()}
               onPress={() => {
                 setSelectedTab(tab);
               }}
