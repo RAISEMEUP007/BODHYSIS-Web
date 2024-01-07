@@ -40,7 +40,6 @@ const AddDiscountCodeModal = ({ isModalVisible, DiscountCode, setUpdateDiscountC
       DiscountCodeId.current = parseInt(uuidv4(), 16);
     }
   }, [DiscountCode]);
-
   const [isExclusionModalVisible, setExclusionModalVisible] = useState(false);
   const [selectedExclusion, setSelectedExclusion] = useState(null);
   const openExclusionModal = () => { setExclusionModalVisible(true); setSelectedExclusion(null);}
@@ -75,7 +74,7 @@ const AddDiscountCodeModal = ({ isModalVisible, DiscountCode, setUpdateDiscountC
 
   useEffect(() => {
     if(isModalVisible){
-      console.log(DiscountCode);
+      setUpdateExclusionTrigger(true);
       if(DiscountCode){
         setCodeTxt(DiscountCode.code);
         setType(DiscountCode.type);

@@ -19,7 +19,7 @@ const Exclusions = ({ DiscountCodeId, updateExclusionTrigger, setUpdateExclusion
 
   useEffect(()=>{
     if(updateExclusionTrigger == true) getTable();
-  }, [updateExclusionTrigger]);
+  }, [updateExclusionTrigger, DiscountCodeId]);
 
   const removeExclusion = (id) => {
     showConfirm(msgStr('deleteConfirmStr'), ()=>{
