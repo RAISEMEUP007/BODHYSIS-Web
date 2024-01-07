@@ -12,6 +12,7 @@ import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { discountCodesStyle } from './styles/DiscountCodesStyle';
 import AddDiscountCodeModal from './AddDiscountCodeModal';
+import QuickAddDiscountCodeModal from './QuickAddDiscountCodeModal';
 
 const DiscountCodes = ({navigation, openInventory}) => {
   const screenHeight = Dimensions.get('window').height;
@@ -24,11 +25,14 @@ const DiscountCodes = ({navigation, openInventory}) => {
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [selectedDiscountCode, setSelectedDiscountCode] = useState(null);
-
   const openAddDiscountCodeModal = () => { setAddModalVisible(true); setSelectedDiscountCode(null)}
   const closeAddDiscountCodeModal = () => { setAddModalVisible(false); setSelectedDiscountCode(null)}
   const editDiscountCode = (index) => { setSelectedDiscountCode(tableData[index]); setAddModalVisible(true); }
 
+  const [isQuickAddModalVisible, setQuickAddModalVisible] = useState(false);
+  const openQuickAddDiscountCodeModal = () => { setQuickAddModalVisible(true);}
+  const closeQuickAddDiscountCodeModal = () => { setQuickAddModalVisible(false);}
+  
   const changeCellData = (index, key, newVal) => {
     const updatedTableData = [ ...tableData ];
     updatedTableData[index] = {
@@ -133,6 +137,9 @@ const DiscountCodes = ({navigation, openInventory}) => {
             <TouchableHighlight style={styles.button} onPress={openAddDiscountCodeModal}>
               <Text style={styles.buttonText}>Add</Text>
             </TouchableHighlight>
+            <TouchableHighlight style={styles.button} onPress={openQuickAddDiscountCodeModal}>
+              <Text style={styles.buttonText}>Quick Add</Text>
+            </TouchableHighlight>
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
@@ -156,6 +163,13 @@ const DiscountCodes = ({navigation, openInventory}) => {
         DiscountCode={selectedDiscountCode}
         setUpdateDiscountCodeTrigger = {setUpdateDiscountCodeTrigger} 
         closeModal={closeAddDiscountCodeModal}
+      />
+
+      <QuickAddDiscountCodeModal
+        isModalVisible={isQuickAddModalVisible}
+        DiscountCode={selectedDiscountCode}
+        setUpdateDiscountCodeTrigger = {setUpdateDiscountCodeTrigger} 
+        closeModal={closeQuickAddDiscountCodeModal}
       />
     </BasicLayout>
   );

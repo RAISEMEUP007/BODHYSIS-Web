@@ -224,6 +224,10 @@ export const createDiscountCode = (payload, callback) => {
   postAPICall('settings/creatediscountcode', payload, callback);
 };
 
+export const quickAddDiscountCode = (payload, callback) => {
+  postAPICall('settings/quickadddiscountcode', payload, callback);
+};
+
 export const deleteDiscountCode = (id, callback) => {
   const payload = { id };
   postAPICall('settings/deletediscountcode', payload, callback);
