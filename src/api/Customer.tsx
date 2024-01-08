@@ -18,7 +18,6 @@ export const deleteCustomer = (id, callback) => {
 }
 
 export const getDeliveryAddressesData = (customerId, callback) => {
-  console.log(customerId);
   postAPICall('customer/getdeliveryaddressesdata/', {customer_id: customerId}, callback);
 }
 

@@ -20,7 +20,7 @@ const AddBrandModal = ({ isModalVisible, setUpdateBrandTrigger, closeModal }) =>
   const [_brand, setBrand] = useState('');
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();

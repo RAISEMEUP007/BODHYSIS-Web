@@ -63,11 +63,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
+    marginTop: 0,
   },
   modalView: {
     cursor: 'default',
-    margin: 20,
+    marginBottom: 20,
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 35,

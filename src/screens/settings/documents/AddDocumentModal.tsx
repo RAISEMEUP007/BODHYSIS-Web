@@ -32,7 +32,7 @@ const AddDocumentModal = ({ isModalVisible, Document, setUpdateDocumentTrigger, 
   const [documentContentTxt, setDocumentContentTxt] = useState('');
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();

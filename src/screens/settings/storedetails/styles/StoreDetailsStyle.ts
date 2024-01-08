@@ -1,10 +1,27 @@
 import { StyleSheet } from 'react-native';
-import { TextSmallSize, TextdefaultSize } from '../../../../common/constants/Fonts';
+import { TextMediumSize, TextSmallSize } from '../../../../common/constants/Fonts';
+import { TextdefaultSize } from '../../../../common/constants/Fonts';
 
-export const customerModalstyles = StyleSheet.create({
+export const StoreDetailsStyle = StyleSheet.create({
   label: {
     color: "#555",
     fontSize: TextSmallSize,
+  },
+  inputGroup: {
+    borderWidth: 1,
+    borderColor: '#cccccc',
+    padding: 12,
+    marginVertical: 16,
+    borderRadius: 5,
+  },
+  inputGroupLabel: {
+    fontSize: 14, fontWeight:'bold', margin:8, marginBottom: 12, marginLeft:12
+  },
+  inputRow: {
+    flexDirection: 'row',
+  },
+  inputContainer: {
+    marginHorizontal: 12,
   },
   input: {
     borderColor: 'gray',
@@ -13,7 +30,6 @@ export const customerModalstyles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
     paddingHorizontal: 8,
-    width: 400,
   },
   inputDisable: {
     borderColor: "#ddd",
@@ -26,11 +42,14 @@ export const customerModalstyles = StyleSheet.create({
     marginBottom: 10,
     padding: 8,
   },
+  selectOption:{
+    fontSize: 20,
+  },
   deliveryButton: {
     width: 140,
     marginTop: 20,
     padding: 8,
-    alignItems: 'center',
+    textAlign: 'center',
     borderRadius: 5,
     borderWidth: 2,
     borderColor: '#6c757d',
@@ -38,9 +57,11 @@ export const customerModalstyles = StyleSheet.create({
   addButton: {
     backgroundColor: '#007bff',
     color: 'white',
-    padding: 10,
+    padding: 8,
     textAlign: 'center',
+    width: 100,
     borderRadius: 5,
+    marginBottom: 16,
   },
   message: {
     width: '100%',
@@ -67,9 +88,11 @@ export const customerModalstyles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#80C0FF80', // Warm color border with transparency
-    borderWidth: 2, // Border width
-    borderStyle: 'solid', // Border style
+    borderColor: '#80C0FF80',
+    borderWidth: 2,
+    borderStyle: 'solid',
+    marginBottom: 10,
+    marginTop: 4,
   },
   imageUpload: {
     position: 'relative',
@@ -86,10 +109,11 @@ export const customerModalstyles = StyleSheet.create({
   },
   fileInput: {
     position: 'absolute',
-    width: '100%',
-    height: '100%',
+    width: 0,
+    height: 0,
     Top: 0,
     opacity: 0,
+    pointerEvents: 'none',
   },
   previewImage: {
     width: '100%',

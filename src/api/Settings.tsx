@@ -5,7 +5,6 @@ export const getManufacturesData = (callback) => {
 }
 
 export const updateManufacture = (payload, callback) => {
-  console.log(payload);
   postAPICall('settings/updatemanufacture', payload, callback);
 };
 
@@ -23,7 +22,6 @@ export const getTagsData = (callback) => {
 }
 
 export const updateTag = (payload, callback) => {
-  console.log(payload);
   postAPICall('settings/updatetag', payload, callback);
 };
 
@@ -126,7 +124,6 @@ export const getTrucksData = (callback) => {
 }
 
 export const updateTruck = (payload, callback) => {
-  console.log(payload);
   postAPICall('settings/updatetruck', payload, callback);
 };
 
@@ -137,4 +134,123 @@ export const createTruck = (payload, callback) => {
 export const deleteTruck = (id, callback) => {
   const payload = { id };
   postAPICall('settings/deletetruck', payload, callback);
+}
+
+export const getTimezonesData = (callback) => {
+  getAPICall('settings/gettimezonesdata/', callback);
+}
+
+export const updateTimezone = (payload, callback) => {
+  postAPICall('settings/updatetimezone', payload, callback);
+};
+
+export const createTimezone = (payload, callback) => {
+  postAPICall('settings/createtimezone', payload, callback);
+};
+
+export const deleteTimezone = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletetimezone', payload, callback);
+}
+
+export const getCurrenciesData = (callback) => {
+  getAPICall('settings/getcurrenciesdata/', callback);
+}
+
+export const updateCurrency = (payload, callback) => {
+  postAPICall('settings/updatecurrency', payload, callback);
+};
+
+export const createCurrency = (payload, callback) => {
+  postAPICall('settings/createcurrency', payload, callback);
+};
+
+export const deleteCurrency = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletecurrency', payload, callback);
+}
+
+export const getDateformatsData = (callback) => {
+  getAPICall('settings/getdateformatsdata/', callback);
+}
+
+export const updateDateformat = (payload, callback) => {
+  postAPICall('settings/updatedateformat', payload, callback);
+};
+
+export const createDateformat = (payload, callback) => {
+  postAPICall('settings/createdateformat', payload, callback);
+};
+
+export const deleteDateformat = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletedateformat', payload, callback);
+}
+
+export const getTimeformatsData = (callback) => {
+  getAPICall('settings/gettimeformatsdata/', callback);
+}
+
+export const updateTimeformat = (payload, callback) => {
+  postAPICall('settings/updatetimeformat', payload, callback);
+};
+
+export const createTimeformat = (payload, callback) => {
+  postAPICall('settings/createtimeformat', payload, callback);
+};
+
+export const deleteTimeformat = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletetimeformat', payload, callback);
+}
+
+export const getStoreDetail = (callback) => {
+  getAPICall('settings/getstoredetail/', callback);
+}
+
+export const updateStoreDetail = (payload, callback) => {
+  basePostAPICall('settings/updatestoredetail', {}, payload, callback);
+};
+
+export const getDiscountCodesData = (callback) => {
+  getAPICall('settings/getdiscountcodesdata/', callback);
+}
+
+export const updateDiscountCode = (payload, callback) => {
+  postAPICall('settings/updatediscountcode', payload, callback);
+};
+
+export const createDiscountCode = (payload, callback) => {
+  postAPICall('settings/creatediscountcode', payload, callback);
+};
+
+export const quickAddDiscountCode = (payload, callback) => {
+  postAPICall('settings/quickadddiscountcode', payload, callback);
+};
+
+export const deleteDiscountCode = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletediscountcode', payload, callback);
+}
+
+export const getExclusionsData = (DiscountCodeId, callback) => {
+  postAPICall('settings/getexclusionsdata/', {discountcode_id: DiscountCodeId}, callback);
+}
+
+export const updateExclusion = (payload, callback) => {
+  postAPICall('settings/updateexclusion', payload, callback);
+};
+
+export const createExclusion = (payload, callback) => {
+  postAPICall('settings/createexclusion', payload, callback);
+};
+
+export const deleteExclusion = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deleteexclusion', payload, callback);
+}
+
+export const deleteExclusionByDCId = (DiscountCodeId, callback) => {
+  const payload = { DiscountCodeId };
+  postAPICall('settings/deleteexclusionbydcid', payload, callback);
 }

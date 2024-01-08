@@ -40,7 +40,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
   const [selectedPriceGroup, selectPriceGroup] = useState({});
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();

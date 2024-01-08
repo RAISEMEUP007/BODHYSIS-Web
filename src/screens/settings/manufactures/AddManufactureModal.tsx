@@ -23,7 +23,7 @@ const AddManufactureModal = ({ isModalVisible, Manufacture, setUpdateManufacture
   const [DescriptionTxt, setDescriptionTxt] = useState('');
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();

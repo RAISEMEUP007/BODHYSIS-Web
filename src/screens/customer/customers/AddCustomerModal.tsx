@@ -59,7 +59,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
   const closeDeliveryModal = () => { setDeliveryModalVisible(false);}
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();
@@ -90,8 +90,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
           setLanguages(jsonRes);
           if(jsonRes[0]) {
             if(Customer) setLanguage(Customer.language_id);
-            setLanguage(jsonRes[0].id);
-
+            else setLanguage(jsonRes[0].id);
           }else setLanguage(0);
         }
       })
@@ -100,8 +99,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
           setLocations(jsonRes);
           if(jsonRes[0]) {
             if(Customer) setHomeLocation(Customer.home_location);
-            setHomeLocation(jsonRes[0].id);
-
+            else setHomeLocation(jsonRes[0].id);
           }else setHomeLocation(0);
         }
       })
@@ -133,7 +131,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
         setDeliveryStreetNumberTxt('');
         setDeliveryStreetPropertyNameTxt('');
         setDeliveryAreaPlantationTxt('');
-        changeOptedIn('');
+        changeOptedIn(false);
       }
     }
   }, [isModalVisible])

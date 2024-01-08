@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 
-const ModalBody = ({ children, style }) => {
+const ModalBody = ({ children, style={} }) => {
   return (
     <View style={[styles.modalBody, style]}>
       {children}

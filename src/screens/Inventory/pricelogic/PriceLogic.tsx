@@ -3,7 +3,14 @@ import { ScrollView, View, Text, TouchableHighlight, ActivityIndicator, Touchabl
 import {Picker} from '@react-native-picker/picker';
 import { FontAwesome5 } from '@expo/vector-icons';
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+
+if (Platform.OS === 'web') {
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = 'react-datepicker/dist/react-datepicker.css';
+  document.head.appendChild(link);
+}
 
 import {createPriceLogic, getPriceLogicData, deletePriceLogic, getSeasonsData, getBrandsData, getPriceTablesData } from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';

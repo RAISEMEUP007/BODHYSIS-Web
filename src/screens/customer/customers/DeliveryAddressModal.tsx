@@ -38,7 +38,7 @@ const DeliveryAddress = ({ isModalVisible, customerId, closeModal }) => {
   }, [isModalVisible]);
 
   useEffect(() => {
-    if(Platform.web){
+    if(Platform.OS === 'web'){
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();
