@@ -142,6 +142,7 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
           <Text style={styles.modalTitle}>{'Select A Product'}</Text>
           <ScrollView style={styles.modalScroll}>
             <CommonDropdown
+              textAlign={'center'}
               onItemSelected={(item) => {
                 const map = { ...dataMap };
                 if (!map[currentIndex]) {
@@ -158,7 +159,7 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
                 }
                 setDataMap(map);
               }}
-              width={250}
+              width={400}
               placeholder="Select"
               data={productsDropdownData}
             />
@@ -238,6 +239,8 @@ const styles = StyleSheet.create({
   modal: {
     padding: 20,
     flex: 1,
+    backgroundColor: Colors.Neutrals.LIGHT_GRAY,
+    alignItems: 'center',
   },
   modalScroll: {
     flex: 1,

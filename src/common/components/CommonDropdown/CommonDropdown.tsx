@@ -18,6 +18,7 @@ interface Props<T> {
   containerStyle?: ViewStyle;
   width?: number;
   title?: string;
+  textAlign?: 'left' | 'center' | 'right' | 'auto';
 }
 
 export const CommonDropdown = ({
@@ -28,6 +29,7 @@ export const CommonDropdown = ({
   onItemSelected,
   width = 130,
   title,
+  textAlign = 'left',
 }: Props<any>) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -78,7 +80,12 @@ export const CommonDropdown = ({
           return (
             <Pressable
               key={index.toString()}
-              style={itemStyle}
+              style={{
+                ...itemStyle,
+                alignContent: 'stretch',
+                alignSelf: 'stretch',
+                flexDirection: 'row',
+              }}
               onPress={() => {
                 setSelectedItem(item);
                 if (onItemSelected) {
@@ -87,7 +94,7 @@ export const CommonDropdown = ({
                 setIsOpen(false);
               }}
             >
-              <Text>{item.displayLabel}</Text>
+              <Text style={{ textAlign, flex: 1 }}>{item.displayLabel}</Text>
             </Pressable>
           );
         })}
@@ -96,7 +103,7 @@ export const CommonDropdown = ({
   };
 
   return (
-    <View style={{ ...containerStyle, width }}>
+    <View style={{ ...containerStyle, width, backgroundColor: Colors.Neutrals.WHITE }}>
       {renderTitle()}
       {renderHeader()}
       {renderData()}
