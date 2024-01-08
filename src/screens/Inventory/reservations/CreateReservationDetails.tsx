@@ -1,15 +1,18 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 import { Colors } from '../../../common/constants/Colors';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getReservationInfoSelector } from '../../../redux/selectors/reservationSelector';
 import { ReservationDetailsBasicInfo } from './ReservationDetailsBasicInfo';
 import { ReservationTabView } from './ReservationTabView';
 import { ProductIdInput } from './ProductIdInput';
 import { CommonButton } from '../../../common/components/CommonButton/CommonButton';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { CommonTable } from '../../../common/components/CommonTable/CommonTable';
+import { addProduct, removeProduct } from '../../../redux/slices/reservationSlice';
+import { createMockProductFromId } from '../../../mock-data/mock-table-data';
 
 interface Props {
   goBack: () => void;
@@ -18,7 +21,11 @@ interface Props {
 export const CreateReservationDetails = ({ goBack }: Props) => {
   const reservationInfo = useSelector(getReservationInfoSelector);
 
+  const dispatch = useDispatch();
+
   const { showAlert } = useAlertModal();
+
+  const [productID, setProductID] = useState('');
 
   const navigation = useNavigation();
   return (
@@ -32,9 +39,20 @@ export const CreateReservationDetails = ({ goBack }: Props) => {
           <View style={styles.leftBottomContainer}>
             <ProductIdInput
               onSubmit={() => {
+                /*
                 showAlert('success', 'Added item to product.');
+                const product = createMockProductFromId(
+                  productID,
+                  reservationInfo?.selectedSeason?.season
+                );
+                dispatch(addProduct(product));
+                */
+                setProductID('');
               }}
-              onChangeText={(value) => {}}
+              onChangeText={(value) => {
+                setProductID(value);
+              }}
+              value={productID}
             />
           </View>
           <View style={styles.rightBottomContainer}>
@@ -42,28 +60,36 @@ export const CreateReservationDetails = ({ goBack }: Props) => {
               height={40}
               containerStyle={styles.button}
               type="rounded"
-              onPress={() => {}}
+              onPress={() => {
+                showAlert('success', 'Should print.');
+              }}
               label="Print"
             />
             <CommonButton
               height={40}
               containerStyle={styles.button}
               type="rounded"
-              onPress={() => {}}
+              onPress={() => {
+                showAlert('success', 'Should email.');
+              }}
               label="Email"
             />
             <CommonButton
               height={40}
               containerStyle={styles.button}
               type="rounded"
-              onPress={() => {}}
+              onPress={() => {
+                showAlert('success', 'Should Trigger Stripe.');
+              }}
               label="Stripe"
             />
             <CommonButton
               height={40}
               containerStyle={styles.button}
               type="rounded"
-              onPress={() => {}}
+              onPress={() => {
+                goBack();
+              }}
               label="Add"
             />
             <CommonButton
@@ -71,19 +97,31 @@ export const CreateReservationDetails = ({ goBack }: Props) => {
               width={140}
               containerStyle={styles.button}
               type="rounded"
-              onPress={() => {}}
+              onPress={() => {
+                showAlert('success', 'Should Add Transaction');
+              }}
               label="Add Transaction"
             />
             <CommonButton
               height={40}
               containerStyle={styles.button}
               type="rounded"
-              onPress={() => {}}
+              onPress={() => {
+                showAlert('success', 'Should Show More');
+              }}
               label="More"
             />
           </View>
         </View>
-        <View style={styles.footerContainer}></View>
+        <View style={styles.footerContainer}>
+          <CommonTable
+            onTapRemove={(id) => {
+              dispatch(removeProduct({ id }));
+              showAlert('warning', 'Removed item from product.');
+            }}
+            data={reservationInfo.reservationTableData}
+          />
+        </View>
       </ScrollView>
     </BasicLayout>
   );
@@ -127,5 +165,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: Colors.Neutrals.LIGHT_GRAY,
     height: 300,
+    padding: 20,
   },
 });
