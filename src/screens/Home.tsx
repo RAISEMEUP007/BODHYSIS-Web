@@ -7,6 +7,7 @@ import Dashboard from './Dashboard';
 import Inventory from './Inventory/Inventory';
 import Settings from './settings/Settings';
 import Customers from './customer/customers/Customers';
+import CreateReservation from './Inventory/reservations/CreateReservation';
 
 const MainDrawer = ({ navigation }) => {
   const { isLargeScreen } = useScreenSize();
@@ -85,6 +86,15 @@ const MainDrawer = ({ navigation }) => {
         }}
         onPress={() => {
           console.log('ddd');
+        }}
+      />
+      <Drawer.Screen
+        name="Reservation"
+        component={CreateReservation}
+        options={{
+          drawerLabel: 'Reservation',
+          unmountOnBlur: true,
+          headerShown: false,
         }}
       />
       <Drawer.Screen
