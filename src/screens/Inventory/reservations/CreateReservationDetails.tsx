@@ -11,8 +11,7 @@ import { ProductIdInput } from './ProductIdInput';
 import { CommonButton } from '../../../common/components/CommonButton/CommonButton';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { CommonTable } from '../../../common/components/CommonTable/CommonTable';
-import { addProduct, removeProduct } from '../../../redux/slices/reservationSlice';
-import { createMockProductFromId } from '../../../mock-data/mock-table-data';
+import { removeProduct } from '../../../redux/slices/reservationSlice';
 
 interface Props {
   goBack: () => void;

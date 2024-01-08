@@ -27,10 +27,6 @@ const Inventory = ({ navigation, initalItem = null }) => {
 
   if (selectedItem) {
     switch (selectedItem) {
-      case 'Create Reservation':
-        return <CreateReservation openInventory={handleItemClick} />;
-      case 'Create Reservation Details':
-        return <CreateReservationDetails openInventory={handleItemClick} />;
       case 'Products':
         return <Products navigation={navigation} openInventory={handleItemClick} data={data} />;
       case 'Product Categories':
@@ -85,11 +81,6 @@ const Inventory = ({ navigation, initalItem = null }) => {
               { title: 'Product Lines', icon: 'check' },
               { title: 'Search', icon: 'search' },
             ]}
-            handleItemClick={handleItemClick}
-          />
-          <TouchNavGroup
-            sectionTitle="Reservation"
-            items={[{ title: 'Create Reservation', icon: 'check' }]}
             handleItemClick={handleItemClick}
           />
           <TouchNavGroup
