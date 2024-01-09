@@ -3,8 +3,9 @@ import { ScrollView, View, Text, TextInput, TouchableOpacity, Dimensions, Image,
 import { Picker } from '@react-native-picker/picker';
 import { Editor } from 'primereact/editor';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { RadioButton } from 'react-native-paper';
 
-import { getLanguagesData, getCountriesData, getCurrenciesData, getTimezonesData, getDateformatsData, getTimeformatsData, updateStoreDetail, getStoreDetail, } from '../../../api/Settings';
+import { getLanguagesData, getCountriesData, getCurrenciesData, getTimezonesData, getDateformatsData, getTimeformatsData, updateStoreDetail, getStoreDetail, getDocumentsData, } from '../../../api/Settings';
 import { msgStr } from '../../../common/constants/Message';
 import { API_URL } from '../../../common/constants/AppConstants';
 import { TextMediumLargeSize, TextdefaultSize } from '../../../common/constants/Fonts';
@@ -13,6 +14,7 @@ import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { StoreDetailsStyle } from './styles/StoreDetailsStyle';
 import NumericInput from '../../../common/components/formcomponents/NumericInput';
+import WebView from 'react-native-webview';
 
 const StoreDetails = ({navigation, brandId, brandName, openStoreDetail}) => {
   
@@ -29,7 +31,7 @@ const StoreDetails = ({navigation, brandId, brandName, openStoreDetail}) => {
   const [Currencies, setCurrencies] = useState([]);
   const [Dateformats, setDateformats] = useState([]);
   const [Timeformats, setTimeformats] = useState([]);
-  const [StoreWavier, setStoreWavier] = useState('');
+  const [Documents, setDocuments] = useState([]);
 
   const [weekdays, setWeekdays] = useState([
     { id: 7, weekday: 'Sunday' },
@@ -63,6 +65,11 @@ const StoreDetails = ({navigation, brandId, brandName, openStoreDetail}) => {
   const [Dateformat, setDateformat] = useState(0);
   const [Timeformat, setTimeformat] = useState(0);
   const [WeekStart, setWeekStart] = useState(0);
+
+  const [StoreWavier, setStoreWavier] = useState('');
+  const [documentId, setDocumentId] = useState(0);
+  const [isDocument, setIsDocument] = useState(0);
+  const [selectedDocument, setSelectedDocument] = useState({});
 
   useEffect(() => {
     getLanguagesData((jsonRes, status, error) => {
@@ -113,6 +120,14 @@ const StoreDetails = ({navigation, brandId, brandName, openStoreDetail}) => {
         }else setTimeformat(0);
       }
     })
+    getDocumentsData((jsonRes, status, error) => {
+      if( status == 200 ){
+        setDocuments(jsonRes);
+        if(jsonRes[0]) {
+          setDocumentId(jsonRes[0].id);
+        }else setDocumentId(0);
+      }
+    })
 
     setTimeout(() => {
       loadDetails();
@@ -144,9 +159,20 @@ const StoreDetails = ({navigation, brandId, brandName, openStoreDetail}) => {
         if(jsonRes.week_start_day) setWeekStart(jsonRes.week_start_day);
         if(jsonRes.sales_tax) setSalesTaxTxt(jsonRes.sales_tax);
         if(jsonRes.store_wavier) setStoreWavier(jsonRes.store_wavier);
+        if(jsonRes.document_id) setDocumentId(jsonRes.document_id);
+        if(jsonRes.is_document) setIsDocument(jsonRes.is_document);
       }
     });
   };
+
+  useEffect(()=>{
+    if(Documents.length>0){
+      const result = Documents.find(document => document.id === documentId);
+      if (result) {
+        setSelectedDocument(result);
+      }
+    }
+  }, [documentId])
 
   const handleImageSelection = (event) => {
     const file = Platform.OS == 'web' ? event.target.files[0] : event.nativeEvent.target.files[0];
@@ -157,9 +183,7 @@ const StoreDetails = ({navigation, brandId, brandName, openStoreDetail}) => {
   };
 
   const SaveForm = () => {
-   
     setIsLoading(true);
-    
     const formData = new FormData();
     formData.append('brand_id', brandId);
     formData.append('store_name', storeNameTxt);
@@ -183,6 +207,8 @@ const StoreDetails = ({navigation, brandId, brandName, openStoreDetail}) => {
     formData.append('week_start_day', WeekStart.toString());
     formData.append('sales_tax', SalesTaxTxt.toString());
     formData.append('store_wavier', StoreWavier);
+    formData.append('document_id', documentId.toString());
+    formData.append('is_document', isDocument.toString());
 
     const handleResponse = (jsonRes, status) => {
       switch(status){
@@ -391,13 +417,67 @@ const StoreDetails = ({navigation, brandId, brandName, openStoreDetail}) => {
           </View>
           <Text style={styles.label}>Sales tax</Text>
           <NumericInput placeholder="Sales tax" value={SalesTaxTxt} onChangeText={setSalesTaxTxt} validMinNumber={0} validMaxNumber={100}/>
-
-          {Platform.OS == 'web' && (
-            <>
-              <Text style={[styles.label, {marginBottom:4}]}>Store Wavier</Text>
-              <Editor value={StoreWavier} onTextChange={(e) => setStoreWavier(e.htmlValue)} style={{height: 185, marginBottom: '10px',}} />
-            </>
-          )}
+          
+          <View style={styles.inputGroup}>
+            <Text style={[styles.label, styles.inputGroupLabel, {marginBottom:8}]}>Store Wavier</Text>
+            <View style={{paddingLeft:3}}>
+              <View style={{flexDirection:'row', alignItems:'center'}}>
+                <RadioButton value={'0'} status={!isDocument? "checked" : "unchecked"} onPress={() => setIsDocument(0)}/>
+                <Text>{"Edit manually"}</Text>
+              </View>
+              <View style={{flexDirection:'row', alignItems:'center', marginBottom: 10}}>
+                <RadioButton value={'1'} status={isDocument? "checked" : "unchecked"} onPress={() => setIsDocument(1)}/>
+                <Text>{"Selected Document"}</Text>
+                <Picker
+                  style={[{marginLeft:20, paddingVertical:6, paddingHorizontal:12}]}
+                  selectedValue={documentId}
+                  onValueChange={(value, key)=>{
+                    setDocumentId(value);
+                    setSelectedDocument(Documents[key]);
+                  }}>
+                  {Documents.length>0 && (
+                    Documents.map((document, index) => {
+                      return <Picker.Item style={styles.selectOption} key={index} label={document.document_name} value={document.id} />
+                    })
+                  )}
+                </Picker>
+              </View>
+            </View>
+            {isDocument == 0 && (
+              <>
+              {Platform.OS == 'web' && (
+                <>
+                  <Editor value={StoreWavier} onTextChange={(e) => setStoreWavier(e.htmlValue)} style={{height: 185, marginBottom: '10px',}} />
+                </>
+              )}
+              </>
+            )}
+            {isDocument == 1 && (
+              <View style={{height: 251, marginBottom: 10, borderWidth:1, borderColor:'#ccc'}}>
+                {selectedDocument && (
+                  <>
+                  {selectedDocument.document_type == 1 ? (
+                    <>
+                      {Platform.OS === 'web' && (
+                        <embed style={{width:"100%"}} src={API_URL + selectedDocument.document_file} type="application/pdf" width="300" height="500" />
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {Platform.OS === 'web' ? (
+                        <div style={{padding:8}} dangerouslySetInnerHTML={{ __html: selectedDocument.document_content }}></div>
+                      ) : (
+                        <WebView
+                          source={{ html: selectedDocument.document_content }}
+                        />
+                      )}
+                    </>
+                  )}
+                  </>
+                )}
+              </View>
+            )}
+          </View>
 
           <View style={{alignItems:'flex-end'}}>
             <TouchableOpacity onPress={SaveForm}>
