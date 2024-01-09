@@ -11,6 +11,7 @@ import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
 import { brandsStyle } from './styles/BrandsStyle';
 import AddBrandModal from './AddBrandModal';
 import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
+import StoreDetails from '../../settings/storedetails/StoreDetails';
 
 const Brands = ({navigation, openInventory}) => {
   const screenHeight = Dimensions.get('window').height;
@@ -24,7 +25,13 @@ const Brands = ({navigation, openInventory}) => {
   const closeAddBrandModal = () => { setAddModalVisible(false); }
   const [updateBrandTrigger, setUpdateBrandTrigger] = useState(true);
 
-  
+  const [selectedBrandId, setSelectedBrandId] = useState(null);
+  const [selectedBrandName, setSelectedBrandName] = useState(null);
+
+  useEffect(()=>{
+    if(updateBrandTrigger == true) getTable();
+  }, [updateBrandTrigger]);
+
   const changeCellData = (index, key, newVal) => {
     const updatedTableData = [ ...tableData ];
     updatedTableData[index] = {
@@ -53,6 +60,11 @@ const Brands = ({navigation, openInventory}) => {
     });
   }
 
+  const openStoreDetail = (id, tableName) => {
+    setSelectedBrandId(id);
+    setSelectedBrandName(tableName);
+  }
+
   const removeBrand = (id) => {
     showConfirm(msgStr('deleteConfirmStr'), ()=>{
       deleteBrand(id, (jsonRes, status, error)=>{
@@ -69,10 +81,6 @@ const Brands = ({navigation, openInventory}) => {
       })
     });
   }
-
-  useEffect(()=>{
-    if(updateBrandTrigger == true) getTable();
-  }, [updateBrandTrigger]);
 
   const getTable = () => {
     getBrandsData((jsonRes, status, error) => {
@@ -92,6 +100,10 @@ const Brands = ({navigation, openInventory}) => {
     })
   }
 
+  if(selectedBrandId) {
+    return <StoreDetails navigation={navigation} brandId={selectedBrandId} brandName={selectedBrandName} openStoreDetail={openStoreDetail}></StoreDetails>
+  }
+
   const renderTableData = () => {
     const rows = [];
     if(tableData.length > 0){
@@ -109,11 +121,16 @@ const Brands = ({navigation, openInventory}) => {
                   saveCellData(item.id, 'brand', item.brand);
                 }}
               />
-              <View style={styles.deleteRow}>
-                <TouchableOpacity onPress={()=>{removeBrand(item.id)}}>
-                  <FontAwesome5 style={styles.deleteRow} size={TextMediumSize} name="times" color="black" />
-                </TouchableOpacity>
-              </View>
+            </View>
+            <View style={[styles.IconCell, {width:100}]}>
+              <TouchableOpacity  onPress={()=>{openStoreDetail(item.id, item.brand)}}>
+                <FontAwesome5 size={15} name="store" color="black" />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.IconCell]}>
+              <TouchableOpacity  onPress={()=>{removeBrand(item.id)}}>
+                <FontAwesome5 size={15} name="times" color="black" />
+              </TouchableOpacity>
             </View>
           </View>
         );
@@ -142,6 +159,8 @@ const Brands = ({navigation, openInventory}) => {
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
               <Text style={styles.columnHeader}>{"Brand"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell, {width:100}]}>{"Store details"}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
             </View>
             <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
                 {renderTableData()}

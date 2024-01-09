@@ -1,19 +1,20 @@
 import React, { useEffect, useRef, useState} from 'react';
-import { ScrollView, View, Text, TextInput, TouchableOpacity, Dimensions, Image, Platform, ActivityIndicator } from 'react-native';
+import { ScrollView, View, Text, TextInput, TouchableOpacity, Dimensions, Image, Platform, ActivityIndicator, Linking } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Editor } from 'primereact/editor';
+import { FontAwesome5 } from '@expo/vector-icons';
 
-import { getTrucksData, deleteTruck, getLanguagesData, getCountriesData, getCurrenciesData, getTimezonesData, getDateformatsData, getTimeformatsData, updateStoreDetail, getStoreDetail, } from '../../../api/Settings';
+import { getLanguagesData, getCountriesData, getCurrenciesData, getTimezonesData, getDateformatsData, getTimeformatsData, updateStoreDetail, getStoreDetail, } from '../../../api/Settings';
 import { msgStr } from '../../../common/constants/Message';
 import { API_URL } from '../../../common/constants/AppConstants';
-import { TextMediumLargeSize } from '../../../common/constants/Fonts';
+import { TextMediumLargeSize, TextdefaultSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { StoreDetailsStyle } from './styles/StoreDetailsStyle';
 import NumericInput from '../../../common/components/formcomponents/NumericInput';
 
-const StoreDetails = ({navigation, openInventory}) => {
+const StoreDetails = ({navigation, brandId, brandName, openStoreDetail}) => {
   
   const { showAlert } = useAlertModal();
 
@@ -44,6 +45,7 @@ const StoreDetails = ({navigation, openInventory}) => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [Language, setLanguage] = useState(0);
   const [storeNameTxt, setStoreNameTxt] = useState('');
+  const [storeURLTxt, setStoreURLTxt] = useState('');
   const [AddressLine1Txt, setAddressLine1Txt] = useState('');
   const [AddressLine2Txt, setAddressLine2Txt] = useState('');
   const [CityTxt, setCityTxt] = useState('');
@@ -119,9 +121,10 @@ const StoreDetails = ({navigation, openInventory}) => {
   }, [])
 
   const loadDetails = () => {
-    getStoreDetail((jsonRes, status, error)=>{
+    getStoreDetail(brandId, (jsonRes, status, error)=>{
       if(jsonRes){
         if(jsonRes.store_name) setStoreNameTxt(jsonRes.store_name);
+        if(jsonRes.store_url) setStoreURLTxt(jsonRes.store_url);
         if(jsonRes.language_id) setLanguage(jsonRes.language_id);
         if(jsonRes.logo_url) setImagePreviewUrl(API_URL + jsonRes.logo_url);
         if(jsonRes.address_line1) setAddressLine1Txt(jsonRes.address_line1);
@@ -158,7 +161,9 @@ const StoreDetails = ({navigation, openInventory}) => {
     setIsLoading(true);
     
     const formData = new FormData();
+    formData.append('brand_id', brandId);
     formData.append('store_name', storeNameTxt);
+    formData.append('store_url', storeURLTxt);
     formData.append('language_id', Language.toString());
     if(selectedImage) formData.append('img', selectedImage);
     formData.append('address_line1', AddressLine1Txt);
@@ -201,13 +206,23 @@ const StoreDetails = ({navigation, openInventory}) => {
     });
   };
 
+  const openStoreLink = () => {  
+    if(storeURLTxt && storeURLTxt.trim()){
+      let urlToOpen = storeURLTxt.toLowerCase();
+      if (!urlToOpen.startsWith('http://') && !urlToOpen.startsWith('https://')) {
+        urlToOpen = 'http://' + urlToOpen;
+      }
+      Linking.openURL(urlToOpen);
+    }
+  }
+
   return (
     <BasicLayout
       navigation = {navigation}
       goBack={()=>{
-        openInventory(null)
+        openStoreDetail(null)
       }}
-      screenName={'Store Details'}
+      screenName={brandName}
     >
       <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
         <View style={{width: '60%', minWidth:500, marginVertical: 30, padding: 36, backgroundColor:'white', borderRadius:8}}>
@@ -230,6 +245,13 @@ const StoreDetails = ({navigation, openInventory}) => {
           </Picker>
           <Text style={styles.label}>Store Name</Text>
           <TextInput style={styles.input} placeholder="Shop Name" value={storeNameTxt} onChangeText={setStoreNameTxt} placeholderTextColor="#ccc" ref={defaultInputRef} />
+          <View>
+            <Text style={styles.label}>Store URL</Text>
+            <TextInput style={styles.input} placeholder="Shop URL" value={storeURLTxt} onChangeText={setStoreURLTxt} placeholderTextColor="#ccc" ref={defaultInputRef} />
+            <TouchableOpacity style={{position:'absolute', top:'47%', right:10}} onPress={openStoreLink}>
+              <FontAwesome5 name="link" size={TextdefaultSize} color="#000" />
+            </TouchableOpacity>
+          </View>
 
           {Platform.OS == 'web' && (
             <>

@@ -84,6 +84,8 @@ export const brandsStyle = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     width: 200,
+    borderRightWidth: 1,
+    borderRightColor: '#ccc',
   },
   cell: {
     position: 'relative',
@@ -127,5 +129,12 @@ export const brandsStyle = StyleSheet.create({
     position: 'absolute',
     right: TextMediumSize * 1.5,
     top: -20,
-  }
+  },
+  IconCell: {
+    width: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    paddingHorizontal:0
+  },
 });

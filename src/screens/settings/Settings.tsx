@@ -66,7 +66,7 @@ const Settings = ({navigation, initalItem = null}) => {
                         { title: "Document Management", icon: 'sticky-note' },
                         { title: "Reservation Types", icon: 'calendar-check' },
                         { title: "Trucks", icon: 'truck' },
-                        { title: "Store Details", icon: 'store' },
+                        // { title: "Store Details", icon: 'store' },
                         { title: "Discount Codes", icon: 'check' },
                     ]} handleItemClick={handleItemClick} />
                 </View>

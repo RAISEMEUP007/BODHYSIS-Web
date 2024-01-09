@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { NavigationProp } from '@react-navigation/native';
 
@@ -20,6 +20,23 @@ const BasicLayout = ({
   children,
   containerStyle,
 }: Props) => {
+
+  useEffect(() => {
+    if(Platform.OS === 'web'){
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Backspace' && goBack) {
+          goBack();
+        }
+      };
+  
+      window.addEventListener('keydown', handleKeyDown);
+  
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [goBack]);
+
   return (
     <View style={{ ...styles.container, ...containerStyle }}>
       <View style={styles.header}>
