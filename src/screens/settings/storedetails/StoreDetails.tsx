@@ -428,26 +428,28 @@ const StoreDetails = ({navigation, brandId, brandName, openStoreDetail}) => {
               <View style={{flexDirection:'row', alignItems:'center', marginBottom: 10}}>
                 <RadioButton value={'1'} status={isDocument? "checked" : "unchecked"} onPress={() => setIsDocument(1)}/>
                 <Text>{"Selected Document"}</Text>
-                <Picker
-                  style={[{marginLeft:20, paddingVertical:6, paddingHorizontal:12}]}
-                  selectedValue={documentId}
-                  onValueChange={(value, key)=>{
-                    setDocumentId(value);
-                    setSelectedDocument(Documents[key]);
-                  }}>
-                  {Documents.length>0 && (
-                    Documents.map((document, index) => {
-                      return <Picker.Item style={styles.selectOption} key={index} label={document.document_name} value={document.id} />
-                    })
-                  )}
-                </Picker>
+                {isDocument == 1 && (
+                  <Picker
+                    style={[{marginLeft:20, paddingVertical:6, paddingHorizontal:12}]}
+                    selectedValue={documentId}
+                    onValueChange={(value, key)=>{
+                      setDocumentId(value);
+                      setSelectedDocument(Documents[key]);
+                    }}>
+                    {Documents.length>0 && (
+                      Documents.map((document, index) => {
+                        return <Picker.Item style={styles.selectOption} key={index} label={document.document_name} value={document.id} />
+                      })
+                    )}
+                  </Picker>
+                )}
               </View>
             </View>
             {isDocument == 0 && (
               <>
               {Platform.OS == 'web' && (
                 <>
-                  <Editor value={StoreWavier} onTextChange={(e) => setStoreWavier(e.htmlValue)} style={{height: 185, marginBottom: '10px',}} />
+                  <Editor value={StoreWavier} onTextChange={(e) => setStoreWavier(e.htmlValue)} style={{height: 185, marginBottom: '10px',}} onKeyDown={(event) => {event.stopPropagation();}} />
                 </>
               )}
               </>
