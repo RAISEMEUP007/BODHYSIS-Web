@@ -46,9 +46,9 @@ export const StoreDetailsStyle = StyleSheet.create({
     fontSize: 20,
   },
   deliveryButton: {
-    width: 140,
-    marginTop: 20,
-    padding: 8,
+    marginLeft: 20,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
     textAlign: 'center',
     borderRadius: 5,
     borderWidth: 2,

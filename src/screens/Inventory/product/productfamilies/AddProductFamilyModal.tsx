@@ -366,12 +366,12 @@ const AddProductFamilyModal = ({ isModalVisible, family, setUpdateProductFamilyT
                 </SafeAreaView>
               )}
               {Platform.OS == 'web' && (
-                <Editor value={summaryTxt} onTextChange={(e) => setSummaryTxt(e.htmlValue)} style={{height: 185, marginBottom: '10px',}} />
+                <Editor value={summaryTxt} onTextChange={(e) => setSummaryTxt(e.htmlValue)} style={{height: 185, marginBottom: '10px',}} onKeyDown={(event) => {event.stopPropagation();}} />
               )}
               
               <Text style={styles.label}>Notes</Text>
               {Platform.OS == 'web' && (
-                <Editor value={notesTxt} onTextChange={(e) => setNotesTxt(e.htmlValue)} style={{height: 185, marginBottom: '10px',}} />
+                <Editor value={notesTxt} onTextChange={(e) => setNotesTxt(e.htmlValue)} style={{height: 185, marginBottom: '10px',}} onKeyDown={(event) => {event.stopPropagation();}} />
               )}
             </View>
           </View>

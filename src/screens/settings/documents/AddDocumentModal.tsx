@@ -201,7 +201,7 @@ const AddDocumentModal = ({ isModalVisible, Document, setUpdateDocumentTrigger, 
           {documentType == 0 && (
             <>
             {Platform.OS == 'web' && (
-              <Editor value={documentContentTxt} onTextChange={(e) => setDocumentContentTxt(e.htmlValue)} style={{height: 208, width:650}} />
+              <Editor value={documentContentTxt} onTextChange={(e) => setDocumentContentTxt(e.htmlValue)} style={{height: 208, width:650}} onKeyDown={(event) => {event.stopPropagation();}} />
             )}
             </>
           )}

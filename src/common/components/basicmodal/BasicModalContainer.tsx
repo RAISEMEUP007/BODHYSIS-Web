@@ -1,10 +1,14 @@
-import React from 'react';
-import { View, Modal, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Modal, StyleSheet, Platform } from 'react-native';
 
 const BasicModalContainer = ({ children }) => {
   return (
     <View style={styles.bootstrapModal}>
-      <View style={styles.modalContent}>
+      <View style={styles.modalContent} onKeyDown={(event) => {
+        // console.log(event);
+        // event.preventDefault();
+        // event.stopPropagation();
+      }}>
         {children}
       </View>
     </View>
