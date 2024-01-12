@@ -1,16 +1,18 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, isAllOf, isAnyOf } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import dayjs, { Dayjs } from 'dayjs';
 import { TableData } from '../../common/components/CommonTable/CommonTable';
 
 import { InitalTableData } from '../../mock-data/mock-table-data';
-import { Brand } from '../../mock-data/mock-brands-data';
 import { DropdownItem } from '../../common/components/CommonDropdown/CommonDropdown';
 import { CustomerType } from '../../types/CustomerTypes';
 import { LocationType } from '../../types/LocationType';
 import { SeasonType } from '../../types/SeasonTypes';
 import { ProductSelection } from '../../screens/Inventory/reservations/EquipmentDropdown';
-import { PriceTableArrayType, PriceTableType } from '../../types/PriceTableTypes';
+import { PriceTableDataResponseType, PriceTableType } from '../../types/PriceTableTypes';
+import { PriceGroupArrayType, PriceGroupType } from '../../types/PriceGroupType';
+import { PriceLogicType } from '../../types/PriceLogicTypes';
+import { BrandType } from '../../types/BrandType';
 
 export interface ReservationState {
   startDate: string | null;
@@ -23,13 +25,18 @@ export interface ReservationState {
   durationHours: number;
   formattedDuration: string;
   reservationTableData: TableData;
-  selectedBrand: DropdownItem<Brand> | null;
+  selectedBrand: DropdownItem<BrandType> | null;
   selectedCustomer: DropdownItem<CustomerType> | null;
   selectedLocation: DropdownItem<LocationType> | null;
   selectedSeason: SeasonType | null;
   selectedProducts: Array<ProductSelection>;
-  priceGroups: PriceTableArrayType;
-  priceGroupsMap: Record<number, PriceTableType>;
+  priceTables: Array<PriceTableType>;
+  priceTablesMap: Record<number, PriceTableType>;
+  priceGroups: PriceGroupArrayType;
+  priceGroupsMap: Record<number, PriceGroupType>;
+  priceLogic: Array<PriceLogicType> | null;
+  selectedPriceTable: PriceTableType | null;
+  priceTableData: PriceTableDataResponseType | null;
 }
 
 const initialState: ReservationState = {
@@ -50,6 +57,11 @@ const initialState: ReservationState = {
   selectedProducts: [],
   priceGroups: [],
   priceGroupsMap: {},
+  priceTables: [],
+  priceTablesMap: {},
+  priceLogic: null,
+  selectedPriceTable: null,
+  priceTableData: null,
 };
 
 export const reservationSlice = createSlice({
@@ -106,8 +118,12 @@ export const reservationSlice = createSlice({
       state.reservationTableData.tableData = tableData;
     },
     selectBrand: (state, action: PayloadAction<{ brand: DropdownItem<Brand> }>) => {
-      const { brand } = action.payload;
+      const { brand } = { ...action.payload };
+
+      console.log('selecting brand', brand);
       state.selectedBrand = brand;
+
+      console.log('selected brand result', state.selectedBrand);
     },
     selectCustomer: (state, action: PayloadAction<{ customer: DropdownItem<CustomerType> }>) => {
       const { customer } = action.payload;
@@ -127,18 +143,76 @@ export const reservationSlice = createSlice({
       const { products } = action.payload;
       state.selectedProducts = products;
     },
-    loadPriceGroups: (state, action: PayloadAction<{ priceGroups: PriceTableArrayType }>) => {
-      const { priceGroups } = action.payload;
-      state.priceGroups = priceGroups;
+    loadPriceTables: (state, action: PayloadAction<{ priceTables: Array<PriceTableType> }>) => {
+      const { priceTables } = action.payload;
+      state.priceTables = priceTables;
 
       const result: Record<number, PriceTableType> = {};
 
-      Object.values(priceGroups).forEach((item) => {
+      priceTables.forEach((item) => {
+        result[item.id] = item;
+      });
+
+      state.priceTablesMap = result;
+    },
+    loadPriceGroups: (state, action: PayloadAction<{ priceGroups: Array<PriceGroupType> }>) => {
+      const { priceGroups } = action.payload;
+      state.priceGroups = priceGroups;
+
+      const result: Record<number, PriceGroupType> = {};
+
+      priceGroups.forEach((item) => {
         result[item.id] = item;
       });
 
       state.priceGroupsMap = result;
     },
+    loadPriceLogic: (state, action: PayloadAction<{ priceLogic: Array<PriceLogicType> }>) => {
+      const { priceLogic } = action.payload;
+      state.priceLogic = priceLogic;
+    },
+    loadPriceTableData: (
+      state,
+      action: PayloadAction<{ tableData: PriceTableDataResponseType }>
+    ) => {
+      const { tableData } = action.payload;
+      state.priceTableData = tableData;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addMatcher(isAnyOf(selectBrand, selectSeason, loadPriceLogic, loadPriceTables), (state) => {
+        const { selectedSeason, priceLogic, selectedBrand, priceTablesMap } = state;
+        if (
+          !selectedSeason?.season ||
+          !selectedBrand?.value?.brand ||
+          !priceLogic.length ||
+          !Object.keys(priceTablesMap).length
+        ) {
+          console.log({
+            selectedSeason: selectedSeason?.season,
+            selectedBrand: selectedBrand?.value?.brand,
+            priceTablesMap: Object.keys(priceTablesMap).length,
+          });
+
+          return;
+        }
+
+        const selectedTable = priceLogic.find((item) => {
+          return (
+            item.brand.brand === selectedBrand.value.brand &&
+            item.season.season === selectedSeason.season
+          );
+        })?.priceTable;
+
+        if (selectedTable) {
+          state.selectedPriceTable = selectedTable;
+        }
+      })
+      // You can chain calls, or have separate `builder.addCase()` lines each time
+      // You can match a range of action types
+      // and provide a default case if no other handlers matched
+      .addDefaultCase((state, action) => {});
   },
 });
 
@@ -151,7 +225,10 @@ export const {
   selectLocation,
   selectSeason,
   selectProducts,
+  loadPriceTables,
   loadPriceGroups,
+  loadPriceLogic,
+  loadPriceTableData,
 } = reservationSlice.actions;
 
 export default reservationSlice.reducer;

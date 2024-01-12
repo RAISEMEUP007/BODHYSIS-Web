@@ -11,10 +11,11 @@ export interface EquipmentTableProductType {
   product: string;
   quantity: number;
   category: string;
+  line: string;
   size: string;
   brand: string;
   season: string;
-  price: string;
+  price: number;
   status: string | null;
   customer: string;
 }

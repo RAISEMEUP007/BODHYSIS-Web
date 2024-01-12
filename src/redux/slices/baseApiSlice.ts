@@ -2,11 +2,19 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_URL } from '../../common/constants/AppConstants';
 import { ProductCategoriesArrayType } from '../../types/ProductCategoryType';
 import { BrandsArrayType } from '../../types/BrandType';
-import { ProductResponseType, ProductRquestType } from '../../types/ProductTypes';
+import { ProductResponseType, ProductRequestType } from '../../types/ProductTypes';
 import { CustomersResponseType } from '../../types/CustomerTypes';
 import { LocationsResponseType } from '../../types/LocationType';
 import { SeasonsArrayType } from '../../types/SeasonTypes';
-import { PriceTableArrayType } from '../../types/PriceTableTypes';
+import {
+  PriceTableType,
+  PriceTablesDataRequestType,
+  PriceTableDataResponseType,
+  PriceTableHeaderDataResponseType,
+  PriceTableHeaderDataViewModel,
+} from '../../types/PriceTableTypes';
+import { PriceLogicType } from '../../types/PriceLogicTypes';
+import { PriceGroupArrayType } from '../../types/PriceGroupType';
 
 type JSON = Record<string, any> | undefined;
 
@@ -38,15 +46,27 @@ export const baseApiSlice = createApi({
         method: 'GET',
       }),
     }),
-    requestPriceTables: builder.query<PriceTableArrayType, JSON>({
+    requestPriceTables: builder.query<Array<PriceTableType>, JSON>({
       query: () => ({
         url: '/price/getpricetablesdata',
+        method: 'GET',
+      }),
+    }),
+    requestPriceGroups: builder.query<PriceGroupArrayType, JSON>({
+      query: () => ({
+        url: '/price/getpricegroupsdata',
         method: 'GET',
       }),
     }),
     requestBrands: builder.query<BrandsArrayType, JSON>({
       query: () => ({
         url: '/price/getbrandsdata',
+        method: 'GET',
+      }),
+    }),
+    requestProductQuantitiesByLine: builder.query<Record<number, number>, JSON>({
+      query: () => ({
+        url: '/product/getquantitiesbyline',
         method: 'GET',
       }),
     }),
@@ -62,22 +82,61 @@ export const baseApiSlice = createApi({
         method: 'GET',
       }),
     }),
-    requestProducts: builder.mutation<ProductResponseType, ProductRquestType>({
+    requestPriceTableHeaderData: builder.query<
+      Array<PriceTableHeaderDataViewModel>,
+      PriceTablesDataRequestType
+    >({
+      query: ({ table_id }) => ({
+        url: `/price/getheaderdata/${table_id}`,
+        method: 'GET',
+      }),
+      transformResponse: (
+        response: PriceTableHeaderDataResponseType
+      ): Array<PriceTableHeaderDataViewModel> => {
+        return response.map((item, index) => {
+          return {
+            ...item,
+            index,
+          };
+        });
+      },
+    }),
+    requestPriceTableData: builder.query<PriceTableDataResponseType, PriceTablesDataRequestType>({
+      query: ({ table_id }) => ({
+        url: `/price/gettabledata/${table_id}`,
+        method: 'GET',
+      }),
+    }),
+    requestPriceLogicData: builder.query<Array<PriceLogicType>, JSON>({
       query: () => ({
+        url: `/price/getpricelogicdata/`,
+        method: 'GET',
+      }),
+    }),
+    requestProducts: builder.query<ProductResponseType, ProductRequestType>({
+      query: ({ category_id, family_id, line_id }) => ({
         url: '/product/getproductsdata/',
         method: 'POST',
+        body: { category_id, family_id, line_id },
       }),
     }),
   }),
 });
 
+// price/getpricelogicdata
+
 export const {
   useRequestReservationTypesQuery,
   useRequestProductCategoriesQuery,
   useRequestBrandsQuery,
-  useRequestProductsMutation,
+  useRequestProductsQuery,
   useRequestCustomersQuery,
   useRequestLocationsQuery,
   useRequestSeasonsQuery,
   useRequestPriceTablesQuery,
+  useRequestProductQuantitiesByLineQuery,
+  useRequestPriceGroupsQuery,
+  useRequestPriceLogicDataQuery,
+  useRequestPriceTableDataQuery,
+  useRequestPriceTableHeaderDataQuery,
 } = baseApiSlice;

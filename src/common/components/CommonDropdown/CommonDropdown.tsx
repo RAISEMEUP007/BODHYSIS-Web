@@ -5,6 +5,7 @@ import { Colors } from '../../constants/Colors';
 export type DropdownItem<T> = {
   value: T;
   displayLabel: string;
+  secondaryLabel?: string;
   index: number;
 };
 
@@ -69,6 +70,17 @@ export const CommonDropdown = ({
     );
   };
 
+  const renderSecondaryLabel = (item: DropdownItem<any>) => {
+    if (!item.secondaryLabel) {
+      return null;
+    }
+    return (
+      <View style={styles.secondaryLabel}>
+        <Text style={{ flex: 1 }}>{item.secondaryLabel}</Text>
+      </View>
+    );
+  };
+
   const renderData = () => {
     if (!isOpen) {
       return null;
@@ -95,6 +107,7 @@ export const CommonDropdown = ({
               }}
             >
               <Text style={{ textAlign, flex: 1 }}>{item.displayLabel}</Text>
+              {renderSecondaryLabel(item)}
             </Pressable>
           );
         })}
@@ -142,5 +155,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: Colors.Neutrals.LIGHT_GRAY,
     padding: 10,
+  },
+  secondaryLabel: {
+    flex: 1,
+    flexDirection: 'row',
   },
 });

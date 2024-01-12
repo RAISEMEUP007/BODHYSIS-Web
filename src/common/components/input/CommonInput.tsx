@@ -38,7 +38,7 @@ const CommonInput = ({
             setInternalValue(text);
             onChangeText && onChangeText(text);
           }}
-          value={value ?? internalValue ?? ''}
+          value={value ?? internalValue ?? null}
           onFocus={onFocus}
           style={styles.textInput}
           placeholder={placeholder}

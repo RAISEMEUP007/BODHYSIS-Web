@@ -21,11 +21,12 @@ export const MOCK_NAMES = ['BEACH CRUISER', 'MOUNTAIN', 'ELECTRIC', 'BMX', 'ROAD
 export const InitalTableData: TableData = {
   rowHeader: [
     'Item ID',
-    'Item, Name',
+    'Name',
     'Quantity',
     'Category',
     'Size',
     'Brand',
+    'Line',
     'Season',
     'Price',
     'Status',
@@ -39,6 +40,7 @@ export const InitalTableData: TableData = {
     'category',
     'size',
     'brand',
+    'line',
     'season',
     'price',
     'status',
@@ -51,8 +53,9 @@ export const createEquipmentTableProduct = (
   brand: string,
   quantity: number,
   season: string,
-  price: string,
-  customer: string
+  price: number,
+  customer: string,
+  line: string
 ) => {
   const result: EquipmentTableProductType = {
     id: product?.id,
@@ -61,6 +64,7 @@ export const createEquipmentTableProduct = (
     category: product.category.category,
     size: product.size,
     brand: brand,
+    line: line,
     season: season,
     price: price,
     status: product.status ?? 'UNKNOWN',

@@ -1,12 +1,7 @@
 import { DropdownData } from '../common/components/CommonDropdown/CommonDropdown';
 import { BOH_ID } from '../common/components/CommonTable/CommonTable';
 
-export type Brand = {
-  name: string;
-  id: BOH_ID;
-};
-
-export const MockBrandsData: DropdownData<Brand> = [
+export const MockBrandsData: DropdownData<BrandType> = [
   {
     index: 0,
     value: {
