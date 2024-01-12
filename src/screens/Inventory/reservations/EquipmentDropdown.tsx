@@ -8,6 +8,7 @@ import {
   CommonDropdown,
   DropdownData,
 } from '../../../common/components/CommonDropdown/CommonDropdown';
+import { PriceTableHeaderDataResponseType } from '../../../types/PriceTableTypes';
 
 export interface ProductSelection {
   name: string;
@@ -21,6 +22,7 @@ type EquipmentMap = Record<number, ProductSelection>;
 interface Props {
   onChange: (data: Array<ProductSelection>) => void;
   products: ProductResponseType;
+  headerData: PriceTableHeaderDataResponseType;
 }
 
 export const EquipmentDropdown = ({ onChange, products }: Props) => {
@@ -35,7 +37,8 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
     const result: DropdownData<ProductType> = products.map((item, index) => {
       return {
         value: item,
-        displayLabel: item.product,
+        displayLabel: `Product - ${item.product}`,
+        secondaryLabel: `Line - ${item.line.line}\nProduct - ${item.product}`,
         index,
       };
     });
@@ -52,7 +55,7 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
 
   const [productsToRender, setProductsToRender] = useState<Array<ProductSelection>>([
     {
-      name: '',
+      name: null,
       quantity: 0,
       index: 0,
       value: null,
@@ -62,7 +65,7 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
   const createNewItem = useCallback(() => {
     const result: Array<ProductSelection> = [...productsToRender];
     result.push({
-      name: '',
+      name: null,
       quantity: 0,
       index: currentIndex + 1,
       value: null,
@@ -97,23 +100,30 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
             }}
             style={styles.selectButton}
           >
-            <Text>{dataMap[index] ? dataMap[index].name : 'Select A Product'}</Text>
+            <Text>{dataMap[index]?.name ? dataMap[index].name : 'Select A Product'}</Text>
           </Pressable>
         </View>
         <View style={styles.quantityContainer}>
           <CommonInput
+            placeholder="Enter"
             onChangeText={(value) => {
               const map = { ...dataMap };
               if (!map[index]) {
                 map[index] = {
-                  name: '',
+                  name: null,
                   index: index,
                   quantity: 0,
                   value: null,
                 };
-              } else {
-                map[index].quantity = value;
               }
+              // validate quantity is numeric
+              // default to quanity of 1 if not numeric
+              if (Number.isInteger(parseInt(value)) && value > 0) {
+                map[index].quantity = value;
+              } else {
+                map[index].quantity = 1;
+              }
+
               setDataMap(map);
             }}
             containerStyle={{ marginTop: 20 }}
@@ -142,7 +152,7 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
           <Text style={styles.modalTitle}>{'Select A Product'}</Text>
           <ScrollView style={styles.modalScroll}>
             <CommonDropdown
-              textAlign={'center'}
+              textAlign={'left'}
               onItemSelected={(item) => {
                 const map = { ...dataMap };
                 if (!map[currentIndex]) {
@@ -155,6 +165,7 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
                   setShowModal(false);
                 } else {
                   map[currentIndex].name = item.displayLabel;
+                  map[currentIndex].value = item.value;
                   setShowModal(false);
                 }
                 setDataMap(map);

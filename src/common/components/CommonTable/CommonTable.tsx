@@ -44,11 +44,9 @@ export const CommonTable = ({ data, width = 600, rowContainerStyle, onTapRemove 
   }, [data]);
 
   const renderHeader = () => {
-    console.log('render header');
     return (
       <View key={'header'} style={styles.header}>
         {rowHeader.map((column, colIndex) => {
-          console.log(' HEADER key', `header_${colIndex.toString()}`);
           return (
             <View key={`header_${colIndex.toString()}`} style={styles.column}>
               <Text style={styles.headerText}>{column}</Text>
@@ -60,11 +58,9 @@ export const CommonTable = ({ data, width = 600, rowContainerStyle, onTapRemove 
   };
 
   const renderRow = ({ item, index }: { item: ObjectWithId; index: number }) => {
-    console.log('render row', item);
     return (
       <View key={'row' + index.toString()} style={styles.row}>
         {keys.map((key, index) => {
-          console.log('should render row with key', key);
           const renderDeleteButton = () => {
             if (index > 0) {
               return null;

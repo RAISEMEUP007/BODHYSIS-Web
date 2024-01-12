@@ -24,14 +24,22 @@ import {
   selectSeason,
   selectProducts,
   loadPriceGroups,
+  loadPriceTables,
+  loadPriceLogic,
+  loadPriceTableData,
 } from '../../../redux/slices/reservationSlice';
 import {
   useRequestBrandsQuery,
   useRequestCustomersQuery,
   useRequestLocationsQuery,
-  useRequestProductsMutation,
   useRequestSeasonsQuery,
   useRequestPriceTablesQuery,
+  useRequestProductQuantitiesByLineQuery,
+  useRequestPriceGroupsQuery,
+  useRequestPriceLogicDataQuery,
+  useRequestPriceTableDataQuery,
+  useRequestPriceTableHeaderDataQuery,
+  useRequestProductsQuery,
 } from '../../../redux/slices/baseApiSlice';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import {
@@ -44,6 +52,12 @@ import { BrandType } from '../../../types/BrandType';
 import { CustomerType } from '../../../types/CustomerTypes';
 import { LocationType } from '../../../types/LocationType';
 import { MOCK_PROUCT_DATA } from '../../../mock-data/mock-products-data';
+import { PriceGroupType } from '../../../types/PriceGroupType';
+import {
+  PriceTableHeaderData,
+  PriceTableHeaderDataViewModel,
+  PriceTableType,
+} from '../../../types/PriceTableTypes';
 
 interface Props {
   openInventory: () => void;
@@ -58,7 +72,7 @@ const CreateReservation = ({ openInventory }: Props) => {
 
   const { showAlert } = useAlertModal();
 
-  const [selectedSlot, setSelectedSlot] = useState<SlotType | null>();
+  const [selectedSlot, setSelectedSlot] = useState<PriceTableHeaderDataViewModel | null>();
 
   const [showDetails, setShowDetails] = useState(false);
 
@@ -68,19 +82,67 @@ const CreateReservation = ({ openInventory }: Props) => {
 
   const [equipmentData, setEquipmentData] = useState<Array<ProductSelection>>([]);
 
-  const { data: brandsData } = useRequestBrandsQuery({});
+  const { data: brandsData } = useRequestBrandsQuery(
+    {},
+    {
+      refetchOnFocus: true,
+    }
+  );
 
-  const { data: customersData } = useRequestCustomersQuery({});
+  const { data: customersData } = useRequestCustomersQuery(
+    {},
+    {
+      refetchOnFocus: true,
+    }
+  );
 
-  const { data: locationsData } = useRequestLocationsQuery({});
+  const { data: locationsData } = useRequestLocationsQuery(
+    {},
+    {
+      refetchOnFocus: true,
+    }
+  );
 
-  const { data: seasonsData } = useRequestSeasonsQuery({});
+  const { data: seasonsData } = useRequestSeasonsQuery(
+    {},
+    {
+      refetchOnFocus: true,
+    }
+  );
 
-  const { data: priceGroupData } = useRequestPriceTablesQuery({});
+  const { data: priceTablesData } = useRequestPriceTablesQuery(
+    {},
+    {
+      refetchOnFocus: true,
+    }
+  );
 
-  const [requestProducts, productsData] = useRequestProductsMutation();
+  const { data: productQuantitiesData } = useRequestProductQuantitiesByLineQuery(
+    {},
+    {
+      refetchOnFocus: true,
+    }
+  );
 
-  console.log('priceGroupData', priceGroupData);
+  const { data: priceGroupsData } = useRequestPriceGroupsQuery(
+    {},
+    {
+      refetchOnFocus: true,
+    }
+  );
+
+  const { data: priceLogicData } = useRequestPriceLogicDataQuery(
+    {},
+    {
+      refetchOnFocus: true,
+    }
+  );
+
+  const { data: productsData } = useRequestProductsQuery({
+    category_id: 0,
+    family_id: 0,
+    line_id: 0,
+  });
 
   const dispatch = useDispatch();
 
@@ -99,10 +161,41 @@ const CreateReservation = ({ openInventory }: Props) => {
   ]);
 
   useEffect(() => {
-    if (priceGroupData) {
-      dispatch(loadPriceGroups({ priceGroups: priceGroupData }));
+    if (priceTablesData) {
+      dispatch(loadPriceTables({ priceTables: priceTablesData }));
     }
-  }, [priceGroupData]);
+  }, [priceTablesData]);
+
+  useEffect(() => {
+    if (priceGroupsData) {
+      dispatch(loadPriceGroups({ priceGroups: priceGroupsData }));
+    }
+  }, [priceGroupsData]);
+
+  useEffect(() => {
+    if (priceLogicData) {
+      dispatch(loadPriceLogic({ priceLogic: priceLogicData }));
+    }
+  }, [priceLogicData]);
+
+  useEffect(() => {}, [reservationInfo.priceTableData]);
+
+  // TODO: Combine into single hook
+  const { data: priceTableData } = useRequestPriceTableDataQuery(
+    {
+      table_id: reservationInfo?.selectedPriceTable?.id,
+    },
+    { skip: !reservationInfo?.selectedPriceTable?.id, refetchOnFocus: true }
+  );
+
+  const { data: priceTableHeaderData, isLoading: priceTableHeaderDataLoading } =
+    useRequestPriceTableHeaderDataQuery(
+      { table_id: reservationInfo?.selectedPriceTable?.id },
+      {
+        skip: !reservationInfo?.selectedPriceTable?.id,
+        refetchOnFocus: true,
+      }
+    );
 
   useEffect(() => {
     if (seasonsData?.length > 0) {
@@ -115,12 +208,10 @@ const CreateReservation = ({ openInventory }: Props) => {
   }, [seasonsData]);
 
   useEffect(() => {
-    requestProducts({
-      category_id: 0,
-      family_id: 0,
-      line_id: 0,
-    });
-  }, []);
+    if (priceTableData) {
+      dispatch(loadPriceTableData({ tableData: priceTableData }));
+    }
+  }, [priceTableData]);
 
   const brandsDropdownData = useMemo(() => {
     if (!brandsData?.length) {
@@ -178,7 +269,7 @@ const CreateReservation = ({ openInventory }: Props) => {
       return null;
     }
 
-    const milisecondsToAdd = selectedSlot.value;
+    const milisecondsToAdd = selectedSlot.milliseconds ?? 1000 * 60 * 60 * 24;
 
     const startDay = dayjs(selectedDate);
 
@@ -220,6 +311,19 @@ const CreateReservation = ({ openInventory }: Props) => {
               placeholder="Select A Location"
               title={'Location'}
             />
+            <CommonDropdown
+              containerStyle={{
+                paddingTop: 20,
+                marginBottom: 40,
+              }}
+              width={250}
+              onItemSelected={(item) => {
+                dispatch(selectBrand({ brand: item as any }));
+              }}
+              data={brandsDropdownData}
+              placeholder="Select A Brand"
+              title={'Brands'}
+            />
             <View style={{ ...styles.timeContainer, width: 400 }}>
               <CommonInput
                 onChangeText={() => {}}
@@ -242,20 +346,9 @@ const CreateReservation = ({ openInventory }: Props) => {
               onSelect={(item) => {
                 setSelectedSlot(item);
               }}
-              items={DEFAULT_TIME_SLOTS}
+              items={priceTableHeaderData}
             />
-            <CommonDropdown
-              containerStyle={{
-                paddingTop: 20,
-              }}
-              width={250}
-              onItemSelected={(item) => {
-                dispatch(selectBrand({ brand: item as any }));
-              }}
-              data={brandsDropdownData}
-              placeholder="Select A Brand"
-              title={'Brands'}
-            />
+
             <Text style={styles.equipmentText}>{'Equipment'}</Text>
             <CommonButton
               onPress={() => {}}
@@ -267,7 +360,7 @@ const CreateReservation = ({ openInventory }: Props) => {
 
             {reservationInfo.selectedBrand && (
               <EquipmentDropdown
-                products={MOCK_PROUCT_DATA}
+                products={productsData ?? []}
                 onChange={(data) => {
                   setEquipmentData(data);
                 }}
@@ -290,17 +383,48 @@ const CreateReservation = ({ openInventory }: Props) => {
                       endDate: endDate && endDate.toISOString(),
                     })
                   );
+
                   equipmentData.map((item) => {
-                    const product = createEquipmentTableProduct(
-                      item.value,
-                      reservationInfo.selectedBrand.displayLabel,
-                      item.quantity,
-                      reservationInfo.selectedSeason.season,
-                      '0.00',
-                      reservationInfo.selectedCustomer.displayLabel
-                    );
-                    dispatch(addProduct(product));
-                    dispatch(selectProducts({ products: equipmentData }));
+                    const maxQuantity: number = productQuantitiesData[item.value.line_id];
+
+                    const data = reservationInfo.priceTableData;
+
+                    const priceGroup = data[item.value.product];
+
+                    let price = 0;
+
+                    if (priceGroup && selectedSlot) {
+                      const prices: Array<number> = priceGroup.data ?? [];
+                      price = prices[selectedSlot.index];
+                    }
+
+                    /*
+                    if (reservationInfo.priceGroupsMap) {
+                      const priceGroup: PriceGroupType =
+                        reservationInfo.priceGroupsMap[item.value.price_group_id];
+
+                      
+                    }
+                    */
+
+                    if (item.quantity > maxQuantity) {
+                      showAlert(
+                        'warning',
+                        `There are only ${maxQuantity} items available for this product.`
+                      );
+                    } else {
+                      const product = createEquipmentTableProduct(
+                        item.value,
+                        reservationInfo.selectedBrand.displayLabel,
+                        item.quantity,
+                        reservationInfo.selectedSeason.season,
+                        price,
+                        reservationInfo.selectedCustomer.displayLabel,
+                        item.value.line.line
+                      );
+                      dispatch(addProduct(product));
+                      dispatch(selectProducts({ products: equipmentData }));
+                    }
                   });
                 }}
                 label={'Create Reservation'}

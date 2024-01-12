@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Colors } from '../constants/Colors';
+import { PriceTableHeaderData, PriceTableHeaderDataViewModel } from '../../types/PriceTableTypes';
 
 export type SlotType = {
   label: string;
@@ -8,8 +9,8 @@ export type SlotType = {
 };
 
 interface Props {
-  items: Array<SlotType>;
-  onSelect: (slot: SlotType) => void;
+  items: Array<PriceTableHeaderDataViewModel>;
+  onSelect: (slot: PriceTableHeaderData) => void;
 }
 
 const Slots = ({ items, onSelect }: Props) => {
@@ -23,13 +24,13 @@ const Slots = ({ items, onSelect }: Props) => {
           items.map((slot) => {
             return (
               <TouchableOpacity
-                key={slot.label}
+                key={slot.header}
                 onPress={() => {
                   onSelect(slot);
                 }}
                 style={styles.slot}
               >
-                <Text>{slot.label}</Text>
+                <Text>{slot.header}</Text>
               </TouchableOpacity>
             );
           })}
@@ -60,9 +61,8 @@ const styles = StyleSheet.create({
     borderRadius: 2.5,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 31,
-    width: 42,
     marginRight: 10,
+    padding: 7.5,
   },
   slotText: {
     backgroundColor: Colors.Neutrals.DARK,

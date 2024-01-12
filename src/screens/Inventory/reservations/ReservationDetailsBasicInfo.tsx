@@ -23,11 +23,13 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding }: Props) => {
     <View style={styles.container}>
       <View style={styles.rowInputContainer}>
         <CommonInput
+          onChangeText={(_) => {}}
           width={inputWidth}
           value={reservationInfo.startDayjs.format(DEFAULT_DATE_FORMAT)}
           title="Start Date"
         />
         <CommonInput
+          onChangeText={(_) => {}}
           width={inputWidth}
           value={reservationInfo.startDayjs.format(DEFAULT_TIME_FORMAT)}
           title="Start Time"
@@ -35,11 +37,13 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding }: Props) => {
       </View>
       <View style={styles.rowInputContainer}>
         <CommonInput
+          onChangeText={(_) => {}}
           width={inputWidth}
           value={reservationInfo.endDayjs.format(DEFAULT_DATE_FORMAT)}
           title="End Date"
         />
         <CommonInput
+          onChangeText={(_) => {}}
           width={inputWidth}
           value={reservationInfo.endDayjs.format(DEFAULT_TIME_FORMAT)}
           title="End Time"
@@ -47,26 +51,44 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding }: Props) => {
       </View>
       <View style={styles.rowInputContainer}>
         <CommonInput
+          onChangeText={(_) => {}}
           width={inputWidth}
           title="Billable Days"
           value={reservationInfo.billableDays.toString()}
         />
         <CommonInput
+          onChangeText={(_) => {}}
           width={inputWidth}
           value={reservationInfo.formattedDuration}
           title="Reservation Days"
         />
       </View>
       <View style={styles.rowInputContainer}>
-        <CommonInput width={inputWidth} placeholder="Discount Code" title="Discount Code" />
-        <CommonInput width={inputWidth} placeholder="Custom Price" title="Custom Price" />
+        <CommonInput
+          onChangeText={(_) => {}}
+          width={inputWidth}
+          placeholder="Discount Code"
+          title="Discount Code"
+        />
+        <CommonInput
+          onChangeText={(_) => {}}
+          width={inputWidth}
+          placeholder="Custom Price"
+          title="Custom Price"
+        />
       </View>
       <View style={styles.rowInputContainer}>
-        <CommonInput width={inputWidth} placeholder="Referer" title="Referer" />
         <CommonInput
+          onChangeText={(_) => {}}
+          width={inputWidth}
+          placeholder="Referer"
+          title="Referer"
+        />
+        <CommonInput
+          onChangeText={(_) => {}}
           value={
-            reservationInfo.selectedProducts.length > 0
-              ? reservationInfo.selectedProducts[0].value.price_group_id
+            reservationInfo.selectedProducts?.length > 0
+              ? reservationInfo.selectedProducts[0].value?.price_group_id?.toString()
               : ''
           }
           width={inputWidth}
@@ -76,12 +98,14 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding }: Props) => {
       </View>
       <View style={styles.rowInputContainer}>
         <CommonInput
+          onChangeText={(_) => {}}
           value={reservationInfo.selectedLocation?.value?.location}
           width={inputWidth}
           placeholder="Start Location"
           title="Start Location"
         />
         <CommonInput
+          onChangeText={(_) => {}}
           value={reservationInfo.selectedLocation?.value?.location}
           width={inputWidth}
           placeholder="End Location"

@@ -34,4 +34,4 @@ export type ProductType = {
 
 export type ProductResponseType = Array<ProductType>;
 
-export type ProductRquestType = { category_id: number; family_id: number; line_id: number };
+export type ProductRequestType = { category_id: number; family_id: number; line_id: number };
