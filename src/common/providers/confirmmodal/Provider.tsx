@@ -1,27 +1,27 @@
 import React, { useState } from 'react';
-import { ConfirmModalContext } from './Context'
+import { ConfirmModalContext } from './Context';
 
 export const ConfirmModalProvider = ({ children }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalText, setModalText] = useState('Are you sure?');
-  const [confirmAction, setConfirmAction] = useState(null);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [modalText, setModalText] = useState<string>('Are you sure?');
+  const [confirmAction, setConfirmAction] = useState<() => void>(() => {});
 
-  const showConfirm = (text, action) => {
+  const showConfirm = (text: string, action: () => void) => {
     setModalText(text);
     setConfirmAction(() => action);
     setModalVisible(true);
-  }
+  };
 
   const closeConfirm = () => {
     setModalVisible(false);
-  }
-  
+  };
+
   const confirm = () => {
     if (confirmAction) {
       confirmAction();
     }
     closeConfirm();
-  }
+  };
 
   const confirmValues = {
     modalVisible,
@@ -29,12 +29,10 @@ export const ConfirmModalProvider = ({ children }) => {
     showConfirm,
     closeConfirm,
     confirm,
-    setModalVisible
-  }
+    setModalVisible,
+  };
 
   return (
-    <ConfirmModalContext.Provider value={confirmValues}>
-      {children}
-    </ConfirmModalContext.Provider>
+    <ConfirmModalContext.Provider value={confirmValues}>{children}</ConfirmModalContext.Provider>
   );
 };

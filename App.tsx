@@ -4,7 +4,7 @@ import { StyleSheet, Linking, View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { Providers } from './src/common/providers/Providers';
+import { Providers } from './src/common/providers/ModalProviders';
 import { AlertModals } from './src/common/components/alertmodal/AlertModals';
 
 import { AuthScreen, Home, RecoverPass, ChangePass } from './src/screens';

@@ -1,22 +1,22 @@
-import React, { useContext, useState } from 'react';
-import { AlertModalContext } from './Context'
+import React, { useState } from 'react';
+import { AlertModalContext } from './Context';
 
 export const AlertModalProvider = ({ children }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalType, setModalType] = useState('');
-  const [modalText, setModalText] = useState('');
-  const [modalBtnText, setModalBtnText] = useState('');
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<string>('');
+  const [modalText, setModalText] = useState<string>('');
+  const [modalBtnText, setModalBtnText] = useState<string>('');
 
-  const showAlert = (mode, text, btntxt) => {
+  const showAlert = (mode: string, text: string, btntxt: string) => {
     setModalType(mode);
     setModalText(text);
     setModalBtnText(btntxt);
     setModalVisible(true);
-  }
+  };
 
   const closeAlert = () => {
     setModalVisible(false);
-  }
+  };
 
   const alertValues = {
     modalVisible,
@@ -25,12 +25,8 @@ export const AlertModalProvider = ({ children }) => {
     modalBtnText,
     showAlert,
     closeAlert,
-    setModalVisible
-  }
+    setModalVisible,
+  };
 
-  return (
-    <AlertModalContext.Provider value={alertValues}>
-      {children}
-    </AlertModalContext.Provider>
-  );
+  return <AlertModalContext.Provider value={alertValues}>{children}</AlertModalContext.Provider>;
 };

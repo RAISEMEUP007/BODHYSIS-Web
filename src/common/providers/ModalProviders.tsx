@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { AlertModalProvider } from './alertmodal/Provider';
 import { ConfirmModalProvider } from './confirmmodal/Provider';
 import { BasicModalProvider } from './basicmodal/Provider';
@@ -8,10 +8,8 @@ export const Providers = ({ children }) => (
   <ScreenSizesProvider>
     <AlertModalProvider>
       <ConfirmModalProvider>
-        <BasicModalProvider>
-          {children}
-        </BasicModalProvider>
+        <BasicModalProvider>{children}</BasicModalProvider>
       </ConfirmModalProvider>
     </AlertModalProvider>
   </ScreenSizesProvider>
-)
+);
