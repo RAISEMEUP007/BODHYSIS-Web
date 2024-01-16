@@ -3,7 +3,7 @@ import { TextSmallSize } from '../../../../../common/constants/Fonts';
 
 export const productCategoryModalstyles = StyleSheet.create({
   label: {
-    color: "#555",
+    color: '#555',
     fontSize: TextSmallSize,
   },
   input: {

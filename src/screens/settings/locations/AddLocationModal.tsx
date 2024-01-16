@@ -1,5 +1,14 @@
-import React, {useState, useEffect} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform,  Picker } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  View,
+  ActivityIndicator,
+  Platform,
+  Picker,
+} from 'react-native';
 
 import { createLocation, updateLocation } from '../../../api/Settings';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
@@ -12,7 +21,6 @@ import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { LocationModalstyles } from './styles/LocationModalStyle';
 
 const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger, closeModal }) => {
-
   const isUpdate = Location ? true : false;
 
   const { showAlert } = useAlertModal();
@@ -23,15 +31,15 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
   const [DescriptionTxt, setDescriptionTxt] = useState('');
 
   useEffect(() => {
-    if(Platform.OS === 'web'){
+    if (Platform.OS === 'web') {
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();
         }
       };
-  
+
       window.addEventListener('keydown', handleKeyDown);
-  
+
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
       };
@@ -42,17 +50,17 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
     if (!LocationTxt.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
-    } 
-    
-    setIsLoading(true);
-    
-    const payload  = {
-      location: LocationTxt,
-      description : DescriptionTxt,
     }
 
+    setIsLoading(true);
+
+    const payload = {
+      location: LocationTxt,
+      description: DescriptionTxt,
+    };
+
     const handleResponse = (jsonRes, status) => {
-      switch(status){
+      switch (status) {
         case 201:
           showAlert('success', jsonRes.message);
           setUpdateLocationsTrigger(true);
@@ -62,16 +70,16 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
           setValidMessage(jsonRes.error);
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           closeModal();
           break;
       }
       setIsLoading(false);
     };
-    
+
     if (isUpdate) {
-      payload.id = Location.id
+      payload.id = Location.id;
       updateLocation(payload, (jsonRes, status) => {
         handleResponse(jsonRes, status);
       });
@@ -95,18 +103,26 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
       animationType="none"
       transparent={true}
       visible={isModalVisible}
-      onShow={()=>{
+      onShow={() => {
         setValidMessage('');
-        setLocationTxt(Location?Location.location:'');
-        setDescriptionTxt(Location?Location.description:'');
+        setLocationTxt(Location ? Location.location : '');
+        setDescriptionTxt(Location ? Location.description : '');
       }}
     >
       <BasicModalContainer>
-        <ModalHeader label={"Location"} closeModal={closeModal} />
-        <ModalBody>      
+        <ModalHeader label={'Location'} closeModal={closeModal} />
+        <ModalBody>
           <Text style={styles.label}>Location</Text>
-          <TextInput style={styles.input} placeholder="Location" value={LocationTxt} onChangeText={setLocationTxt} placeholderTextColor="#ccc" onBlur={checkInput} onSubmitEditing={AddLocationButtonHandler}/>
-          {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
+          <TextInput
+            style={styles.input}
+            placeholder="Location"
+            value={LocationTxt}
+            onChangeText={setLocationTxt}
+            placeholderTextColor="#ccc"
+            onBlur={checkInput}
+            onSubmitEditing={AddLocationButtonHandler}
+          />
+          {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
           {/* <Text style={styles.label}>Description</Text>
           <TextInput
             style={[styles.input, styles.textarea]}
@@ -120,7 +136,7 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={AddLocationButtonHandler}>
-            <Text style={styles.addButton}>{isUpdate?"Update":"Add"}</Text>
+            <Text style={styles.addButton}>{isUpdate ? 'Update' : 'Add'}</Text>
           </TouchableOpacity>
         </ModalFooter>
       </BasicModalContainer>

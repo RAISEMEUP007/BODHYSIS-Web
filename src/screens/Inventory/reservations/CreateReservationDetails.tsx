@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 import { Colors } from '../../../common/constants/Colors';
@@ -27,25 +27,18 @@ export const CreateReservationDetails = ({ goBack }: Props) => {
   const [productID, setProductID] = useState('');
 
   const navigation = useNavigation();
+
   return (
     <BasicLayout goBack={goBack} screenName={'Create Reservation'} navigation={navigation}>
       <ScrollView style={styles.container}>
         <View style={styles.topContainer}>
-          <ReservationDetailsBasicInfo width={400} inputPadding={20} />
+          <ReservationDetailsBasicInfo goBack={goBack} width={400} inputPadding={20} />
           <ReservationTabView />
         </View>
         <View style={styles.bottomContainer}>
           <View style={styles.leftBottomContainer}>
             <ProductIdInput
               onSubmit={() => {
-                /*
-                showAlert('success', 'Added item to product.');
-                const product = createMockProductFromId(
-                  productID,
-                  reservationInfo?.selectedSeason?.season
-                );
-                dispatch(addProduct(product));
-                */
                 setProductID('');
               }}
               onChangeText={(value) => {

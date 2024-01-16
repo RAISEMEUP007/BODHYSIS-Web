@@ -1,7 +1,16 @@
-import React, {useState, useEffect, useRef, forwardRef} from 'react';
-import { Text, TextInput, TouchableOpacity, View, ActivityIndicator, Platform, Image, Picker } from 'react-native';
+import React, { useState, useEffect, useRef, forwardRef } from 'react';
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+  Platform,
+  Image,
+  Picker,
+} from 'react-native';
 
-import DatePicker from "react-datepicker";
+import DatePicker from 'react-datepicker';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -21,13 +30,19 @@ import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { discountCodeModalstyles } from './styles/DiscountCodeModalStyle';
 
-const AddExclusionModal = ({ isModalVisible, DiscountCodeId, Exclusion, setUpdateExclusionTrigger, closeModal }) => {
+const AddExclusionModal = ({
+  isModalVisible,
+  DiscountCodeId,
+  Exclusion,
+  setUpdateExclusionTrigger,
+  closeModal,
+}) => {
   const isUpdate = Exclusion ? true : false;
   const inputRef = useRef(null);
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
 
   const [types, setTypes] = useState([
     { id: 1, type: 'Percentage' },
@@ -38,15 +53,15 @@ const AddExclusionModal = ({ isModalVisible, DiscountCodeId, Exclusion, setUpdat
   const [todate, setTo] = useState(null);
 
   useEffect(() => {
-    if(Platform.OS === 'web'){
+    if (Platform.OS === 'web') {
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();
         }
       };
-  
+
       window.addEventListener('keydown', handleKeyDown);
-  
+
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
       };
@@ -54,26 +69,26 @@ const AddExclusionModal = ({ isModalVisible, DiscountCodeId, Exclusion, setUpdat
   }, [closeModal]);
 
   useEffect(() => {
-    if(isModalVisible){
-      if(Exclusion){
+    if (isModalVisible) {
+      if (Exclusion) {
         setDescription(Exclusion.description);
-        if(Exclusion.from_date) setFrom(new Date(Exclusion.from_date));
-        if(Exclusion.to_date) setTo(new Date(Exclusion.to_date));
-      }else{
+        if (Exclusion.from_date) setFrom(new Date(Exclusion.from_date));
+        if (Exclusion.to_date) setTo(new Date(Exclusion.to_date));
+      } else {
         setDescription('');
         setFrom(null);
         setTo(null);
       }
-    }else{
+    } else {
     }
-  }, [isModalVisible])
+  }, [isModalVisible]);
 
   const AddButtonHandler = () => {
     if (!Description.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
-    } 
-    
+    }
+
     setIsLoading(true);
 
     const payload = {
@@ -81,10 +96,10 @@ const AddExclusionModal = ({ isModalVisible, DiscountCodeId, Exclusion, setUpdat
       description: Description,
       from_date: fromdate,
       to_date: todate,
-    }
+    };
 
     const handleResponse = (jsonRes, status) => {
-      switch(status){
+      switch (status) {
         case 201:
           showAlert('success', jsonRes.message);
           setUpdateExclusionTrigger(true);
@@ -94,14 +109,14 @@ const AddExclusionModal = ({ isModalVisible, DiscountCodeId, Exclusion, setUpdat
           setValidMessage(jsonRes.error);
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           closeModal();
           break;
       }
       setIsLoading(false);
     };
-    
+
     if (isUpdate) {
       payload.id = Exclusion.id;
       updateExclusion(payload, (jsonRes, status) => {
@@ -114,9 +129,9 @@ const AddExclusionModal = ({ isModalVisible, DiscountCodeId, Exclusion, setUpdat
     }
   };
 
-  const closeModalhandler = () =>{
+  const closeModalhandler = () => {
     closeModal();
-  }
+  };
 
   const checkInput = () => {
     if (!Description.trim()) {
@@ -127,16 +142,21 @@ const AddExclusionModal = ({ isModalVisible, DiscountCodeId, Exclusion, setUpdat
   };
 
   const CustomInput = forwardRef(({ value, onChange, onClick }, ref) => (
-    <input onClick={onClick} onChange={onChange} ref={ref} style={styles.input} value={value}>
-    </input>
+    <input
+      onClick={onClick}
+      onChange={onChange}
+      ref={ref}
+      style={styles.input}
+      value={value}
+    ></input>
   ));
 
   const renderDatePicker = (selectedDate, onChangeHandler) => {
     return (
-      <View style={{marginRight: 20}}>
+      <View style={{ marginRight: 20 }}>
         <DatePicker
           selected={selectedDate}
-          onChange={date => onChangeHandler(date)}
+          onChange={(date) => onChangeHandler(date)}
           customInput={<CustomInput />}
           peekNextMonth
           showMonthDropdown
@@ -150,17 +170,30 @@ const AddExclusionModal = ({ isModalVisible, DiscountCodeId, Exclusion, setUpdat
     );
   };
 
-  return (
-    isModalVisible?(
-    <View style={{position:'absolute', width:"100%", height:"100%"}}>
+  return isModalVisible ? (
+    <View style={{ position: 'absolute', width: '100%', height: '100%' }}>
       <BasicModalContainer>
-        <ModalHeader label={"Discount Code Exclusion"} closeModal={()=>{ closeModalhandler();}} />
-        <ModalBody style={{zIndex:10}}>
-          <View style={{width:400}}>
+        <ModalHeader
+          label={'Discount Code Exclusion'}
+          closeModal={() => {
+            closeModalhandler();
+          }}
+        />
+        <ModalBody style={{ zIndex: 10 }}>
+          <View style={{ width: 400 }}>
             <Text style={styles.label}>Description</Text>
-            <TextInput style={styles.input} placeholder="Description" value={Description} multiline={true} numberOfLines={5} onChangeText={setDescription} placeholderTextColor="#ccc" onBlur={checkInput}/>
-            {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
-            <View style={{zIndex:10,}}>
+            <TextInput
+              style={styles.input}
+              placeholder="Description"
+              value={Description}
+              multiline={true}
+              numberOfLines={5}
+              onChangeText={setDescription}
+              placeholderTextColor="#ccc"
+              onBlur={checkInput}
+            />
+            {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
+            <View style={{ zIndex: 10 }}>
               <Text style={styles.label}>From</Text>
               {Platform.OS == 'web' && renderDatePicker(fromdate, setFrom)}
             </View>
@@ -169,9 +202,9 @@ const AddExclusionModal = ({ isModalVisible, DiscountCodeId, Exclusion, setUpdat
           </View>
         </ModalBody>
         <ModalFooter>
-          <View style={{flexDirection:'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity onPress={AddButtonHandler}>
-              <Text style={styles.addButton}>{isUpdate?"Update":"Add"}</Text>
+              <Text style={styles.addButton}>{isUpdate ? 'Update' : 'Add'}</Text>
             </TouchableOpacity>
           </View>
         </ModalFooter>
@@ -181,9 +214,8 @@ const AddExclusionModal = ({ isModalVisible, DiscountCodeId, Exclusion, setUpdat
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       )}
-    </View >)
-    :null
-  );
+    </View>
+  ) : null;
 };
 
 const styles = discountCodeModalstyles;

@@ -1,5 +1,14 @@
-import React, {useState, useEffect} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform,  Picker } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  View,
+  ActivityIndicator,
+  Platform,
+  Picker,
+} from 'react-native';
 
 import { createManufacture, updateManufacture } from '../../../api/Settings';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
@@ -11,8 +20,12 @@ import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { ManufactureModalstyles } from './styles/ManufactureModalStyle';
 
-const AddManufactureModal = ({ isModalVisible, Manufacture, setUpdateManufacturesTrigger, closeModal }) => {
-
+const AddManufactureModal = ({
+  isModalVisible,
+  Manufacture,
+  setUpdateManufacturesTrigger,
+  closeModal,
+}) => {
   const isUpdate = Manufacture ? true : false;
 
   const { showAlert } = useAlertModal();
@@ -23,15 +36,15 @@ const AddManufactureModal = ({ isModalVisible, Manufacture, setUpdateManufacture
   const [DescriptionTxt, setDescriptionTxt] = useState('');
 
   useEffect(() => {
-    if(Platform.OS === 'web'){
+    if (Platform.OS === 'web') {
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();
         }
       };
-  
+
       window.addEventListener('keydown', handleKeyDown);
-  
+
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
       };
@@ -42,17 +55,17 @@ const AddManufactureModal = ({ isModalVisible, Manufacture, setUpdateManufacture
     if (!ManufactureTxt.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
-    } 
-    
-    setIsLoading(true);
-    
-    const payload  = {
-      manufacture: ManufactureTxt,
-      description : DescriptionTxt,
     }
 
+    setIsLoading(true);
+
+    const payload = {
+      manufacture: ManufactureTxt,
+      description: DescriptionTxt,
+    };
+
     const handleResponse = (jsonRes, status) => {
-      switch(status){
+      switch (status) {
         case 201:
           showAlert('success', jsonRes.message);
           setUpdateManufacturesTrigger(true);
@@ -62,16 +75,16 @@ const AddManufactureModal = ({ isModalVisible, Manufacture, setUpdateManufacture
           setValidMessage(jsonRes.error);
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           closeModal();
           break;
       }
       setIsLoading(false);
     };
-    
+
     if (isUpdate) {
-      payload.id = Manufacture.id
+      payload.id = Manufacture.id;
       updateManufacture(payload, (jsonRes, status) => {
         handleResponse(jsonRes, status);
       });
@@ -95,18 +108,25 @@ const AddManufactureModal = ({ isModalVisible, Manufacture, setUpdateManufacture
       animationType="none"
       transparent={true}
       visible={isModalVisible}
-      onShow={()=>{
+      onShow={() => {
         setValidMessage('');
-        setManufactureTxt(Manufacture?Manufacture.manufacture:'');
-        setDescriptionTxt(Manufacture?Manufacture.description:'');
+        setManufactureTxt(Manufacture ? Manufacture.manufacture : '');
+        setDescriptionTxt(Manufacture ? Manufacture.description : '');
       }}
     >
       <BasicModalContainer>
-        <ModalHeader label={"Manufacture"} closeModal={closeModal} />
-        <ModalBody>      
+        <ModalHeader label={'Manufacture'} closeModal={closeModal} />
+        <ModalBody>
           <Text style={styles.label}>Manufacture</Text>
-          <TextInput style={styles.input} placeholder="Manufacture" value={ManufactureTxt} onChangeText={setManufactureTxt} placeholderTextColor="#ccc" onBlur={checkInput}/>
-          {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
+          <TextInput
+            style={styles.input}
+            placeholder="Manufacture"
+            value={ManufactureTxt}
+            onChangeText={setManufactureTxt}
+            placeholderTextColor="#ccc"
+            onBlur={checkInput}
+          />
+          {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
           <Text style={styles.label}>Description</Text>
           <TextInput
             style={[styles.input, styles.textarea]}
@@ -120,7 +140,7 @@ const AddManufactureModal = ({ isModalVisible, Manufacture, setUpdateManufacture
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={AddManufactureButtonHandler}>
-            <Text style={styles.addButton}>{isUpdate?"Update":"Add"}</Text>
+            <Text style={styles.addButton}>{isUpdate ? 'Update' : 'Add'}</Text>
           </TouchableOpacity>
         </ModalFooter>
       </BasicModalContainer>

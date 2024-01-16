@@ -15,14 +15,14 @@ export const seasonsStyle = StyleSheet.create({
     marginBottom: 16,
     overflow: 'hidden',
   },
-  
+
   toolbar: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
   },
- 
+
   buttonText: {
     fontSize: TextSmallSize,
     color: 'white',
@@ -31,7 +31,7 @@ export const seasonsStyle = StyleSheet.create({
   button: {
     backgroundColor: '#007bff',
     borderRadius: 4,
-    paddingVertical: TextSmallSize/2,
+    paddingVertical: TextSmallSize / 2,
     paddingHorizontal: TextSmallSize,
     margin: 5,
   },
@@ -39,7 +39,7 @@ export const seasonsStyle = StyleSheet.create({
     fontSize: TextdefaultSize,
     margin: 5,
     paddingVertical: 5,
-  }, 
+  },
   select: {
     margin: 5,
     fontSize: TextdefaultSize,
@@ -102,25 +102,25 @@ export const seasonsStyle = StyleSheet.create({
   },
   focusedCell: {
     borderWidth: 1,
-    borderColor: "#ccc",
-  }, 
+    borderColor: '#ccc',
+  },
   cellcheckbox: {
     width: 60,
     textAlign: 'center',
     alignItems: 'center',
   },
   groupCell: {
-    width: 250, 
+    width: 250,
     paddingHorizontal: 12,
-    justifyContent: "center",
-    textAlign:'left',
+    justifyContent: 'center',
+    textAlign: 'left',
   },
   headerIcon: {
-    position:'absolute', 
-    left:0, 
-    width:'100%', 
-    alignItems:'center', 
-    top:-26
+    position: 'absolute',
+    left: 0,
+    width: '100%',
+    alignItems: 'center',
+    top: -26,
   },
   deleteRow: {
     position: 'absolute',

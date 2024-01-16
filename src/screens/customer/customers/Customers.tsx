@@ -1,8 +1,16 @@
-import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions, TextInput } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  ScrollView,
+  View,
+  Text,
+  TouchableHighlight,
+  TouchableOpacity,
+  Dimensions,
+  TextInput,
+} from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { getCustomersData, deleteCustomer, } from '../../../api/Customer';
+import { getCustomersData, deleteCustomer } from '../../../api/Customer';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
@@ -12,9 +20,9 @@ import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 import { customersStyle } from './styles/CustomersStyle';
 import AddCustomerModal from './AddCustomerModal';
 
-const Customers = ({navigation, openInventory}) => {
+const Customers = ({ navigation, openInventory }) => {
   const screenHeight = Dimensions.get('window').height;
-  
+
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -25,34 +33,43 @@ const Customers = ({navigation, openInventory}) => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [searchKey, setSearchKey] = useState('');
 
-  const openAddCustomerModal = () => { setAddModalVisible(true); setSelectedCustomer(null)}
-  const closeAddCustomerModal = () => { setAddModalVisible(false); setSelectedCustomer(null)}
-  const editCustomer = (index) => { setSelectedCustomer(tableData[index]); setAddModalVisible(true); }
+  const openAddCustomerModal = () => {
+    setAddModalVisible(true);
+    setSelectedCustomer(null);
+  };
+  const closeAddCustomerModal = () => {
+    setAddModalVisible(false);
+    setSelectedCustomer(null);
+  };
+  const editCustomer = (index) => {
+    setSelectedCustomer(tableData[index]);
+    setAddModalVisible(true);
+  };
 
-  useEffect(()=>{
-    if(updateCustomerTrigger == true) getTable();
+  useEffect(() => {
+    if (updateCustomerTrigger == true) getTable();
   }, [updateCustomerTrigger]);
 
   const removeCustomer = (id) => {
-    showConfirm(msgStr('deleteConfirmStr'), ()=>{
-      deleteCustomer(id, (jsonRes, status, error)=>{
-        switch(status){
+    showConfirm(msgStr('deleteConfirmStr'), () => {
+      deleteCustomer(id, (jsonRes, status, error) => {
+        switch (status) {
           case 200:
             setUpdateCustomerTrigger(true);
             showAlert('success', jsonRes.message);
             break;
           default:
-            if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+            if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
             else showAlert('error', msgStr('unknownError'));
             break;
         }
-      })
+      });
     });
-  }
+  };
 
   const getTable = () => {
     getCustomersData((jsonRes, status, error) => {
-      switch(status){
+      switch (status) {
         case 200:
           setUpdateCustomerTrigger(false);
           setTableData(jsonRes);
@@ -61,22 +78,22 @@ const Customers = ({navigation, openInventory}) => {
           showAlert('error', msgStr('serverError'));
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           break;
       }
-    })
-  }
-  
+    });
+  };
+
   const renderTableData = () => {
     let filteredData;
-    if (searchKey.trim() === "") {
+    if (searchKey.trim() === '') {
       filteredData = tableData;
     } else {
       filteredData = tableData.filter((item) => {
         return (
           Object.values(item).some((value) => {
-            if (value && typeof value === "string") {
+            if (value && typeof value === 'string') {
               return value.toLowerCase().includes(searchKey.trim().toLowerCase());
             }
             return false;
@@ -89,12 +106,21 @@ const Customers = ({navigation, openInventory}) => {
 
     console.log();
     const rows = [];
-    if(filteredData.length > 0){
+    if (filteredData.length > 0) {
       filteredData.map((item, index) => {
-        rows.push( 
+        rows.push(
           <View key={index} style={styles.tableRow}>
-            <View style={[styles.cell, {width: 200}]}>
-              <Text>{new Date(item.createdAt).toLocaleString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true })}</Text>
+            <View style={[styles.cell, { width: 200 }]}>
+              <Text>
+                {new Date(item.createdAt).toLocaleString('en-US', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true,
+                })}
+              </Text>
             </View>
             <View style={styles.cell}>
               <Text>{item.first_name}</Text>
@@ -102,7 +128,7 @@ const Customers = ({navigation, openInventory}) => {
             <View style={styles.cell}>
               <Text>{item.last_name}</Text>
             </View>
-            <View style={[styles.cell, {width: 200}]}>
+            <View style={[styles.cell, { width: 200 }]}>
               <Text>{item.email}</Text>
             </View>
             <View style={[styles.cell]}>
@@ -118,29 +144,34 @@ const Customers = ({navigation, openInventory}) => {
               <Text>{item.home_location_tbl.location}</Text>
             </View>
             <View style={[styles.IconCell]}>
-              <TouchableOpacity onPress={()=>{editCustomer(index)}}>
+              <TouchableOpacity
+                onPress={() => {
+                  editCustomer(index);
+                }}
+              >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
             </View>
             <View style={[styles.IconCell]}>
-              <TouchableOpacity onPress={()=>{removeCustomer(item.id)}}>
+              <TouchableOpacity
+                onPress={() => {
+                  removeCustomer(item.id);
+                }}
+              >
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />
               </TouchableOpacity>
             </View>
           </View>
         );
       });
-    }else{
-      <></>
+    } else {
+      <></>;
     }
     return <>{rows}</>;
   };
-  
+
   return (
-    <BasicLayout
-      navigation = {navigation}
-      screenName={'Customers'}
-    >
+    <BasicLayout navigation={navigation} screenName={'Customers'}>
       <ScrollView horizontal={true}>
         <View style={styles.container}>
           <View style={styles.toolbar}>
@@ -159,28 +190,28 @@ const Customers = ({navigation, openInventory}) => {
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader, {width: 200}]}>{"Created"}</Text>
-              <Text style={[styles.columnHeader]}>{"First name"}</Text>
-              <Text style={[styles.columnHeader]}>{"Last name"}</Text>
-              <Text style={[styles.columnHeader, {width: 200}]}>{"Email"}</Text>
-              <Text style={[styles.columnHeader]}>{"Phone number"}</Text>
-              <Text style={[styles.columnHeader]}>{"Mobile number"}</Text>
-              <Text style={[styles.columnHeader]}>{"Country"}</Text>
-              <Text style={[styles.columnHeader]}>{"Location"}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
+              <Text style={[styles.columnHeader, { width: 200 }]}>{'Created'}</Text>
+              <Text style={[styles.columnHeader]}>{'First name'}</Text>
+              <Text style={[styles.columnHeader]}>{'Last name'}</Text>
+              <Text style={[styles.columnHeader, { width: 200 }]}>{'Email'}</Text>
+              <Text style={[styles.columnHeader]}>{'Phone number'}</Text>
+              <Text style={[styles.columnHeader]}>{'Mobile number'}</Text>
+              <Text style={[styles.columnHeader]}>{'Country'}</Text>
+              <Text style={[styles.columnHeader]}>{'Location'}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
             </View>
-            <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
               {renderTableData()}
             </ScrollView>
           </View>
         </View>
       </ScrollView>
-      
+
       <AddCustomerModal
         isModalVisible={isAddModalVisible}
         Customer={selectedCustomer}
-        setUpdateCustomerTrigger = {setUpdateCustomerTrigger} 
+        setUpdateCustomerTrigger={setUpdateCustomerTrigger}
         closeModal={closeAddCustomerModal}
       />
     </BasicLayout>

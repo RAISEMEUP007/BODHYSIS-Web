@@ -66,18 +66,18 @@ export const exclusionStyle = StyleSheet.create({
   },
   focusedCell: {
     borderWidth: 1,
-    borderColor: "#ccc",
-  }, 
+    borderColor: '#ccc',
+  },
   cellcheckbox: {
     width: 60,
     textAlign: 'center',
     alignItems: 'center',
   },
   groupCell: {
-    width: 250, 
+    width: 250,
     paddingHorizontal: 12,
-    justifyContent: "center",
-    textAlign:'left',
+    justifyContent: 'center',
+    textAlign: 'left',
   },
   deleteRow: {
     position: 'absolute',

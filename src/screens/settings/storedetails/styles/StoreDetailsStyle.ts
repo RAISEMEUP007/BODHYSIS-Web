@@ -4,7 +4,7 @@ import { TextdefaultSize } from '../../../../common/constants/Fonts';
 
 export const StoreDetailsStyle = StyleSheet.create({
   label: {
-    color: "#555",
+    color: '#555',
     fontSize: TextSmallSize,
   },
   inputGroup: {
@@ -15,7 +15,11 @@ export const StoreDetailsStyle = StyleSheet.create({
     borderRadius: 5,
   },
   inputGroupLabel: {
-    fontSize: 14, fontWeight:'bold', margin:8, marginBottom: 12, marginLeft:12
+    fontSize: 14,
+    fontWeight: 'bold',
+    margin: 8,
+    marginBottom: 12,
+    marginLeft: 12,
   },
   inputRow: {
     flexDirection: 'row',
@@ -32,7 +36,7 @@ export const StoreDetailsStyle = StyleSheet.create({
     paddingHorizontal: 8,
   },
   inputDisable: {
-    borderColor: "#ddd",
+    borderColor: '#ddd',
   },
   select: {
     height: 40,
@@ -42,7 +46,7 @@ export const StoreDetailsStyle = StyleSheet.create({
     marginBottom: 10,
     padding: 8,
   },
-  selectOption:{
+  selectOption: {
     fontSize: 20,
   },
   deliveryButton: {
@@ -83,7 +87,7 @@ export const StoreDetailsStyle = StyleSheet.create({
   },
   imagePicker: {
     position: 'relative',
-    width: "100%",
+    width: '100%',
     height: 280,
     backgroundColor: 'white',
     justifyContent: 'center',
@@ -125,5 +129,5 @@ export const StoreDetailsStyle = StyleSheet.create({
   },
   textarea: {
     height: TextdefaultSize * 6,
-  }
+  },
 });

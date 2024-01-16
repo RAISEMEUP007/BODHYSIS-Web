@@ -1,5 +1,13 @@
-import React, {useState, useEffect, useRef} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  View,
+  ActivityIndicator,
+  Platform,
+} from 'react-native';
 
 import { savePriceTableCell } from '../../../api/Price';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
@@ -16,20 +24,20 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
 
   const [_priceTable, setPriceTable] = useState('');
 
   useEffect(() => {
-    if(Platform.OS === 'web'){
+    if (Platform.OS === 'web') {
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();
         }
       };
-  
+
       window.addEventListener('keydown', handleKeyDown);
-  
+
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
       };
@@ -46,12 +54,12 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
     if (!_priceTable.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
-    } 
+    }
 
     setIsLoading(true);
 
-    savePriceTableCell(-1, 'table_name', _priceTable, (jsonRes, status, error)=>{
-      switch(status){
+    savePriceTableCell(-1, 'table_name', _priceTable, (jsonRes, status, error) => {
+      switch (status) {
         case 200:
           showAlert('success', jsonRes.message);
           setUpdatePriceTableTrigger(true);
@@ -61,7 +69,7 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
           setValidMessage(jsonRes.error);
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           closeModal();
           break;
@@ -83,13 +91,16 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
       animationType="none"
       transparent={true}
       visible={isModalVisible}
-      onShow={()=>{setValidMessage(''); setPriceTable('')}}
+      onShow={() => {
+        setValidMessage('');
+        setPriceTable('');
+      }}
     >
       <BasicModalContainer>
-        <ModalHeader label={"Price Table"} closeModal={closeModal} />
+        <ModalHeader label={'Price Table'} closeModal={closeModal} />
         <ModalBody>
           <TextInput
-            ref={inputRef} 
+            ref={inputRef}
             style={styles.input}
             onChangeText={setPriceTable}
             value={_priceTable}
@@ -98,7 +109,7 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
             onSubmitEditing={handleAddButtonClick}
             onBlur={checkInput}
           />
-          {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
+          {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={handleAddButtonClick}>

@@ -1,8 +1,17 @@
-import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, TouchableWithoutFeedback, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  ScrollView,
+  View,
+  Text,
+  TouchableHighlight,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Dimensions,
+} from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import {getSeasonsData, saveSeasonCell, deleteSeason } from '../../../api/Price';
+import { getSeasonsData, saveSeasonCell, deleteSeason } from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
@@ -12,7 +21,7 @@ import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 import { seasonsStyle } from './styles/SeasonsStyle';
 import AddSeasonModal from './AddSeasonModal';
 
-const Seasons = ({navigation, openInventory}) => {
+const Seasons = ({ navigation, openInventory }) => {
   const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
@@ -20,63 +29,67 @@ const Seasons = ({navigation, openInventory}) => {
 
   const [tableData, setTableData] = useState([]);
   const [isAddModalVisible, setAddModalVisible] = useState(false);
-  const openAddSeasonModal = () => { setAddModalVisible(true); };
-  const closeAddSeasonModal = () => { setAddModalVisible(false); }
+  const openAddSeasonModal = () => {
+    setAddModalVisible(true);
+  };
+  const closeAddSeasonModal = () => {
+    setAddModalVisible(false);
+  };
   const [updateSeasonTrigger, setUpdateSeasonTrigger] = useState(true);
-  
-  useEffect(()=>{
-    if(updateSeasonTrigger == true) getTable();
+
+  useEffect(() => {
+    if (updateSeasonTrigger == true) getTable();
   }, [updateSeasonTrigger]);
 
   const changeCellData = (index, key, newVal) => {
-    const updatedTableData = [ ...tableData ];
+    const updatedTableData = [...tableData];
     updatedTableData[index] = {
       ...updatedTableData[index],
-      [key]: newVal 
+      [key]: newVal,
     };
     setTableData(updatedTableData);
-  };  
+  };
 
   const saveCellData = (id, column, value, callback) => {
-    value = value ? value : "";
+    value = value ? value : '';
 
-    saveSeasonCell(id, column, value, (jsonRes, status, error)=>{
-      switch(status){
+    saveSeasonCell(id, column, value, (jsonRes, status, error) => {
+      switch (status) {
         case 200:
-          if(callback) callback();
+          if (callback) callback();
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
           break;
         default:
           setUpdateSeasonTrigger(true);
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           break;
       }
     });
-  }
+  };
 
   const removeSeason = (id) => {
-    showConfirm(msgStr('deleteConfirmStr'), ()=>{
-      deleteSeason(id, (jsonRes, status, error)=>{
-        switch(status){
+    showConfirm(msgStr('deleteConfirmStr'), () => {
+      deleteSeason(id, (jsonRes, status, error) => {
+        switch (status) {
           case 200:
             setUpdateSeasonTrigger(true);
             showAlert('success', jsonRes.message);
             break;
           default:
-            if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+            if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
             else showAlert('error', msgStr('unknownError'));
             break;
         }
-      })
+      });
     });
-  }
+  };
 
   const getTable = () => {
     getSeasonsData((jsonRes, status, error) => {
-      switch(status){
+      switch (status) {
         case 200:
           setUpdateSeasonTrigger(false);
           setTableData(jsonRes);
@@ -85,34 +98,35 @@ const Seasons = ({navigation, openInventory}) => {
           showAlert('error', msgStr('serverError'));
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           break;
       }
-    })
-  }
+    });
+  };
 
   const resetActiveSeason = (id) => {
-    saveCellData(id, 'is_active', 1, ()=>{
+    saveCellData(id, 'is_active', 1, () => {
       tableData.map((item, index) => {
-        if(item.is_active){
-          saveCellData(item.id, 'is_active', 0, ()=>{
+        if (item.is_active) {
+          saveCellData(item.id, 'is_active', 0, () => {
             //setUpdateSeasonTrigger(true);
           });
         }
-      })
+      });
       setUpdateSeasonTrigger(true);
     });
-  }
+  };
 
   const renderTableData = () => {
     const rows = [];
-    if(tableData.length > 0){
+    if (tableData.length > 0) {
       tableData.map((item, index) => {
-        rows.push( 
+        rows.push(
           <View key={index} style={styles.tableRow}>
             <View style={styles.cell}>
-              <TextInput style={styles.cellInput}
+              <TextInput
+                style={styles.cellInput}
                 value={item.season}
                 onChangeText={(value) => {
                   changeCellData(index, 'season', value);
@@ -122,34 +136,47 @@ const Seasons = ({navigation, openInventory}) => {
                 }}
               />
               <View style={styles.deleteRow}>
-                <TouchableOpacity onPress={()=>{removeSeason(item.id)}}>
-                  <FontAwesome5 style={styles.deleteRow} size={TextMediumSize} name="times" color="black" />
+                <TouchableOpacity
+                  onPress={() => {
+                    removeSeason(item.id);
+                  }}
+                >
+                  <FontAwesome5
+                    style={styles.deleteRow}
+                    size={TextMediumSize}
+                    name="times"
+                    color="black"
+                  />
                 </TouchableOpacity>
               </View>
             </View>
             <View style={[styles.cell, styles.radioButtonCell]}>
-              <TouchableWithoutFeedback onPress={()=>{resetActiveSeason(item.id)}}>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  resetActiveSeason(item.id);
+                }}
+              >
                 <FontAwesome5
-                  name={item.is_active?'dot-circle':'circle'}
+                  name={item.is_active ? 'dot-circle' : 'circle'}
                   size={15}
-                  color={item.is_active ? "#007bff" : "#6c757d"}
+                  color={item.is_active ? '#007bff' : '#6c757d'}
                 />
               </TouchableWithoutFeedback>
             </View>
           </View>
         );
       });
-    }else{
-      <></>
+    } else {
+      <></>;
     }
     return <>{rows}</>;
   };
 
   return (
     <BasicLayout
-      navigation = {navigation}
-      goBack={()=>{
-        openInventory(null)
+      navigation={navigation}
+      goBack={() => {
+        openInventory(null);
       }}
       screenName={'Seasons'}
     >
@@ -162,17 +189,17 @@ const Seasons = ({navigation, openInventory}) => {
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
-              <Text style={styles.columnHeader}>{"Season"}</Text>
-              <Text style={[styles.columnHeader, styles.radioButtonCell]}>{"Active"}</Text>
+              <Text style={styles.columnHeader}>{'Season'}</Text>
+              <Text style={[styles.columnHeader, styles.radioButtonCell]}>{'Active'}</Text>
             </View>
-            <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
               {renderTableData()}
             </ScrollView>
           </View>
 
           <AddSeasonModal
             isModalVisible={isAddModalVisible}
-            setUpdateSeasonTrigger = {setUpdateSeasonTrigger} 
+            setUpdateSeasonTrigger={setUpdateSeasonTrigger}
             closeModal={closeAddSeasonModal}
           />
         </View>

@@ -4,8 +4,7 @@ import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 import { useNavigation } from '@react-navigation/native';
 import CommonInput from '../../../common/components/input/CommonInput';
 import { Colors } from '../../../common/constants/Colors';
-import Slots, { SlotType } from '../../../common/slots/slots';
-import { DEFAULT_TIME_SLOTS } from '../../../common/constants/DefaultTimeSlots';
+import Slots from '../../../common/slots/slots';
 import { CommonButton } from '../../../common/components/CommonButton/CommonButton';
 import { EquipmentDropdown, ProductSelection } from './EquipmentDropdown';
 import { Modalize } from 'react-native-modalize';
@@ -51,13 +50,7 @@ import { createEquipmentTableProduct } from '../../../mock-data/mock-table-data'
 import { BrandType } from '../../../types/BrandType';
 import { CustomerType } from '../../../types/CustomerTypes';
 import { LocationType } from '../../../types/LocationType';
-import { MOCK_PROUCT_DATA } from '../../../mock-data/mock-products-data';
-import { PriceGroupType } from '../../../types/PriceGroupType';
-import {
-  PriceTableHeaderData,
-  PriceTableHeaderDataViewModel,
-  PriceTableType,
-} from '../../../types/PriceTableTypes';
+import { PriceTableHeaderDataViewModel } from '../../../types/PriceTableTypes';
 
 interface Props {
   openInventory: () => void;
