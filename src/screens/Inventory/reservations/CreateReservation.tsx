@@ -60,7 +60,7 @@ const CreateReservation = ({ openInventory }: Props) => {
   const modalizeRef = useRef<Modalize>(null);
 
   const [selectedDate, setSelectedDate] = useState<Date>(
-    dayjs().set('hours', 0).set('minutes', 0).set('seconds', 0).set('milliseconds', 0).toDate()
+    dayjs().toDate()
   );
 
   const { showAlert } = useAlertModal();
@@ -253,8 +253,7 @@ const CreateReservation = ({ openInventory }: Props) => {
 
   const sanitizeDate = useCallback((date: Date) => {
     const day = dayjs(date);
-    const result = day.set('hours', 0).set('minutes', 0).set('seconds', 0).set('milliseconds', 0);
-    return result.toDate();
+    return day.toDate();
   }, []);
 
   const endDate = useMemo(() => {

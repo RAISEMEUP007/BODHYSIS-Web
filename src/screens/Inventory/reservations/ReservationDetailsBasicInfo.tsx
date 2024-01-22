@@ -81,6 +81,7 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding, goBack }: Pro
       start_location_id: selectedLocation.value.id,
       end_location_id: selectedLocation.value.id,
       promo_code: promoCode,
+      customer_id: reservationInfo.selectedCustomer.value.id
     });
   }, [valid, productsToSubmit, startDate, endDate, promoCode, selectedLocation]);
 

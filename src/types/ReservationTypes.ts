@@ -10,4 +10,5 @@ export type CreateReservationRequestType = {
   promo_code: string;
   start_location_id: number;
   end_location_id: number;
+  customer_id: number
 };
