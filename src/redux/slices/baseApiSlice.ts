@@ -133,7 +133,7 @@ export const baseApiSlice = createApi({
       }) => ({
         url: 'reservations/createreservation/',
         method: 'POST',
-        body: { products, start_time, end_time, promo_code, start_location_id, end_location_id, customer_id },
+        body: { products, start_date: start_time, end_date: end_time, promo_code, start_location_id, end_location_id, customer_id },
       }),
     }),
   }),
