@@ -1,5 +1,13 @@
-import React, {useState, useEffect, useRef} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  View,
+  ActivityIndicator,
+  Platform,
+} from 'react-native';
 
 import { clonePriceTableCell } from '../../../api/Price';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
@@ -11,25 +19,30 @@ import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { priceModalstyles } from './styles/PriceTableModalStyle';
 
-const ClonePriceTableModal = ({ cloneSource, isModalVisible, setUpdatePriceTableTrigger, closeModal }) => {
+const ClonePriceTableModal = ({
+  cloneSource,
+  isModalVisible,
+  setUpdatePriceTableTrigger,
+  closeModal,
+}) => {
   const inputRef = useRef(null);
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
 
   const [_priceTable, setPriceTable] = useState('');
 
   useEffect(() => {
-    if(Platform.OS === 'web'){
+    if (Platform.OS === 'web') {
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();
         }
       };
-  
+
       window.addEventListener('keydown', handleKeyDown);
-  
+
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
       };
@@ -46,12 +59,12 @@ const ClonePriceTableModal = ({ cloneSource, isModalVisible, setUpdatePriceTable
     if (!_priceTable.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
-    } 
+    }
 
     setIsLoading(true);
 
-    clonePriceTableCell(cloneSource.id, _priceTable, (jsonRes, status, error)=>{
-      switch(status){
+    clonePriceTableCell(cloneSource.id, _priceTable, (jsonRes, status, error) => {
+      switch (status) {
         case 200:
           showAlert('success', jsonRes.message);
           setUpdatePriceTableTrigger(true);
@@ -61,7 +74,7 @@ const ClonePriceTableModal = ({ cloneSource, isModalVisible, setUpdatePriceTable
           setValidMessage(jsonRes.error);
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           closeModal();
           break;
@@ -83,22 +96,25 @@ const ClonePriceTableModal = ({ cloneSource, isModalVisible, setUpdatePriceTable
       animationType="none"
       transparent={true}
       visible={isModalVisible}
-      onShow={()=>{setValidMessage(''); setPriceTable('')}}
+      onShow={() => {
+        setValidMessage('');
+        setPriceTable('');
+      }}
     >
       <BasicModalContainer>
-        <ModalHeader label={("Copy " + cloneSource.table_name)} closeModal={closeModal} />
+        <ModalHeader label={'Copy ' + cloneSource.table_name} closeModal={closeModal} />
         <ModalBody>
           <TextInput
-            ref={inputRef} 
+            ref={inputRef}
             style={styles.input}
             onChangeText={setPriceTable}
             value={_priceTable}
-            placeholder={"New Table Name"}
+            placeholder={'New Table Name'}
             placeholderTextColor="#ccc"
             onSubmitEditing={handleCloneButtonClick}
             onBlur={checkInput}
           />
-          {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
+          {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={handleCloneButtonClick}>

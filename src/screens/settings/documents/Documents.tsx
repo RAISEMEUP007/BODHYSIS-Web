@@ -1,8 +1,15 @@
-import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  ScrollView,
+  View,
+  Text,
+  TouchableHighlight,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { getDocumentsData, deleteDocument, } from '../../../api/Settings';
+import { getDocumentsData, deleteDocument } from '../../../api/Settings';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
@@ -12,9 +19,9 @@ import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 import { documentsStyle } from './styles/DocumentsStyle';
 import AddDocumentModal from './AddDocumentModal';
 
-const Documents = ({navigation, openInventory}) => {
+const Documents = ({ navigation, openInventory }) => {
   const screenHeight = Dimensions.get('window').height;
-  
+
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -24,34 +31,43 @@ const Documents = ({navigation, openInventory}) => {
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
 
-  const openAddDocumentModal = () => { setAddModalVisible(true); setSelectedDocument(null)}
-  const closeAddDocumentModal = () => { setAddModalVisible(false); setSelectedDocument(null)}
-  const editDocument = (index) => { setSelectedDocument(tableData[index]); setAddModalVisible(true); }
+  const openAddDocumentModal = () => {
+    setAddModalVisible(true);
+    setSelectedDocument(null);
+  };
+  const closeAddDocumentModal = () => {
+    setAddModalVisible(false);
+    setSelectedDocument(null);
+  };
+  const editDocument = (index) => {
+    setSelectedDocument(tableData[index]);
+    setAddModalVisible(true);
+  };
 
-  useEffect(()=>{
-    if(updateDocumentTrigger == true) getTable();
+  useEffect(() => {
+    if (updateDocumentTrigger == true) getTable();
   }, [updateDocumentTrigger]);
 
   const removeDocument = (id) => {
-    showConfirm(msgStr('deleteConfirmStr'), ()=>{
-      deleteDocument(id, (jsonRes, status, error)=>{
-        switch(status){
+    showConfirm(msgStr('deleteConfirmStr'), () => {
+      deleteDocument(id, (jsonRes, status, error) => {
+        switch (status) {
           case 200:
             setUpdateDocumentTrigger(true);
             showAlert('success', jsonRes.message);
             break;
           default:
-            if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+            if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
             else showAlert('error', msgStr('unknownError'));
             break;
         }
-      })
+      });
     });
-  }
+  };
 
   const getTable = () => {
     getDocumentsData((jsonRes, status, error) => {
-      switch(status){
+      switch (status) {
         case 200:
           setUpdateDocumentTrigger(false);
           setTableData(jsonRes);
@@ -60,53 +76,61 @@ const Documents = ({navigation, openInventory}) => {
           showAlert('error', msgStr('serverError'));
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           break;
       }
-    })
-  }
-  
+    });
+  };
+
   const renderTableData = () => {
     const rows = [];
-    if(tableData.length > 0){
+    if (tableData.length > 0) {
       tableData.map((item, index) => {
-        rows.push( 
+        rows.push(
           <View key={index} style={styles.tableRow}>
-            <View style={[styles.cell, {width: 300}]}>
+            <View style={[styles.cell, { width: 300 }]}>
               <Text>{item.document_name}</Text>
             </View>
             <View style={[styles.IconCell]}>
-              {(item.document_type == 0) ? (
-                <Text>{"INT"}</Text>
-              ):(
+              {item.document_type == 0 ? (
+                <Text>{'INT'}</Text>
+              ) : (
                 <FontAwesome5 size={TextMediumSize} name="file-pdf" color="black" />
               )}
             </View>
             <View style={[styles.IconCell]}>
-              <TouchableOpacity onPress={()=>{editDocument(index)}}>
+              <TouchableOpacity
+                onPress={() => {
+                  editDocument(index);
+                }}
+              >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
             </View>
             <View style={[styles.IconCell]}>
-              <TouchableOpacity onPress={()=>{removeDocument(item.id)}}>
+              <TouchableOpacity
+                onPress={() => {
+                  removeDocument(item.id);
+                }}
+              >
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />
               </TouchableOpacity>
             </View>
           </View>
         );
       });
-    }else{
-      <></>
+    } else {
+      <></>;
     }
     return <>{rows}</>;
   };
-  
+
   return (
     <BasicLayout
-      navigation = {navigation}
-      goBack={()=>{
-        openInventory(null)
+      navigation={navigation}
+      goBack={() => {
+        openInventory(null);
       }}
       screenName={'Documents'}
     >
@@ -119,22 +143,22 @@ const Documents = ({navigation, openInventory}) => {
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader, {width: 300}]}>{"Document Name"}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{"Type"}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{"Edit"}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{"DEL"}</Text>
+              <Text style={[styles.columnHeader, { width: 300 }]}>{'Document Name'}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{'Type'}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
             </View>
-            <ScrollView style={{ flex: 1, maxHeight: screenHeight-220 }}>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
               {renderTableData()}
             </ScrollView>
           </View>
         </View>
       </ScrollView>
-      
+
       <AddDocumentModal
         isModalVisible={isAddModalVisible}
         Document={selectedDocument}
-        setUpdateDocumentTrigger = {setUpdateDocumentTrigger} 
+        setUpdateDocumentTrigger={setUpdateDocumentTrigger}
         closeModal={closeAddDocumentModal}
       />
     </BasicLayout>

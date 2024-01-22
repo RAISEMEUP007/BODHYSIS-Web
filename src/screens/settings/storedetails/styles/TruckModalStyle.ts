@@ -3,7 +3,7 @@ import { TextSmallSize, TextdefaultSize } from '../../../../common/constants/Fon
 
 export const truckModalstyles = StyleSheet.create({
   label: {
-    color: "#555",
+    color: '#555',
     fontSize: TextSmallSize,
   },
   input: {
@@ -16,7 +16,7 @@ export const truckModalstyles = StyleSheet.create({
     width: 400,
   },
   inputDisable: {
-    borderColor: "#ddd",
+    borderColor: '#ddd',
   },
   select: {
     height: 40,
@@ -62,7 +62,7 @@ export const truckModalstyles = StyleSheet.create({
   },
   imagePicker: {
     position: 'relative',
-    width: "100%",
+    width: '100%',
     height: 280,
     backgroundColor: 'white',
     justifyContent: 'center',
@@ -103,5 +103,5 @@ export const truckModalstyles = StyleSheet.create({
   },
   textarea: {
     height: TextdefaultSize * 6,
-  }
+  },
 });

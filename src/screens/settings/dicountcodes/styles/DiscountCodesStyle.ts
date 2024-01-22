@@ -23,14 +23,14 @@ export const discountCodesStyle = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#bfbfbf',
   },
-  
+
   toolbar: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
   },
- 
+
   buttonText: {
     fontSize: TextSmallSize,
     color: 'white',
@@ -39,7 +39,7 @@ export const discountCodesStyle = StyleSheet.create({
   button: {
     backgroundColor: '#007bff',
     borderRadius: 4,
-    paddingVertical: TextSmallSize/2,
+    paddingVertical: TextSmallSize / 2,
     paddingHorizontal: TextSmallSize,
     margin: 5,
   },
@@ -47,7 +47,7 @@ export const discountCodesStyle = StyleSheet.create({
     fontSize: TextdefaultSize,
     margin: 5,
     paddingVertical: 5,
-  }, 
+  },
   select: {
     margin: 5,
     fontSize: TextdefaultSize,
@@ -104,29 +104,29 @@ export const discountCodesStyle = StyleSheet.create({
     width: 300,
     paddingHorizontal: 6,
     paddingVertical: 6,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   focusedCell: {
     borderWidth: 1,
-    borderColor: "#ccc",
-  }, 
+    borderColor: '#ccc',
+  },
   cellcheckbox: {
     width: 60,
     textAlign: 'center',
     alignItems: 'center',
   },
   groupCell: {
-    width: 250, 
+    width: 250,
     paddingHorizontal: 12,
-    justifyContent: "center",
-    textAlign:'left',
+    justifyContent: 'center',
+    textAlign: 'left',
   },
   headerIcon: {
-    position:'absolute', 
-    left:0, 
-    width:'100%', 
-    alignItems:'center', 
-    top:-26
+    position: 'absolute',
+    left: 0,
+    width: '100%',
+    alignItems: 'center',
+    top: -26,
   },
   deleteRow: {
     position: 'absolute',
@@ -150,10 +150,10 @@ export const discountCodesStyle = StyleSheet.create({
     justifyContent: 'center',
     textAlign: 'center',
   },
-  cellImage: { 
-    width: "100%", 
-    height: 50, 
-    resizeMode: 'contain'
+  cellImage: {
+    width: '100%',
+    height: 50,
+    resizeMode: 'contain',
   },
   familyRow: {
     marginLeft: 20,

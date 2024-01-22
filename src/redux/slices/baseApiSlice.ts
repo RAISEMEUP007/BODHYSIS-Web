@@ -15,6 +15,7 @@ import {
 } from '../../types/PriceTableTypes';
 import { PriceLogicType } from '../../types/PriceLogicTypes';
 import { PriceGroupArrayType } from '../../types/PriceGroupType';
+import { CreateReservationRequestType } from '../../types/ReservationTypes';
 
 type JSON = Record<string, any> | undefined;
 
@@ -120,10 +121,23 @@ export const baseApiSlice = createApi({
         body: { category_id, family_id, line_id },
       }),
     }),
+    requestCreateReservation: builder.mutation<JSON, CreateReservationRequestType>({
+      query: ({
+        products,
+        start_time,
+        end_time,
+        promo_code,
+        start_location_id,
+        end_location_id,
+        customer_id
+      }) => ({
+        url: 'reservations/createreservation/',
+        method: 'POST',
+        body: { products, start_time, end_time, promo_code, start_location_id, end_location_id, customer_id },
+      }),
+    }),
   }),
 });
-
-// price/getpricelogicdata
 
 export const {
   useRequestReservationTypesQuery,
@@ -139,4 +153,5 @@ export const {
   useRequestPriceLogicDataQuery,
   useRequestPriceTableDataQuery,
   useRequestPriceTableHeaderDataQuery,
+  useRequestCreateReservationMutation,
 } = baseApiSlice;

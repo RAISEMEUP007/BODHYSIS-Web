@@ -1,5 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  View,
+  ActivityIndicator,
+  Platform,
+} from 'react-native';
 
 import { saveSeasonCell } from '../../../api/Price';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
@@ -12,23 +20,22 @@ import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { priceModalstyles } from './styles/SeasonModalStyle';
 
 const AddSeasonModal = ({ isModalVisible, setUpdateSeasonTrigger, closeModal }) => {
-
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
 
   const [_season, setSeason] = useState('');
 
   useEffect(() => {
-    if(Platform.OS === 'web'){
+    if (Platform.OS === 'web') {
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();
         }
       };
-  
+
       window.addEventListener('keydown', handleKeyDown);
-  
+
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
       };
@@ -39,12 +46,12 @@ const AddSeasonModal = ({ isModalVisible, setUpdateSeasonTrigger, closeModal }) 
     if (!_season.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
-    } 
+    }
 
     setIsLoading(true);
 
-    saveSeasonCell(-1, 'season', _season, (jsonRes, status, error)=>{
-      switch(status){
+    saveSeasonCell(-1, 'season', _season, (jsonRes, status, error) => {
+      switch (status) {
         case 200:
           showAlert('success', jsonRes.message);
           setUpdateSeasonTrigger(true);
@@ -54,7 +61,7 @@ const AddSeasonModal = ({ isModalVisible, setUpdateSeasonTrigger, closeModal }) 
           setValidMessage(jsonRes.error);
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           closeModal();
           break;
@@ -76,10 +83,13 @@ const AddSeasonModal = ({ isModalVisible, setUpdateSeasonTrigger, closeModal }) 
       animationType="none"
       transparent={true}
       visible={isModalVisible}
-      onShow={()=>{setValidMessage(''); setSeason('')}}
+      onShow={() => {
+        setValidMessage('');
+        setSeason('');
+      }}
     >
       <BasicModalContainer>
-        <ModalHeader label={"Season"} closeModal={closeModal} />
+        <ModalHeader label={'Season'} closeModal={closeModal} />
         <ModalBody>
           <TextInput
             style={styles.input}
@@ -90,7 +100,7 @@ const AddSeasonModal = ({ isModalVisible, setUpdateSeasonTrigger, closeModal }) 
             onSubmitEditing={handleAddButtonClick}
             onBlur={checkInput}
           />
-          {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
+          {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={handleAddButtonClick}>

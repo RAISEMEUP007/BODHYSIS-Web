@@ -1,5 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  View,
+  ActivityIndicator,
+  Platform,
+} from 'react-native';
 
 import { updateGroup } from '../../../api/Price';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
@@ -11,24 +19,29 @@ import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { priceModalstyles } from './styles/PriceModalStyle';
 
-const UpdateGroupModal = ({ isModalVisible, tableId, groupName, setUpdateGroupTrigger, closeModal }) => {
-
+const UpdateGroupModal = ({
+  isModalVisible,
+  tableId,
+  groupName,
+  setUpdateGroupTrigger,
+  closeModal,
+}) => {
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
 
   const [_groupName, setGroupname] = useState(groupName);
 
   useEffect(() => {
-    if(Platform.OS === 'web'){
+    if (Platform.OS === 'web') {
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();
         }
       };
-  
+
       window.addEventListener('keydown', handleKeyDown);
-  
+
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
       };
@@ -39,15 +52,15 @@ const UpdateGroupModal = ({ isModalVisible, tableId, groupName, setUpdateGroupTr
     if (!_groupName.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
-    }else if(groupName == _groupName){
+    } else if (groupName == _groupName) {
       closeModal();
       return;
     }
 
     setIsLoading(true);
-    
-    updateGroup(groupName, _groupName, tableId, (jsonRes, status, error)=>{
-      switch(status){
+
+    updateGroup(groupName, _groupName, tableId, (jsonRes, status, error) => {
+      switch (status) {
         case 200:
           showAlert('success', jsonRes.message);
           setUpdateGroupTrigger(true);
@@ -57,7 +70,7 @@ const UpdateGroupModal = ({ isModalVisible, tableId, groupName, setUpdateGroupTr
           setValidMessage(jsonRes.error);
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           closeModal();
           break;
@@ -79,10 +92,13 @@ const UpdateGroupModal = ({ isModalVisible, tableId, groupName, setUpdateGroupTr
       animationType="none"
       transparent={true}
       visible={isModalVisible}
-      onShow={()=>{setValidMessage(''); setGroupname(groupName)}}
+      onShow={() => {
+        setValidMessage('');
+        setGroupname(groupName);
+      }}
     >
       <BasicModalContainer>
-        <ModalHeader label={"Update price group"} closeModal={closeModal} />
+        <ModalHeader label={'Update price group'} closeModal={closeModal} />
         <ModalBody>
           <TextInput
             style={styles.input}
@@ -93,7 +109,7 @@ const UpdateGroupModal = ({ isModalVisible, tableId, groupName, setUpdateGroupTr
             onSubmitEditing={handleAddButtonClick}
             onBlur={checkInput}
           />
-          {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
+          {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={handleAddButtonClick}>

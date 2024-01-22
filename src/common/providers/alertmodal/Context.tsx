@@ -1,3 +1,3 @@
 import { createContext } from 'react';
 
-export const AlertModalContext = createContext();
+export const AlertModalContext = createContext(null);

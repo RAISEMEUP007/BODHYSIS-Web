@@ -1,5 +1,14 @@
-import React, {useState, useEffect, useRef} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform, Image } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  View,
+  ActivityIndicator,
+  Platform,
+  Image,
+} from 'react-native';
 
 import { updateProductCategory } from '../../../../api/Product';
 import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
@@ -14,11 +23,15 @@ import { API_URL } from '../../../../common/constants/AppConstants';
 import { getTagsData } from '../../../../api/Settings';
 import { Picker } from 'react-native-web';
 
-const UpdateProductCategoryModal = ({ isModalVisible, item, setUpdateProductCategoryTrigger, closeModal }) => {
-
+const UpdateProductCategoryModal = ({
+  isModalVisible,
+  item,
+  setUpdateProductCategoryTrigger,
+  closeModal,
+}) => {
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(API_URL + item.img_url);
 
@@ -26,18 +39,18 @@ const UpdateProductCategoryModal = ({ isModalVisible, item, setUpdateProductCate
   const [Tags, setTags] = useState([]);
   const [selectedTag, selectTag] = useState({});
 
-  const inputRef = useRef(null); 
+  const inputRef = useRef(null);
 
   useEffect(() => {
-    if(Platform.OS === 'web'){
+    if (Platform.OS === 'web') {
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();
         }
       };
-  
+
       window.addEventListener('keydown', handleKeyDown);
-  
+
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
       };
@@ -45,32 +58,34 @@ const UpdateProductCategoryModal = ({ isModalVisible, item, setUpdateProductCate
   }, [closeModal]);
 
   useEffect(() => {
-    if(isModalVisible){
-      loadTagData((jsonRes)=>{
+    if (isModalVisible) {
+      loadTagData((jsonRes) => {
         setTags(jsonRes);
-        if(item.tag_id){
-          const initalTag = jsonRes.find(Tag => {return Tag.id == item.tag_id});
-          if(initalTag) selectTag(initalTag);
-        }else if(jsonRes.length>0){
+        if (item.tag_id) {
+          const initalTag = jsonRes.find((Tag) => {
+            return Tag.id == item.tag_id;
+          });
+          if (initalTag) selectTag(initalTag);
+        } else if (jsonRes.length > 0) {
           selectTag(jsonRes[0]);
         }
       });
     }
-  }, [isModalVisible])
+  }, [isModalVisible]);
 
   const handleImageSelection = (event) => {
     const file = Platform.OS == 'web' ? event.target.files[0] : event.nativeEvent.target.files[0];
 
     const imagePreviewUrl = URL.createObjectURL(file);
     setSelectedImage(file);
-    setImagePreviewUrl(imagePreviewUrl); 
+    setImagePreviewUrl(imagePreviewUrl);
   };
 
   const handleUpdateButtonClick = () => {
     if (!_productCategory.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
-    } 
+    }
 
     setIsLoading(true);
 
@@ -79,10 +94,10 @@ const UpdateProductCategoryModal = ({ isModalVisible, item, setUpdateProductCate
     formData.append('category', _productCategory);
     formData.append('img', selectedImage);
     formData.append('description', 'dd');
-    if(selectedTag && selectedTag.id) formData.append('tag_id', selectedTag.id);
+    if (selectedTag && selectedTag.id) formData.append('tag_id', selectedTag.id);
 
-    updateProductCategory(formData, (jsonRes, status, error)=>{
-      switch(status){
+    updateProductCategory(formData, (jsonRes, status, error) => {
+      switch (status) {
         case 201:
           showAlert('success', jsonRes.message);
           setUpdateProductCategoryTrigger(true);
@@ -92,7 +107,7 @@ const UpdateProductCategoryModal = ({ isModalVisible, item, setUpdateProductCate
           setValidMessage(jsonRes.error);
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           closeModal();
           break;
@@ -101,9 +116,9 @@ const UpdateProductCategoryModal = ({ isModalVisible, item, setUpdateProductCate
     });
   };
 
-  const loadTagData = (callback) =>{
+  const loadTagData = (callback) => {
     getTagsData((jsonRes, status, error) => {
-      switch(status){
+      switch (status) {
         case 200:
           callback(jsonRes);
           break;
@@ -111,12 +126,12 @@ const UpdateProductCategoryModal = ({ isModalVisible, item, setUpdateProductCate
           showAlert('error', msgStr('serverError'));
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           break;
       }
-    })
-  }
+    });
+  };
 
   const checkInput = () => {
     if (!_productCategory.trim()) {
@@ -131,16 +146,16 @@ const UpdateProductCategoryModal = ({ isModalVisible, item, setUpdateProductCate
       animationType="none"
       transparent={true}
       visible={isModalVisible}
-      onShow={()=>{
-        setValidMessage(''); 
-        setProductCategory(item.category); 
+      onShow={() => {
+        setValidMessage('');
+        setProductCategory(item.category);
         inputRef.current = null;
         setImagePreviewUrl(API_URL + item.img_url);
         setSelectedImage(null);
       }}
     >
       <BasicModalContainer>
-        <ModalHeader label={"Product Category"} closeModal={closeModal} />
+        <ModalHeader label={'Product Category'} closeModal={closeModal} />
         <ModalBody>
           <TextInput
             style={styles.input}
@@ -151,7 +166,7 @@ const UpdateProductCategoryModal = ({ isModalVisible, item, setUpdateProductCate
             onSubmitEditing={handleUpdateButtonClick}
             onBlur={checkInput}
           />
-          {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
+          {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
           <View style={styles.imagePicker}>
             <TouchableOpacity style={styles.imageUpload} onPress={() => inputRef.current.click()}>
               {imagePreviewUrl ? (
@@ -163,24 +178,24 @@ const UpdateProductCategoryModal = ({ isModalVisible, item, setUpdateProductCate
               )}
             </TouchableOpacity>
             <input
-              type="file" 
-              ref={inputRef} 
-              style={styles.fileInput} 
-              onChange={handleImageSelection} 
+              type="file"
+              ref={inputRef}
+              style={styles.fileInput}
+              onChange={handleImageSelection}
             />
           </View>
           <Picker
             style={styles.select}
             selectedValue={selectedTag.id}
-            onValueChange={(itemValue, itemIndex) =>
-              {
-                selectTag(Tags[itemIndex]);
-              }}>
-            {Tags && Tags.length > 0 && (
+            onValueChange={(itemValue, itemIndex) => {
+              selectTag(Tags[itemIndex]);
+            }}
+          >
+            {Tags &&
+              Tags.length > 0 &&
               Tags.map((item, index) => {
-                return <Picker.Item key={index} label={item.tag} value={item.id} />
-              })
-            )}
+                return <Picker.Item key={index} label={item.tag} value={item.id} />;
+              })}
           </Picker>
         </ModalBody>
         <ModalFooter>

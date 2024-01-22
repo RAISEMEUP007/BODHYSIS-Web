@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, Platform } from 'react-native';
+import { View, Image, Platform } from 'react-native';
 import { createDrawerNavigator, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 
 import { useScreenSize } from '../common/hooks/UseScreenDimention';

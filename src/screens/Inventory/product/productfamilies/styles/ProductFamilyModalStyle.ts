@@ -3,7 +3,7 @@ import { TextSmallSize, TextdefaultSize } from '../../../../../common/constants/
 
 export const productFamilyModalstyles = StyleSheet.create({
   label: {
-    color: "#555",
+    color: '#555',
     fontSize: TextSmallSize,
   },
   input: {
@@ -13,7 +13,7 @@ export const productFamilyModalstyles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 10,
     padding: 8,
-    width: "100%",
+    width: '100%',
   },
   select: {
     height: 40,
@@ -49,7 +49,7 @@ export const productFamilyModalstyles = StyleSheet.create({
   },
   imagePicker: {
     position: 'relative',
-    width: "100%",
+    width: '100%',
     height: 280,
     backgroundColor: 'white',
     justifyContent: 'center',
@@ -91,9 +91,9 @@ export const productFamilyModalstyles = StyleSheet.create({
     height: 200,
   },
   richTextContainer: {
-    display: "flex",
-    flexDirection: "column-reverse",
-    width: "100%",
+    display: 'flex',
+    flexDirection: 'column-reverse',
+    width: '100%',
     marginBottom: 10,
   },
 
@@ -101,8 +101,8 @@ export const productFamilyModalstyles = StyleSheet.create({
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     borderWidth: 1,
-    borderColor: "#ccaf9b",
-    shadowColor: "#000",
+    borderColor: '#ccaf9b',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -114,8 +114,8 @@ export const productFamilyModalstyles = StyleSheet.create({
   },
 
   richTextToolbarStyle: {
-    backgroundColor: "#c6c3b3",
-    borderColor: "#c6c3b3",
+    backgroundColor: '#c6c3b3',
+    borderColor: '#c6c3b3',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     borderWidth: 1,

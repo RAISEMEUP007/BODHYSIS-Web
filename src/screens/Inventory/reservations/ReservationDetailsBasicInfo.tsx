@@ -1,23 +1,89 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import CommonInput from '../../../common/components/input/CommonInput';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getReservationInfoSelector } from '../../../redux/selectors/reservationSelector';
 import { DEFAULT_DATE_FORMAT, DEFAULT_TIME_FORMAT } from '../../../common/constants/DateFormat';
 import { CommonButton } from '../../../common/components/CommonButton/CommonButton';
 import { Colors } from '../../../common/constants/Colors';
+import { setPromoCode } from '../../../redux/slices/reservationSlice';
+import { useRequestCreateReservationMutation } from '../../../redux/slices/baseApiSlice';
+import { ProductQuantityType } from '../../../types/ReservationTypes';
+import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 interface Props {
   width: number;
   inputPadding: number;
+  goBack?: () => void;
 }
 
-export const ReservationDetailsBasicInfo = ({ width, inputPadding }: Props) => {
+export const ReservationDetailsBasicInfo = ({ width, inputPadding, goBack }: Props) => {
   const reservationInfo = useSelector(getReservationInfoSelector);
+  const dispatch = useDispatch();
 
   const inputWidth = useMemo(() => {
     return width * 0.5 - inputPadding;
   }, [width]);
+
+  const products = reservationInfo.selectedProducts;
+
+  const promoCode = reservationInfo.promoCode;
+
+  const { startDate, endDate, selectedLocation } = reservationInfo;
+
+  const { showAlert } = useAlertModal();
+
+  const productsToSubmit: Array<ProductQuantityType> = useMemo(() => {
+    return products.map((item) => {
+      return {
+        product_id: item.value.id,
+        quantity: item.quantity,
+      };
+    });
+  }, [products]);
+
+  const [createReservation, { data: createReservationData, error: createReservationError }] =
+    useRequestCreateReservationMutation({});
+
+  useEffect(() => {
+    console.log(
+      'updated reservation [post] rersponse',
+      createReservationData,
+      createReservationError
+    );
+  }, [createReservationData, createReservationError]);
+
+  const valid = useMemo(() => {
+    return productsToSubmit.length && startDate && endDate;
+  }, [productsToSubmit, startDate, endDate]);
+
+  useEffect(() => {
+    if (createReservationError) {
+      showAlert('error', 'Error creating reservation.');
+    }
+  }, [createReservationError]);
+
+  useEffect(() => {
+    if (createReservationData) {
+      if (goBack) {
+        goBack();
+      }
+      showAlert('success', 'Reservation Created.');
+    }
+  }, [createReservationData]);
+
+  const submit = useCallback(() => {
+    console.log('submit');
+    createReservation({
+      products: productsToSubmit,
+      start_time: reservationInfo.startDate,
+      end_time: reservationInfo.endDate,
+      start_location_id: selectedLocation.value.id,
+      end_location_id: selectedLocation.value.id,
+      promo_code: promoCode,
+      customer_id: reservationInfo.selectedCustomer.value.id
+    });
+  }, [valid, productsToSubmit, startDate, endDate, promoCode, selectedLocation]);
 
   return (
     <View style={styles.container}>
@@ -65,7 +131,9 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding }: Props) => {
       </View>
       <View style={styles.rowInputContainer}>
         <CommonInput
-          onChangeText={(_) => {}}
+          onChangeText={(value: string) => {
+            dispatch(setPromoCode({ value }));
+          }}
           width={inputWidth}
           placeholder="Discount Code"
           title="Discount Code"
@@ -121,10 +189,12 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding }: Props) => {
           containerStyle={styles.button}
         />
         <CommonButton
-          onPress={() => {}}
+          onPress={() => {
+            submit();
+          }}
           type="rounded"
           backgroundColor={Colors.Secondary.GREEN}
-          label="Next Stage"
+          label="Submit"
           containerStyle={styles.button}
         />
       </View>

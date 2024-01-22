@@ -1,9 +1,27 @@
-import React, { useEffect, useState} from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TextInput, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  ScrollView,
+  View,
+  Text,
+  TouchableHighlight,
+  TextInput,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import CheckBox from 'expo-checkbox';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import {getHeaderData, getTableData, setFree, setPriceData, setExtraDay, deleteGroup, deletePricePoint, getSeasonsData, getBrandsData } from '../../../api/Price';
+import {
+  getHeaderData,
+  getTableData,
+  setFree,
+  setPriceData,
+  setExtraDay,
+  deleteGroup,
+  deletePricePoint,
+  getSeasonsData,
+  getBrandsData,
+} from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
@@ -15,7 +33,7 @@ import PricePointModal from './PricePointModal';
 import UpdateGroupModal from './UpdateGroupModal';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 
-const PriceGroup = ({tableId, tableName, openPriceTable}) => {
+const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
   const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
@@ -27,35 +45,48 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
   const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
   const [updateGroupTrigger, setUpdateGroupTrigger] = useState(false);
   const [updatePointTrigger, setUpdatePointTrigger] = useState(true);
-  
+
   const [headerData, setHeaderData] = useState([]);
   const [tableData, setTableData] = useState({});
-  
-  useEffect(()=>{
-    if(updatePointTrigger == true){
+
+  useEffect(() => {
+    if (updatePointTrigger == true) {
       getHeader();
       getTable();
       //getSeasons();
       //getBrands();
       setUpdatePointTrigger(false);
     }
-  }, [updatePointTrigger])
+  }, [updatePointTrigger]);
 
   useEffect(() => {
-    if(updateGroupTrigger == true) {
+    if (updateGroupTrigger == true) {
       getSeasons();
       getBrands();
       getTable();
     }
   }, [updateGroupTrigger]);
 
-  const openGroupModal = () => { setGroupModalVisible(true); };
-  const closeGroupModal = () => { setGroupModalVisible(false); }
-  const openUpdateGroupModal = (group) => { setGroupName(group); setUpdateGroupModalVisible(true); };
-  const closeUpdateGroupModal = () => { setUpdateGroupModalVisible(false); }
-  const openPriceModal = () => { setAddPriceModalVisible(true); };
-  const closePriceModal = () => { setAddPriceModalVisible(false); };
-  
+  const openGroupModal = () => {
+    setGroupModalVisible(true);
+  };
+  const closeGroupModal = () => {
+    setGroupModalVisible(false);
+  };
+  const openUpdateGroupModal = (group) => {
+    setGroupName(group);
+    setUpdateGroupModalVisible(true);
+  };
+  const closeUpdateGroupModal = () => {
+    setUpdateGroupModalVisible(false);
+  };
+  const openPriceModal = () => {
+    setAddPriceModalVisible(true);
+  };
+  const closePriceModal = () => {
+    setAddPriceModalVisible(false);
+  };
+
   const changeCellData = (group, index, newVal) => {
     const updatedTableData = { ...tableData };
     updatedTableData[group] = {
@@ -67,20 +98,20 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
       ],
     };
     setTableData(updatedTableData);
-  };  
+  };
 
   const changeExtraDay = (group, extraDay) => {
-      const updatedTableData = {...tableData};
-      updatedTableData[group] = {
-        ...updatedTableData[group],
-        extra_day: extraDay
-      };
-      setTableData(updatedTableData);
+    const updatedTableData = { ...tableData };
+    updatedTableData[group] = {
+      ...updatedTableData[group],
+      extra_day: extraDay,
+    };
+    setTableData(updatedTableData);
   };
-  
+
   const getHeader = () => {
-    getHeaderData(tableId, (jsonRes, status, error)=>{
-      switch(status){
+    getHeaderData(tableId, (jsonRes, status, error) => {
+      switch (status) {
         case 200:
           setHeaderData(jsonRes);
           break;
@@ -88,16 +119,16 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
           showAlert('error', msgStr('serverError'));
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           break;
       }
-    })
-  }
-  
+    });
+  };
+
   const getTable = () => {
     getTableData(tableId, (jsonRes, status, error) => {
-      switch(status){
+      switch (status) {
         case 200:
           setTableData(jsonRes);
           setUpdateGroupTrigger(false);
@@ -106,16 +137,16 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
           showAlert('error', msgStr('serverError'));
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           break;
       }
-    })
-  }
+    });
+  };
 
   const getSeasons = () => {
     getSeasonsData((jsonRes, status, error) => {
-      switch(status){
+      switch (status) {
         case 200:
           setSeasonData(jsonRes);
           break;
@@ -123,16 +154,16 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
           showAlert('error', msgStr('serverError'));
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           break;
       }
-    })
-  }
+    });
+  };
 
   const getBrands = () => {
     getBrandsData((jsonRes, status, error) => {
-      switch(status){
+      switch (status) {
         case 200:
           setBrandData(jsonRes);
           break;
@@ -140,26 +171,26 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
           showAlert('error', msgStr('serverError'));
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           break;
       }
-    })
-  }
+    });
+  };
 
   const saveFree = (group, isFree) => {
-    setFree(group, isFree, (jsonRes, status, error)=>{
-      switch(status){
+    setFree(group, isFree, (jsonRes, status, error) => {
+      switch (status) {
         case 200:
-          const updatedTableData = {...tableData};
+          const updatedTableData = { ...tableData };
           updatedTableData[group] = {
             ...updatedTableData[group],
-            is_free: isFree
+            is_free: isFree,
           };
           setTableData(updatedTableData);
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           break;
       }
@@ -169,10 +200,10 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
   const saveCellData = (group, index, cellData) => {
     const groupId = tableData[group].group_id;
     const pointId = headerData[index].id;
-    const value = cellData ? cellData : "";
+    const value = cellData ? cellData : '';
 
-    setPriceData(groupId, tableId, pointId, value, (jsonRes, status, error)=>{
-      switch(status){
+    setPriceData(groupId, tableId, pointId, value, (jsonRes, status, error) => {
+      switch (status) {
         case 200:
           break;
         case 500:
@@ -180,60 +211,60 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
           break;
         default:
           setUpdateGroupTrigger(true);
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           break;
       }
     });
-  }
+  };
 
   const saveExtraDay = (group, extraDay) => {
-    setExtraDay(group, extraDay, (jsonRes, status, error)=>{
-      switch(status){
+    setExtraDay(group, extraDay, (jsonRes, status, error) => {
+      switch (status) {
         case 200:
           break;
         default:
           setUpdateGroupTrigger(true);
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           break;
       }
-    })
-  }
+    });
+  };
 
   const removePoint = (priceId) => {
-    showConfirm(msgStr('deleteConfirmStr'), ()=>{
-      deletePricePoint(priceId, (jsonRes, status, error)=>{
-        switch(status){
+    showConfirm(msgStr('deleteConfirmStr'), () => {
+      deletePricePoint(priceId, (jsonRes, status, error) => {
+        switch (status) {
           case 200:
             setUpdatePointTrigger(true);
             showAlert('success', jsonRes.message);
             break;
           default:
-            if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+            if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
             else showAlert('error', msgStr('unknownError'));
             break;
         }
-      })
+      });
     });
-  }
+  };
 
   const removeGroup = (group) => {
-    showConfirm(msgStr('deleteConfirmStr'), ()=>{
-      deleteGroup(group, (jsonRes, status, error)=>{
-        switch(status){
+    showConfirm(msgStr('deleteConfirmStr'), () => {
+      deleteGroup(group, (jsonRes, status, error) => {
+        switch (status) {
           case 200:
             setUpdateGroupTrigger(true);
             showAlert('success', jsonRes.message);
             break;
           default:
-            if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+            if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
             else showAlert('error', msgStr('unknownError'));
             break;
         }
-      })
+      });
     });
-  }
+  };
 
   const renderTableHeader = () => {
     return (
@@ -242,9 +273,13 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
           <Text style={[styles.columnHeader, styles.groupCell]}>PriceGroup</Text>
           <Text style={[styles.columnHeader, styles.cellcheckbox]}>Free</Text>
           {headerData.map((item, index) => (
-            <View key={index} style={styles.columnHeader} >
+            <View key={index} style={styles.columnHeader}>
               <View style={styles.headerIcon}>
-                <TouchableOpacity onPress={()=>{removePoint(item.id)}} >
+                <TouchableOpacity
+                  onPress={() => {
+                    removePoint(item.id);
+                  }}
+                >
                   <FontAwesome5 size={TextMediumSize} name="times" color="black" />
                 </TouchableOpacity>
               </View>
@@ -260,27 +295,48 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
   const renderTableData = () => {
     const rows = [];
     for (let i in tableData) {
-      rows.push( 
+      rows.push(
         <View key={i} style={styles.tableRow}>
           <View style={[styles.groupCell]}>
-            <Text >{i}</Text>
+            <Text>{i}</Text>
             <View>
-              <TouchableOpacity onPress={()=>{openUpdateGroupModal(i)}}>
-                <FontAwesome5 style={styles.editRow} size={TextMediumSize} name="pencil-alt" color="black" />
+              <TouchableOpacity
+                onPress={() => {
+                  openUpdateGroupModal(i);
+                }}
+              >
+                <FontAwesome5
+                  style={styles.editRow}
+                  size={TextMediumSize}
+                  name="pencil-alt"
+                  color="black"
+                />
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>{removeGroup(i)}}>
-                <FontAwesome5 style={styles.deleteRow} size={TextMediumSize} name="times" color="black" />
+              <TouchableOpacity
+                onPress={() => {
+                  removeGroup(i);
+                }}
+              >
+                <FontAwesome5
+                  style={styles.deleteRow}
+                  size={TextMediumSize}
+                  name="times"
+                  color="black"
+                />
               </TouchableOpacity>
             </View>
           </View>
           <View style={[styles.cell, styles.cellcheckbox]}>
-            <CheckBox value={(tableData[i].is_free ? true : false)} onValueChange={(newValue) => saveFree(i, newValue)} />
+            <CheckBox
+              value={tableData[i].is_free ? true : false}
+              onValueChange={(newValue) => saveFree(i, newValue)}
+            />
           </View>
           {tableData[i].data.map((cellData, index) => (
             <TextInput
               key={index}
               style={[styles.cell]}
-              value={cellData?cellData.toString():""}
+              value={cellData ? cellData.toString() : ''}
               onChangeText={(value) => {
                 changeCellData(i, index, value);
               }}
@@ -291,12 +347,12 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
           ))}
           <TextInput
             style={[styles.cell]}
-            value={tableData[i].extra_day ? tableData[i].extra_day.toString() : ""}
+            value={tableData[i].extra_day ? tableData[i].extra_day.toString() : ''}
             onChangeText={(value) => {
               changeExtraDay(i, value);
             }}
             onBlur={(e) => {
-              saveExtraDay(i, tableData[i].extra_day );
+              saveExtraDay(i, tableData[i].extra_day);
             }}
           />
         </View>
@@ -307,8 +363,8 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
 
   return (
     <BasicLayout
-      goBack={()=>{
-        openPriceTable(null)
+      goBack={() => {
+        openPriceTable(null);
       }}
       screenName={tableName}
     >
@@ -323,19 +379,19 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
             </TouchableHighlight>
           </View>
           <View style={styles.tableContainer}>
-              <View style={styles.table}>
-                {renderTableHeader()}
-                <ScrollView style={{ flex: 1, maxHeight: screenHeight-280 }}>
-                  {renderTableData()}
-                </ScrollView>
-              </View>
+            <View style={styles.table}>
+              {renderTableHeader()}
+              <ScrollView style={{ flex: 1, maxHeight: screenHeight - 280 }}>
+                {renderTableData()}
+              </ScrollView>
+            </View>
           </View>
 
           <CreateGroupModal
             isModalVisible={isGroupModalVisible}
             tableId={tableId}
-            groupName={""}
-            setUpdateGroupTrigger = {setUpdateGroupTrigger} 
+            groupName={''}
+            setUpdateGroupTrigger={setUpdateGroupTrigger}
             closeModal={closeGroupModal}
           />
 
@@ -343,17 +399,16 @@ const PriceGroup = ({tableId, tableName, openPriceTable}) => {
             isModalVisible={isUpdateGroupModalVisible}
             tableId={tableId}
             groupName={groupName}
-            setUpdateGroupTrigger = {setUpdateGroupTrigger} 
+            setUpdateGroupTrigger={setUpdateGroupTrigger}
             closeModal={closeUpdateGroupModal}
           />
 
           <PricePointModal
             isModalVisible={isAddPriceModalVisible}
             tableId={tableId}
-            setUpdatePointTrigger = {setUpdatePointTrigger} 
+            setUpdatePointTrigger={setUpdatePointTrigger}
             closeModal={closePriceModal}
           />
-
         </View>
       </ScrollView>
     </BasicLayout>

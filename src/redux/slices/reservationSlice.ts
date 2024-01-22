@@ -37,6 +37,7 @@ export interface ReservationState {
   priceLogic: Array<PriceLogicType> | null;
   selectedPriceTable: PriceTableType | null;
   priceTableData: PriceTableDataResponseType | null;
+  promoCode: string | null;
 }
 
 const initialState: ReservationState = {
@@ -62,6 +63,7 @@ const initialState: ReservationState = {
   priceLogic: null,
   selectedPriceTable: null,
   priceTableData: null,
+  promoCode: null,
 };
 
 export const reservationSlice = createSlice({
@@ -178,6 +180,10 @@ export const reservationSlice = createSlice({
       const { tableData } = action.payload;
       state.priceTableData = tableData;
     },
+    setPromoCode: (state, action: PayloadAction<{ value: string }>) => {
+      const { value } = action.payload;
+      state.promoCode = value;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -225,6 +231,7 @@ export const {
   selectLocation,
   selectSeason,
   selectProducts,
+  setPromoCode,
   loadPriceTables,
   loadPriceGroups,
   loadPriceLogic,

@@ -1,5 +1,14 @@
-import React, {useState, useEffect} from 'react';
-import { Text, TextInput, TouchableOpacity, Modal, View, ActivityIndicator, Platform,  Picker } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  View,
+  ActivityIndicator,
+  Platform,
+  Picker,
+} from 'react-native';
 
 import { createTag, updateTag } from '../../../api/Settings';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
@@ -12,7 +21,6 @@ import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { TagModalstyles } from './styles/TagModalStyle';
 
 const AddTagModal = ({ isModalVisible, Tag, setUpdateTagsTrigger, closeModal }) => {
-
   const isUpdate = Tag ? true : false;
 
   const { showAlert } = useAlertModal();
@@ -22,15 +30,15 @@ const AddTagModal = ({ isModalVisible, Tag, setUpdateTagsTrigger, closeModal }) 
   const [TagTxt, setTagTxt] = useState('');
 
   useEffect(() => {
-    if(Platform.OS === 'web'){
+    if (Platform.OS === 'web') {
       const handleKeyDown = (event) => {
         if (event.key === 'Escape') {
           closeModal();
         }
       };
-  
+
       window.addEventListener('keydown', handleKeyDown);
-  
+
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
       };
@@ -41,16 +49,16 @@ const AddTagModal = ({ isModalVisible, Tag, setUpdateTagsTrigger, closeModal }) 
     if (!TagTxt.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
-    } 
-    
-    setIsLoading(true);
-    
-    const payload  = {
-      tag: TagTxt,
     }
 
+    setIsLoading(true);
+
+    const payload = {
+      tag: TagTxt,
+    };
+
     const handleResponse = (jsonRes, status) => {
-      switch(status){
+      switch (status) {
         case 201:
           showAlert('success', jsonRes.message);
           setUpdateTagsTrigger(true);
@@ -60,16 +68,16 @@ const AddTagModal = ({ isModalVisible, Tag, setUpdateTagsTrigger, closeModal }) 
           setValidMessage(jsonRes.error);
           break;
         default:
-          if(jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           closeModal();
           break;
       }
       setIsLoading(false);
     };
-    
+
     if (isUpdate) {
-      payload.id = Tag.id
+      payload.id = Tag.id;
       updateTag(payload, (jsonRes, status) => {
         handleResponse(jsonRes, status);
       });
@@ -93,20 +101,28 @@ const AddTagModal = ({ isModalVisible, Tag, setUpdateTagsTrigger, closeModal }) 
       animationType="none"
       transparent={true}
       visible={isModalVisible}
-      onShow={()=>{
+      onShow={() => {
         setValidMessage('');
-        setTagTxt(Tag?Tag.tag:'');
+        setTagTxt(Tag ? Tag.tag : '');
       }}
     >
       <BasicModalContainer>
-        <ModalHeader label={"Tag"} closeModal={closeModal} />
+        <ModalHeader label={'Tag'} closeModal={closeModal} />
         <ModalBody>
-          <TextInput style={styles.input} placeholder="Tag" value={TagTxt} onChangeText={setTagTxt} placeholderTextColor="#ccc" onBlur={checkInput} onSubmitEditing={AddTagButtonHandler}/>
-          {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>}
+          <TextInput
+            style={styles.input}
+            placeholder="Tag"
+            value={TagTxt}
+            onChangeText={setTagTxt}
+            placeholderTextColor="#ccc"
+            onBlur={checkInput}
+            onSubmitEditing={AddTagButtonHandler}
+          />
+          {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={AddTagButtonHandler}>
-            <Text style={styles.addButton}>{isUpdate?"Update":"Add"}</Text>
+            <Text style={styles.addButton}>{isUpdate ? 'Update' : 'Add'}</Text>
           </TouchableOpacity>
         </ModalFooter>
       </BasicModalContainer>
