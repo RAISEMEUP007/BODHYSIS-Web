@@ -45,14 +45,6 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding, goBack }: Pro
   const [createReservation, { data: createReservationData, error: createReservationError }] =
     useRequestCreateReservationMutation({});
 
-  useEffect(() => {
-    console.log(
-      'updated reservation [post] rersponse',
-      createReservationData,
-      createReservationError
-    );
-  }, [createReservationData, createReservationError]);
-
   const valid = useMemo(() => {
     return productsToSubmit.length && startDate && endDate;
   }, [productsToSubmit, startDate, endDate]);
@@ -73,7 +65,6 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding, goBack }: Pro
   }, [createReservationData]);
 
   const submit = useCallback(() => {
-    console.log('submit');
     createReservation({
       products: productsToSubmit,
       start_time: reservationInfo.startDate,

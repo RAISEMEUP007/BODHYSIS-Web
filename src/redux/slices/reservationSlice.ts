@@ -121,20 +121,14 @@ export const reservationSlice = createSlice({
     },
     selectBrand: (state, action: PayloadAction<{ brand: DropdownItem<Brand> }>) => {
       const { brand } = { ...action.payload };
-
-      console.log('selecting brand', brand);
       state.selectedBrand = brand;
-
-      console.log('selected brand result', state.selectedBrand);
     },
     selectCustomer: (state, action: PayloadAction<{ customer: DropdownItem<CustomerType> }>) => {
       const { customer } = action.payload;
-      console.log('selected customer', customer);
       state.selectedCustomer = customer;
     },
     selectLocation: (state, action: PayloadAction<{ location: DropdownItem<LocationType> }>) => {
       const { location } = action.payload;
-      console.log('selected location', location);
       state.selectedLocation = location;
     },
     selectSeason: (state, action: PayloadAction<{ season: SeasonType }>) => {
@@ -195,12 +189,6 @@ export const reservationSlice = createSlice({
           !priceLogic.length ||
           !Object.keys(priceTablesMap).length
         ) {
-          console.log({
-            selectedSeason: selectedSeason?.season,
-            selectedBrand: selectedBrand?.value?.brand,
-            priceTablesMap: Object.keys(priceTablesMap).length,
-          });
-
           return;
         }
 
