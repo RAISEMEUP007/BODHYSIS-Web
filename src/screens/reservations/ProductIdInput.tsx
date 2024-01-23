@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import CommonInput from '../../../common/components/input/CommonInput';
-import { CommonButton } from '../../../common/components/CommonButton/CommonButton';
-import { Colors } from '../../../common/constants/Colors';
+import CommonInput from '../../common/components/input/CommonInput';
+import { CommonButton } from '../../common/components/CommonButton/CommonButton';
+import { Colors } from '../../common/constants/Colors';
 import { Pressable } from 'react-native';
 
 interface Props {

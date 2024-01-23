@@ -1,6 +1,7 @@
 export type ProductQuantityType = {
   product_id: number;
   quantity: number;
+  product_name: string
 };
 
 export type CreateReservationRequestType = {
@@ -11,4 +12,5 @@ export type CreateReservationRequestType = {
   start_location_id: number;
   end_location_id: number;
   customer_id: number
+  brand_id: number
 };

@@ -55,7 +55,8 @@ export const createEquipmentTableProduct = (
   season: string,
   price: number,
   customer: string,
-  line: string
+  line: string,
+  price_index: number,
 ) => {
   const result: EquipmentTableProductType = {
     id: product?.id,
@@ -67,6 +68,7 @@ export const createEquipmentTableProduct = (
     line: line,
     season: season,
     price: price,
+    price_index: price_index,
     status: product.status ?? 'UNKNOWN',
     customer: customer,
   };

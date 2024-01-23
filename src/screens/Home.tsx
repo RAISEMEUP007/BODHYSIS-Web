@@ -7,7 +7,7 @@ import Dashboard from './Dashboard';
 import Inventory from './Inventory/Inventory';
 import Settings from './settings/Settings';
 import Customers from './customer/customers/Customers';
-import CreateReservation from './Inventory/reservations/CreateReservation';
+import CreateReservation from './reservations/CreateReservation';
 
 const MainDrawer = ({ navigation }) => {
   const { isLargeScreen } = useScreenSize();

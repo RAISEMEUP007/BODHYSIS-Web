@@ -18,4 +18,5 @@ export interface EquipmentTableProductType {
   price: number;
   status: string | null;
   customer: string;
+  price_index: number
 }

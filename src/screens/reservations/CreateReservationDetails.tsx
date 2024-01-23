@@ -1,17 +1,17 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
-import { Colors } from '../../../common/constants/Colors';
+import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
+import { Colors } from '../../common/constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
-import { getReservationInfoSelector } from '../../../redux/selectors/reservationSelector';
+import { getReservationInfoSelector } from '../../redux/selectors/reservationSelector';
 import { ReservationDetailsBasicInfo } from './ReservationDetailsBasicInfo';
 import { ReservationTabView } from './ReservationTabView';
 import { ProductIdInput } from './ProductIdInput';
-import { CommonButton } from '../../../common/components/CommonButton/CommonButton';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-import { CommonTable } from '../../../common/components/CommonTable/CommonTable';
-import { removeProduct } from '../../../redux/slices/reservationSlice';
+import { CommonButton } from '../../common/components/CommonButton/CommonButton';
+import { useAlertModal } from '../../common/hooks/UseAlertModal';
+import { CommonTable } from '../../common/components/CommonTable/CommonTable';
+import { removeProduct } from '../../redux/slices/reservationSlice';
 
 interface Props {
   goBack: () => void;
