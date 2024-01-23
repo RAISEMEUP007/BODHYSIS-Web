@@ -130,7 +130,7 @@ export const baseApiSlice = createApi({
         start_location_id,
         end_location_id,
         customer_id,
-        brand_id
+        brand_id,
       }) => ({
         url: 'reservations/createreservation/',
         method: 'POST',

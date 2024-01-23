@@ -39,7 +39,9 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding, goBack }: Pro
         product_id: item.id,
         quantity: item.quantity,
         price_index: item.price_index,
-        product_name: item.product
+        product_name: item.product,
+        price: item.price
+
       };
     });
   }, [products]);

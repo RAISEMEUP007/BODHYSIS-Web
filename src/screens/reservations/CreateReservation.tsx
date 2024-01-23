@@ -406,9 +406,8 @@ const CreateReservation = ({ openInventory }: Props) => {
                       dispatch(addProduct(product));
                       return product
                     }
-                    dispatch(selectProducts({ products: products }));
-
                   });
+                  dispatch(selectProducts({ products: products }));
                 }}
                 label={'Create Reservation'}
                 disabledConfig={{ backgroundColor: Colors.Neutrals.DARK, disabled: !valid }}
