@@ -271,3 +271,20 @@ export const deleteTaxcode = (id, callback) => {
   const payload = { id };
   postAPICall('settings/deletetaxcode', payload, callback);
 }
+
+export const getColorcombinationsData = (callback) => {
+  getAPICall('settings/getcolorcombinationsdata/', callback);
+}
+
+export const updateColorcombination = (payload, callback) => {
+  postAPICall('settings/updatecolorcombination', payload, callback);
+};
+
+export const createColorcombination = (payload, callback) => {
+  postAPICall('settings/createcolorcombination', payload, callback);
+};
+
+export const deleteColorcombination = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletecolorcombination', payload, callback);
+}
