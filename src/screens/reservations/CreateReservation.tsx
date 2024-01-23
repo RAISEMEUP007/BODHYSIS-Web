@@ -378,7 +378,7 @@ const CreateReservation = ({ openInventory }: Props) => {
                   const products = equipmentData.map((item) => {
                     const maxQuantity: number = productQuantitiesData[item.value.line_id];
 
-                    const priceGroup = reservationInfo.priceTableData;[item.value.product];
+                    const priceGroup = reservationInfo.priceTableData[item.value.product];
 
                     let price = 0;
 
