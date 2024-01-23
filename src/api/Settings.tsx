@@ -254,3 +254,20 @@ export const deleteExclusionByDCId = (DiscountCodeId, callback) => {
   const payload = { DiscountCodeId };
   postAPICall('settings/deleteexclusionbydcid', payload, callback);
 }
+
+export const getTaxcodesData = (callback) => {
+  getAPICall('settings/gettaxcodesdata/', callback);
+}
+
+export const updateTaxcode = (payload, callback) => {
+  postAPICall('settings/updatetaxcode', payload, callback);
+};
+
+export const createTaxcode = (payload, callback) => {
+  postAPICall('settings/createtaxcode', payload, callback);
+};
+
+export const deleteTaxcode = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletetaxcode', payload, callback);
+}
