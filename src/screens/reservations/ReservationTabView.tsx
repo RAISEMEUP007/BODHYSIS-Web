@@ -1,8 +1,8 @@
 import { StyleSheet, View } from 'react-native';
 import React from 'react';
-import { TabType } from '../../../common/components/TabView/CommonTabView';
-import { CommonTabView } from '../../../common/components/TabView/CommonTabView';
-import { Colors } from '../../../common/constants/Colors';
+import { TabType } from '../../common/components/TabView/CommonTabView';
+import { CommonTabView } from '../../common/components/TabView/CommonTabView';
+import { Colors } from '../../common/constants/Colors';
 import { Text } from 'react-native';
 
 const tabs: Array<TabType> = [

@@ -1,17 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, StyleSheet, Text, ScrollView } from 'react-native';
-import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
+import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import { useNavigation } from '@react-navigation/native';
-import CommonInput from '../../../common/components/input/CommonInput';
-import { Colors } from '../../../common/constants/Colors';
-import Slots from '../../../common/slots/slots';
-import { CommonButton } from '../../../common/components/CommonButton/CommonButton';
+import CommonInput from '../../common/components/input/CommonInput';
+import { Colors } from '../../common/constants/Colors';
+import Slots from '../../common/slots/slots';
+import { CommonButton } from '../../common/components/CommonButton/CommonButton';
 import { EquipmentDropdown, ProductSelection } from './EquipmentDropdown';
 import { Modalize } from 'react-native-modalize';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import dayjs from 'dayjs';
-import { RESERVATION_FORMAT } from '../../../common/constants/DateFormat';
+import { RESERVATION_FORMAT } from '../../common/constants/DateFormat';
 import { CreateReservationDetails } from './CreateReservationDetails';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -26,7 +26,7 @@ import {
   loadPriceTables,
   loadPriceLogic,
   loadPriceTableData,
-} from '../../../redux/slices/reservationSlice';
+} from '../../redux/slices/reservationSlice';
 import {
   useRequestBrandsQuery,
   useRequestCustomersQuery,
@@ -39,35 +39,37 @@ import {
   useRequestPriceTableDataQuery,
   useRequestPriceTableHeaderDataQuery,
   useRequestProductsQuery,
-} from '../../../redux/slices/baseApiSlice';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+} from '../../redux/slices/baseApiSlice';
+import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import {
   CommonDropdown,
   DropdownData,
-} from '../../../common/components/CommonDropdown/CommonDropdown';
-import { getReservationInfoSelector } from '../../../redux/selectors/reservationSelector';
-import { createEquipmentTableProduct } from '../../../mock-data/mock-table-data';
-import { BrandType } from '../../../types/BrandType';
-import { CustomerType } from '../../../types/CustomerTypes';
-import { LocationType } from '../../../types/LocationType';
-import { PriceTableHeaderDataViewModel } from '../../../types/PriceTableTypes';
+} from '../../common/components/CommonDropdown/CommonDropdown';
+import { getReservationInfoSelector } from '../../redux/selectors/reservationSelector';
+import { createEquipmentTableProduct } from '../../mock-data/mock-table-data';
+import { BrandType } from '../../types/BrandType';
+import { CustomerType } from '../../types/CustomerTypes';
+import { LocationType } from '../../types/LocationType';
+import { PriceTableHeaderDataViewModel } from '../../types/PriceTableTypes';
+import { ReservationsList } from './ReservationsList';
 
 interface Props {
   openInventory: () => void;
+  goBack: () => void;
 }
 
-const CreateReservation = ({ openInventory }: Props) => {
+const CreateReservation = ({ openInventory, goBack }: Props) => {
   const modalizeRef = useRef<Modalize>(null);
 
-  const [selectedDate, setSelectedDate] = useState<Date>(
-    dayjs().toDate()
-  );
+  const [selectedDate, setSelectedDate] = useState<Date>(dayjs().toDate());
 
   const { showAlert } = useAlertModal();
 
   const [selectedSlot, setSelectedSlot] = useState<PriceTableHeaderDataViewModel | null>();
 
   const [showDetails, setShowDetails] = useState(false);
+
+  const [showList, setShowList] = useState(false);
 
   const navigation = useNavigation();
 
@@ -274,6 +276,7 @@ const CreateReservation = ({ openInventory }: Props) => {
         containerStyle={styles.layoutContainer}
         screenName={'Create Reservation'}
         navigation={navigation}
+        goBack={goBack}
       >
         <ScrollView>
           <View style={styles.outterContainer}>
@@ -375,13 +378,10 @@ const CreateReservation = ({ openInventory }: Props) => {
                       endDate: endDate && endDate.toISOString(),
                     })
                   );
-
-                  equipmentData.map((item) => {
+                  const products = equipmentData.map((item) => {
                     const maxQuantity: number = productQuantitiesData[item.value.line_id];
 
-                    const data = reservationInfo.priceTableData;
-
-                    const priceGroup = data[item.value.product];
+                    const priceGroup = reservationInfo.priceTableData[item.value.product];
 
                     let price = 0;
 
@@ -389,15 +389,6 @@ const CreateReservation = ({ openInventory }: Props) => {
                       const prices: Array<number> = priceGroup.data ?? [];
                       price = prices[selectedSlot.index];
                     }
-
-                    /*
-                    if (reservationInfo.priceGroupsMap) {
-                      const priceGroup: PriceGroupType =
-                        reservationInfo.priceGroupsMap[item.value.price_group_id];
-
-                      
-                    }
-                    */
 
                     if (item.quantity > maxQuantity) {
                       showAlert(
@@ -408,16 +399,18 @@ const CreateReservation = ({ openInventory }: Props) => {
                       const product = createEquipmentTableProduct(
                         item.value,
                         reservationInfo.selectedBrand.displayLabel,
-                        item.quantity,
+                        parseInt(item.quantity.toString()),
                         reservationInfo.selectedSeason.season,
                         price,
                         reservationInfo.selectedCustomer.displayLabel,
-                        item.value.line.line
+                        item.value.line.line,
+                        selectedSlot.index
                       );
                       dispatch(addProduct(product));
-                      dispatch(selectProducts({ products: equipmentData }));
+                      return product;
                     }
                   });
+                  dispatch(selectProducts({ products: products }));
                 }}
                 label={'Create Reservation'}
                 disabledConfig={{ backgroundColor: Colors.Neutrals.DARK, disabled: !valid }}
@@ -459,8 +452,16 @@ const CreateReservation = ({ openInventory }: Props) => {
         goBack={() => {
           setShowDetails(false);
         }}
+        onCompletion={() => {
+          setShowDetails(false);
+          setShowList(true);
+        }}
       />
     );
+  }
+
+  if (showList) {
+    return <ReservationsList />;
   }
 
   return renderInitial();

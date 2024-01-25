@@ -1,23 +1,24 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
-import { Colors } from '../../../common/constants/Colors';
+import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
+import { Colors } from '../../common/constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
-import { getReservationInfoSelector } from '../../../redux/selectors/reservationSelector';
+import { getReservationInfoSelector } from '../../redux/selectors/reservationSelector';
 import { ReservationDetailsBasicInfo } from './ReservationDetailsBasicInfo';
 import { ReservationTabView } from './ReservationTabView';
 import { ProductIdInput } from './ProductIdInput';
-import { CommonButton } from '../../../common/components/CommonButton/CommonButton';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-import { CommonTable } from '../../../common/components/CommonTable/CommonTable';
-import { removeProduct } from '../../../redux/slices/reservationSlice';
+import { CommonButton } from '../../common/components/CommonButton/CommonButton';
+import { useAlertModal } from '../../common/hooks/UseAlertModal';
+import { CommonTable } from '../../common/components/CommonTable/CommonTable';
+import { removeProduct } from '../../redux/slices/reservationSlice';
 
 interface Props {
   goBack: () => void;
+  onCompletion: () => void;
 }
 
-export const CreateReservationDetails = ({ goBack }: Props) => {
+export const CreateReservationDetails = ({ goBack, onCompletion }: Props) => {
   const reservationInfo = useSelector(getReservationInfoSelector);
 
   const dispatch = useDispatch();
@@ -32,7 +33,12 @@ export const CreateReservationDetails = ({ goBack }: Props) => {
     <BasicLayout goBack={goBack} screenName={'Create Reservation'} navigation={navigation}>
       <ScrollView style={styles.container}>
         <View style={styles.topContainer}>
-          <ReservationDetailsBasicInfo goBack={goBack} width={400} inputPadding={20} />
+          <ReservationDetailsBasicInfo
+            onCompletion={onCompletion}
+            goBack={goBack}
+            width={400}
+            inputPadding={20}
+          />
           <ReservationTabView />
         </View>
         <View style={styles.bottomContainer}>

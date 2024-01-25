@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, Text, FlatList, Modal, Pressable, ScrollView } from 'react-native';
-import CommonInput from '../../../common/components/input/CommonInput';
-import { CommonButton } from '../../../common/components/CommonButton/CommonButton';
-import { Colors } from '../../../common/constants/Colors';
-import { ProductResponseType, ProductType } from '../../../types/ProductTypes';
+import CommonInput from '../../common/components/input/CommonInput';
+import { CommonButton } from '../../common/components/CommonButton/CommonButton';
+import { Colors } from '../../common/constants/Colors';
+import { ProductResponseType, ProductType } from '../../types/ProductTypes';
 import {
   CommonDropdown,
   DropdownData,
-} from '../../../common/components/CommonDropdown/CommonDropdown';
-import { PriceTableHeaderDataResponseType } from '../../../types/PriceTableTypes';
+} from '../../common/components/CommonDropdown/CommonDropdown';
+import { PriceTableHeaderDataResponseType } from '../../types/PriceTableTypes';
 
 export interface ProductSelection {
   name: string;

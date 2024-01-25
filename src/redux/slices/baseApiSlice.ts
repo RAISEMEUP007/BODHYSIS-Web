@@ -15,7 +15,11 @@ import {
 } from '../../types/PriceTableTypes';
 import { PriceLogicType } from '../../types/PriceLogicTypes';
 import { PriceGroupArrayType } from '../../types/PriceGroupType';
-import { CreateReservationRequestType } from '../../types/ReservationTypes';
+import {
+  CreateReservationRequestType,
+  ReservationDetailsResponseType,
+  ReservationsListResponseType,
+} from '../../types/ReservationTypes';
 
 type JSON = Record<string, any> | undefined;
 
@@ -121,6 +125,23 @@ export const baseApiSlice = createApi({
         body: { category_id, family_id, line_id },
       }),
     }),
+    requestReservationsList: builder.query<ReservationsListResponseType, any>({
+      query: () => ({
+        url: '/reservations/getreservationslist/',
+        method: 'GET',
+      }),
+      providesTags: ['reservation'],
+    }),
+    requestReservationDetails: builder.query<
+      ReservationDetailsResponseType,
+      { reservation_id: number }
+    >({
+      query: ({ reservation_id }) => ({
+        url: `/reservations/getreservationDetails/${reservation_id}`,
+        method: 'GET',
+      }),
+      providesTags: ['reservation'],
+    }),
     requestCreateReservation: builder.mutation<JSON, CreateReservationRequestType>({
       query: ({
         products,
@@ -129,12 +150,23 @@ export const baseApiSlice = createApi({
         promo_code,
         start_location_id,
         end_location_id,
-        customer_id
+        customer_id,
+        brand_id,
       }) => ({
         url: 'reservations/createreservation/',
         method: 'POST',
-        body: { products, start_time, end_time, promo_code, start_location_id, end_location_id, customer_id },
+        body: {
+          products,
+          start_date: start_time,
+          end_date: end_time,
+          promo_code,
+          start_location_id,
+          end_location_id,
+          customer_id,
+          brand_id,
+        },
       }),
+      invalidatesTags: ['reservation'],
     }),
   }),
 });
@@ -154,4 +186,6 @@ export const {
   useRequestPriceTableDataQuery,
   useRequestPriceTableHeaderDataQuery,
   useRequestCreateReservationMutation,
+  useRequestReservationsListQuery,
+  useRequestReservationDetailsQuery,
 } = baseApiSlice;

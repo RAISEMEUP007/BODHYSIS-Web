@@ -1,23 +1,24 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
-import CommonInput from '../../../common/components/input/CommonInput';
+import CommonInput from '../../common/components/input/CommonInput';
 import { useDispatch, useSelector } from 'react-redux';
-import { getReservationInfoSelector } from '../../../redux/selectors/reservationSelector';
-import { DEFAULT_DATE_FORMAT, DEFAULT_TIME_FORMAT } from '../../../common/constants/DateFormat';
-import { CommonButton } from '../../../common/components/CommonButton/CommonButton';
-import { Colors } from '../../../common/constants/Colors';
-import { setPromoCode } from '../../../redux/slices/reservationSlice';
-import { useRequestCreateReservationMutation } from '../../../redux/slices/baseApiSlice';
-import { ProductQuantityType } from '../../../types/ReservationTypes';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { getReservationInfoSelector } from '../../redux/selectors/reservationSelector';
+import { DEFAULT_DATE_FORMAT, DEFAULT_TIME_FORMAT } from '../../common/constants/DateFormat';
+import { CommonButton } from '../../common/components/CommonButton/CommonButton';
+import { Colors } from '../../common/constants/Colors';
+import { setPromoCode } from '../../redux/slices/reservationSlice';
+import { useRequestCreateReservationMutation } from '../../redux/slices/baseApiSlice';
+import { ProductQuantityType } from '../../types/ReservationTypes';
+import { useAlertModal } from '../../common/hooks/UseAlertModal';
 
 interface Props {
   width: number;
   inputPadding: number;
   goBack?: () => void;
+  onCompletion?: () => void;
 }
 
-export const ReservationDetailsBasicInfo = ({ width, inputPadding, goBack }: Props) => {
+export const ReservationDetailsBasicInfo = ({ width, inputPadding, onCompletion }: Props) => {
   const reservationInfo = useSelector(getReservationInfoSelector);
   const dispatch = useDispatch();
 
@@ -36,22 +37,17 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding, goBack }: Pro
   const productsToSubmit: Array<ProductQuantityType> = useMemo(() => {
     return products.map((item) => {
       return {
-        product_id: item.value.id,
+        product_id: item.id,
         quantity: item.quantity,
+        product_name: item.product,
+        price: item.price ?? 0,
+        brand: reservationInfo.selectedBrand.value.brand,
       };
     });
   }, [products]);
 
   const [createReservation, { data: createReservationData, error: createReservationError }] =
     useRequestCreateReservationMutation({});
-
-  useEffect(() => {
-    console.log(
-      'updated reservation [post] rersponse',
-      createReservationData,
-      createReservationError
-    );
-  }, [createReservationData, createReservationError]);
 
   const valid = useMemo(() => {
     return productsToSubmit.length && startDate && endDate;
@@ -65,15 +61,14 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding, goBack }: Pro
 
   useEffect(() => {
     if (createReservationData) {
-      if (goBack) {
-        goBack();
+      if (onCompletion) {
+        onCompletion();
       }
       showAlert('success', 'Reservation Created.');
     }
   }, [createReservationData]);
 
   const submit = useCallback(() => {
-    console.log('submit');
     createReservation({
       products: productsToSubmit,
       start_time: reservationInfo.startDate,
@@ -81,7 +76,8 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding, goBack }: Pro
       start_location_id: selectedLocation.value.id,
       end_location_id: selectedLocation.value.id,
       promo_code: promoCode,
-      customer_id: reservationInfo.selectedCustomer.value.id
+      customer_id: reservationInfo.selectedCustomer.value.id,
+      brand_id: reservationInfo.selectedBrand.value.id,
     });
   }, [valid, productsToSubmit, startDate, endDate, promoCode, selectedLocation]);
 
