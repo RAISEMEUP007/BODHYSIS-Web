@@ -51,23 +51,25 @@ import { BrandType } from '../../types/BrandType';
 import { CustomerType } from '../../types/CustomerTypes';
 import { LocationType } from '../../types/LocationType';
 import { PriceTableHeaderDataViewModel } from '../../types/PriceTableTypes';
+import { ReservationsList } from './ReservationsList';
 
 interface Props {
   openInventory: () => void;
+  goBack: () => void;
 }
 
-const CreateReservation = ({ openInventory }: Props) => {
+const CreateReservation = ({ openInventory, goBack }: Props) => {
   const modalizeRef = useRef<Modalize>(null);
 
-  const [selectedDate, setSelectedDate] = useState<Date>(
-    dayjs().toDate()
-  );
+  const [selectedDate, setSelectedDate] = useState<Date>(dayjs().toDate());
 
   const { showAlert } = useAlertModal();
 
   const [selectedSlot, setSelectedSlot] = useState<PriceTableHeaderDataViewModel | null>();
 
   const [showDetails, setShowDetails] = useState(false);
+
+  const [showList, setShowList] = useState(false);
 
   const navigation = useNavigation();
 
@@ -274,6 +276,7 @@ const CreateReservation = ({ openInventory }: Props) => {
         containerStyle={styles.layoutContainer}
         screenName={'Create Reservation'}
         navigation={navigation}
+        goBack={goBack}
       >
         <ScrollView>
           <View style={styles.outterContainer}>
@@ -404,7 +407,7 @@ const CreateReservation = ({ openInventory }: Props) => {
                         selectedSlot.index
                       );
                       dispatch(addProduct(product));
-                      return product
+                      return product;
                     }
                   });
                   dispatch(selectProducts({ products: products }));
@@ -449,8 +452,16 @@ const CreateReservation = ({ openInventory }: Props) => {
         goBack={() => {
           setShowDetails(false);
         }}
+        onCompletion={() => {
+          setShowDetails(false);
+          setShowList(true);
+        }}
       />
     );
+  }
+
+  if (showList) {
+    return <ReservationsList />;
   }
 
   return renderInitial();

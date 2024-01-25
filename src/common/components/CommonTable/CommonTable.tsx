@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react';
-import { FlatList, ViewStyle } from 'react-native';
+import { FlatList, TouchableOpacity, ViewStyle } from 'react-native';
 import { View, StyleSheet, Text } from 'react-native';
 import { Colors } from '../../constants/Colors';
 import { Pressable } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { ProductRquestType } from '../../../types/ProductTypes';
 
 export type BOH_ID = number | string;
 
@@ -15,11 +14,6 @@ export type ColumnType<T> = {
 export interface ObjectWithId {
   id: number;
 }
-
-export type RowType<T> = {
-  id: BOH_ID;
-  values: Array<ColumnType<T>>;
-};
 
 export type RowHeaderType = Array<string>;
 
@@ -34,9 +28,18 @@ interface Props {
   width?: number;
   rowContainerStyle?: ViewStyle;
   onTapRemove?: (item: BOH_ID) => void;
+  onPressItem?: (item: ObjectWithId) => void;
+  showRemove: boolean;
 }
 
-export const CommonTable = ({ data, width = 600, rowContainerStyle, onTapRemove }: Props) => {
+export const CommonTable = ({
+  data,
+  width = 600,
+  rowContainerStyle,
+  onTapRemove,
+  onPressItem,
+  showRemove = true,
+}: Props) => {
   const { rowHeader, tableData } = data;
 
   const keys = useMemo(() => {
@@ -59,10 +62,16 @@ export const CommonTable = ({ data, width = 600, rowContainerStyle, onTapRemove 
 
   const renderRow = ({ item, index }: { item: ObjectWithId; index: number }) => {
     return (
-      <View key={'row' + index.toString()} style={styles.row}>
+      <Pressable
+        onPress={() => {
+          onPressItem(item);
+        }}
+        key={'row' + index.toString()}
+        style={styles.row}
+      >
         {keys.map((key, index) => {
           const renderDeleteButton = () => {
-            if (index > 0) {
+            if (index > 0 || !showRemove) {
               return null;
             }
             return (
@@ -86,7 +95,7 @@ export const CommonTable = ({ data, width = 600, rowContainerStyle, onTapRemove 
             </View>
           );
         })}
-      </View>
+      </Pressable>
     );
   };
 

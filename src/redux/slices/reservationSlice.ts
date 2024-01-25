@@ -1,4 +1,4 @@
-import { createSlice,  isAnyOf } from '@reduxjs/toolkit';
+import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import dayjs, { Dayjs } from 'dayjs';
 import { TableData } from '../../common/components/CommonTable/CommonTable';
@@ -134,7 +134,10 @@ export const reservationSlice = createSlice({
       const { season } = action.payload;
       state.selectedSeason = season;
     },
-    selectProducts: (state, action: PayloadAction<{ products: Array<EquipmentTableProductType> }>) => {
+    selectProducts: (
+      state,
+      action: PayloadAction<{ products: Array<EquipmentTableProductType> }>
+    ) => {
       const { products } = action.payload;
       state.selectedProducts = products;
     },

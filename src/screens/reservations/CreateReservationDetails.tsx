@@ -15,9 +15,10 @@ import { removeProduct } from '../../redux/slices/reservationSlice';
 
 interface Props {
   goBack: () => void;
+  onCompletion: () => void;
 }
 
-export const CreateReservationDetails = ({ goBack }: Props) => {
+export const CreateReservationDetails = ({ goBack, onCompletion }: Props) => {
   const reservationInfo = useSelector(getReservationInfoSelector);
 
   const dispatch = useDispatch();
@@ -32,7 +33,12 @@ export const CreateReservationDetails = ({ goBack }: Props) => {
     <BasicLayout goBack={goBack} screenName={'Create Reservation'} navigation={navigation}>
       <ScrollView style={styles.container}>
         <View style={styles.topContainer}>
-          <ReservationDetailsBasicInfo goBack={goBack} width={400} inputPadding={20} />
+          <ReservationDetailsBasicInfo
+            onCompletion={onCompletion}
+            goBack={goBack}
+            width={400}
+            inputPadding={20}
+          />
           <ReservationTabView />
         </View>
         <View style={styles.bottomContainer}>

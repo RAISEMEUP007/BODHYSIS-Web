@@ -15,9 +15,10 @@ interface Props {
   width: number;
   inputPadding: number;
   goBack?: () => void;
+  onCompletion?: () => void;
 }
 
-export const ReservationDetailsBasicInfo = ({ width, inputPadding, goBack }: Props) => {
+export const ReservationDetailsBasicInfo = ({ width, inputPadding, onCompletion }: Props) => {
   const reservationInfo = useSelector(getReservationInfoSelector);
   const dispatch = useDispatch();
 
@@ -39,7 +40,7 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding, goBack }: Pro
         product_id: item.id,
         quantity: item.quantity,
         product_name: item.product,
-        price: item.price ?? 0
+        price: item.price ?? 0,
       };
     });
   }, [products]);
@@ -59,8 +60,8 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding, goBack }: Pro
 
   useEffect(() => {
     if (createReservationData) {
-      if (goBack) {
-        goBack();
+      if (onCompletion) {
+        onCompletion();
       }
       showAlert('success', 'Reservation Created.');
     }
