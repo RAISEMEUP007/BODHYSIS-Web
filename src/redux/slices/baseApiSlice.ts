@@ -130,6 +130,7 @@ export const baseApiSlice = createApi({
         url: '/reservations/getreservationslist/',
         method: 'GET',
       }),
+      providesTags: ['reservation'],
     }),
     requestReservationDetails: builder.query<
       ReservationDetailsResponseType,
@@ -139,6 +140,7 @@ export const baseApiSlice = createApi({
         url: `/reservations/getreservationDetails/${reservation_id}`,
         method: 'GET',
       }),
+      providesTags: ['reservation'],
     }),
     requestCreateReservation: builder.mutation<JSON, CreateReservationRequestType>({
       query: ({
@@ -164,6 +166,7 @@ export const baseApiSlice = createApi({
           brand_id,
         },
       }),
+      invalidatesTags: ['reservation'],
     }),
   }),
 });

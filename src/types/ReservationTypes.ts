@@ -8,7 +8,7 @@ export type ProductQuantityType = {
 
 export type CreateReservationRequestType = {
   products: Array<ProductQuantityType>;
-  start_: string;
+  start_time: string;
   end_time: string;
   promo_code: string;
   start_location_id: number;
