@@ -63,7 +63,14 @@ export const ReservationsList = ({ navigation, goBack }) => {
   }, [rowHeaderData, reservationsData]);
 
   if (selectedItem) {
-    return <ReservationDetailsView reservation_id={selectedItem.id} />;
+    return (
+      <ReservationDetailsView
+        goBack={() => {
+          setSelectedItem(null);
+        }}
+        reservation_id={selectedItem.id}
+      />
+    );
   }
 
   return (

@@ -2,12 +2,16 @@ import React, { useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { useRequestReservationDetailsQuery } from '../../redux/slices/baseApiSlice';
 import { ReservationDetailsProductType } from '../../types/ReservationTypes';
+import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
+import { DEFAULT_DATE_FORMAT, DEFAULT_DATE_TIME } from '../../common/constants/DateFormat';
+import dayjs from 'dayjs';
 
 interface Props {
   reservation_id: number;
+  goBack: () => void;
 }
 
-export const ReservationDetailsView = ({ reservation_id }: Props) => {
+export const ReservationDetailsView = ({ reservation_id, goBack }: Props) => {
   const { data, error } = useRequestReservationDetailsQuery(
     {
       reservation_id: reservation_id,
@@ -78,11 +82,11 @@ export const ReservationDetailsView = ({ reservation_id }: Props) => {
         <Text style={styles.title}>{'Reservation Info'}</Text>
         <View style={styles.productBlock}>
           <Text style={styles.productLabel}>{'Start Date'}</Text>
-          <Text>{data.start_date}</Text>
+          <Text>{dayjs(data.start_date).format(DEFAULT_DATE_TIME)}</Text>
         </View>
         <View style={styles.productBlock}>
           <Text style={styles.productLabel}>{'End Date'}</Text>
-          <Text>{data.end_date}</Text>
+          <Text>{dayjs(data.end_date).format(DEFAULT_DATE_TIME)}</Text>
         </View>
         <View style={styles.productBlock}>
           <Text style={styles.productLabel}>{'Customer Id'}</Text>
@@ -113,11 +117,13 @@ export const ReservationDetailsView = ({ reservation_id }: Props) => {
   }
 
   return (
-    <View style={styles.container}>
-      {renderHeader()}
-      <Text style={styles.title}>{'Equipment'}</Text>
-      {renderList()}
-    </View>
+    <BasicLayout goBack={goBack} screenName="Reservation Details">
+      <View style={styles.container}>
+        {renderHeader()}
+        <Text style={styles.title}>{'Equipment'}</Text>
+        {renderList()}
+      </View>
+    </BasicLayout>
   );
 };
 
