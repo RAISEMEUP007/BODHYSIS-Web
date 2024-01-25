@@ -13,8 +13,8 @@ interface Props {
 }
 
 const Reservations = ({ navigation, goBack }: Props) => {
-  const [selectedItem, setSelectedItem] = useState(null);
   const [data, setData] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const handleItemClick = (itemName, data) => {
     setSelectedItem(itemName);

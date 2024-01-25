@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   CommonTable,
   ObjectWithId,
@@ -10,6 +10,8 @@ import { useWindowDimensions } from 'react-native';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import dayjs from 'dayjs';
 import { DEFAULT_DATE_TIME } from '../../common/constants/DateFormat';
+import { ReservationResponseType } from '../../types/ReservationTypes';
+import { ReservationDetailsView } from './ReservationDetailsView';
 
 interface Props {
   navigation: any;
@@ -20,6 +22,8 @@ export const ReservationsList = ({ navigation, goBack }) => {
   const { data: reservationsData } = useRequestReservationsListQuery({}, { refetchOnFocus: true });
 
   const { width } = useWindowDimensions();
+
+  const [selectedItem, setSelectedItem] = useState<ReservationResponseType | null>(null);
 
   useEffect(() => {
     console.log(reservationsData);
@@ -58,11 +62,17 @@ export const ReservationsList = ({ navigation, goBack }) => {
     };
   }, [rowHeaderData, reservationsData]);
 
+  if (selectedItem) {
+    return <ReservationDetailsView reservation_id={selectedItem.id} />;
+  }
+
   return (
     <BasicLayout goBack={goBack} navigation={navigation} screenName={'Reservations List'}>
       <CommonTable
         showRemove={false}
-        onPressItem={(item) => {}}
+        onPressItem={(item) => {
+          setSelectedItem(item);
+        }}
         width={width - 200}
         data={tableData}
       />

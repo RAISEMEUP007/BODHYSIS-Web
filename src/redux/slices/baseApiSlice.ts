@@ -17,6 +17,7 @@ import { PriceLogicType } from '../../types/PriceLogicTypes';
 import { PriceGroupArrayType } from '../../types/PriceGroupType';
 import {
   CreateReservationRequestType,
+  ReservationDetailsResponseType,
   ReservationsListResponseType,
 } from '../../types/ReservationTypes';
 
@@ -131,7 +132,7 @@ export const baseApiSlice = createApi({
       }),
     }),
     requestReservationDetails: builder.query<
-      ReservationsDetailsResponseType,
+      ReservationDetailsResponseType,
       { reservation_id: number }
     >({
       query: ({ reservation_id }) => ({
@@ -183,4 +184,5 @@ export const {
   useRequestPriceTableHeaderDataQuery,
   useRequestCreateReservationMutation,
   useRequestReservationsListQuery,
+  useRequestReservationDetailsQuery,
 } = baseApiSlice;
