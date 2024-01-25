@@ -84,9 +84,6 @@ const MainDrawer = ({ navigation }) => {
           unmountOnBlur: true,
           headerShown: false,
         }}
-        onPress={() => {
-          console.log('ddd');
-        }}
       />
       <Drawer.Screen
         name="Reservation"

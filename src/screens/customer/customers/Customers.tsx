@@ -20,7 +20,7 @@ import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 import { customersStyle } from './styles/CustomersStyle';
 import AddCustomerModal from './AddCustomerModal';
 
-const Customers = ({ navigation, openInventory }) => {
+const Customers = ({ navigation }) => {
   const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
