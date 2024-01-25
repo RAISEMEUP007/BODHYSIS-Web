@@ -41,6 +41,7 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding, onCompletion 
         quantity: item.quantity,
         product_name: item.product,
         price: item.price ?? 0,
+        brand: reservationInfo.selectedBrand.value.brand,
       };
     });
   }, [products]);

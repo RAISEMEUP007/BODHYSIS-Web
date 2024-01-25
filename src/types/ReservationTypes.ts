@@ -3,6 +3,7 @@ export type ProductQuantityType = {
   quantity: number;
   product_name: string;
   price: number;
+  brand: string;
 };
 
 export type CreateReservationRequestType = {

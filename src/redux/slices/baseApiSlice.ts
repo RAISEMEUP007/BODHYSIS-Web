@@ -130,6 +130,15 @@ export const baseApiSlice = createApi({
         method: 'GET',
       }),
     }),
+    requestReservationDetails: builder.query<
+      ReservationsDetailsResponseType,
+      { reservation_id: number }
+    >({
+      query: ({ reservation_id }) => ({
+        url: `/reservations/getreservationDetails/${reservation_id}`,
+        method: 'GET',
+      }),
+    }),
     requestCreateReservation: builder.mutation<JSON, CreateReservationRequestType>({
       query: ({
         products,
