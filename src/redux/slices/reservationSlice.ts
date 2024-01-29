@@ -1,4 +1,4 @@
-import { createSlice, isAllOf, isAnyOf } from '@reduxjs/toolkit';
+import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import dayjs, { Dayjs } from 'dayjs';
 import { TableData } from '../../common/components/CommonTable/CommonTable';
@@ -7,8 +7,7 @@ import { InitalTableData } from '../../mock-data/mock-table-data';
 import { DropdownItem } from '../../common/components/CommonDropdown/CommonDropdown';
 import { CustomerType } from '../../types/CustomerTypes';
 import { LocationType } from '../../types/LocationType';
-import { SeasonType } from '../../types/SeasonTypes';
-import { ProductSelection } from '../../screens/Inventory/reservations/EquipmentDropdown';
+import { EquipmentTableProductType, SeasonType } from '../../types/SeasonTypes';
 import { PriceTableDataResponseType, PriceTableType } from '../../types/PriceTableTypes';
 import { PriceGroupArrayType, PriceGroupType } from '../../types/PriceGroupType';
 import { PriceLogicType } from '../../types/PriceLogicTypes';
@@ -29,7 +28,7 @@ export interface ReservationState {
   selectedCustomer: DropdownItem<CustomerType> | null;
   selectedLocation: DropdownItem<LocationType> | null;
   selectedSeason: SeasonType | null;
-  selectedProducts: Array<ProductSelection>;
+  selectedProducts: Array<EquipmentTableProductType>;
   priceTables: Array<PriceTableType>;
   priceTablesMap: Record<number, PriceTableType>;
   priceGroups: PriceGroupArrayType;
@@ -114,34 +113,31 @@ export const reservationSlice = createSlice({
         state.reservationTableData.tableData.splice(index, 1);
       }
     },
-    addProduct: (state, action: PayloadAction<any>) => {
+    addProduct: (state, action: PayloadAction<EquipmentTableProductType>) => {
       const tableData = state.reservationTableData.tableData;
       tableData.push(action.payload);
       state.reservationTableData.tableData = tableData;
     },
     selectBrand: (state, action: PayloadAction<{ brand: DropdownItem<Brand> }>) => {
       const { brand } = { ...action.payload };
-
-      console.log('selecting brand', brand);
       state.selectedBrand = brand;
-
-      console.log('selected brand result', state.selectedBrand);
     },
     selectCustomer: (state, action: PayloadAction<{ customer: DropdownItem<CustomerType> }>) => {
       const { customer } = action.payload;
-      console.log('selected customer', customer);
       state.selectedCustomer = customer;
     },
     selectLocation: (state, action: PayloadAction<{ location: DropdownItem<LocationType> }>) => {
       const { location } = action.payload;
-      console.log('selected location', location);
       state.selectedLocation = location;
     },
     selectSeason: (state, action: PayloadAction<{ season: SeasonType }>) => {
       const { season } = action.payload;
       state.selectedSeason = season;
     },
-    selectProducts: (state, action: PayloadAction<{ products: Array<ProductSelection> }>) => {
+    selectProducts: (
+      state,
+      action: PayloadAction<{ products: Array<EquipmentTableProductType> }>
+    ) => {
       const { products } = action.payload;
       state.selectedProducts = products;
     },
@@ -195,12 +191,6 @@ export const reservationSlice = createSlice({
           !priceLogic.length ||
           !Object.keys(priceTablesMap).length
         ) {
-          console.log({
-            selectedSeason: selectedSeason?.season,
-            selectedBrand: selectedBrand?.value?.brand,
-            priceTablesMap: Object.keys(priceTablesMap).length,
-          });
-
           return;
         }
 
