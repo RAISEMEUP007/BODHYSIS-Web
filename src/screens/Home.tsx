@@ -7,6 +7,7 @@ import Dashboard from './Dashboard';
 import Inventory from './Inventory/Inventory';
 import Settings from './settings/Settings';
 import Customers from './customer/customers/Customers';
+import Orders from './order/orders/Orders';
 import CreateReservation from './Inventory/reservations/CreateReservation';
 
 const MainDrawer = ({ navigation }) => {
@@ -24,6 +25,10 @@ const MainDrawer = ({ navigation }) => {
 
   const CustomerScreen = ({ navigation }) => {
     return <Customers navigation={navigation} />;
+  };
+
+  const OrdersScreen = ({ navigation }) => {
+    return <Orders navigation={navigation} />;
   };
 
   const SettingsScreen = ({ navigation }) => {
@@ -45,7 +50,7 @@ const MainDrawer = ({ navigation }) => {
           )}
           style={{ marginTop: 20 }}
           labelStyle={{ color: 'black', fontWeight: 'bold' }}
-          iconContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}
+          // iconContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}
         />
         <DrawerItemList {...props} />
         <DrawerItem label="Log out" onPress={() => navigation.navigate('Auth')} />
@@ -60,21 +65,21 @@ const MainDrawer = ({ navigation }) => {
       screenOptions={{
         drawerType: Platform.OS == 'web' && isLargeScreen ? 'permanent' : 'front',
       }}
-      options={{
-        drawerLabel: 'Dashboard',
-        drawerIcon: ({ focused, color, size }) => (
-          <Icon
-            name={focused ? 'menu-open' : 'menu-close'}
-            size={size}
-            color={color}
-            onPress={() => {
-              // Handle click event here
-              console.log('Drawer icon clicked');
-            }}
-          />
-        ),
-        headerShown: false,
-      }}
+      // options={{
+      //   drawerLabel: 'Dashboard',
+      //   drawerIcon: ({ focused, color, size }) => (
+      //     <Icon
+      //       name={focused ? 'menu-open' : 'menu-close'}
+      //       size={size}
+      //       color={color}
+      //       onPress={() => {
+      //         // Handle click event here
+      //         console.log('Drawer icon clicked');
+      //       }}
+      //     />
+      //   ),
+      //   headerShown: false,
+      // }}
     >
       <Drawer.Screen
         name="Dashboard"
@@ -108,6 +113,15 @@ const MainDrawer = ({ navigation }) => {
         component={CustomerScreen}
         options={{
           drawerLabel: 'Customer',
+          unmountOnBlur: true,
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="Orders"
+        component={OrdersScreen}
+        options={{
+          drawerLabel: 'Orders',
           unmountOnBlur: true,
           headerShown: false,
         }}
