@@ -36,7 +36,7 @@ export const CommonSelectDropdown = ({
 
   const [selectedItem, setSelectedItem] = useState<null | DropdownItem<any>>(null);
   const [filteredData, setFilteredData] = useState<DropdownData<any>>(data);
-  const selectDropdownRef = useRef<any>(null);
+  // const selectDropdownRef = useRef<any>(null);
 
   useEffect(()=>{
     setFilteredData(data);
@@ -53,18 +53,18 @@ export const CommonSelectDropdown = ({
     );
   };
 
-  console.log(selectedItem);
   const renderData = () => {
     return (
       <View style={{
       }}>
         <SelectDropdown
-          ref={selectDropdownRef}
+          // ref={selectDropdownRef}
           data={filteredData}
           search={true}
-          defaultButtonText={placeholder}
-          buttonStyle={{width:300, padding: 8, height:'auto', borderWidth:1, borderColor:'#808080', backgroundColor:'white'}}
-          buttonTextStyle={{fontSize:14}}
+          defaultButtonText={selectedItem?selectedItem.displayLabel : placeholder}
+          // buttonStyle={{width:'100%', padding: 8, height:'auto', borderWidth:1, borderColor:'#808080', backgroundColor:(selectedItem?'#f4ffff':'white')}}
+          buttonStyle={{width:'100%', padding: 8, height:'auto', borderWidth:1, borderColor:'#808080', backgroundColor:'white'}}
+          buttonTextStyle={{fontSize:14, textAlign: textAlign, color:(selectedItem?'#002133':'#bfbfbf')}}
           renderDropdownIcon={()=>{
             return <FontAwesome5 name="chevron-down" color="black" />
           }}
@@ -78,7 +78,6 @@ export const CommonSelectDropdown = ({
             // setFilteredData(data);
           }}
           onSelect={(selectedItem, index) => {
-            console.log('dddd');
             setSelectedItem(selectedItem);
             if (onItemSelected) {
               onItemSelected(selectedItem as any);
@@ -91,11 +90,9 @@ export const CommonSelectDropdown = ({
             return item.displayLabel
           }}
           onBlur={()=>{
-            console.log('ddd');
             setFilteredData(data);
           }}
           onChangeSearchInputText={(txt)=>{
-            console.log('hj');
             if(txt != '' && txt.trim() != ''){
               const filteredData = data.filter((item) =>
                 item.displayLabel.toLowerCase().includes(txt.toLowerCase())

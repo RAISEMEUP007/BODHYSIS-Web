@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { View, StyleSheet, Text, ScrollView } from 'react-native';
+import React, { useCallback, useEffect, useMemo, forwardRef, useState } from 'react';
+import { View, StyleSheet, Text, ScrollView, TouchableHighlight } from 'react-native';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import { useNavigation } from '@react-navigation/native';
 import CommonInput from '../../common/components/input/CommonInput';
@@ -7,7 +7,6 @@ import { Colors } from '../../common/constants/Colors';
 import Slots from '../../common/slots/slots';
 import { CommonButton } from '../../common/components/CommonButton/CommonButton';
 import { EquipmentDropdown, ProductSelection } from './EquipmentDropdown';
-import { Modalize } from 'react-native-modalize';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import dayjs from 'dayjs';
@@ -53,6 +52,20 @@ import { LocationType } from '../../types/LocationType';
 import { PriceTableHeaderDataViewModel } from '../../types/PriceTableTypes';
 import { ReservationsList } from './ReservationsList';
 import { CommonSelectDropdown } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
+import { Platform } from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
+import AddCustomerModal from '../customer/customers/AddCustomerModal';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { getCustomersData } from '../../api/Customer';
+import { msgStr } from '../../common/constants/Message';
+
+if (Platform.OS === 'web') {
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = 'react-datepicker/dist/react-datepicker.css';
+  document.head.appendChild(link);
+}
 
 interface Props {
   openInventory: () => void;
@@ -60,7 +73,6 @@ interface Props {
 }
 
 const CreateReservation = ({ openInventory, goBack }: Props) => {
-  const modalizeRef = useRef<Modalize>(null);
 
   const [selectedDate, setSelectedDate] = useState<Date>(dayjs().toDate());
 
@@ -85,12 +97,37 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
     }
   );
 
-  const { data: customersData } = useRequestCustomersQuery(
-    {},
-    {
-      refetchOnFocus: true,
-    }
-  );
+  // const { data: customersData } = useRequestCustomersQuery(
+  //   {},
+  //   {
+  //     refetchOnFocus: true,
+  //   }
+  // );
+
+  const [customersData, setCustomers] = useState([]);
+  const [updateCustomerTrigger, setUpdateCustomerTrigger] = useState(true);
+
+  useEffect(() => {
+    if (updateCustomerTrigger == true) getCustomers();
+  }, [updateCustomerTrigger]);
+
+  const getCustomers = () => {
+    getCustomersData((jsonRes, status, error) => {
+      switch (status) {
+        case 200:
+          setCustomers(jsonRes);
+          setUpdateCustomerTrigger(false);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          break;
+        default:
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    });
+  };
 
   const { data: locationsData } = useRequestLocationsQuery(
     {},
@@ -175,6 +212,19 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
   }, [priceLogicData]);
 
   useEffect(() => {}, [reservationInfo.priceTableData]);
+
+  const [isAddModalVisible, setAddModalVisible] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+
+  const openAddCustomerModal = () => {
+    setAddModalVisible(true);
+    setSelectedCustomer(null);
+  };
+
+  const closeAddCustomerModal = () => {
+    setAddModalVisible(false);
+    setSelectedCustomer(null);
+  };
 
   // TODO: Combine into single hook
   const { data: priceTableData } = useRequestPriceTableDataQuery(
@@ -271,6 +321,35 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
     return startDay.add(milisecondsToAdd, 'milliseconds').toDate();
   }, [selectedDate, selectedSlot]);
 
+  const CustomInput = forwardRef(({ value, onChange, onClick }, ref) => (
+    <input
+      onClick={onClick}
+      onChange={onChange}
+      ref={ref}
+      style={styles.input}
+      value={value}
+    ></input>
+  ));
+
+  const renderDatePicker = (selectedDate, onChangeHandler) => {
+    return (
+      <View style={{}}>
+        <DatePicker
+          selected={selectedDate}
+          onChange={(date) => onChangeHandler(date)}
+          customInput={<CustomInput />}
+          peekNextMonth
+          showMonthDropdown
+          showYearDropdown
+          dropdownMode="select"
+          timeInputLabel="Time:"
+          dateFormat="MM/dd/yyyy hh:mm aa"
+          showTimeSelect
+        />
+      </View>
+    );
+  };
+
   const renderInitial = () => {
     return (
       <BasicLayout
@@ -281,70 +360,90 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
       >
         <ScrollView>
           <View style={styles.outterContainer}>
-            <CommonSelectDropdown
-              containerStyle={{
-                paddingTop: 20,
-                marginBottom: 20,
-              }}
-              width={250}
-              onItemSelected={(item) => {
-                dispatch(selectCustomer({ customer: item as any }));
-              }}
-              data={customersDropdownData}
-              placeholder="Select A Customer"
-              title={'Customers'}
-            />
-            <CommonSelectDropdown
-              containerStyle={{
-                paddingTop: 20,
-                marginBottom: 20,
-              }}
-              width={250}
-              onItemSelected={(item) => {
-                console.log(item);
-                dispatch(selectLocation({ location: item as any }));
-              }}
-              data={locationsDropdownData}
-              placeholder="Select A Location"
-              title={'Location'}
-            />
-            <CommonSelectDropdown
-              containerStyle={{
-                paddingTop: 20,
-                marginBottom: 40,
-              }}
-              width={250}
-              onItemSelected={(item) => {
-                dispatch(selectBrand({ brand: item as any }));
-              }}
-              data={brandsDropdownData}
-              placeholder="Select A Brand"
-              title={'Brands'}
-            />
-            <View style={{ ...styles.timeContainer, width: 400 }}>
-              <CommonInput
-                onChangeText={() => {}}
-                onFocus={() => {
-                  modalizeRef.current.open();
+            <View style={styles.reservationRow}>
+              <TouchableHighlight style={styles.button} onPress={openAddCustomerModal}>
+                <View style={{flexDirection:'row', alignItems:'center'}}>
+                  <FontAwesome5 name="plus" size={14} color="black" />
+                  <Text style={styles.buttonText}>Add</Text>
+                </View>
+              </TouchableHighlight>
+              <CommonSelectDropdown
+                containerStyle={{
+                  marginRight: 40,
                 }}
-                value={selectedDate && dayjs(selectedDate).format(RESERVATION_FORMAT)}
-                width={190}
-                title={'Pick Up Time'}
-                placeholder="Select Date"
-              />
-              <CommonInput
-                onChangeText={() => {}}
-                value={endDate && dayjs(endDate).format(RESERVATION_FORMAT)}
-                width={190}
-                title={'Drop Off Time'}
+                width={350}
+                onItemSelected={(item) => {
+                  dispatch(selectCustomer({ customer: item as any }));
+                }}
+                data={customersDropdownData}
+                placeholder="Select A Customer"
+                title={'Customers'}
               />
             </View>
-            <Slots
-              onSelect={(item) => {
-                setSelectedSlot(item);
-              }}
-              items={priceTableHeaderData}
-            />
+            <View style={styles.reservationRow}>
+              <CommonSelectDropdown
+                containerStyle={{
+                  marginRight: 40,
+                }}
+                width={350}
+                onItemSelected={(item) => {
+                  dispatch(selectLocation({ location: item as any }));
+                }}
+                data={locationsDropdownData}
+                placeholder="Select A Location"
+                title={'Location'}
+              />
+              <CommonSelectDropdown
+                containerStyle={{
+                  marginRight: 40,
+                }}
+                width={350}
+                onItemSelected={(item) => {
+                  console.log(item);
+                  dispatch(selectBrand({ brand: item as any }));
+                }}
+                data={brandsDropdownData}
+                placeholder="Select A Brand"
+                title={'Brands'}
+              />
+            </View>
+            <View style={[styles.reservationRow, {zIndex:10}]}>
+              {/* <CommonInput
+                onChangeText={() => {}}
+                onFocus={() => {
+                  // modalizeRef.current.open();
+                }}
+                value={selectedDate && dayjs(selectedDate).format(RESERVATION_FORMAT)}
+                width={350}
+                title={'Pick Up Time'}
+                placeholder="Select Date"
+              /> */}
+              <View style={{marginRight:40}}>
+                <Text style={{marginBottom:10, fontWeight:'bold'}}>{'Pick Up Time'}</Text>
+                {Platform.OS == 'web' && renderDatePicker(selectedDate, (date)=>setSelectedDate(sanitizeDate(date)))}
+              </View>
+              {/* <CommonInput
+                onChangeText={() => {}}
+                value={endDate && dayjs(endDate).format(RESERVATION_FORMAT)}
+                width={350}
+                title={'Drop Off Time'}
+              /> */}
+              <View style={{marginRight:40}}>
+                <Text style={{marginBottom:10, fontWeight:'bold'}}>{'Drop Off Time'}</Text>
+                <TextInput editable={false} 
+                style={styles.input} value={endDate && dayjs(endDate).format(RESERVATION_FORMAT)}
+                ></TextInput>
+              </View>
+            </View>
+
+            <View style={[styles.reservationRow]}>
+              <Slots
+                onSelect={(item) => {
+                  setSelectedSlot(item);
+                }}
+                items={priceTableHeaderData}
+              />
+            </View>
 
             <Text style={styles.equipmentText}>{'Equipment'}</Text>
             <CommonButton
@@ -433,17 +532,12 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
             </View>
           </View>
         </ScrollView>
-        <Modalize ref={modalizeRef}>
-          <View style={styles.modal}>
-            <Text style={styles.selectDateModalText}>{'Select Date'}</Text>
-            <DatePicker
-              onChange={(date) => {
-                modalizeRef.current.close();
-                setSelectedDate(sanitizeDate(date));
-              }}
-            />
-          </View>
-        </Modalize>
+        <AddCustomerModal
+          isModalVisible={isAddModalVisible}
+          Customer={selectedCustomer}
+          setUpdateCustomerTrigger={setUpdateCustomerTrigger}
+          closeModal={closeAddCustomerModal}
+        />
       </BasicLayout>
     );
   };
@@ -474,12 +568,19 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.Neutrals.WHITE,
   },
   outterContainer: {
-    padding: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 30,
     backgroundColor: Colors.Neutrals.WHITE,
   },
   container: {
     flex: 1,
     backgroundColor: Colors.Neutrals.WHITE,
+  },
+  reservationRow: {
+    flexDirection: 'row',
+    flexWrap:'wrap',
+    marginVertical: 8,
+    paddingVertical: 8,
   },
   timeContainer: {
     flexDirection: 'row',
@@ -502,6 +603,32 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     paddingHorizontal: 20,
+  },
+  input:{
+    boxSizing: 'border-box',
+    padding:8,
+    fontSize:14,
+    width:350,
+    borderWidth:1, 
+    borderColor:'#808080',
+    height: 37,
+  },
+  buttonText: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginLeft: 10,
+  },
+  button: {
+    zIndex: 1,
+    position: 'absolute',
+    top: 5,
+    left: 272,
+    paddingVertical: 4,
+    paddingHorizontal: 14,
+    alignItems: 'center',
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: '#6c757d',
   },
 });
 
