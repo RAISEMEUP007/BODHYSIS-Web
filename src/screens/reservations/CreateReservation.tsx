@@ -52,6 +52,7 @@ import { CustomerType } from '../../types/CustomerTypes';
 import { LocationType } from '../../types/LocationType';
 import { PriceTableHeaderDataViewModel } from '../../types/PriceTableTypes';
 import { ReservationsList } from './ReservationsList';
+import { CommonSelectDropdown } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
 
 interface Props {
   openInventory: () => void;
@@ -280,7 +281,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
       >
         <ScrollView>
           <View style={styles.outterContainer}>
-            <CommonDropdown
+            <CommonSelectDropdown
               containerStyle={{
                 paddingTop: 20,
                 marginBottom: 20,
@@ -293,20 +294,21 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
               placeholder="Select A Customer"
               title={'Customers'}
             />
-            <CommonDropdown
+            <CommonSelectDropdown
               containerStyle={{
                 paddingTop: 20,
                 marginBottom: 20,
               }}
               width={250}
               onItemSelected={(item) => {
+                console.log(item);
                 dispatch(selectLocation({ location: item as any }));
               }}
               data={locationsDropdownData}
               placeholder="Select A Location"
               title={'Location'}
             />
-            <CommonDropdown
+            <CommonSelectDropdown
               containerStyle={{
                 paddingTop: 20,
                 marginBottom: 40,

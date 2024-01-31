@@ -45,7 +45,6 @@ const MainDrawer = ({ navigation }) => {
           )}
           style={{ marginTop: 20 }}
           labelStyle={{ color: 'black', fontWeight: 'bold' }}
-          iconContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}
         />
         <DrawerItemList {...props} />
         <DrawerItem label="Log out" onPress={() => navigation.navigate('Auth')} />
@@ -55,25 +54,10 @@ const MainDrawer = ({ navigation }) => {
 
   return (
     <Drawer.Navigator
-      initialRouteName="Inventory"
+      initialRouteName="Reservation"
       drawerContent={(props) => <DrawerContent {...props} />}
       screenOptions={{
         drawerType: Platform.OS == 'web' && isLargeScreen ? 'permanent' : 'front',
-      }}
-      options={{
-        drawerLabel: 'Dashboard',
-        drawerIcon: ({ focused, color, size }) => (
-          <Icon
-            name={focused ? 'menu-open' : 'menu-close'}
-            size={size}
-            color={color}
-            onPress={() => {
-              // Handle click event here
-              console.log('Drawer icon clicked');
-            }}
-          />
-        ),
-        headerShown: false,
       }}
     >
       <Drawer.Screen
