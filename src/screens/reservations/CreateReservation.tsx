@@ -38,6 +38,7 @@ import {
   useRequestPriceTableDataQuery,
   useRequestPriceTableHeaderDataQuery,
   useRequestProductsQuery,
+  useRequestProductLinesQuery,
 } from '../../redux/slices/baseApiSlice';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import {
@@ -171,7 +172,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
     }
   );
 
-  const { data: productsData } = useRequestProductsQuery({
+  const { data: productsData } = useRequestProductLinesQuery({
     category_id: 0,
     family_id: 0,
     line_id: 0,

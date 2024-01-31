@@ -37,8 +37,8 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
     const result: DropdownData<ProductType> = products.map((item, index) => {
       return {
         value: item,
-        displayLabel: `Product - ${item.product}`,
-        secondaryLabel: `Line - ${item.line.line}\nProduct - ${item.product}`,
+        displayLabel: `${item.line}`,
+        secondaryLabel: `family - ${item.family.family}\n line - ${item.line}`,
         index,
       };
     });
