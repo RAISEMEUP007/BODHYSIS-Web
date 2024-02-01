@@ -89,7 +89,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
 
   const reservationInfo = useSelector(getReservationInfoSelector);
 
-  const [equipmentData, setEquipmentData] = useState<Array<ProductSelection>>([]);
+  const [equipmentData, setEquipmentData] = useState<Array<any>>([]);
 
   const { data: brandsData } = useRequestBrandsQuery(
     {},
@@ -365,7 +365,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
               <TouchableHighlight style={styles.button} onPress={openAddCustomerModal}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
                   <FontAwesome5 name="plus" size={14} color="black" />
-                  <Text style={styles.buttonText}>Add</Text>
+                  <Text style={styles.buttonText}>Add Customer</Text>
                 </View>
               </TouchableHighlight>
               <CommonSelectDropdown
@@ -431,8 +431,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
               /> */}
               <View style={{marginRight:40}}>
                 <Text style={{marginBottom:10, fontWeight:'bold'}}>{'Drop Off Time'}</Text>
-                <TextInput editable={false} 
-                style={styles.input} value={endDate && dayjs(endDate).format(RESERVATION_FORMAT)}
+                <TextInput editable={false} style={styles.input} value={endDate ? dayjs(endDate).format(RESERVATION_FORMAT) : ''}
                 ></TextInput>
               </View>
             </View>
@@ -459,6 +458,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
               <EquipmentDropdown
                 products={productsData ?? []}
                 onChange={(data) => {
+                  console.log(data);
                   setEquipmentData(data);
                 }}
               />
@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap:'wrap',
     marginVertical: 8,
-    paddingVertical: 8,
+    // paddingVertical: 8,
   },
   timeContainer: {
     flexDirection: 'row',
@@ -622,9 +622,9 @@ const styles = StyleSheet.create({
   button: {
     zIndex: 1,
     position: 'absolute',
-    top: 5,
-    left: 272,
-    paddingVertical: 4,
+    bottom: 0,
+    left: 390,
+    paddingVertical: 8,
     paddingHorizontal: 14,
     alignItems: 'center',
     borderRadius: 3,

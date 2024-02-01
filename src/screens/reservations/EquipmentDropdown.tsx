@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { View, StyleSheet, Text, FlatList, Modal, Pressable, ScrollView } from 'react-native';
+import { View, StyleSheet, Text, FlatList, Modal, Pressable, ScrollView, TextInput } from 'react-native';
 import CommonInput from '../../common/components/input/CommonInput';
 import { CommonButton } from '../../common/components/CommonButton/CommonButton';
 import { Colors } from '../../common/constants/Colors';
@@ -56,7 +56,7 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
   const [productsToRender, setProductsToRender] = useState<Array<ProductSelection>>([
     {
       name: null,
-      quantity: 0,
+      quantity: 1,
       index: 0,
       value: null,
     },
@@ -66,7 +66,7 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
     const result: Array<ProductSelection> = [...productsToRender];
     result.push({
       name: null,
-      quantity: 0,
+      quantity: 1,
       index: currentIndex + 1,
       value: null,
     });
@@ -100,34 +100,34 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
             }}
             style={styles.selectButton}
           >
-            <Text>{dataMap[index]?.name ? dataMap[index].name : 'Select A Product'}</Text>
+            <Text style={{color:(dataMap[index]?.name ? 'black' : '#bfbfbf')}}>{dataMap[index]?.name ? dataMap[index].name : 'Select A Product'}</Text>
           </Pressable>
         </View>
         <View style={styles.quantityContainer}>
-          <CommonInput
+          <TextInput
             placeholder="Enter"
+            value='1'
             onChangeText={(value) => {
               const map = { ...dataMap };
               if (!map[index]) {
                 map[index] = {
                   name: null,
                   index: index,
-                  quantity: 0,
+                  quantity: 1,
                   value: null,
                 };
               }
-              // validate quantity is numeric
-              // default to quanity of 1 if not numeric
-              if (Number.isInteger(parseInt(value)) && value > 0) {
-                map[index].quantity = value;
+              
+              const parsedValue = parseInt(value, 10);
+              if (!isNaN(parsedValue) && parsedValue > 0) {
+                map[index].quantity = parsedValue;
               } else {
                 map[index].quantity = 1;
               }
 
               setDataMap(map);
             }}
-            containerStyle={{ marginTop: 20 }}
-            width={60}
+            style={{textAlign:'right', width:70, borderWidth:1, borderColor: '#808080', padding:8}}
           />
         </View>
         <View style={styles.deleteContainer}>
@@ -180,21 +180,23 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
     );
   };
 
-  const topContainerHeight = 20;
+  // const topContainerHeight = 20;
   return (
     <View style={styles.outterContainer}>
       <View style={styles.topContainer}>
         <View style={styles.leftColumnContainer} />
-        <View style={{ ...styles.productNameContainer, height: topContainerHeight }}>
+        <View style={{ ...styles.productNameContainer}}>
           <Text>{'Product Name'}</Text>
         </View>
-        <View style={{ ...styles.quantityContainer, height: topContainerHeight }}>
+        <View style={{ ...styles.quantityContainer}}>
           <Text>{'Quantity'}</Text>
         </View>
-        <View style={{ ...styles.deleteContainer, height: topContainerHeight }}></View>
+        <View style={{ ...styles.deleteContainer}}></View>
       </View>
       <FlatList renderItem={renderItem} data={productsToRender} />
-      <CommonButton type={'rounded'} onPress={createNewItem} label={'New Item'} />
+      <View style={{marginTop:20}}>
+        <CommonButton type={'rounded'} onPress={createNewItem} label={'New Item'} />
+      </View>
       {renderModal()}
     </View>
   );
@@ -213,39 +215,34 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 100,
+    padding: 6,
   },
   leftColumnContainer: {
-    width: 100,
+    width: 50,
     alignItems: 'center',
   },
   productNameContainer: {
-    height: 40,
+    alignItems: 'flex-start',
     width: 400,
-    alignItems: 'center',
   },
   index: {
-    marginBottom: 2,
   },
   quantityContainer: {
-    marginLeft: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 40,
+    marginHorizontal:40,
   },
   deleteContainer: {
-    width: 180,
     alignItems: 'flex-start',
     justifyContent: 'center',
-    height: 40,
   },
   selectButton: {
-    width: 240,
-    alignItems: 'center',
+    width: 400,
+    alignItems: 'flex-start',
     justifyContent: 'center',
-    padding: 10,
+    padding: 8,
     borderWidth: 1,
-    borderColor: Colors.Neutrals.LIGHT_GRAY,
+    borderColor: '#808080',
   },
   modal: {
     padding: 20,
@@ -258,6 +255,5 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 20,
-    marginBottom: 10,
   },
 });
