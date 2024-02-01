@@ -66,7 +66,7 @@ const Reservations = ({ navigation, goBack }: Props) => {
   }
 
   return (
-    <BasicLayout goBack={goBack} navigation={navigation} screenName={'Inventory'}>
+    <BasicLayout goBack={goBack} navigation={navigation} screenName={'Reservations'}>
       <ScrollView>
         <View style={styles.container}>
           <TouchNavGroup

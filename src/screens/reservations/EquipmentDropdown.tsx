@@ -22,7 +22,7 @@ type EquipmentMap = Record<number, ProductSelection>;
 interface Props {
   onChange: (data: Array<ProductSelection>) => void;
   products: ProductResponseType;
-  headerData: PriceTableHeaderDataResponseType;
+  // headerData: PriceTableHeaderDataResponseType;
 }
 
 export const EquipmentDropdown = ({ onChange, products }: Props) => {
@@ -100,7 +100,7 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
             }}
             style={styles.selectButton}
           >
-            <Text style={{color:(dataMap[index]?.name ? 'black' : '#bfbfbf')}}>{dataMap[index]?.name ? dataMap[index].name : 'Select A Product'}</Text>
+            <Text style={{color:(dataMap[index]?.name ? 'black' : '#bfbfbf')}}>{dataMap[index]?.name ? dataMap[index].name : 'Select A Product Line'}</Text>
           </Pressable>
         </View>
         <View style={styles.quantityContainer}>
@@ -149,7 +149,7 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
     return (
       <Modal visible={showModal}>
         <View style={styles.modal}>
-          <Text style={styles.modalTitle}>{'Select A Product'}</Text>
+          <Text style={styles.modalTitle}>{'Select A Product Line'}</Text>
           <ScrollView style={styles.modalScroll}>
             <CommonDropdown
               textAlign={'left'}
