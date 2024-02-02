@@ -310,7 +310,9 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
     return day.toDate();
   }, []);
 
-  const endDate = useMemo(() => {
+  const [endDate, setEnddate] = useState<Date>();
+
+  const calculatedEndDate = useMemo(() => {
     if (!selectedDate || !selectedSlot) {
       return null;
     }
@@ -321,6 +323,10 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
 
     return startDay.add(milisecondsToAdd, 'milliseconds').toDate();
   }, [selectedDate, selectedSlot]);
+
+  useEffect(()=>{
+    setEnddate(calculatedEndDate);
+  },[calculatedEndDate])
 
   const CustomInput = forwardRef(({ value, onChange, onClick }, ref) => (
     <input
@@ -351,15 +357,34 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
     );
   };
 
+  const renderEndDatePicker = (selectedDate, onChangeHandler, minDate) => {
+    return (
+      <View style={{}}>
+        <DatePicker
+          selected={selectedDate}
+          onChange={(date) => onChangeHandler(date)}
+          customInput={<CustomInput />}
+          minDate={minDate}
+          peekNextMonth
+          showMonthDropdown
+          showYearDropdown
+          dropdownMode="select"
+          timeInputLabel="Time:"
+          dateFormat="MM/dd/yyyy hh:mm aa"
+          showTimeSelect
+        />
+      </View>
+    );
+  };
+
   const renderInitial = () => {
     return (
       <BasicLayout
-        containerStyle={styles.layoutContainer}
         screenName={'Create Reservation'}
         navigation={navigation}
         goBack={goBack}
       >
-        <ScrollView>
+        <ScrollView contentContainerStyle={{alignItems:'center'}}>
           <View style={styles.outterContainer}>
             <View style={styles.reservationRow}>
               <TouchableHighlight style={styles.button} onPress={openAddCustomerModal}>
@@ -400,7 +425,6 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
                 }}
                 width={350}
                 onItemSelected={(item) => {
-                  console.log(item);
                   dispatch(selectBrand({ brand: item as any }));
                 }}
                 data={brandsDropdownData}
@@ -425,14 +449,15 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
               </View>
               {/* <CommonInput
                 onChangeText={() => {}}
-                value={endDate && dayjs(endDate).format(RESERVATION_FORMAT)}
+                value={calculatedEndDate && dayjs(calculatedEndDate).format(RESERVATION_FORMAT)}
                 width={350}
                 title={'Drop Off Time'}
               /> */}
               <View style={{marginRight:40}}>
                 <Text style={{marginBottom:10, fontWeight:'bold'}}>{'Drop Off Time'}</Text>
-                <TextInput editable={false} style={styles.input} value={endDate ? dayjs(endDate).format(RESERVATION_FORMAT) : ''}
-                ></TextInput>
+                {Platform.OS == 'web' && renderEndDatePicker(endDate, (date)=>setEnddate(date), selectedDate)}
+                {Platform.OS != 'web' && <TextInput editable={false} style={styles.input} value={calculatedEndDate ? dayjs(calculatedEndDate).format(RESERVATION_FORMAT) : ''}
+                ></TextInput>}
               </View>
             </View>
 
@@ -458,7 +483,6 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
               <EquipmentDropdown
                 products={productsData ?? []}
                 onChange={(data) => {
-                  console.log(data);
                   setEquipmentData(data);
                 }}
               />
@@ -477,7 +501,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
                   dispatch(
                     updateReservation({
                       startDate: selectedDate.toISOString(),
-                      endDate: endDate && endDate.toISOString(),
+                      endDate: calculatedEndDate && calculatedEndDate.toISOString(),
                     })
                   );
                   const products = equipmentData.map((item) => {
@@ -565,13 +589,13 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  layoutContainer: {
-    backgroundColor: Colors.Neutrals.WHITE,
-  },
   outterContainer: {
-    paddingVertical: 20,
-    paddingHorizontal: 30,
-    backgroundColor: Colors.Neutrals.WHITE,
+    width: '60%',
+    minWidth: 500,
+    marginVertical: 30,
+    padding: 36,
+    backgroundColor: 'white',
+    borderRadius: 8,
   },
   container: {
     flex: 1,

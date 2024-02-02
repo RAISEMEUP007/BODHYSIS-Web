@@ -28,6 +28,7 @@ interface Props {
 export const EquipmentDropdown = ({ onChange, products }: Props) => {
   const [dataMap, setDataMap] = useState<EquipmentMap>({});
   const [showModal, setShowModal] = useState(false);
+  const [quantities, setQuantities] = useState<Array<string>>([]);
 
   const productsDropdownData = useMemo(() => {
     if (!products.length) {
@@ -106,8 +107,12 @@ export const EquipmentDropdown = ({ onChange, products }: Props) => {
         <View style={styles.quantityContainer}>
           <TextInput
             placeholder="Enter"
-            value='1'
+            defaultValue={quantities[index]}
             onChangeText={(value) => {
+              const newQuantities = [...quantities];
+              newQuantities[index] = value;
+              setQuantities(newQuantities);
+
               const map = { ...dataMap };
               if (!map[index]) {
                 map[index] = {
