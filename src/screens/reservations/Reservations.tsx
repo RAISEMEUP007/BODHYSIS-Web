@@ -3,8 +3,10 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 
 import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 
-import { ReservationsList } from './ReservationsList';
+import ReservationsList from './ReservationsList';
 import CreateReservation from './CreateReservation';
+import { ReservationDetailsView } from './ReservationDetailsView';
+import { CreateReservationDetails } from './CreateReservationDetails';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 
 interface Props {
@@ -14,9 +16,9 @@ interface Props {
 
 const Reservations = ({ navigation, goBack }: Props) => {
   const [data, setData] = useState(null);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState("Reservations List");
 
-  const handleItemClick = (itemName, data) => {
+  const handleItemClick = (itemName, data = null) => {
     setSelectedItem(itemName);
     setData(data);
   };
@@ -26,19 +28,27 @@ const Reservations = ({ navigation, goBack }: Props) => {
       case 'Create Reservations':
         return (
           <CreateReservation
-            goBack={() => {
-              setSelectedItem(null);
-            }}
-            navigation={navigation}
-            data={data}
+            openReservationScreen={handleItemClick}
           />
         );
       case 'Reservations List':
         return (
           <ReservationsList
-            goBack={() => {
-              setSelectedItem(null);
-            }}
+            openReservationScreen={handleItemClick}
+          />
+        );
+      case 'Reservation Details View':
+        return (
+          <ReservationDetailsView
+            openReservationScreen={handleItemClick}
+            data={data}
+          />
+        );
+      case 'CreateReservation Detail':
+        return (
+          <CreateReservationDetails
+            openReservationScreen={handleItemClick}
+            data={data}
           />
         );
       default:
@@ -46,8 +56,8 @@ const Reservations = ({ navigation, goBack }: Props) => {
           <View
             style={{
               flex: 1,
-              border: '1px solid #d54545',
-              marginRights: 20,
+              borderWidth: 1,
+              borderColor: '#d54545',
               paddingHorizontal: 10,
               paddingVertical: 2,
               height: 28,
@@ -56,7 +66,7 @@ const Reservations = ({ navigation, goBack }: Props) => {
               marginTop: 100,
             }}
           >
-            <TouchableOpacity onPress={() => handleItemClick(null)}>
+            <TouchableOpacity onPress={() => handleItemClick(null, null)}>
               <Text>{'< Back'}</Text>
             </TouchableOpacity>
             <Text style={{ fontSize: 28 }}>{selectedItem}</Text>
@@ -66,7 +76,7 @@ const Reservations = ({ navigation, goBack }: Props) => {
   }
 
   return (
-    <BasicLayout goBack={goBack} navigation={navigation} screenName={'Inventory'}>
+    <BasicLayout goBack={goBack} navigation={navigation} screenName={'Reservations'}>
       <ScrollView>
         <View style={styles.container}>
           <TouchNavGroup

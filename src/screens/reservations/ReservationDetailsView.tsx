@@ -6,23 +6,20 @@ import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import { DEFAULT_DATE_FORMAT, DEFAULT_DATE_TIME } from '../../common/constants/DateFormat';
 import dayjs from 'dayjs';
 
-interface Props {
-  reservation_id: number;
-  goBack: () => void;
-}
+export const ReservationDetailsView = ({ openReservationScreen, data }) => {
+  // const { data, error } = useRequestReservationDetailsQuery(
+  //   {
+  //     reservation_id: reservation_id,
+  //   },
+  //   {
+  //     refetchOnFocus: true,
+  //   }
+  // );
 
-export const ReservationDetailsView = ({ reservation_id, goBack }: Props) => {
-  const { data, error } = useRequestReservationDetailsQuery(
-    {
-      reservation_id: reservation_id,
-    },
-    {
-      refetchOnFocus: true,
-    }
-  );
+  const reservation_id = data.id;
 
   const renderItem = useCallback(
-    ({ item, index }: { item: ReservationDetailsProductType; index: number }) => {
+    ({ item, index }) => {
       return (
         <View style={styles.item} key={index.toString()}>
           <View style={styles.productBlock}>
@@ -117,7 +114,7 @@ export const ReservationDetailsView = ({ reservation_id, goBack }: Props) => {
   }
 
   return (
-    <BasicLayout goBack={goBack} screenName="Reservation Details">
+    <BasicLayout goBack={openReservationScreen} screenName="Reservation Details">
       <View style={styles.container}>
         {renderHeader()}
         <Text style={styles.title}>{'Equipment'}</Text>

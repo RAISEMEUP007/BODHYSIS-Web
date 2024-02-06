@@ -6,10 +6,11 @@ import {
   Modal,
   View,
   ActivityIndicator,
-  Platform
+  Platform,
+  Switch,
 } from 'react-native';
 
-import { createManufacture, updateManufacture } from '../../../api/Settings';
+import { createTaxcode, updateTaxcode } from '../../../api/Settings';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
@@ -17,22 +18,25 @@ import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
-import { ManufactureModalstyles } from './styles/ManufactureModalStyle';
+import { TaxcodeModalstyles } from './styles/TaxcodeModalStyle';
+import NumericInput from '../../../common/components/formcomponents/NumericInput';
 
-const AddManufactureModal = ({
+const AddTaxcodeModal = ({
   isModalVisible,
-  Manufacture,
-  setUpdateManufacturesTrigger,
+  Taxcode,
+  setUpdateTaxcodesTrigger,
   closeModal,
 }) => {
-  const isUpdate = Manufacture ? true : false;
+  const isUpdate = Taxcode ? true : false;
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const [ManufactureTxt, setManufactureTxt] = useState('');
+  const [TaxcodeTxt, setTaxcodeTxt] = useState('');
   const [DescriptionTxt, setDescriptionTxt] = useState('');
+  const [RateTxt, setRateTxt] = useState(0);
+  const [isSuspended, setIsSuspended] = useState(false);
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -50,30 +54,26 @@ const AddManufactureModal = ({
     }
   }, [closeModal]);
 
-  const AddManufactureButtonHandler = () => {
-    if (!ManufactureTxt.trim()) {
+  const AddTaxcodeButtonHandler = () => {
+    if (!TaxcodeTxt.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
     }
 
     setIsLoading(true);
 
-    interface Payload {
-      manufacture: string;
-      description: string;
-      id?: number;
-    }
-
-    const payload: Payload = {
-      manufacture: ManufactureTxt,
+    const payload = {
+      code: TaxcodeTxt,
       description: DescriptionTxt,
+      rate: RateTxt,
+      is_suspended: isSuspended
     };
 
     const handleResponse = (jsonRes, status) => {
       switch (status) {
         case 201:
           showAlert('success', jsonRes.message);
-          setUpdateManufacturesTrigger(true);
+          setUpdateTaxcodesTrigger(true);
           closeModal();
           break;
         case 409:
@@ -89,19 +89,19 @@ const AddManufactureModal = ({
     };
 
     if (isUpdate) {
-      payload.id = Manufacture.id;
-      updateManufacture(payload, (jsonRes, status) => {
+      payload.id = Taxcode.id;
+      updateTaxcode(payload, (jsonRes, status) => {
         handleResponse(jsonRes, status);
       });
     } else {
-      createManufacture(payload, (jsonRes, status) => {
+      createTaxcode(payload, (jsonRes, status) => {
         handleResponse(jsonRes, status);
       });
     }
   };
 
   const checkInput = () => {
-    if (!ManufactureTxt.trim()) {
+    if (!TaxcodeTxt.trim()) {
       setValidMessage(msgStr('emptyField'));
     } else {
       setValidMessage('');
@@ -115,19 +115,21 @@ const AddManufactureModal = ({
       visible={isModalVisible}
       onShow={() => {
         setValidMessage('');
-        setManufactureTxt(Manufacture ? Manufacture.manufacture : '');
-        setDescriptionTxt(Manufacture ? Manufacture.description : '');
+        setTaxcodeTxt(Taxcode ? Taxcode.code : '');
+        setDescriptionTxt(Taxcode ? Taxcode.description : '');
+        setRateTxt(Taxcode && Taxcode.rate ? Taxcode.rate : 0);
+        setIsSuspended(Taxcode && Taxcode.is_suspended ? Taxcode.is_suspended : false);
       }}
     >
       <BasicModalContainer>
-        <ModalHeader label={'Manufacture'} closeModal={closeModal} />
+        <ModalHeader label={'Taxcode'} closeModal={closeModal} />
         <ModalBody>
-          <Text style={styles.label}>Manufacture</Text>
+          <Text style={styles.label}>Taxcode</Text>
           <TextInput
             style={styles.input}
-            placeholder="Manufacture"
-            value={ManufactureTxt}
-            onChangeText={setManufactureTxt}
+            placeholder="Taxcode"
+            value={TaxcodeTxt}
+            onChangeText={setTaxcodeTxt}
             placeholderTextColor="#ccc"
             onBlur={checkInput}
           />
@@ -138,13 +140,32 @@ const AddManufactureModal = ({
             placeholder="Description"
             placeholderTextColor="#ccc"
             multiline={true}
-            numberOfLines={4}
+            numberOfLines={3}
             value={DescriptionTxt}
             onChangeText={setDescriptionTxt}
           />
+          <Text style={styles.label}>Rate</Text>
+          <NumericInput
+            placeholder="Rate"
+            value={RateTxt}
+            onChangeText={setRateTxt}
+            // validMinNumber={1}
+            // validMaxNumber={100}
+          ></NumericInput>
+
+          <View style={{flexDirection: 'row', marginTop:8}}>
+            <Text style={[styles.label, {marginRight:20}]}>Suspended</Text>
+            <Switch
+              trackColor={{ false: '#6c757d', true: '#007bff' }}
+              thumbColor={isSuspended ? '#ffc107' : '#f8f9fa'}
+              ios_backgroundColor="#343a40"
+              onValueChange={setIsSuspended}
+              value={isSuspended}
+            />
+          </View>
         </ModalBody>
         <ModalFooter>
-          <TouchableOpacity onPress={AddManufactureButtonHandler}>
+          <TouchableOpacity onPress={AddTaxcodeButtonHandler}>
             <Text style={styles.addButton}>{isUpdate ? 'Update' : 'Add'}</Text>
           </TouchableOpacity>
         </ModalFooter>
@@ -158,6 +179,6 @@ const AddManufactureModal = ({
   );
 };
 
-const styles = ManufactureModalstyles;
+const styles = TaxcodeModalstyles;
 
-export default AddManufactureModal;
+export default AddTaxcodeModal;

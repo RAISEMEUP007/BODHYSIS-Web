@@ -125,6 +125,12 @@ export const baseApiSlice = createApi({
         body: { category_id, family_id, line_id },
       }),
     }),
+    requestProductLines: builder.query<any, any>({
+      query: () => ({
+        url: '/product/getproductlinesdata/null',
+        method: 'GET',
+      }),
+    }),
     requestReservationsList: builder.query<ReservationsListResponseType, any>({
       query: () => ({
         url: '/reservations/getreservationslist/',
@@ -176,6 +182,7 @@ export const {
   useRequestProductCategoriesQuery,
   useRequestBrandsQuery,
   useRequestProductsQuery,
+  useRequestProductLinesQuery,
   useRequestCustomersQuery,
   useRequestLocationsQuery,
   useRequestSeasonsQuery,

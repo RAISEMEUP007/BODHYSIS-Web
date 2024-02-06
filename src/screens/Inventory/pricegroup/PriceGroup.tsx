@@ -61,8 +61,8 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
 
   useEffect(() => {
     if (updateGroupTrigger == true) {
-      getSeasons();
-      getBrands();
+      // getSeasons();
+      // getBrands();
       getTable();
     }
   }, [updateGroupTrigger]);
@@ -148,7 +148,7 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
     getSeasonsData((jsonRes, status, error) => {
       switch (status) {
         case 200:
-          setSeasonData(jsonRes);
+          // setSeasonData(jsonRes);
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -165,7 +165,7 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
     getBrandsData((jsonRes, status, error) => {
       switch (status) {
         case 200:
-          setBrandData(jsonRes);
+          // setBrandData(jsonRes);
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -283,7 +283,8 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
                   <FontAwesome5 size={TextMediumSize} name="times" color="black" />
                 </TouchableOpacity>
               </View>
-              <Text pointId={item.id}>{item.header}</Text>
+              {/* <Text pointId={item.id}>{item.header}</Text> */}
+              <Text>{item.header}</Text>
             </View>
           ))}
           <Text style={styles.columnHeader}>Extra day</Text>

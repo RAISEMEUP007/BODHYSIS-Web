@@ -28,7 +28,7 @@ export interface ReservationState {
   selectedCustomer: DropdownItem<CustomerType> | null;
   selectedLocation: DropdownItem<LocationType> | null;
   selectedSeason: SeasonType | null;
-  selectedProducts: Array<EquipmentTableProductType>;
+  selectedProductLines: Array<any>;
   priceTables: Array<PriceTableType>;
   priceTablesMap: Record<number, PriceTableType>;
   priceGroups: PriceGroupArrayType;
@@ -54,7 +54,7 @@ const initialState: ReservationState = {
   selectedCustomer: null,
   selectedLocation: null,
   selectedSeason: null,
-  selectedProducts: [],
+  selectedProductLines: [],
   priceGroups: [],
   priceGroupsMap: {},
   priceTables: [],
@@ -134,12 +134,12 @@ export const reservationSlice = createSlice({
       const { season } = action.payload;
       state.selectedSeason = season;
     },
-    selectProducts: (
+    selectProductLines: (
       state,
-      action: PayloadAction<{ products: Array<EquipmentTableProductType> }>
+      action: PayloadAction<{ productLines: Array<any> }>
     ) => {
-      const { products } = action.payload;
-      state.selectedProducts = products;
+      const { productLines } = action.payload;
+      state.selectedProductLines = productLines;
     },
     loadPriceTables: (state, action: PayloadAction<{ priceTables: Array<PriceTableType> }>) => {
       const { priceTables } = action.payload;
@@ -220,7 +220,7 @@ export const {
   selectCustomer,
   selectLocation,
   selectSeason,
-  selectProducts,
+  selectProductLines,
   setPromoCode,
   loadPriceTables,
   loadPriceGroups,

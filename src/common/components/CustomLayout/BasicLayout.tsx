@@ -10,6 +10,7 @@ interface Props {
   screenName: string;
   children?: string | JSX.Element | JSX.Element[];
   containerStyle?: ViewStyle;
+  backKeyboard?: boolean;
 }
 
 const BasicLayout = ({
@@ -19,10 +20,11 @@ const BasicLayout = ({
   screenName,
   children,
   containerStyle,
+  backKeyboard,
 }: Props) => {
 
   useEffect(() => {
-    if(Platform.OS === 'web'){
+    if(Platform.OS === 'web' && backKeyboard){
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Backspace' && goBack) {
           goBack();

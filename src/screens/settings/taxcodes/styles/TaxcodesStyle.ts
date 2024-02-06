@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import { TextMediumSize, TextSmallSize } from '../../../../common/constants/Fonts';
 import { TextdefaultSize } from '../../../../common/constants/Fonts';
 
-export const priceLogicStyle = StyleSheet.create({
+export const TaxcodesStyle = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
@@ -10,25 +10,12 @@ export const priceLogicStyle = StyleSheet.create({
     paddingTop: 32,
   },
 
-  input: {
-    width: 150,
-    // padding: '0.375rem 0.rem',
-    padding: 6,
-    height: 17,
-    fontSize: TextdefaultSize,
-    lineHeight: '1.5',
-    color: '#495057',
-    backgroundColor: '#fff',
-    backgroundClip: 'padding-box',
-    border: '1px solid #ced4da',
-    borderRadius: '.25rem',
-    transition: 'border-color .15s ease-in-out, box-shadow 0.15s-in-out',
-  },
-
   tableContainer: {
     borderRadius: 4,
-    marginTop: 12,
+    marginBottom: 16,
+    marginTop: 10,
     overflow: 'hidden',
+    borderTopColor: '#ddd',
   },
 
   toolbar: {
@@ -36,7 +23,6 @@ export const priceLogicStyle = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    zIndex: 1,
   },
 
   buttonText: {
@@ -62,10 +48,9 @@ export const priceLogicStyle = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ced4da',
     borderRadius: 5,
-    width: 180,
+    width: 150,
     paddingVertical: 5,
     paddingHorizontal: 10,
-    marginRight: 20,
   },
 
   table: {
@@ -98,7 +83,7 @@ export const priceLogicStyle = StyleSheet.create({
     fontWeight: 'bold',
     backgroundColor: '#f5f5f5',
     alignItems: 'flex-start',
-    paddingHorizontal: 14,
+    paddingHorizontal: 10,
     paddingVertical: 8,
     width: 200,
     borderLeftWidth: 1,
@@ -106,20 +91,22 @@ export const priceLogicStyle = StyleSheet.create({
   },
   cell: {
     position: 'relative',
-    padding: 2,
+    paddingHorizontal: 6,
+    paddingVertical: 6,
+    paddingLeft: 12,
     width: 200,
     alignItems: 'flex-start',
-    borderLeftWidth: 1,
-    borderLeftColor: '#ccc',
+    justifyContent: 'center',
   },
-  cellText: {
+  cellInput: {
     width: 150,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
-  dateCell: {
-    width: 120,
-    alignItems: 'center',
+  categoryCell: {
+    width: 400,
+    paddingHorizontal: 6,
+    paddingVertical: 6,
     justifyContent: 'center',
   },
   focusedCell: {
@@ -154,28 +141,37 @@ export const priceLogicStyle = StyleSheet.create({
     right: TextMediumSize * 1.5,
     top: -20,
   },
-  radioButtonCell: {
-    width: 50,
+  IconCell: {
+    width: 60,
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
   },
-  overlay: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    justifyContent: 'center',
+  imageCell: {
+    width: 100,
     alignItems: 'center',
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    top: 0,
-    left: 0,
+    justifyContent: 'center',
+    textAlign: 'center',
   },
-  message: {
-    position: 'absolute',
-    bottom: -15,
-    left: 10,
+  cellImage: {
     width: '100%',
-    color: 'red',
-    fontSize: TextSmallSize,
+    height: 50,
+    resizeMode: 'contain',
+  },
+  familyRow: {
+    marginLeft: 20,
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    borderLeftWidth: 1,
+    borderLeftColor: '#06685ea3',
+    borderRightWidth: 1,
+    borderRightColor: '#06685ea3',
+  },
+  familyIconCell: {
+    width: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
   },
 });

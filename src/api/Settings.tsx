@@ -254,3 +254,37 @@ export const deleteExclusionByDCId = (DiscountCodeId, callback) => {
   const payload = { DiscountCodeId };
   postAPICall('settings/deleteexclusionbydcid', payload, callback);
 }
+
+export const getTaxcodesData = (callback) => {
+  getAPICall('settings/gettaxcodesdata/', callback);
+}
+
+export const updateTaxcode = (payload, callback) => {
+  postAPICall('settings/updatetaxcode', payload, callback);
+};
+
+export const createTaxcode = (payload, callback) => {
+  postAPICall('settings/createtaxcode', payload, callback);
+};
+
+export const deleteTaxcode = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletetaxcode', payload, callback);
+}
+
+export const getColorcombinationsData = (callback) => {
+  getAPICall('settings/getcolorcombinationsdata/', callback);
+}
+
+export const updateColorcombination = (payload, callback) => {
+  postAPICall('settings/updatecolorcombination', payload, callback);
+};
+
+export const createColorcombination = (payload, callback) => {
+  postAPICall('settings/createcolorcombination', payload, callback);
+};
+
+export const deleteColorcombination = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deletecolorcombination', payload, callback);
+}

@@ -1,68 +1,50 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ScrollView,
-  View,
-  Text,
-  TouchableHighlight,
-  TouchableOpacity,
-  Dimensions
-} from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { getTrucksData, deleteTruck } from '../../../api/Settings';
+import { getTaxcodesData, deleteTaxcode } from '../../../api/Settings';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
 import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
-import { trucksStyle } from './styles/TrucksStyle';
-import AddTruckModal from './AddTruckModal';
+import { TaxcodesStyle } from './styles/TaxcodesStyle';
+import AddTaxcodeModal from './AddTaxcodeModal';
 
-const Trucks = ({ navigation, openInventory }) => {
-  const screenHeight = Dimensions.get('window').height;
-
+const Taxcodes = ({ navigation, openInventory }) => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
   const [tableData, setTableData] = useState([]);
-  const [updateTruckTrigger, setUpdateTruckTrigger] = useState(true);
+  const [updateTaxcodeTrigger, setUpdateTaxcodesTrigger] = useState(true);
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
-  const [selectedTruck, setSelectedTruck] = useState(null);
+  const [selectedTaxcode, setSelectedTaxcode] = useState(null);
 
-  const openAddTruckModal = () => {
+  const openAddTaxcodeModal = () => {
     setAddModalVisible(true);
-    setSelectedTruck(null);
+    setSelectedTaxcode(null);
   };
-  const closeAddTruckModal = () => {
+  const closeAddTaxcodeModal = () => {
     setAddModalVisible(false);
-    setSelectedTruck(null);
+    setSelectedTaxcode(null);
   };
-  const editTruck = (index) => {
-    setSelectedTruck(tableData[index]);
+  const editTaxcode = (item) => {
+    setSelectedTaxcode(item);
     setAddModalVisible(true);
-  };
-
-  const changeCellData = (index, key, newVal) => {
-    const updatedTableData = [...tableData];
-    updatedTableData[index] = {
-      ...updatedTableData[index],
-      [key]: newVal,
-    };
-    setTableData(updatedTableData);
   };
 
   useEffect(() => {
-    if (updateTruckTrigger == true) getTable();
-  }, [updateTruckTrigger]);
+    if (updateTaxcodeTrigger == true) getTable();
+  }, [updateTaxcodeTrigger]);
 
-  const removeTruck = (id) => {
+  const removeTaxcode = (id) => {
     showConfirm(msgStr('deleteConfirmStr'), () => {
-      deleteTruck(id, (jsonRes, status, error) => {
+      deleteTaxcode(id, (jsonRes, status, error) => {
         switch (status) {
           case 200:
-            setUpdateTruckTrigger(true);
+            setUpdateTaxcodesTrigger(true);
             showAlert('success', jsonRes.message);
             break;
           default:
@@ -75,10 +57,10 @@ const Trucks = ({ navigation, openInventory }) => {
   };
 
   const getTable = () => {
-    getTrucksData((jsonRes, status, error) => {
+    getTaxcodesData((jsonRes, status, error) => {
       switch (status) {
         case 200:
-          setUpdateTruckTrigger(false);
+          setUpdateTaxcodesTrigger(false);
           setTableData(jsonRes);
           break;
         case 500:
@@ -98,19 +80,22 @@ const Trucks = ({ navigation, openInventory }) => {
       tableData.map((item, index) => {
         rows.push(
           <View key={index} style={styles.tableRow}>
-            <View style={[styles.cell, { width: 300 }]}>
-              <Text>{item.name}</Text>
+            <View style={[styles.cell]}>
+              <Text>{item.code}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.short_name}</Text>
+              <Text>{item.description}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.barcode}</Text>
+              <Text>{item.rate}</Text>
+            </View>
+            <View style={[styles.cell, {width:100, alignItems:'center'}]}>
+              <Text>{item.is_suspended ? 'Y' : ''}</Text>
             </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
-                  editTruck(index);
+                  editTaxcode(item);
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
@@ -119,7 +104,7 @@ const Trucks = ({ navigation, openInventory }) => {
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
-                  removeTruck(item.id);
+                  removeTaxcode(item.id);
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />
@@ -140,40 +125,37 @@ const Trucks = ({ navigation, openInventory }) => {
       goBack={() => {
         openInventory(null);
       }}
-      screenName={'Trucks'}
+      screenName={'Taxcodes'}
     >
-      <ScrollView horizontal={true}>
-        <View style={styles.container}>
-          <View style={styles.toolbar}>
-            <TouchableHighlight style={styles.button} onPress={openAddTruckModal}>
-              <Text style={styles.buttonText}>Add</Text>
-            </TouchableHighlight>
-          </View>
-          <View style={styles.tableContainer}>
-            <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader, { width: 300 }]}>{'Name'}</Text>
-              <Text style={[styles.columnHeader]}>{'Short Name'}</Text>
-              <Text style={[styles.columnHeader]}>{'Barcode'}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
-            </View>
-            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
-              {renderTableData()}
-            </ScrollView>
-          </View>
+      <View style={styles.container}>
+        <View style={styles.toolbar}>
+          <TouchableHighlight style={styles.button} onPress={openAddTaxcodeModal}>
+            <Text style={styles.buttonText}>Add</Text>
+          </TouchableHighlight>
         </View>
-      </ScrollView>
+        <View style={styles.tableContainer}>
+          <View style={styles.tableHeader}>
+            <Text style={[styles.columnHeader]}>{'Taxcode'}</Text>
+            <Text style={[styles.columnHeader]}>{'Description'}</Text>
+            <Text style={[styles.columnHeader]}>{'Rate'}</Text>
+            <Text style={[styles.columnHeader, {width:100}]}>{'Suspended'}</Text>
+            <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
+            <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
+          </View>
+          <ScrollView>{renderTableData()}</ScrollView>
+        </View>
 
-      <AddTruckModal
-        isModalVisible={isAddModalVisible}
-        Truck={selectedTruck}
-        setUpdateTruckTrigger={setUpdateTruckTrigger}
-        closeModal={closeAddTruckModal}
-      />
+        <AddTaxcodeModal
+          isModalVisible={isAddModalVisible}
+          Taxcode={selectedTaxcode}
+          setUpdateTaxcodesTrigger={setUpdateTaxcodesTrigger}
+          closeModal={closeAddTaxcodeModal}
+        />
+      </View>
     </BasicLayout>
   );
 };
 
-const styles = trucksStyle;
+const styles = TaxcodesStyle;
 
-export default Trucks;
+export default Taxcodes;

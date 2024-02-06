@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { TextInput, Text } from 'react-native';
 import { TextValidationMsgSize } from '../../constants/Fonts';
 
-const NumericInput = ({ validMinNumber, validMaxNumber, onChangeText, onBlur = null, value, ...rest }) => {
+const NumericInput = ({ validMinNumber = null, validMaxNumber = null, onChangeText, onBlur = null, value, ...rest }) => {
   const [inputValue, setInputValue] = useState(value);
   const [validationMessage, setValidationMessage] = useState("");
 
