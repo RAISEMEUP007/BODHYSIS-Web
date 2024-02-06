@@ -21,12 +21,24 @@ import { addReservationItemModalstyles } from './styles/addReservationItemModalS
 import { useRequestProductLinesQuery } from '../../redux/slices/baseApiSlice';
 import NumericInput from '../../common/components/formcomponents/NumericInput';
 
+interface AddReservationItemModalProps {
+  isModalVisible: boolean;
+  closeModal: () => void;
+  item?: any;
+  onAdded?: (item, QuantityTxt) => void;
+  onUpdated?: (item, QuantityTxt) => void;
+  onClose?: () => void;
+}
+
 const AddReservationItemModal = ({
   isModalVisible,
   closeModal,
+  item,
   onAdded,
-  onClose = null,
-}) => {
+  onUpdated,
+  onClose,
+}: AddReservationItemModalProps) => {
+  const mode = item? 'update':'add';
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
@@ -56,15 +68,23 @@ const AddReservationItemModal = ({
 
   useEffect(()=>{
     if(productLinesData && productLinesData.length>0){
-      selectProductLine(productLinesData[0]);
-      setSelectedProductId(productLinesData[0].id);
+      if(item){
+        const itemId = item.id;
+        const selectedItem = productLinesData.find(item => item.id === itemId);
+        selectProductLine(selectedItem);
+        setSelectedProductId(itemId);
+      }else{
+        selectProductLine(productLinesData[0]);
+        setSelectedProductId(productLinesData[0].id);
+      }
     }
-  }, [productLinesData])
+  }, [productLinesData, isModalVisible])
 
   useEffect(() => {
     if(isModalVisible == true){
-      setQuantityTxt('');
+      setQuantityTxt(item?item.quantity:'');
     }else {
+      setQuantityTxt('');
       closeModalhandler();
     }
   }, [isModalVisible])
@@ -78,7 +98,8 @@ const AddReservationItemModal = ({
       setValidMessage2(msgStr('emptyField'));
       return;
     }else if(!isNaN(parseInt(QuantityTxt)) && parseInt(QuantityTxt)>0){
-      onAdded(selectedProductLine, QuantityTxt);
+      if(mode == 'add' && onAdded) onAdded(selectedProductLine, QuantityTxt);
+      else if(mode == 'update' && onUpdated) onUpdated(selectedProductLine, QuantityTxt);
       closeModalhandler();
     }
   };
@@ -109,7 +130,7 @@ const AddReservationItemModal = ({
     <View style={{ position: 'absolute', width: '100%', height: '100%' }}>
       <BasicModalContainer>
         <ModalHeader
-          label={'Quick Add'}
+          label={mode.replace(/^\w/, (c) => c.toUpperCase()) + ' reservation item'}
           closeModal={() => {
             closeModalhandler();
           }}
@@ -160,7 +181,7 @@ const AddReservationItemModal = ({
               <Text style={styles.addButton}>{'Cancel'}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={AddButtonHandler}>
-              <Text style={styles.addButton}>{'Add'}</Text>
+              <Text style={styles.addButton}>{mode.replace(/^\w/, (c) => c.toUpperCase())}</Text>
             </TouchableOpacity>
           </View>
         </ModalFooter>

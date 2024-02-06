@@ -10,9 +10,11 @@ import { equipmentsTableStyle } from './styles/EquipmentsTableStyle';
 
 interface Props {
   items: any;
+  onEdit?: (item, index) => void;
+  onDelete?: (item, index) => void;
 }
 
-const EquipmentsTable =  ({ items }: Props) => {
+const EquipmentsTable =  ({ items, onEdit, onDelete }: Props) => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
   const scrollViewRef = useRef();
@@ -38,7 +40,7 @@ const EquipmentsTable =  ({ items }: Props) => {
               <Text>{(index + 1)}</Text>
             </View>
             <View style={[styles.cell, {flex:1}]}>
-              <Text>{item.line}</Text>
+              <Text>{item.line + " " + item.size}</Text>
             </View>
             <View style={[styles.cell, { width: 100, paddingRight: 6, alignItems: 'flex-end' }]}>
               <Text>{item.quantity ? item.quantity : '0'}</Text>
@@ -46,7 +48,7 @@ const EquipmentsTable =  ({ items }: Props) => {
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
-
+                  if(onEdit) onEdit(item, index);
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
@@ -55,7 +57,7 @@ const EquipmentsTable =  ({ items }: Props) => {
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
-
+                  if(onDelete) onDelete(item, index);
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />

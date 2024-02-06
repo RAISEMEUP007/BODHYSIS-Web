@@ -28,6 +28,7 @@ import { getCustomersData } from '../../api/Customer';
 import { msgStr } from '../../common/constants/Message';
 import EquipmentsTable from './EquipmentsTable';
 import AddReservationItemModal from './AddReservationItemModal';
+import { createReservationStyle } from './styles/CreateReservationStyle';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -49,18 +50,30 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
 
   const [customersData, setCustomers] = useState([]);
 
+  const [customerId, selectCustomerId] = useState<number | null>();
+  const [brandId, selectBrandId] = useState<number | null>();
+  const [locationId, selectLocationId] = useState<number | null>();
   const [startDate, setStartdate] = useState<Date>(new Date());
   const [endDate, setEnddate] = useState<Date>();
   const [equipmentData, setEquipmentData] = useState<Array<any>>([]);
 
   const [updateCustomerTrigger, setUpdateCustomerTrigger] = useState(true);
   const [isAddReservationItemModalVisible, setAddReservationItemModalVisible] = useState(false);
+  const [editingItem, setEditingItem] = useState();
+  const [editingIndex, setEditingIndex] = useState();
   const openAddReservationItemModal = () => {
+    editReservationItem(null, null);
     setAddReservationItemModalVisible(true);
   };
   const closeAddReservationItemModal = () => {
     setAddReservationItemModalVisible(false);
   };
+  const editReservationItem = (item, index) => {
+    setAddReservationItemModalVisible(true);
+    setEditingItem(item);
+    setEditingIndex(index);
+  };
+
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const openAddCustomerModal = () => {
@@ -237,6 +250,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
                 }}
                 width={350}
                 onItemSelected={(item) => {
+                  selectCustomerId(item.value.id);
                 }}
                 data={customersDropdownData}
                 placeholder="Select A Customer"
@@ -250,6 +264,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
                 }}
                 width={350}
                 onItemSelected={(item) => {
+                  selectLocationId(item.value.id);
                 }}
                 data={locationsDropdownData}
                 placeholder="Select A Location"
@@ -261,6 +276,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
                 }}
                 width={350}
                 onItemSelected={(item) => {
+                  selectBrandId(item.value.id);
                 }}
                 data={brandsDropdownData}
                 placeholder="Select A Brand"
@@ -297,6 +313,13 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
             </View>
             <EquipmentsTable
               items={equipmentData}
+              onEdit={(item, index)=>{
+                editReservationItem(item, index);
+              }}
+              onDelete={(item, index)=>{
+                const updatedEquipmentData = [...equipmentData.slice(0, index), ...equipmentData.slice(index + 1)];
+                setEquipmentData(updatedEquipmentData);
+              }}
             />
           </View>
         </ScrollView>
@@ -309,11 +332,27 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
         <AddReservationItemModal
           isModalVisible={isAddReservationItemModalVisible}
           closeModal={closeAddReservationItemModal}
+          item={editingItem}
           onAdded={(productLine, quantity)=>{
             if (productLine) {
               const equipment = { ...productLine, quantity };
               setEquipmentData(prevEquipmentData => [...prevEquipmentData, equipment]);
             }
+          }}
+          onUpdated={(productLine, quantity)=>{
+            if (productLine) {
+              const newEquipment = { ...productLine, quantity };
+              const replaceIndex = editingIndex;
+              setEquipmentData(prevEquipmentData => {
+                return prevEquipmentData.map((item, index) => {
+                  if (index === replaceIndex) {
+                    return { ...newEquipment };
+                  }
+                  return item;
+                });
+              });
+            }
+            editReservationItem(null, null);
           }}
         />
       </BasicLayout>
@@ -323,85 +362,6 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
   return renderInitial();
 };
 
-const styles = StyleSheet.create({
-  outterContainer: {
-    // width: '60%',
-    // minWidth: 500,
-    marginVertical: 30,
-    paddingVertical: 40,
-    paddingHorizontal: 60,
-    backgroundColor: 'white',
-    borderRadius: 8,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: Colors.Neutrals.WHITE,
-  },
-  reservationRow: {
-    flexDirection: 'row',
-    flexWrap:'wrap',
-    marginVertical: 8,
-    // paddingVertical: 8,
-  },
-  timeContainer: {
-    flexDirection: 'row',
-  },
-  equipmentText: {
-    fontSize: 16,
-    fontWeight: '700',
-    marginTop: 30,
-    marginBottom: 15,
-  },
-  width: {
-    flexDirection: 'row',
-  },
-  modal: {
-    padding: 20,
-  },
-  selectDateModalText: {
-    fontSize: 20,
-    marginBottom: 5,
-  },
-  bottomContainer: {
-    paddingHorizontal: 20,
-  },
-  input:{
-    boxSizing: 'border-box',
-    padding:8,
-    fontSize:14,
-    width:350,
-    borderWidth:1, 
-    borderColor:'#808080',
-    height: 37,
-  },
-  buttonText: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginLeft: 10,
-    color: 'white',
-  },
-  button: {
-    zIndex: 1,
-    position: 'absolute',
-    bottom: 0,
-    left: 390,
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    alignItems: 'center',
-    borderRadius: 3,
-    borderWidth: 0,
-    borderColor: '#6c757d',
-    backgroundColor: '#007BFF',
-  },
-  addItemButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    alignItems: 'center',
-    borderRadius: 3,
-    borderWidth: 0,
-    borderColor: '#6c757d',
-    backgroundColor: '#007BFF',
-  },
-});
+const styles = createReservationStyle;
 
 export default CreateReservation;
