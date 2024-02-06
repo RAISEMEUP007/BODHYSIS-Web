@@ -47,19 +47,18 @@ const Inventory = ({ navigation, initalItem = null }) => {
         return (
           <View
             style={{
-              flexs: 1,
-              border: '1px solid #d54545',
-              marginRights: 20,
+              flex: 1,
+              borderWidth: 1,
+              borderColor: '#d54545',
               paddingHorizontal: 10,
               paddingVertical: 2,
-              marginTop: 8,
               height: 28,
               justifyContent: 'center',
               flexDirection: 'row',
               marginTop: 100,
             }}
           >
-            <TouchableOpacity onPress={() => handleItemClick(null)}>
+            <TouchableOpacity onPress={() => handleItemClick(null, null)}>
               <Text>{'< Back'}</Text>
             </TouchableOpacity>
             <Text style={{ fontSize: 28 }}>{selectedItem}</Text>

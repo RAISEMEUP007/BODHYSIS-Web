@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
         width: '90%',
         maxWidth: 1000,
         margin: 'auto',
-        marginTop: 80,
+        marginTop: 40,
     },
 });
 

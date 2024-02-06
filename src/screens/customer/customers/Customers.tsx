@@ -104,7 +104,6 @@ const Customers = ({ navigation }) => {
       });
     }
 
-    console.log();
     const rows = [];
     if (filteredData.length > 0) {
       filteredData.map((item, index) => {

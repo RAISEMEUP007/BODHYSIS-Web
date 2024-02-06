@@ -5,14 +5,12 @@ import {
   Text,
   TouchableHighlight,
   TouchableOpacity,
-  Dimensions,
-  Image,
+  Dimensions
 } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { getTrucksData, deleteTruck } from '../../../api/Settings';
 import { msgStr } from '../../../common/constants/Message';
-import { API_URL } from '../../../common/constants/AppConstants';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';

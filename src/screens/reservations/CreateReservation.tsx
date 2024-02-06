@@ -39,11 +39,11 @@ if (Platform.OS === 'web') {
 }
 
 interface Props {
-  openInventory: () => void;
-  goBack: () => void;
+  openReservationScreen: (item) => void;
+  // goBack: () => void;
 }
 
-const CreateReservation = ({ openInventory, goBack }: Props) => {
+const CreateReservation = ({ openReservationScreen }: Props) => {
   
   const { showAlert } = useAlertModal();
   const navigation = useNavigation();
@@ -107,8 +107,8 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
   };
   const { data: brandsData } = useRequestBrandsQuery({}, {refetchOnFocus: true});
   const { data: locationsData } = useRequestLocationsQuery({}, {refetchOnFocus: true,});
-  const { data: priceTablesData } = useRequestPriceTablesQuery({}, { refetchOnFocus: true, });
-  const { data: priceGroupsData } = useRequestPriceGroupsQuery({}, {refetchOnFocus: true,});
+  // const { data: priceTablesData } = useRequestPriceTablesQuery({}, { refetchOnFocus: true, });
+  // const { data: priceGroupsData } = useRequestPriceGroupsQuery({}, {refetchOnFocus: true,});
   const { data: priceLogicData } = useRequestPriceLogicDataQuery({}, {refetchOnFocus: true,});
 
   useEffect(() => {
@@ -248,7 +248,8 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
     const handleResponse = (jsonRes, status) => {
       switch (status) {
         case 201:
-          showAlert('success', jsonRes.message);
+          // showAlert('success', jsonRes.message);
+          openReservationScreen('Reservations List');
           break;
         case 409:
           break;
@@ -317,8 +318,10 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
     return (
       <BasicLayout
         screenName={'Create Reservation'}
-        navigation={navigation}
-        goBack={goBack}
+        // navigation={navigation}
+        goBack={()=>{
+          openReservationScreen('Reservations List');
+        }}
         backKeyboard = {false}
       >
         <ScrollView contentContainerStyle={{alignItems:'center'}}>

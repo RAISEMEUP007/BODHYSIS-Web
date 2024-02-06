@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 
 import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 
-import { ReservationsList } from './ReservationsList';
+import ReservationsList from './ReservationsList';
 import CreateReservation from './CreateReservation';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 
@@ -14,9 +14,9 @@ interface Props {
 
 const Reservations = ({ navigation, goBack }: Props) => {
   const [data, setData] = useState(null);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState("Reservations List");
 
-  const handleItemClick = (itemName, data) => {
+  const handleItemClick = (itemName, data = null) => {
     setSelectedItem(itemName);
     setData(data);
   };
@@ -26,19 +26,13 @@ const Reservations = ({ navigation, goBack }: Props) => {
       case 'Create Reservations':
         return (
           <CreateReservation
-            goBack={() => {
-              setSelectedItem(null);
-            }}
-            navigation={navigation}
-            data={data}
+            openReservationScreen={handleItemClick}
           />
         );
       case 'Reservations List':
         return (
           <ReservationsList
-            goBack={() => {
-              setSelectedItem(null);
-            }}
+            openReservationScreen={handleItemClick}
           />
         );
       default:
@@ -46,8 +40,8 @@ const Reservations = ({ navigation, goBack }: Props) => {
           <View
             style={{
               flex: 1,
-              border: '1px solid #d54545',
-              marginRights: 20,
+              borderWidth: 1,
+              borderColor: '#d54545',
               paddingHorizontal: 10,
               paddingVertical: 2,
               height: 28,
@@ -56,7 +50,7 @@ const Reservations = ({ navigation, goBack }: Props) => {
               marginTop: 100,
             }}
           >
-            <TouchableOpacity onPress={() => handleItemClick(null)}>
+            <TouchableOpacity onPress={() => handleItemClick(null, null)}>
               <Text>{'< Back'}</Text>
             </TouchableOpacity>
             <Text style={{ fontSize: 28 }}>{selectedItem}</Text>
