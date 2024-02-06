@@ -5,6 +5,8 @@ import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 
 import ReservationsList from './ReservationsList';
 import CreateReservation from './CreateReservation';
+import { ReservationDetailsView } from './ReservationDetailsView';
+import { CreateReservationDetails } from './CreateReservationDetails';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 
 interface Props {
@@ -33,6 +35,20 @@ const Reservations = ({ navigation, goBack }: Props) => {
         return (
           <ReservationsList
             openReservationScreen={handleItemClick}
+          />
+        );
+      case 'Reservation Details View':
+        return (
+          <ReservationDetailsView
+            openReservationScreen={handleItemClick}
+            data={data}
+          />
+        );
+      case 'CreateReservation Detail':
+        return (
+          <CreateReservationDetails
+            openReservationScreen={handleItemClick}
+            data={data}
           />
         );
       default:

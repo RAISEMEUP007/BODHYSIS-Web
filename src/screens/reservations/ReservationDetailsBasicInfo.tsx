@@ -35,22 +35,25 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding, onCompletion 
   const { showAlert } = useAlertModal();
 
   const productsToSubmit: Array<ProductQuantityType> = useMemo(() => {
-    return products.map((item) => {
-      return {
-        product_id: item.id,
-        quantity: item.quantity,
-        product_name: item.product,
-        price: item.price ?? 0,
-        brand: reservationInfo.selectedBrand.value.brand,
-      };
-    });
+    if(products && products.length>0){
+      return products.map((item) => {
+        return {
+          product_id: item.id,
+          quantity: item.quantity,
+          product_name: item.product,
+          price: item.price ?? 0,
+          brand: reservationInfo.selectedBrand.value.brand,
+        };
+      });
+    }
   }, [products]);
 
   const [createReservation, { data: createReservationData, error: createReservationError }] =
     useRequestCreateReservationMutation({});
 
   const valid = useMemo(() => {
-    return productsToSubmit.length && startDate && endDate;
+    // return productsToSubmit.length && startDate && endDate;
+    return false;
   }, [productsToSubmit, startDate, endDate]);
 
   useEffect(() => {
@@ -87,13 +90,13 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding, onCompletion 
         <CommonInput
           onChangeText={(_) => {}}
           width={inputWidth}
-          value={reservationInfo.startDayjs.format(DEFAULT_DATE_FORMAT)}
+          value={''}
           title="Start Date"
         />
         <CommonInput
           onChangeText={(_) => {}}
           width={inputWidth}
-          value={reservationInfo.startDayjs.format(DEFAULT_TIME_FORMAT)}
+          value={''}
           title="Start Time"
         />
       </View>
@@ -101,13 +104,13 @@ export const ReservationDetailsBasicInfo = ({ width, inputPadding, onCompletion 
         <CommonInput
           onChangeText={(_) => {}}
           width={inputWidth}
-          value={reservationInfo.endDayjs.format(DEFAULT_DATE_FORMAT)}
+          value={''}
           title="End Date"
         />
         <CommonInput
           onChangeText={(_) => {}}
           width={inputWidth}
-          value={reservationInfo.endDayjs.format(DEFAULT_TIME_FORMAT)}
+          value={''}
           title="End Time"
         />
       </View>

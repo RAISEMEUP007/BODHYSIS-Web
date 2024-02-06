@@ -243,6 +243,7 @@ const CreateReservation = ({ openReservationScreen }: Props) => {
       start_date : startDate,
       end_date : endDate,
       items : equipmentData,
+      stage : 0,
     };
 
     const handleResponse = (jsonRes, status) => {

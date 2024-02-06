@@ -13,12 +13,7 @@ import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { CommonTable } from '../../common/components/CommonTable/CommonTable';
 import { removeProduct } from '../../redux/slices/reservationSlice';
 
-interface Props {
-  goBack: () => void;
-  onCompletion: () => void;
-}
-
-export const CreateReservationDetails = ({ goBack, onCompletion }: Props) => {
+export const CreateReservationDetails = ({ openReservationScreen, data }) => {
   const reservationInfo = useSelector(getReservationInfoSelector);
 
   const dispatch = useDispatch();
@@ -30,12 +25,17 @@ export const CreateReservationDetails = ({ goBack, onCompletion }: Props) => {
   const navigation = useNavigation();
 
   return (
-    <BasicLayout goBack={goBack} screenName={'Create Reservation'} navigation={navigation}>
+    <BasicLayout 
+      goBack={()=>{
+        openReservationScreen('Reservations List');
+      }} 
+      screenName={'Proceed Reservation'} 
+    >
       <ScrollView style={styles.container}>
         <View style={styles.topContainer}>
           <ReservationDetailsBasicInfo
-            onCompletion={onCompletion}
-            goBack={goBack}
+            onCompletion={()=>{}}
+            goBack={()=>{}}
             width={400}
             inputPadding={20}
           />

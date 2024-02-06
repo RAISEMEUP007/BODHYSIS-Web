@@ -115,7 +115,7 @@ const ReservationsList = ({ openReservationScreen }) => {
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
-                  
+                  openReservationScreen('CreateReservation Detail', {reservation:item})
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="arrow-right" color="black" />
