@@ -128,11 +128,11 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 16,
-    fontWeight: '600',
+    // fontWeight: '600',
   },
   title: {
     fontSize: 16,
-    fontWeight: '600',
+    // fontWeight: '600',
     marginBottom: 10,
   },
   item: {
