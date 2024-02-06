@@ -124,7 +124,7 @@ const PriceTables = ({ navigation, openInventory, selectedTableId = null }) => {
 
   const clonePriceTable = (item) => {
     setCloneSource(item);
-    openClonePriceTableModal(true);
+    openClonePriceTableModal();
   };
 
   if (selectedTable) {
@@ -157,7 +157,6 @@ const PriceTables = ({ navigation, openInventory, selectedTableId = null }) => {
             </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity
-                style={{ cursor: 'pointer' }}
                 onPress={() => {
                   openPriceTable(item.id, item.table_name);
                 }}
@@ -167,7 +166,6 @@ const PriceTables = ({ navigation, openInventory, selectedTableId = null }) => {
             </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity
-                style={{ cursor: 'pointer' }}
                 onPress={() => {
                   clonePriceTable(item);
                 }}

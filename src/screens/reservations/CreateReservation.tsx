@@ -28,6 +28,7 @@ import EquipmentsTable from './EquipmentsTable';
 import AddReservationItemModal from './AddReservationItemModal';
 import { createReservationStyle } from './styles/CreateReservationStyle';
 import { createReservation } from '../../api/Reservation';
+import { getHeaderData } from '../../api/Price';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -55,6 +56,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
   const [locationId, selectLocationId] = useState<number | null>();
   const [startDate, setStartdate] = useState<Date>(new Date());
   const [endDate, setEnddate] = useState<Date>();
+  const [headerData, setHeaderData] = useState([]);
   const [equipmentData, setEquipmentData] = useState<Array<any>>([]);
 
   const [updateCustomerTrigger, setUpdateCustomerTrigger] = useState(true);
@@ -108,7 +110,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
   const { data: priceTablesData } = useRequestPriceTablesQuery({}, { refetchOnFocus: true, });
   const { data: priceGroupsData } = useRequestPriceGroupsQuery({}, {refetchOnFocus: true,});
   const { data: priceLogicData } = useRequestPriceLogicDataQuery({}, {refetchOnFocus: true,});
-  
+
   useEffect(() => {
     if (updateCustomerTrigger == true) getCustomers();
   }, [updateCustomerTrigger]);
@@ -158,15 +160,65 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
     return result;
   }, [locationsData]);
 
-  const CustomInput = forwardRef(({ value, onChange, onClick }, ref) => (
-    <input
-      onClick={onClick}
-      onChange={onChange}
-      ref={ref}
-      style={styles.input}
-      value={value}
-    ></input>
-  ));
+  const getPriceTableByBrandAndDate = (brandId, date) => {
+    if(!priceLogicData || !priceLogicData.length) return null;
+    let selectedPriceGroup = priceLogicData.find(group => 
+      group.brand_id == brandId &&
+      (group.start_date != null && date >= new Date(group.start_date)) && 
+      (group.end_date != null && date <= new Date(group.end_date + " 23:59:59"))
+    );
+
+    if(!selectedPriceGroup){
+      selectedPriceGroup = priceLogicData.find(group => 
+        group.brand_id == brandId &&
+        (group.start_date != null && date >= new Date(group.start_date)) && 
+        (group.end_date == null )
+      );
+    }
+
+    if(!selectedPriceGroup){
+      selectedPriceGroup = priceLogicData.find(group => 
+        group.brand_id == brandId &&
+        (group.start_date == null) && 
+        (group.end_date != null && date <=new Date(group.end_date + "23:59:59"))
+      );
+    }
+
+    if(!selectedPriceGroup){
+      selectedPriceGroup = priceLogicData.find(group => 
+        group.brand_id == brandId &&
+        (group.start_date == null && group.end_date == null)
+      );
+    }
+  
+    if (selectedPriceGroup) {
+      return selectedPriceGroup.priceTable;
+    } else {
+      return null;
+    }
+  }
+
+  useEffect(() => {
+    const priceTable = getPriceTableByBrandAndDate(brandId, startDate);
+    if(priceTable){
+      getHeaderData(priceTable.id, (jsonRes, status, error) => {
+        switch (status) {
+          case 200:
+            setHeaderData(jsonRes);
+            break;
+          case 500:
+            showAlert('error', msgStr('serverError'));
+            setHeaderData([]);
+            break;
+          default:
+            if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+            else showAlert('error', msgStr('unknownError'));
+            setHeaderData([]);
+            break;
+        }
+      });
+    }else setHeaderData([]);
+  }, [brandId, startDate]);
 
   const valid = useMemo(() => {
     return (
@@ -210,7 +262,16 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
       handleResponse(jsonRes, status);
     });
   };
-
+  
+  const CustomInput = forwardRef(({ value, onChange, onClick }, ref) => (
+    <input
+      onClick={onClick}
+      onChange={onChange}
+      ref={ref}
+      style={styles.input}
+      value={value}
+    ></input>
+  ))
   const renderDatePicker = (selectedDate, onChangeHandler) => {
     return (
       <View style={{}}>
@@ -342,12 +403,12 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
               </View>
             </View>
             <View style={[styles.reservationRow]}>
-              {/* <Slots
+              <Slots
                 onSelect={(item) => {
-                  setSelectedSlot(item);
+                  setEnddate(new Date(new Date(startDate).getTime() + item.milliseconds));
                 }}
-                items={priceTableHeaderData}
-              /> */}
+                items={headerData}
+              />
             </View>
             <View style={[styles.reservationRow, {marginTop:10, justifyContent:'flex-end'}]}>
               <TouchableHighlight style={[styles.addItemButton]} onPress={openAddReservationItemModal}>
