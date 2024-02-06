@@ -94,10 +94,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
   const { data: priceTablesData } = useRequestPriceTablesQuery({}, { refetchOnFocus: true, });
   const { data: priceGroupsData } = useRequestPriceGroupsQuery({}, {refetchOnFocus: true,});
   const { data: priceLogicData } = useRequestPriceLogicDataQuery({}, {refetchOnFocus: true,});
-  console.log(priceTablesData);
-  console.log(priceGroupsData);
-  console.log(priceLogicData);
-
+  
   useEffect(() => {
     if (updateCustomerTrigger == true) getCustomers();
   }, [updateCustomerTrigger]);

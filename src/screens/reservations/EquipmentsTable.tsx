@@ -77,7 +77,7 @@ const EquipmentsTable =  ({ items }: Props) => {
           <Text style={[styles.columnHeader, { width: 60 }]}>{'No'}</Text>
           <Text style={[styles.columnHeader, { flex:1 }]}>{'Product Line'}</Text>
           <Text style={[styles.columnHeader, { width: 100 }]}>{'Quantity'}</Text>
-          <Text style={[styles.columnHeader, { width: 100 }]}>{'Price'}</Text>
+          {/* <Text style={[styles.columnHeader, { width: 100 }]}>{'Price'}</Text> */}
           <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
           <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
         </View>
