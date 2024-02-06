@@ -47,6 +47,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     marginRight: 10,
+    width: '100%',
+    flexWrap: 'wrap',
   },
   textInput: {
     fontSize: 12,
@@ -61,8 +63,10 @@ const styles = StyleSheet.create({
     borderRadius: 2.5,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 10,
-    padding: 7.5,
+    marginRight: 20,
+    marginVertical: 6,
+    paddingVertical: 7,
+    width: 80,
   },
   slotText: {
     backgroundColor: Colors.Neutrals.DARK,

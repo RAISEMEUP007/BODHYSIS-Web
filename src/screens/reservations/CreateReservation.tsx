@@ -190,6 +190,8 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
         (group.start_date == null && group.end_date == null)
       );
     }
+
+    console.log(selectedPriceGroup);
   
     if (selectedPriceGroup) {
       return selectedPriceGroup.priceTable;
@@ -402,7 +404,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
                 ></TextInput>}
               </View>
             </View>
-            <View style={[styles.reservationRow]}>
+            <View style={[styles.reservationRow, {width:740}]}>
               <Slots
                 onSelect={(item) => {
                   setEnddate(new Date(new Date(startDate).getTime() + item.milliseconds));
