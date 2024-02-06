@@ -6,8 +6,7 @@ import {
   Modal,
   View,
   ActivityIndicator,
-  Platform,
-  Picker,
+  Platform
 } from 'react-native';
 
 import { createManufacture, updateManufacture } from '../../../api/Settings';
@@ -59,7 +58,13 @@ const AddManufactureModal = ({
 
     setIsLoading(true);
 
-    const payload = {
+    interface Payload {
+      manufacture: string;
+      description: string;
+      id?: number;
+    }
+
+    const payload: Payload = {
       manufacture: ManufactureTxt,
       description: DescriptionTxt,
     };

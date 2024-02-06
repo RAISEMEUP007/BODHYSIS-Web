@@ -136,15 +136,7 @@ const AddReservationItemModal = ({
           }}
         />
         <ModalBody style={{ zIndex: 10 }}>
-          <Text style={styles.label}>How many do you want to create?</Text>
-          {/* <TextInput
-            style={[styles.input, { width: 300 }]}
-            placeholder="How many?"
-            value={CountsTxt}
-            onChangeText={setCountsTxt}
-            placeholderTextColor="#ccc"
-            onBlur={checkInput}
-          /> */}
+          <Text style={styles.label}>Product Line</Text>
           <Picker
             style={styles.select}
             selectedValue={selectedProductId}

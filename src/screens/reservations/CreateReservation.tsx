@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, forwardRef, useState } from 'react';
-import { View, StyleSheet, Text, ScrollView, TouchableHighlight, TextInput, Platform } from 'react-native';
+import { View, ActivityIndicator, Text, ScrollView, TouchableHighlight, TextInput, Platform } from 'react-native';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../../common/constants/Colors';
@@ -7,8 +7,6 @@ import Slots from '../../common/slots/slots';
 import { CommonButton } from '../../common/components/CommonButton/CommonButton';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import dayjs from 'dayjs';
-import { RESERVATION_FORMAT } from '../../common/constants/DateFormat';
 import {
   useRequestBrandsQuery,
   useRequestLocationsQuery,
@@ -29,6 +27,7 @@ import { msgStr } from '../../common/constants/Message';
 import EquipmentsTable from './EquipmentsTable';
 import AddReservationItemModal from './AddReservationItemModal';
 import { createReservationStyle } from './styles/CreateReservationStyle';
+import { createReservation } from '../../api/Reservation';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -48,6 +47,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
   const { showAlert } = useAlertModal();
   const navigation = useNavigation();
 
+  const [isLoading, setIsLoading] = useState(false);
   const [customersData, setCustomers] = useState([]);
 
   const [customerId, selectCustomerId] = useState<number | null>();
@@ -61,6 +61,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
   const [isAddReservationItemModalVisible, setAddReservationItemModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState();
   const [editingIndex, setEditingIndex] = useState();
+
   const openAddReservationItemModal = () => {
     editReservationItem(null, null);
     setAddReservationItemModalVisible(true);
@@ -167,6 +168,49 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
     ></input>
   ));
 
+  const valid = useMemo(() => {
+    return (
+      customerId &&
+      brandId &&
+      startDate &&
+      endDate &&
+      equipmentData.length > 0
+    );
+  }, [customerId, brandId, startDate, endDate, equipmentData]);
+
+  const CreateReservationHandler = () => {
+    setIsLoading(true);
+
+    const payload = {
+      customer_id : customerId,
+      brand_id : brandId,
+      start_location_id : locationId,
+      end_location_id : locationId,
+      start_date : startDate,
+      end_date : endDate,
+      items : equipmentData,
+    };
+
+    const handleResponse = (jsonRes, status) => {
+      switch (status) {
+        case 201:
+          showAlert('success', jsonRes.message);
+          break;
+        case 409:
+          break;
+        default:
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+      setIsLoading(false);
+    };
+
+    createReservation(payload, (jsonRes, status) => {
+      handleResponse(jsonRes, status);
+    });
+  };
+
   const renderDatePicker = (selectedDate, onChangeHandler) => {
     return (
       <View style={{}}>
@@ -220,15 +264,17 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
               <CommonButton
                 width={177}
                 onPressWhileDisabled={() => {
-                  showAlert(
-                    'warning',
-                    'Please select a customer, a brand, a prooduct, and a drop-off time.'
-                  );
+                  if(!customerId) showAlert('warning', 'Please select a customer.');
+                  else if(!brandId) showAlert('warning', 'Please select a brand.');
+                  else if(!startDate) showAlert('warning', 'Please select Pick Up Time.');
+                  else if(!endDate) showAlert('warning', 'Please select Drop off Time.');
+                  else if(!equipmentData.length) showAlert('warning', 'Please add an item.');
                 }}
                 onPress={() => {
+                  CreateReservationHandler();
                 }}
                 label={'Create Reservation'}
-                disabledConfig={{ backgroundColor: Colors.Neutrals.DARK, disabled: true }}
+                disabledConfig={{ backgroundColor: Colors.Neutrals.DARK, disabled: !valid }}
                 backgroundColor={Colors.Secondary.GREEN}
                 type={'rounded'}
                 textColor={Colors.Neutrals.WHITE}
@@ -355,6 +401,11 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
             editReservationItem(null, null);
           }}
         />
+        {isLoading && (
+          <View style={styles.overlay}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        )}
       </BasicLayout>
     );
   };
