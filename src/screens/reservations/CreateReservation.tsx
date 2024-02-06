@@ -20,7 +20,7 @@ import {
   selectCustomer,
   selectLocation,
   selectSeason,
-  selectProducts,
+  selectProductLines,
   loadPriceGroups,
   loadPriceTables,
   loadPriceLogic,
@@ -59,6 +59,9 @@ import AddCustomerModal from '../customer/customers/AddCustomerModal';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { getCustomersData } from '../../api/Customer';
 import { msgStr } from '../../common/constants/Message';
+import EquipmentsTable from './EquipmentsTable';
+import { white } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import AddReservationItemModal from './AddReservationItemModal';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -85,6 +88,15 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
 
   const [showList, setShowList] = useState(false);
 
+  const [isAddReservationItemModalVisible, setAddReservationItemModalVisible] = useState(false);
+  const openAddReservationItemModal = () => {
+    setAddReservationItemModalVisible(true);
+  };
+  const closeAddReservationItemModal = () => {
+    setAddReservationItemModalVisible(false);
+  };
+
+
   const navigation = useNavigation();
 
   const reservationInfo = useSelector(getReservationInfoSelector);
@@ -107,6 +119,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
 
   const [customersData, setCustomers] = useState([]);
   const [updateCustomerTrigger, setUpdateCustomerTrigger] = useState(true);
+  const [endDate, setEnddate] = useState<Date>();
 
   useEffect(() => {
     if (updateCustomerTrigger == true) getCustomers();
@@ -151,6 +164,8 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
     }
   );
 
+  console.log(priceTablesData);
+
   const { data: productQuantitiesData } = useRequestProductQuantitiesByLineQuery(
     {},
     {
@@ -181,14 +196,15 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
   const dispatch = useDispatch();
 
   const valid = useMemo(() => {
+
     return (
-      selectedSlot &&
+      endDate &&
       reservationInfo.selectedBrand &&
       equipmentData.length > 0 &&
       !!reservationInfo.selectedCustomer
     );
   }, [
-    selectedSlot,
+    endDate,
     reservationInfo.selectedBrand,
     equipmentData.length,
     reservationInfo.selectedCustomer,
@@ -234,6 +250,8 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
     },
     { skip: !reservationInfo?.selectedPriceTable?.id, refetchOnFocus: true }
   );
+
+  console.log(reservationInfo?.selectedPriceTable);
 
   const { data: priceTableHeaderData, isLoading: priceTableHeaderDataLoading } =
     useRequestPriceTableHeaderDataQuery(
@@ -310,7 +328,6 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
     return day.toDate();
   }, []);
 
-  const [endDate, setEnddate] = useState<Date>();
 
   const calculatedEndDate = useMemo(() => {
     if (!selectedDate || !selectedSlot) {
@@ -383,13 +400,78 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
         screenName={'Create Reservation'}
         navigation={navigation}
         goBack={goBack}
+        backKeyboard = {false}
       >
         <ScrollView contentContainerStyle={{alignItems:'center'}}>
           <View style={styles.outterContainer}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent:'flex-end'}}>
+              <CommonButton
+                width={177}
+                onPressWhileDisabled={() => {
+                  showAlert(
+                    'warning',
+                    'Please select a customer, a brand, a prooduct, and a drop-off time.'
+                  );
+                }}
+                onPress={() => {
+                  // setShowDetails(true);
+                  // dispatch(
+                  //   updateReservation({
+                  //     startDate: selectedDate.toISOString(),
+                  //     endDate: calculatedEndDate && calculatedEndDate.toISOString(),
+                  //   })
+                  // );
+                  console.log(selectedDate);
+                  const products = equipmentData.map((item) => {
+                    // const maxQuantity: number = productQuantitiesData[item.value.id];
+
+                    console.log(priceTableData);
+                    return;
+                    const priceGroup = reservationInfo.priceTableData[item.value.product];
+
+                    let price = 0;
+
+                    if (priceGroup && selectedSlot) {
+                      const prices: Array<number> = priceGroup.data ?? [];
+                      price = prices[selectedSlot.index];
+                    }
+
+                    if (item.quantity > maxQuantity) {
+                      showAlert(
+                        'warning',
+                        `There are only ${maxQuantity} items available for this product.`
+                      );
+                    } else {
+                      const product = createEquipmentTableProduct(
+                        item.value,
+                        reservationInfo.selectedBrand.displayLabel,
+                        parseInt(item.quantity.toString()),
+                        reservationInfo.selectedSeason.season,
+                        price,
+                        reservationInfo.selectedCustomer.displayLabel,
+                        item.value.line.line,
+                        selectedSlot.index
+                      );
+                      dispatch(addProduct(product));
+                      return product;
+                    }
+                  });
+                  // dispatch(selectProductLines({ products: products }));
+                }}
+                label={'Create Reservation'}
+                disabledConfig={{ backgroundColor: Colors.Neutrals.DARK, disabled: !valid }}
+                backgroundColor={Colors.Secondary.GREEN}
+                type={'rounded'}
+                textColor={Colors.Neutrals.WHITE}
+                containerStyle={{
+                  // marginRight: 20,
+                }}
+              />
+            </View>
             <View style={styles.reservationRow}>
               <TouchableHighlight style={styles.button} onPress={openAddCustomerModal}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
-                  <FontAwesome5 name="plus" size={14} color="black" />
+                  <FontAwesome5 name="plus" size={14} color="white" />
                   <Text style={styles.buttonText}>Add Customer</Text>
                 </View>
               </TouchableHighlight>
@@ -421,7 +503,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
               />
               <CommonSelectDropdown
                 containerStyle={{
-                  marginRight: 40,
+                  // marginRight: 40,
                 }}
                 width={350}
                 onItemSelected={(item) => {
@@ -433,31 +515,17 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
               />
             </View>
             <View style={[styles.reservationRow, {zIndex:10}]}>
-              {/* <CommonInput
-                onChangeText={() => {}}
-                onFocus={() => {
-                  // modalizeRef.current.open();
-                }}
-                value={selectedDate && dayjs(selectedDate).format(RESERVATION_FORMAT)}
-                width={350}
-                title={'Pick Up Time'}
-                placeholder="Select Date"
-              /> */}
               <View style={{marginRight:40}}>
-                <Text style={{marginBottom:10, fontWeight:'bold'}}>{'Pick Up Time'}</Text>
+                <Text style={{marginBottom:10}}>{'Pick Up Time'}</Text>
                 {Platform.OS == 'web' && renderDatePicker(selectedDate, (date)=>setSelectedDate(sanitizeDate(date)))}
               </View>
-              {/* <CommonInput
-                onChangeText={() => {}}
-                value={calculatedEndDate && dayjs(calculatedEndDate).format(RESERVATION_FORMAT)}
-                width={350}
-                title={'Drop Off Time'}
-              /> */}
-              <View style={{marginRight:40}}>
-                <Text style={{marginBottom:10, fontWeight:'bold'}}>{'Drop Off Time'}</Text>
+              <View style={{marginRight:0}}>
+                <Text style={{marginBottom:10}}>{'Drop Off Time'}</Text>
                 {Platform.OS == 'web' && renderEndDatePicker(endDate, (date)=>setEnddate(date), selectedDate)}
                 {Platform.OS != 'web' && <TextInput editable={false} style={styles.input} value={calculatedEndDate ? dayjs(calculatedEndDate).format(RESERVATION_FORMAT) : ''}
                 ></TextInput>}
+                {/* <TextInput editable={false} style={styles.input} value={calculatedEndDate ? dayjs(calculatedEndDate).format(RESERVATION_FORMAT) : ''}
+                ></TextInput> */}
               </View>
             </View>
 
@@ -470,7 +538,7 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
               />
             </View>
 
-            <Text style={styles.equipmentText}>{'Equipment'}</Text>
+            {/* <Text style={styles.equipmentText}>{'Equipment'}</Text>
             <CommonButton
               onPress={() => {}}
               label={'Search'}
@@ -486,75 +554,18 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
                   setEquipmentData(data);
                 }}
               />
-            )}
-            <View style={{ flexDirection: 'row', paddingTop: 20 }}>
-              <CommonButton
-                width={177}
-                onPressWhileDisabled={() => {
-                  showAlert(
-                    'warning',
-                    'Please select a customer, a brand, a prooduct, and a drop-off time.'
-                  );
-                }}
-                onPress={() => {
-                  setShowDetails(true);
-                  dispatch(
-                    updateReservation({
-                      startDate: selectedDate.toISOString(),
-                      endDate: calculatedEndDate && calculatedEndDate.toISOString(),
-                    })
-                  );
-                  const products = equipmentData.map((item) => {
-                    const maxQuantity: number = productQuantitiesData[item.value.line_id];
-
-                    const priceGroup = reservationInfo.priceTableData[item.value.product];
-
-                    let price = 0;
-
-                    if (priceGroup && selectedSlot) {
-                      const prices: Array<number> = priceGroup.data ?? [];
-                      price = prices[selectedSlot.index];
-                    }
-
-                    if (item.quantity > maxQuantity) {
-                      showAlert(
-                        'warning',
-                        `There are only ${maxQuantity} items available for this product.`
-                      );
-                    } else {
-                      const product = createEquipmentTableProduct(
-                        item.value,
-                        reservationInfo.selectedBrand.displayLabel,
-                        parseInt(item.quantity.toString()),
-                        reservationInfo.selectedSeason.season,
-                        price,
-                        reservationInfo.selectedCustomer.displayLabel,
-                        item.value.line.line,
-                        selectedSlot.index
-                      );
-                      dispatch(addProduct(product));
-                      return product;
-                    }
-                  });
-                  dispatch(selectProducts({ products: products }));
-                }}
-                label={'Create Reservation'}
-                disabledConfig={{ backgroundColor: Colors.Neutrals.DARK, disabled: !valid }}
-                backgroundColor={Colors.Secondary.GREEN}
-                type={'rounded'}
-                textColor={Colors.Neutrals.WHITE}
-                containerStyle={{
-                  marginRight: 20,
-                }}
-              />
-              <CommonButton
-                onPress={() => {}}
-                label={'Cancel'}
-                backgroundColor={Colors.Secondary.MAROON}
-                type={'rounded'}
-                textColor={Colors.Neutrals.WHITE}
-              />
+            )} */}
+            <View style={[styles.reservationRow, {marginTop:10, justifyContent:'flex-end'}]}>
+              <TouchableHighlight style={[styles.addItemButton]} onPress={openAddReservationItemModal}>
+                <View style={{flexDirection:'row', alignItems:'center'}}>
+                  <FontAwesome5 name="plus" size={14} color="white" />
+                  <Text style={styles.buttonText}>Add Items</Text>
+                </View>
+              </TouchableHighlight>
             </View>
+            <EquipmentsTable
+              items={equipmentData}
+            />
           </View>
         </ScrollView>
         <AddCustomerModal
@@ -562,6 +573,16 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
           Customer={selectedCustomer}
           setUpdateCustomerTrigger={setUpdateCustomerTrigger}
           closeModal={closeAddCustomerModal}
+        />
+        <AddReservationItemModal
+          isModalVisible={isAddReservationItemModalVisible}
+          closeModal={closeAddReservationItemModal}
+          onAdded={(productLine, quantity)=>{
+            if (productLine) {
+              const equipment = { ...productLine, quantity };
+              setEquipmentData(prevEquipmentData => [...prevEquipmentData, equipment]);
+            }
+          }}
         />
       </BasicLayout>
     );
@@ -590,10 +611,11 @@ const CreateReservation = ({ openInventory, goBack }: Props) => {
 
 const styles = StyleSheet.create({
   outterContainer: {
-    width: '60%',
-    minWidth: 500,
+    // width: '60%',
+    // minWidth: 500,
     marginVertical: 30,
-    padding: 36,
+    paddingVertical: 40,
+    paddingHorizontal: 60,
     backgroundColor: 'white',
     borderRadius: 8,
   },
@@ -613,7 +635,7 @@ const styles = StyleSheet.create({
   equipmentText: {
     fontSize: 16,
     fontWeight: '700',
-    marginTop: 20,
+    marginTop: 30,
     marginBottom: 15,
   },
   width: {
@@ -642,6 +664,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     marginLeft: 10,
+    color: 'white',
   },
   button: {
     zIndex: 1,
@@ -652,8 +675,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     alignItems: 'center',
     borderRadius: 3,
-    borderWidth: 1,
+    borderWidth: 0,
     borderColor: '#6c757d',
+    backgroundColor: '#007BFF',
+  },
+  addItemButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    alignItems: 'center',
+    borderRadius: 3,
+    borderWidth: 0,
+    borderColor: '#6c757d',
+    backgroundColor: '#007BFF',
   },
 });
 
