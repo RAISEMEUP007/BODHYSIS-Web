@@ -19,6 +19,7 @@ import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { customersStyle } from './styles/CustomersStyle';
 import AddCustomerModal from './AddCustomerModal';
+import Reservations from '../../reservations/Reservations';
 
 const Customers = ({ navigation }) => {
   const screenHeight = Dimensions.get('window').height;
@@ -32,7 +33,7 @@ const Customers = ({ navigation }) => {
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [searchKey, setSearchKey] = useState('');
-
+  
   const openAddCustomerModal = () => {
     setAddModalVisible(true);
     setSelectedCustomer(null);
@@ -145,6 +146,16 @@ const Customers = ({ navigation }) => {
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
+                  // setCreateReservationCustomer(item.id);
+                  navigation.navigate('Reservation', {selectedItem:'Create Reservations', customerId:item.id});
+                }}
+              >
+                <FontAwesome5 size={TextMediumSize} name="cart-plus" color="black" />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.IconCell]}>
+              <TouchableOpacity
+                onPress={() => {
                   editCustomer(index);
                 }}
               >
@@ -197,6 +208,7 @@ const Customers = ({ navigation }) => {
               <Text style={[styles.columnHeader]}>{'Mobile number'}</Text>
               <Text style={[styles.columnHeader]}>{'Country'}</Text>
               <Text style={[styles.columnHeader]}>{'Location'}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{'Reserve'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
             </View>
