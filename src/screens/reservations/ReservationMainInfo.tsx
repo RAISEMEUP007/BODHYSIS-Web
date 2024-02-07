@@ -1,19 +1,19 @@
 import React, { forwardRef, useEffect, useMemo, useState } from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { msgStr } from '../../common/constants/Message';
-import { useAlertModal } from '../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
-import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import { reservationMainInfoStyle } from './styles/ReservationMainInfoStyle';
-import LabeledTextInput from '../../common/components/input/labeledTextInput';
+import LabeledTextInput from '../../common/components/input/LabeledTextInput';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { CommonSelectDropdown } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
 import { DropdownData } from '../../common/components/CommonDropdown/CommonDropdown';
 import { LocationType } from '../../types/LocationType';
 import { useRequestLocationsQuery } from '../../redux/slices/baseApiSlice';
+import { getDiscountCodesData } from '../../api/Settings';
+import { updateReservation } from '../../api/Reservation';
+import { msgStr } from '../../common/constants/Message';
+import { useAlertModal } from '../../common/hooks/UseAlertModal';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -24,6 +24,7 @@ if (Platform.OS === 'web') {
 }
 
 const ReservationMainInfo = ({ details }) => {
+  const { showAlert } = useAlertModal();
 
   const [inputValues, setInputValues] = useState({
     startDate: new Date(),
@@ -37,6 +38,8 @@ const ReservationMainInfo = ({ details }) => {
     startLocationId: '',
     endLocationId: ''
   });
+
+  const[discountCodes, setDiscountCodes] = useState([]);
 
   useEffect(() => {
     if(details)
@@ -53,6 +56,16 @@ const ReservationMainInfo = ({ details }) => {
         endLocationId: details.end_location_id || ''
       });
   }, [details]);
+
+  useEffect(()=>{
+    getDiscountCodesData((jsonRes, status, error) => {
+      switch (status) {
+        case 200:
+          setDiscountCodes(jsonRes);
+          break;
+      }
+    });
+  }, [])
 
   const { data: locationsData } = useRequestLocationsQuery({}, {refetchOnFocus: true,});
   
@@ -83,11 +96,54 @@ const ReservationMainInfo = ({ details }) => {
     else return null;
   }, [details, locationsData]);
 
+  const discountCodesDropdownData = useMemo(() => {
+    if (!discountCodes?.length) {
+      return [];
+    }
+
+    const result: Array<any> = discountCodes.map((item, index) => {
+      return {
+        value: item,
+        displayLabel: item.code,
+        index,
+      };
+    });
+    return result;
+  }, [discountCodes]);
+
+  const defaultDiscountCode = useMemo(()=>{
+    if(details && details.promo_code)
+      return discountCodesDropdownData.find(item=>item.value.id == details.promo_code);
+    else return null;
+  }, [details, discountCodes]);
+  
   const handleInputChange = (fieldName, value) => {
-    setInputValues(prevState => ({
-      ...prevState,
+    const newValues = {
+      ...inputValues,
       [fieldName]: value
-    }));
+    };
+
+    const payload = {
+      id: details.id,
+      start_date : newValues.startDate,
+      end_date : newValues.endDate,
+      promo_code: newValues.discountCode,
+      start_location_id : newValues.startLocationId,
+      end_location_id : newValues.endLocationId,
+    }
+
+    updateReservation(payload, (jsonRes, status) => {
+      switch (status) {
+        case 201:
+          setInputValues(newValues);
+          break;
+        default:
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+
   };
 
   const CustomInput = forwardRef(({ value, onChange, onClick }, ref) => (
@@ -156,15 +212,19 @@ const ReservationMainInfo = ({ details }) => {
         />
       </View>
       <View style={styles.reservationRow}>
-        <LabeledTextInput
-          label='Discount code'
+        <CommonSelectDropdown
+          containerStyle={{
+            marginRight: 30,
+          }}
           width={300}
-          containerStyle={{marginRight:30}}
-          placeholder='Discount code'
-          placeholderTextColor="#ccc"
-          inputStyle={{marginVertical:6, paddingVertical:6}}
-          value={inputValues.discountCode}
-          onChangeText={value => handleInputChange('discountCode', value)}
+          onItemSelected={(item) => {
+            handleInputChange('discountCode', item.value.id);
+          }}
+          data={discountCodesDropdownData}
+          placeholder="Select A Code"
+          title={'Discount code'}
+          titleStyle={{marginBottom:6, color:"#555555"}}
+          defaultValue={defaultDiscountCode}
         />
         <LabeledTextInput
           label='Custom Price'
