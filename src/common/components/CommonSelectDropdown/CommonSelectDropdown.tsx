@@ -21,6 +21,7 @@ interface Props<T> {
   containerStyle?: ViewStyle;
   width?: number;
   title?: string;
+  titleStyle?: object;
   textAlign?: 'left' | 'center' | 'right' | 'auto';
   defaultValue?;
 }
@@ -32,6 +33,7 @@ export const CommonSelectDropdown = ({
   onItemSelected,
   width = 130,
   title,
+  titleStyle,
   textAlign = 'left',
   defaultValue,
 }: Props<any>) => {
@@ -55,7 +57,7 @@ export const CommonSelectDropdown = ({
     }
     return (
       <View>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title, titleStyle]}>{title}</Text>
       </View>
     );
   };

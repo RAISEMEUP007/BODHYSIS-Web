@@ -8,6 +8,7 @@ import CreateReservation from './CreateReservation';
 import { ReservationDetailsView } from './ReservationDetailsView';
 import { CreateReservationDetails } from './CreateReservationDetails';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
+import { ProceedReservation } from './ProceedReservation';
 
 interface Props {
   navigation: any;
@@ -50,6 +51,13 @@ const Reservations = ({ navigation, initialData }: Props) => {
           <CreateReservationDetails
             openReservationScreen={handleItemClick}
             data={data}
+          />
+        );
+      case 'Proceed Reservation':
+        return (
+          <ProceedReservation
+            openReservationScreen={handleItemClick}
+            initialData={data}
           />
         );
       default:
