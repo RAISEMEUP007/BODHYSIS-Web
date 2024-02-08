@@ -13,7 +13,7 @@ export const proceedReservationStyle = StyleSheet.create({
     borderRadius: 8,
   },
   nextStageButton: {
-    paddingVertical: 6,
+    paddingVertical: 8,
     paddingHorizontal: 14,
     borderRadius: 3,
     borderWidth: 0,

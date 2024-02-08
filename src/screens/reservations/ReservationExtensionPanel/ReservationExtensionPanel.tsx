@@ -29,20 +29,46 @@ export const ReservationExtensionPanel = ({width}:Props) => {
   };
 
   const renderTabContent = () => {
-    switch(activeTab) {
-      // case 0:
-      //   return (<View>
-      //     <Text>000</Text>
-      //   </View>);
-      // case 1:
-      //   return (<View>
-      //     <Text>000</Text>
-      //   </View>);
-      default:
-        return (<View>
-          <Text>{"No Content  :("}</Text>
-        </View>);
-    }
+    return (
+      <View style={styles.tabContent}>
+        {activeTab === 0 && (
+          <View>
+            <Text>Content for Notes</Text>
+          </View>
+        )}
+        {activeTab === 1 && (
+          <View>
+            <Text>Content for Events</Text>
+          </View>
+        )}
+        {activeTab === 2 && (
+          <View>
+            <Text>Content for Transactions</Text>
+          </View>
+        )}
+        {activeTab === 3 && (
+          <View>
+            <Text>Content for Comments</Text>
+          </View>
+        )}
+        {activeTab === 4 && (
+          <View>
+            <Text>Content for Delivery</Text>
+          </View>
+        )}
+        {activeTab === 5 && (
+          <View>
+            <Text>Content for Docs</Text>
+          </View>
+        )}
+        {activeTab === 6 && (
+          <View>
+            <Text>Content for Extras</Text>
+          </View>
+        )}
+
+      </View>
+    );
   };
 
   return (

@@ -71,7 +71,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               <TouchableOpacity style={[styles.nextStageButton]} >
                 <View style={{flexDirection:'row'}}>
                   <Text style={styles.buttonText}>Next stage</Text>
-                  <FontAwesome5 name="angle-right" size={18} color="white" style={{marginTop:2, marginLeft:10}}/>
+                  <FontAwesome5 name="angle-right" size={18} color="white" style={{marginTop:1, marginLeft:10}}/>
                 </View>
               </TouchableOpacity>
             </View>
