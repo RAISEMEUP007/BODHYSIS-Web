@@ -12,9 +12,10 @@ interface Props {
   items: any;
   onEdit?: (item, index) => void;
   onDelete?: (item, index) => void;
+  width?: number;
 }
 
-const EquipmentsTable =  ({ items, onEdit, onDelete }: Props) => {
+const EquipmentsTable =  ({ items, onEdit, onDelete, width }: Props) => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
   const scrollViewRef = useRef();
@@ -24,6 +25,8 @@ const EquipmentsTable =  ({ items, onEdit, onDelete }: Props) => {
 
   useEffect(()=>{
     if(items && items.length && items.length > 0){
+      if(typeof(items) == 'string')
+      items = JSON.parse(items);
       setTableData(items);
     }else{
       setTableData([]);
@@ -74,7 +77,7 @@ const EquipmentsTable =  ({ items, onEdit, onDelete }: Props) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.tableContainer, {width:740}]}>
+      <View style={[styles.tableContainer, {width:width || 740}]}>
         <View style={[styles.tableHeader, { paddingRight: 738 - contentWidth }]}>
           <Text style={[styles.columnHeader, { width: 60 }]}>{'No'}</Text>
           <Text style={[styles.columnHeader, { flex:1 }]}>{'Product Line'}</Text>

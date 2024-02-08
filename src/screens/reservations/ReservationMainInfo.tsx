@@ -195,7 +195,7 @@ const ReservationMainInfo = ({ details }) => {
           containerStyle={{marginRight:30}}
           placeholder='Billable days'
           placeholderTextColor="#ccc"
-          inputStyle={{marginVertical:6, paddingVertical:6}}
+          inputStyle={{marginVertical:6}}
           value={inputValues.billableDays}
           onChangeText={value => handleInputChange('billableDays', value)}
           editable={false}
@@ -205,7 +205,7 @@ const ReservationMainInfo = ({ details }) => {
           width={300}
           placeholder='Reservation duration'
           placeholderTextColor="#ccc"
-          inputStyle={{marginVertical:6, paddingVertical:6}}
+          inputStyle={{marginVertical:6}}
           value={inputValues.reservationDuration}
           onChangeText={value => handleInputChange('reservationDuration', value)}
           editable={false}
@@ -231,7 +231,7 @@ const ReservationMainInfo = ({ details }) => {
           width={300}
           placeholder='Custom Price'
           placeholderTextColor="#ccc"
-          inputStyle={{marginVertical:6, paddingVertical:6}}
+          inputStyle={{marginVertical:6}}
           value={inputValues.customPrice}
           onChangeText={value => handleInputChange('customPrice', value)}
         />
@@ -243,7 +243,7 @@ const ReservationMainInfo = ({ details }) => {
           containerStyle={{marginRight:30}}
           placeholder='Referrer'
           placeholderTextColor="#ccc"
-          inputStyle={{marginVertical:6, paddingVertical:6}}
+          inputStyle={{marginVertical:6}}
           value={inputValues.referrer}
           onChangeText={value => handleInputChange('referrer', value)}
         />
@@ -252,7 +252,7 @@ const ReservationMainInfo = ({ details }) => {
           width={300}
           placeholder='Group'
           placeholderTextColor="#ccc"
-          inputStyle={{marginVertical:6, paddingVertical:6}}
+          inputStyle={{marginVertical:6}}
           value={inputValues.group}
           onChangeText={value => handleInputChange('group', value)}
         />

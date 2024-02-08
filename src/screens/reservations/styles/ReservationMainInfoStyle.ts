@@ -6,7 +6,7 @@ export const reservationMainInfoStyle = StyleSheet.create({
   reservationRow: {
     flexDirection: 'row',
     flexWrap:'wrap',
-    marginVertical: 8,
+    marginVertical: 10,
     // paddingVertical: 8,
   },
   input:{
