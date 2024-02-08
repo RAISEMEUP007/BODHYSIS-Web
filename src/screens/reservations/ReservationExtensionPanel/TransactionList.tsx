@@ -40,7 +40,11 @@ const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
       <View key={transaction.id} style={styles.transactionItem}>
         <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:8}}>
           <Text>{'User@gmail.com'}</Text>
-          <Text>{transaction.createdAt}</Text>
+          <Text>{new Date(transaction.createdAt).toLocaleString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+          })}</Text>
         </View>
         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
           <Text>{transaction.method}</Text>
