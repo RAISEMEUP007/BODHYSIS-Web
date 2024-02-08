@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, Platform } from 'react-native';
 import { createDrawerNavigator, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import { useScreenSize } from '../common/hooks/UseScreenDimention';
 import Dashboard from './Dashboard';
@@ -8,6 +10,7 @@ import Inventory from './Inventory/Inventory';
 import Settings from './settings/Settings';
 import Customers from './customer/customers/Customers';
 import Reservations from './reservations/Reservations';
+import CreateReservation from './reservations/CreateReservation';
 
 const MainDrawer = ({ navigation }) => {
   const { isLargeScreen } = useScreenSize();
@@ -16,6 +19,11 @@ const MainDrawer = ({ navigation }) => {
 
   const DashboardScreen = ({ navigation }) => {
     return <Dashboard />;
+  };
+
+  const ReservationScreen = ({ navigation, route }) => {
+    // console.log(route.params);
+    return <Reservations navigation={navigation} initialData={route.params}/>;
   };
 
   const InventoryScreen = ({ navigation }) => {
@@ -53,59 +61,61 @@ const MainDrawer = ({ navigation }) => {
   };
 
   return (
-    <Drawer.Navigator
-      initialRouteName="Reservation"
-      drawerContent={(props) => <DrawerContent {...props} />}
-      screenOptions={{
-        drawerType: Platform.OS == 'web' && isLargeScreen ? 'permanent' : 'front',
-      }}
-    >
-      <Drawer.Screen
-        name="Dashboard"
-        component={DashboardScreen}
-        options={{
-          drawerLabel: 'Dashboard',
-          unmountOnBlur: true,
-          headerShown: false,
+    <>
+      <Drawer.Navigator
+        initialRouteName="Reservation"
+        drawerContent={(props) => <DrawerContent {...props} />}
+        screenOptions={{
+          drawerType: Platform.OS == 'web' && isLargeScreen ? 'permanent' : 'front',
         }}
-      />
-      <Drawer.Screen
-        name="Reservation"
-        component={Reservations}
-        options={{
-          drawerLabel: 'Reservation',
-          unmountOnBlur: true,
-          headerShown: false,
-        }}
-      />
-      <Drawer.Screen
-        name="Inventory"
-        component={InventoryScreen}
-        options={{
-          drawerLabel: 'Inventory',
-          unmountOnBlur: true,
-          headerShown: false,
-        }}
-      />
-      <Drawer.Screen
-        name="Customer"
-        component={CustomerScreen}
-        options={{
-          drawerLabel: 'Customer',
-          unmountOnBlur: true,
-          headerShown: false,
-        }}
-      />
-      <Drawer.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          drawerLabel: 'Settings',
-          unmountOnBlur: true,
-          headerShown: false,
-        }}
-      />
-    </Drawer.Navigator>
+      >
+        <Drawer.Screen
+          name="Dashboard"
+          component={DashboardScreen}
+          options={{
+            drawerLabel: 'Dashboard',
+            unmountOnBlur: true,
+            headerShown: false,
+          }}
+        />
+        <Drawer.Screen
+          name="Reservation"
+          component={ReservationScreen}
+          options={{
+            drawerLabel: 'Reservation',
+            unmountOnBlur: true,
+            headerShown: false,
+          }}
+        />
+        <Drawer.Screen
+          name="Inventory"
+          component={InventoryScreen}
+          options={{
+            drawerLabel: 'Inventory',
+            unmountOnBlur: true,
+            headerShown: false,
+          }}
+        />
+        <Drawer.Screen
+          name="Customer"
+          component={CustomerScreen}
+          options={{
+            drawerLabel: 'Customer',
+            unmountOnBlur: true,
+            headerShown: false,
+          }}
+        />
+        <Drawer.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={{
+            drawerLabel: 'Settings',
+            unmountOnBlur: true,
+            headerShown: false,
+          }}
+        />
+      </Drawer.Navigator>
+    </>
   );
 };
 

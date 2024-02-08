@@ -21,7 +21,9 @@ interface Props<T> {
   containerStyle?: ViewStyle;
   width?: number;
   title?: string;
+  titleStyle?: object;
   textAlign?: 'left' | 'center' | 'right' | 'auto';
+  defaultValue?;
 }
 
 export const CommonSelectDropdown = ({
@@ -31,12 +33,19 @@ export const CommonSelectDropdown = ({
   onItemSelected,
   width = 130,
   title,
+  titleStyle,
   textAlign = 'left',
+  defaultValue,
 }: Props<any>) => {
 
-  const [selectedItem, setSelectedItem] = useState<null | DropdownItem<any>>(null);
+  const [selectedItem, setSelectedItem] = useState<DropdownItem<any> | null>(null);
   const [filteredData, setFilteredData] = useState<DropdownData<any>>(data);
-  // const selectDropdownRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (defaultValue) {
+      setSelectedItem(defaultValue);
+    }
+  }, [defaultValue]);
 
   useEffect(()=>{
     setFilteredData(data);
@@ -48,7 +57,7 @@ export const CommonSelectDropdown = ({
     }
     return (
       <View>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title, titleStyle]}>{title}</Text>
       </View>
     );
   };

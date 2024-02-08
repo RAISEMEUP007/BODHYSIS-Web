@@ -8,15 +8,16 @@ import CreateReservation from './CreateReservation';
 import { ReservationDetailsView } from './ReservationDetailsView';
 import { CreateReservationDetails } from './CreateReservationDetails';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
+import { ProceedReservation } from './ProceedReservation';
 
 interface Props {
   navigation: any;
-  goBack: () => void;
+  initialData?: any;
 }
 
-const Reservations = ({ navigation, goBack }: Props) => {
+const Reservations = ({ navigation, initialData }: Props) => {
   const [data, setData] = useState(null);
-  const [selectedItem, setSelectedItem] = useState("Reservations List");
+  const [selectedItem, setSelectedItem] = useState(initialData?.selectedItem ?? "Reservations List");
 
   const handleItemClick = (itemName, data = null) => {
     setSelectedItem(itemName);
@@ -29,6 +30,7 @@ const Reservations = ({ navigation, goBack }: Props) => {
         return (
           <CreateReservation
             openReservationScreen={handleItemClick}
+            initialData={{initalCustomerId: initialData?.customerId ?? null}}
           />
         );
       case 'Reservations List':
@@ -49,6 +51,13 @@ const Reservations = ({ navigation, goBack }: Props) => {
           <CreateReservationDetails
             openReservationScreen={handleItemClick}
             data={data}
+          />
+        );
+      case 'Proceed Reservation':
+        return (
+          <ProceedReservation
+            openReservationScreen={handleItemClick}
+            initialData={data}
           />
         );
       default:
@@ -76,7 +85,7 @@ const Reservations = ({ navigation, goBack }: Props) => {
   }
 
   return (
-    <BasicLayout goBack={goBack} navigation={navigation} screenName={'Reservations'}>
+    <BasicLayout navigation={navigation} screenName={'Reservations'}>
       <ScrollView>
         <View style={styles.container}>
           <TouchNavGroup

@@ -107,7 +107,7 @@ const ReservationsList = ({ openReservationScreen }) => {
               </Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.promo_code}</Text>
+              <Text>{item.discount_code}</Text>
             </View>
             <View style={[styles.cell]}>
               <Text>{item.Stage}</Text>
@@ -115,7 +115,7 @@ const ReservationsList = ({ openReservationScreen }) => {
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
-                  openReservationScreen('CreateReservation Detail', {reservation:item})
+                  openReservationScreen('Proceed Reservation', {reservationId:item.id})
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="arrow-right" color="black" />
@@ -141,7 +141,7 @@ const ReservationsList = ({ openReservationScreen }) => {
 
   return (
     <BasicLayout
-      screenName={'Reservations List'}
+      screenName={'Reservation List'}
     >
       <ScrollView horizontal={true}>
         <View style={styles.container}>

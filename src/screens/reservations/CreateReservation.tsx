@@ -29,6 +29,7 @@ import AddReservationItemModal from './AddReservationItemModal';
 import { createReservationStyle } from './styles/CreateReservationStyle';
 import { createReservation } from '../../api/Reservation';
 import { getHeaderData } from '../../api/Price';
+import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -39,19 +40,18 @@ if (Platform.OS === 'web') {
 }
 
 interface Props {
-  openReservationScreen: (item) => void;
-  // goBack: () => void;
+  openReservationScreen: (itemName: string, data?: any ) => void;
+  initialData?: any;
 }
 
-const CreateReservation = ({ openReservationScreen }: Props) => {
-  
+const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   const { showAlert } = useAlertModal();
   const navigation = useNavigation();
 
   const [isLoading, setIsLoading] = useState(false);
   const [customersData, setCustomers] = useState([]);
 
-  const [customerId, selectCustomerId] = useState<number | null>();
+  const [customerId, selectCustomerId] = useState<number | null>(initialData?.initalCustomerId??null);
   const [brandId, selectBrandId] = useState<number | null>();
   const [locationId, selectLocationId] = useState<number | null>();
   const [startDate, setStartdate] = useState<Date>(new Date());
@@ -130,6 +130,10 @@ const CreateReservation = ({ openReservationScreen }: Props) => {
     return result;
   }, [customersData]);
 
+  const defaultCustomer = useMemo(()=>{
+    return customersDropdownData.find(item=>item.value.id == initialData.initalCustomerId);
+  }, [initialData, customersDropdownData]);
+
   const brandsDropdownData = useMemo(() => {
     if (!brandsData?.length) {
       return [];
@@ -190,8 +194,6 @@ const CreateReservation = ({ openReservationScreen }: Props) => {
         (group.start_date == null && group.end_date == null)
       );
     }
-
-    console.log(selectedPriceGroup);
   
     if (selectedPriceGroup) {
       return selectedPriceGroup.priceTable;
@@ -247,10 +249,11 @@ const CreateReservation = ({ openReservationScreen }: Props) => {
     };
 
     const handleResponse = (jsonRes, status) => {
+      console.log(jsonRes);
       switch (status) {
         case 201:
           // showAlert('success', jsonRes.message);
-          openReservationScreen('Reservations List');
+          openReservationScreen('Proceed Reservation', {reservationId:jsonRes.reservation.id});
           break;
         case 409:
           break;
@@ -368,6 +371,7 @@ const CreateReservation = ({ openReservationScreen }: Props) => {
                 data={customersDropdownData}
                 placeholder="Select A Customer"
                 title={'Customers'}
+                defaultValue={defaultCustomer}
               />
             </View>
             <View style={styles.reservationRow}>
