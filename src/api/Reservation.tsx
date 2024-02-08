@@ -15,3 +15,7 @@ export const getReservationDetail = (id, callback) => {
 export const updateReservation = (payload, callback) => {
   postAPICall('reservations/updatereservation', payload, callback);
 };
+
+export const createTransaction = (payload, callback) => {
+  postAPICall('reservation/createtransaction', payload, callback);
+};

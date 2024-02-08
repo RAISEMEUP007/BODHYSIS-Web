@@ -4,13 +4,14 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
-import { getReservationDetail } from '../../api/Reservation';
+import { createTransaction, getReservationDetail } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
 
 import { proceedReservationStyle } from './styles/ProceedReservationStyle';
 import ReservationMainInfo from './ReservationMainInfo';
 import { ReservationExtensionPanel } from './ReservationExtensionPanel/ReservationExtensionPanel';
 import EquipmentsTable from './EquipmentsTable';
+import AddTransactionModal from './ReservationExtensionPanel/AddTransactionModal';
 
 interface Props {
   openReservationScreen: (itemName: string, data?: any ) => void;
@@ -21,6 +22,13 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   const { showAlert } = useAlertModal();
   const [reservationInfo, setReservationInfo] = useState<any>();
   const [contentWidth, setContentWidth] = useState<number>();
+  const [isAddTransactionModalVisible, setAddTransactionModalVisible] = useState(false);
+  const openAddTransactionModal = () => {
+    setAddTransactionModalVisible(true);
+  };
+  const closeAddTransactionModal = () => {
+    setAddTransactionModalVisible(false);
+  };
 
   useEffect(() => {
     if (!initialData || !initialData.reservationId) {
@@ -64,7 +72,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               setContentWidth(width);
             }}>
             <ReservationMainInfo details={reservationInfo}/>
-            <ReservationExtensionPanel/>
+            <ReservationExtensionPanel reservationId={reservationInfo?.id??null}/>
           </View>
           <View style={{flexDirection:'row', justifyContent:'space-between', marginVertical:18}}>
             <View>
@@ -91,7 +99,9 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
                   <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]}>
+              <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]} onPress={()=>{
+                openAddTransactionModal();
+              }}>
                 <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add transactions</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.outLineButton}>
@@ -114,6 +124,33 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
           </View>
         </View>
       </ScrollView>
+      <AddTransactionModal
+          isModalVisible={isAddTransactionModalVisible}
+          closeModal={closeAddTransactionModal}
+          onAdded={(paymentMethod, amount)=>{
+            const payload = {
+              reservation_id : reservationInfo.id,
+              method: paymentMethod,
+              amount: amount,
+            }
+            
+            const handleResponse = (jsonRes, status) => {
+              switch (status) {
+                case 201:
+                  openReservationScreen('Reservations List');
+                  break;
+                default:
+                  if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+                  else showAlert('error', msgStr('unknownError'));
+                  break;
+              }
+            };
+
+            createTransaction(payload, (jsonRes, status) => {
+              handleResponse(jsonRes, status);
+            });
+          }}
+        />
     </BasicLayout>
   );
 };

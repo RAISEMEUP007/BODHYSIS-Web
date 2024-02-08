@@ -4,12 +4,12 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 const TransactionList = () => {
   const transactionData = [
-    { id: 1, date: '2022-01-15', amount: 100.00, method: 'Stripe' },
-    { id: 2, date: '2022-01-16', amount: 50.00, method: 'Credit' },
-    { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
-    { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
-    { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
-    { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
+    // { id: 1, date: '2022-01-15', amount: 100.00, method: 'Stripe' },
+    // { id: 2, date: '2022-01-16', amount: 50.00, method: 'Credit' },
+    // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
+    // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
+    // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
+    // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
   ];
 
   const renderItems = () => {

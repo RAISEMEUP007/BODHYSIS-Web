@@ -4,10 +4,12 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import TransactionList from './TransactionList';
 
 interface Props {
+  reservationId: number;
   width?: number;
 }
 
-export const ReservationExtensionPanel = ({width}:Props) => {
+export const ReservationExtensionPanel = ({reservationId, width}:Props) => {
+  
   const [activeTab, setActiveTab] = useState(2);
 
   const renderTab = (index, title, icon) => {
