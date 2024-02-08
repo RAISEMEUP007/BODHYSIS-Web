@@ -249,10 +249,11 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     };
 
     const handleResponse = (jsonRes, status) => {
+      console.log(jsonRes);
       switch (status) {
         case 201:
           // showAlert('success', jsonRes.message);
-          openReservationScreen('Reservations List');
+          openReservationScreen('Proceed Reservation', {reservationId:jsonRes.reservation.id});
           break;
         case 409:
           break;

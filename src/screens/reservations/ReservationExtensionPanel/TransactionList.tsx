@@ -34,9 +34,7 @@ const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
       }
     });
   }, [reservationId, openAddTransactionModal])
-
-  console.log(transactionData);
-
+  
   const renderItems = () => {
     return transactionData.map((transaction) => (
       <View key={transaction.id} style={styles.transactionItem}>

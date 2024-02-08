@@ -107,7 +107,7 @@ const ReservationsList = ({ openReservationScreen }) => {
               </Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.promo_code}</Text>
+              <Text>{item.discount_code}</Text>
             </View>
             <View style={[styles.cell]}>
               <Text>{item.Stage}</Text>
