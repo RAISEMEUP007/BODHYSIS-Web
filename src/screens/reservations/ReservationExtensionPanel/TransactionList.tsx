@@ -2,7 +2,12 @@ import React from 'react';
 import { View, ScrollView, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-const TransactionList = () => {
+interface Props {
+  reservationId: number;
+}
+
+const TransactionList = ({reservationId}:Props) => {
+  console.log(reservationId);
   const transactionData = [
     // { id: 1, date: '2022-01-15', amount: 100.00, method: 'Stripe' },
     // { id: 2, date: '2022-01-16', amount: 50.00, method: 'Credit' },

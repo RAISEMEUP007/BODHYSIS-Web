@@ -125,32 +125,13 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         </View>
       </ScrollView>
       <AddTransactionModal
-          isModalVisible={isAddTransactionModalVisible}
-          closeModal={closeAddTransactionModal}
-          onAdded={(paymentMethod, amount)=>{
-            const payload = {
-              reservation_id : reservationInfo.id,
-              method: paymentMethod,
-              amount: amount,
-            }
-            
-            const handleResponse = (jsonRes, status) => {
-              switch (status) {
-                case 201:
-                  openReservationScreen('Reservations List');
-                  break;
-                default:
-                  if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-                  else showAlert('error', msgStr('unknownError'));
-                  break;
-              }
-            };
-
-            createTransaction(payload, (jsonRes, status) => {
-              handleResponse(jsonRes, status);
-            });
-          }}
-        />
+        isModalVisible={isAddTransactionModalVisible}
+        reservationId={reservationInfo?.id??null}
+        closeModal={closeAddTransactionModal}
+        // onAdded={(paymentMethod, amount)=>{
+        //   // addTransaction(paymentMethod, amount);
+        // }}
+      />
     </BasicLayout>
   );
 };

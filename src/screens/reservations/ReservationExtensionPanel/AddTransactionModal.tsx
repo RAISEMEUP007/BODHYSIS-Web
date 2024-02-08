@@ -1,7 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import {
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   ActivityIndicator,
@@ -19,30 +18,34 @@ import { addTransactionModaltyles } from './styles/AddTransactionModalStyle';
 
 import NumericInput from '../../../common/components/formcomponents/NumericInput';
 import LabeledTextInput from '../../../common/components/input/LabeledTextInput';
+import { createTransaction } from '../../../api/Reservation';
 
 interface AddTransactionModalProps {
   isModalVisible: boolean;
+  reservationId: number;
   closeModal: () => void;
-  item?: any;
-  onAdded?: (item, AmountTxt) => void;
-  onUpdated?: (item, AmountTxt) => void;
+  // item?: any;
+  // onAdded?: (item, AmountTxt) => void;
+  // onUpdated?: (item, AmountTxt) => void;
   onClose?: () => void;
 }
 
 const AddTransactionModal = ({
   isModalVisible,
+  reservationId,
   closeModal,
-  onAdded,
+  // onAdded,
   onClose,
 }: AddTransactionModalProps) => {
 
   const { showAlert } = useAlertModal();
   const [isLoading, setIsLoading] = useState(false);
 
+  const [paymentMethod, setPaymentMethod] = useState('');
   const [AmountTxt, setAmountTxt] = useState('');
+  const [note, setNote] = useState('');
   const [ValidMessage, setValidMessage] = useState('');
   const [ValidMessage2, setValidMessage2] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('');
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -61,8 +64,10 @@ const AddTransactionModal = ({
   }, [closeModal]);
 
   useEffect(() => {
+    setPaymentMethod('');
+    setAmountTxt('');
+    setNote('');
     if(isModalVisible == false){
-      setAmountTxt('');
       closeModalhandler();
     }
   }, [isModalVisible])
@@ -76,10 +81,35 @@ const AddTransactionModal = ({
       setValidMessage2(msgStr('emptyField'));
       return;
     }else if(!isNaN(parseInt(AmountTxt)) && parseInt(AmountTxt)>0){
-      onAdded(paymentMethod, AmountTxt);
+      // onAdded(paymentMethod, AmountTxt);
+      addTransaction();
       closeModalhandler();
     }
   };
+
+  const addTransaction = () =>{
+    const payload = {
+      reservation_id : reservationId,
+      method: paymentMethod,
+      amount: AmountTxt,
+      note: note,
+    }
+    
+    const handleResponse = (jsonRes, status) => {
+      switch (status) {
+        case 201:
+          break;
+        default:
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    };
+
+    createTransaction(payload, (jsonRes, status) => {
+      handleResponse(jsonRes, status);
+    });
+  }
 
   const closeModalhandler = () => {
     closeModal();
@@ -114,7 +144,7 @@ const AddTransactionModal = ({
         <ModalBody style={{ zIndex: 10 }}>
           <LabeledTextInput
             label='Payment Method'
-            width={300}
+            width={500}
             // containerStyle={{marginRight:30}}
             placeholder='Payment Method'
             placeholderTextColor="#ccc"
@@ -137,6 +167,18 @@ const AddTransactionModal = ({
             onBlur={checkInput2}
           />
           {ValidMessage2.trim() != '' && <Text style={styles.message}>{ValidMessage2}</Text>}
+          <LabeledTextInput
+            label='Note'
+            width={500}
+            // containerStyle={{marginRight:30}}
+            placeholder='Note'
+            placeholderTextColor="#ccc"
+            inputStyle={{height:120}}
+            multiline={true}
+            value={note}
+            onChangeText={setNote}
+            onBlur={checkInput}
+          />
         </ModalBody>
         <ModalFooter>
           <View style={{ flexDirection: 'row' }}>
