@@ -87,7 +87,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               </TouchableOpacity>
               <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]}>
                 <View style={{flexDirection:'row'}}>
-                  <FontAwesome5 name={'bookmark'} size={18} color="#DC3545" style={{marginRight:8, marginTop:1}}/>
+                  <FontAwesome5 name={'bookmark'} size={18} color="#DC3545" style={{marginRight:10, marginTop:1}}/>
                   <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add</Text>
                 </View>
               </TouchableOpacity>

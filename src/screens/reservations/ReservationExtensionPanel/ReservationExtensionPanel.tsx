@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-// import Tab1View from './Tab1View';
-// import Tab2View from './Tab2View';
+import TransactionList from './TransactionList';
 
 interface Props {
   width?: number;
 }
 
 export const ReservationExtensionPanel = ({width}:Props) => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(2);
 
   const renderTab = (index, title, icon) => {
     return (
@@ -42,9 +41,7 @@ export const ReservationExtensionPanel = ({width}:Props) => {
           </View>
         )}
         {activeTab === 2 && (
-          <View>
-            <Text>Content for Transactions</Text>
-          </View>
+          <TransactionList/>
         )}
         {activeTab === 3 && (
           <View>
@@ -130,5 +127,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
+    height: 400,
   },
 });
