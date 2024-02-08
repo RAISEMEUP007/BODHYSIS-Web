@@ -72,7 +72,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               setContentWidth(width);
             }}>
             <ReservationMainInfo details={reservationInfo}/>
-            <ReservationExtensionPanel reservationId={reservationInfo?.id??null}/>
+            <ReservationExtensionPanel reservationId={reservationInfo?.id??null} openAddTransactionModal={openAddTransactionModal}/>
           </View>
           <View style={{flexDirection:'row', justifyContent:'space-between', marginVertical:18}}>
             <View>

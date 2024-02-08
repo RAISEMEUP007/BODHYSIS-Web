@@ -5,10 +5,11 @@ import TransactionList from './TransactionList';
 
 interface Props {
   reservationId: number;
+  openAddTransactionModal: ()=>void;
   width?: number;
 }
 
-export const ReservationExtensionPanel = ({reservationId, width}:Props) => {
+export const ReservationExtensionPanel = ({reservationId, openAddTransactionModal, width}:Props) => {
   
   const [activeTab, setActiveTab] = useState(2);
 
@@ -43,7 +44,7 @@ export const ReservationExtensionPanel = ({reservationId, width}:Props) => {
           </View>
         )}
         {activeTab === 2 && (
-          <TransactionList/>
+          <TransactionList reservationId={reservationId} openAddTransactionModal={openAddTransactionModal}/>
         )}
         {activeTab === 3 && (
           <View>

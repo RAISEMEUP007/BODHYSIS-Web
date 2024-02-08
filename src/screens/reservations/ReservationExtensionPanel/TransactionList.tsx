@@ -1,28 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, ScrollView, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { getTransactionsData } from '../../../api/Reservation';
 
 interface Props {
   reservationId: number;
+  openAddTransactionModal: ()=>void;
 }
 
-const TransactionList = ({reservationId}:Props) => {
-  console.log(reservationId);
-  const transactionData = [
-    // { id: 1, date: '2022-01-15', amount: 100.00, method: 'Stripe' },
-    // { id: 2, date: '2022-01-16', amount: 50.00, method: 'Credit' },
-    // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
-    // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
-    // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
-    // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
-  ];
+const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
+  // const
+  // // console.log(reservationId);
+  // const transactionData = [
+  //   // { id: 1, date: '2022-01-15', amount: 100.00, method: 'Stripe' },
+  //   // { id: 2, date: '2022-01-16', amount: 50.00, method: 'Credit' },
+  //   // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
+  //   // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
+  //   // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
+  //   // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
+  // ];
+
+  const [transactionData, setTransactionData] = useState([]);
+
+  useEffect(()=>{
+    getTransactionsData({reservation_id:reservationId}, (jsonRes, status, error) => {
+      switch (status) {
+        case 200:
+          setTransactionData(jsonRes);
+          break;
+        default:
+          setTransactionData([]);
+          break;
+      }
+    });
+  }, [reservationId, openAddTransactionModal])
+
+  console.log(transactionData);
 
   const renderItems = () => {
     return transactionData.map((transaction) => (
       <View key={transaction.id} style={styles.transactionItem}>
         <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:8}}>
           <Text>{'User@gmail.com'}</Text>
-          <Text>{transaction.date}</Text>
+          <Text>{transaction.createdAt}</Text>
         </View>
         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
           <Text>{transaction.method}</Text>
@@ -35,7 +55,7 @@ const TransactionList = ({reservationId}:Props) => {
   return (
     <View style={styles.container}>
       <View style={{alignItems:'flex-end', paddingHorizontal:6, marginBottom:12}}>
-        <TouchableOpacity style={[styles.outLineButton, {borderColor:'#28A745'}]}>
+        <TouchableOpacity style={[styles.outLineButton, {borderColor:'#28A745'}]} onPress={()=>{openAddTransactionModal()}}>
           <View style={{flexDirection:'row'}}>
             <FontAwesome5 name={'plus'} size={14} color="#28A745" style={{marginRight:10, marginTop:3}}/>
             <Text style={[styles.outlineBtnText, {color:'#28A745'}]}>Add Transaction</Text>
