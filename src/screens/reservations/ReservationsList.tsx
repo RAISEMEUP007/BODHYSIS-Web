@@ -141,7 +141,7 @@ const ReservationsList = ({ openReservationScreen }) => {
 
   return (
     <BasicLayout
-      screenName={'Reservations List'}
+      screenName={'Reservation List'}
     >
       <ScrollView horizontal={true}>
         <View style={styles.container}>

@@ -223,7 +223,7 @@ const ReservationMainInfo = ({ details }) => {
           data={discountCodesDropdownData}
           placeholder="Select A Code"
           title={'Discount code'}
-          titleStyle={{marginBottom:6, color:"#555555"}}
+          titleStyle={{marginBottom:6, color:"#555555", fontSize:14}}
           defaultValue={defaultDiscountCode}
         />
         <LabeledTextInput
@@ -269,7 +269,7 @@ const ReservationMainInfo = ({ details }) => {
           data={locationsDropdownData}
           placeholder="Select A Location"
           title={'Start Location'}
-          titleStyle={{marginBottom:6, color:"#555555"}}
+          titleStyle={{marginBottom:6, color:"#555555", fontSize:14}}
           defaultValue={defaultStartLocation}
         />
         <CommonSelectDropdown
@@ -283,7 +283,7 @@ const ReservationMainInfo = ({ details }) => {
           data={locationsDropdownData}
           placeholder="Select A Location"
           title={'End Location'}
-          titleStyle={{marginBottom:6, color:"#555555"}}
+          titleStyle={{marginBottom:6, color:"#555555", fontSize:14}}
           defaultValue={defaultEndLocation}
         />
       </View>
