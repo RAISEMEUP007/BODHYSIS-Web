@@ -69,6 +69,8 @@ const styles = StyleSheet.create({
     cursor: 'default',
     marginBottom: 20,
     backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#ccc',
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',

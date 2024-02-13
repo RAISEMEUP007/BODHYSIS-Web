@@ -4,7 +4,8 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
-import { createTransaction, getReservationDetail, updateReservation } from '../../api/Reservation';
+import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
+import { getReservationDetail, updateReservation } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
 
 import { proceedReservationStyle } from './styles/ProceedReservationStyle';
@@ -13,7 +14,6 @@ import { ReservationExtensionPanel } from './ReservationExtensionPanel/Reservati
 import EquipmentsTable from './EquipmentsTable';
 import AddTransactionModal from './ReservationExtensionPanel/AddTransactionModal';
 import AddReservationItemModal from './AddReservationItemModal';
-import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 interface Props {
   openReservationScreen: (itemName: string, data?: any ) => void;
@@ -22,6 +22,8 @@ interface Props {
 
 export const ProceedReservation = ({ openReservationScreen, initialData }: Props) => {
   const { showAlert } = useAlertModal();
+  const { showConfirm } = useConfirmModal();
+
   const [reservationInfo, setReservationInfo] = useState<any>();
   const [contentWidth, setContentWidth] = useState<number>();
   const [isAddTransactionModalVisible, setAddTransactionModalVisible] = useState(false);
@@ -75,10 +77,12 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   }
 
   const removeReservationItem = (item, index) => {
-    const updatedEquipmentData = [...equipmentData.slice(0, index), ...equipmentData.slice(index + 1)];
-    saveReservationItems(updatedEquipmentData, ()=>{
-      setEquipmentData(updatedEquipmentData);
-    })
+    showConfirm(msgStr('deleteConfirmStr'), () => {
+      const updatedEquipmentData = [...equipmentData.slice(0, index), ...equipmentData.slice(index + 1)];
+      saveReservationItems(updatedEquipmentData, ()=>{
+        setEquipmentData(updatedEquipmentData);
+      })
+    });
   }
 
   const saveReservationItems = (items, callback) =>{
@@ -153,9 +157,9 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
           <View style={{flexDirection:'row', justifyContent:'space-between', marginVertical:18}}>
             <View>
               <TouchableOpacity style={[styles.nextStageButton]} >
-                <View style={{flexDirection:'row'}}>
+                <View style={{flexDirection:'row', alignItems:'center'}}>
                   <Text style={styles.buttonText}>Next stage</Text>
-                  <FontAwesome5 name="angle-right" size={18} color="white" style={{marginTop:1, marginLeft:10}}/>
+                  <FontAwesome5 name="angle-right" size={18} color="white" style={{marginLeft:10}}/>
                 </View>
               </TouchableOpacity>
             </View>
@@ -170,7 +174,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
                 <Text style={styles.outlineBtnText}>Stripe</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]}>
-                <View style={{flexDirection:'row'}}>
+                <View style={{flexDirection:'row', alignItems:'center'}}>
                   <FontAwesome5 name={'bookmark'} size={18} color="#DC3545" style={{marginRight:10, marginTop:1}}/>
                   <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add</Text>
                 </View>

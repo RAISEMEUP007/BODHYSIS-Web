@@ -13,6 +13,8 @@ export const proceedReservationStyle = StyleSheet.create({
     borderRadius: 8,
   },
   nextStageButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 8,
     paddingHorizontal: 14,
     borderRadius: 3,
@@ -22,11 +24,13 @@ export const proceedReservationStyle = StyleSheet.create({
   },
   buttonText: {
     fontSize: 14,
-    letterSpacing: 1,
+    // letterSpacing: 1,
+    fontFamily: 'monospace',
     marginLeft: 10,
     color: 'white',
   },
   outLineButton: {
+    justifyContent:'center',
     paddingVertical: 6,
     paddingHorizontal: 20,
     alignItems: 'center',
@@ -34,6 +38,7 @@ export const proceedReservationStyle = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#6c757d',
     marginLeft: 13,
+    fontFamily: 'san'
   },
   outlineBtnText: {
     fontSize: 14,
