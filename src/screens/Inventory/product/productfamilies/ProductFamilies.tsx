@@ -133,6 +133,9 @@ const ProductFamilies = ({ navigation, openInventory }) => {
             <View style={styles.categoryCell}>
               <Text style={styles.categoryCell}>{item.family}</Text>
             </View>
+            <View style={styles.categoryCell}>
+              <Text style={styles.categoryCell}>{item.display_name}</Text>
+            </View>
             <View style={styles.cell}>
               <Text style={styles.cell}>{item.category.category}</Text>
             </View>
@@ -197,6 +200,7 @@ const ProductFamilies = ({ navigation, openInventory }) => {
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
               <Text style={[styles.columnHeader, styles.categoryCell]}>{'Family'}</Text>
+              <Text style={[styles.columnHeader]}>{'Display name'}</Text>
               <Text style={[styles.columnHeader]}>{'Category'}</Text>
               <Text style={[styles.columnHeader, { width: 100 }]}>{'Quantity'}</Text>
               <Text style={[styles.columnHeader, styles.imageCell]}>{'Image'}</Text>
