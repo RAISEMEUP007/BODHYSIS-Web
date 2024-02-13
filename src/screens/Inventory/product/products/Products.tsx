@@ -6,9 +6,9 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Dimensions,
-  Picker,
   TextInput,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import {
@@ -308,7 +308,7 @@ const Products = ({ navigation, openInventory, data }) => {
               <Text style={styles.cell}>{item.category ? item.category.category : ''}</Text>
             </View>
             <View style={styles.cell}>
-              <Text style={styles.cell}>{item.family ? item.family.family : ''}</Text>
+              <Text style={styles.cell}>{item.family ? (item.family.display_name || item.family.family) : ''}</Text>
             </View>
             <View style={styles.cell}>
               <Text style={styles.cell}>{item.line ? item.line.line : ''}</Text>
@@ -399,7 +399,7 @@ const Products = ({ navigation, openInventory, data }) => {
                 <Picker.Item label={''} value={0} />
                 {families.length > 0 &&
                   families.map((family, index) => {
-                    return <Picker.Item key={index} label={family.family} value={family.id} />;
+                    return <Picker.Item key={index} label={(family.display_name || family.family)} value={family.id} />;
                   })}
               </Picker>
             </View>

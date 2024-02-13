@@ -292,7 +292,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
           >
             {families.length > 0 &&
               families.map((family, index) => {
-                return <Picker.Item key={index} label={family.family} value={family.id} />;
+                return <Picker.Item key={index} label={(family.display_name || family.family)} value={family.id} />;
               })}
           </Picker>
 

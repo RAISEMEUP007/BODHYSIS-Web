@@ -50,7 +50,7 @@ export const productFamilyModalstyles = StyleSheet.create({
   imagePicker: {
     position: 'relative',
     width: '100%',
-    height: 280,
+    height: 260,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
