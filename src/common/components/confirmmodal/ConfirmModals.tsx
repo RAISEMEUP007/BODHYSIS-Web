@@ -45,6 +45,8 @@ const styles = StyleSheet.create({
   modalView: {
     cursor: 'default',
     margin: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',

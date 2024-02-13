@@ -29,7 +29,7 @@ const ReservationMainInfo = ({ details }) => {
   const [inputValues, setInputValues] = useState({
     startDate: new Date(),
     endDate: new Date(),
-    billableDays: '',
+    billableDays: 0,
     reservationDuration: '',
     discountCode: '',
     customPrice: '',
@@ -42,12 +42,22 @@ const ReservationMainInfo = ({ details }) => {
   const[discountCodes, setDiscountCodes] = useState([]);
 
   useEffect(() => {
-    if(details)
+    if(details){
+      const _startDate = new Date(details.start_date) || new Date();
+      const _endDate = new Date(details.end_date) || new Date();
+
+      const billableDays = Math.ceil((_endDate.getTime() - _startDate.getTime()) / (1000 * 60 * 60 * 24));
+
+      const totalHours = (_endDate.getTime() - _startDate.getTime()) / (1000 * 60 * 60);
+      const days = Math.floor(totalHours / 24);
+      const hours = Math.floor(totalHours % 24);
+      const durationText = hours > 0 ? `${days} days and ${hours} hours` : `${days} days`;
+
       setInputValues({
-        startDate: new Date(details.start_date) || new Date(),
-        endDate: new Date(details.end_date) || new Date(),
-        billableDays: details.billableDays || '',
-        reservationDuration: details.reservationDuration || '',
+        startDate: _startDate,
+        endDate: _endDate,
+        billableDays: billableDays,
+        reservationDuration: durationText,
         discountCode: details.promo_code || '',
         customPrice: details.customPrice || '',
         referrer: details.referrer || '',
@@ -55,7 +65,32 @@ const ReservationMainInfo = ({ details }) => {
         startLocationId: details.start_location_id || '',
         endLocationId: details.end_location_id || ''
       });
+    }
   }, [details]);
+
+  useEffect(() => {
+    if (inputValues.startDate && inputValues.endDate) {
+      const _startDate = new Date(inputValues.startDate) || new Date();
+      const _endDate = new Date(inputValues.endDate) || new Date();
+  
+      const calculateBillableDaysAndDuration = () => {
+        const billableDays = Math.ceil((_endDate.getTime() - _startDate.getTime()) / (1000 * 60 * 60 * 24));
+
+        const totalHours = (_endDate.getTime() - _startDate.getTime()) / (1000 * 60 * 60);
+        const days = Math.floor(totalHours / 24);
+        const hours = Math.floor(totalHours % 24);
+        const durationText = hours > 0 ? `${days} days and ${hours} hours` : `${days} days`;
+
+        setInputValues(prev => ({
+          ...prev,
+          billableDays: billableDays,
+          reservationDuration: durationText
+        }));
+      };
+  
+      calculateBillableDaysAndDuration();
+    }
+  }, [inputValues.startDate, inputValues.endDate]);
 
   useEffect(()=>{
     getDiscountCodesData((jsonRes, status, error) => {

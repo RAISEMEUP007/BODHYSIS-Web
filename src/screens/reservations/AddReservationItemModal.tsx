@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
-import { } from '../../api/Settings';
 import BasicModalContainer from '../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../common/components/basicmodal/ModalBody';
