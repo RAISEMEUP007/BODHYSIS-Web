@@ -42,4 +42,19 @@ export const proceedReservationStyle = StyleSheet.create({
     // color:'#6c757d',
     // marginLeft: 10,
   },
+  reservationRow: {
+    flexDirection: 'row',
+    flexWrap:'wrap',
+    marginBottom: 2,
+    // paddingVertical: 8,
+  },
+  addItemButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    alignItems: 'center',
+    borderRadius: 3,
+    borderWidth: 0,
+    borderColor: '#6c757d',
+    backgroundColor: '#007BFF',
+  },
 });

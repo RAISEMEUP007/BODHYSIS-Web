@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, TouchableOpacity, Text } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Text, TouchableHighlight } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
-import { createTransaction, getReservationDetail } from '../../api/Reservation';
+import { createTransaction, getReservationDetail, updateReservation } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
 
 import { proceedReservationStyle } from './styles/ProceedReservationStyle';
@@ -12,6 +12,8 @@ import ReservationMainInfo from './ReservationMainInfo';
 import { ReservationExtensionPanel } from './ReservationExtensionPanel/ReservationExtensionPanel';
 import EquipmentsTable from './EquipmentsTable';
 import AddTransactionModal from './ReservationExtensionPanel/AddTransactionModal';
+import AddReservationItemModal from './AddReservationItemModal';
+import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 interface Props {
   openReservationScreen: (itemName: string, data?: any ) => void;
@@ -29,6 +31,76 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   const closeAddTransactionModal = () => {
     setAddTransactionModalVisible(false);
   };
+
+  const [equipmentData, setEquipmentData] = useState<Array<any>>([]);
+  const [isAddReservationItemModalVisible, setAddReservationItemModalVisible] = useState(false);
+  const [editingItem, setEditingItem] = useState();
+  const [editingIndex, setEditingIndex] = useState();
+
+  const openAddReservationItemModal = () => {
+    editReservationItem(null, null);
+    setAddReservationItemModalVisible(true);
+  };
+  const closeAddReservationItemModal = () => {
+    setAddReservationItemModalVisible(false);
+  };
+
+  const editReservationItem = (item, index) => {
+    setAddReservationItemModalVisible(true);
+    setEditingItem(item);
+    setEditingIndex(index);
+  };
+
+  const addReservationItem = (productLine, quantity) => {
+    const equipment = { ...productLine, quantity };
+    const newData = [...equipmentData, equipment];
+    saveReservationItems(newData, ()=>{
+      setEquipmentData(newData);
+    })
+  }
+
+  const updateReservationItem = (productLine, quantity) => {
+    const newEquipment = { ...productLine, quantity };
+    const replaceIndex = editingIndex;
+    const newData = equipmentData.map((item, index) => {
+      if (index === replaceIndex) {
+        return { ...newEquipment };
+      }
+      return item;
+    });
+  
+    saveReservationItems(newData, ()=>{
+      setEquipmentData(newData);
+    })
+  }
+
+  const removeReservationItem = (item, index) => {
+    const updatedEquipmentData = [...equipmentData.slice(0, index), ...equipmentData.slice(index + 1)];
+    saveReservationItems(updatedEquipmentData, ()=>{
+      setEquipmentData(updatedEquipmentData);
+    })
+  }
+
+  const saveReservationItems = (items, callback) =>{
+    if(!reservationInfo || !reservationInfo.id) return;
+
+    const payload = {
+      id: reservationInfo.id,
+      items : items,
+    }
+
+    updateReservation(payload, (jsonRes, status) => {
+      switch (status) {
+        case 201:
+          callback();
+          break;
+        default:
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
 
   useEffect(() => {
     if (!initialData || !initialData.reservationId) {
@@ -51,6 +123,10 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       });
     }
   }, [initialData]);
+
+  useEffect(() => {
+    if(reservationInfo && reservationInfo.items) setEquipmentData(JSON.parse(reservationInfo.items));
+  }, [reservationInfo])
 
   return (
     <BasicLayout 
@@ -109,17 +185,24 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               </TouchableOpacity>
             </View>
           </View>
+          <View style={[styles.reservationRow, {justifyContent:'flex-end'}]}>
+            <TouchableHighlight style={[styles.addItemButton]} onPress={openAddReservationItemModal}>
+              <View style={{flexDirection:'row', alignItems:'center'}}>
+                <FontAwesome5 name="plus" size={14} color="white" style={{marginTop:3}}/>
+                <Text style={styles.buttonText}>Add Items</Text>
+              </View>
+            </TouchableHighlight>
+          </View>
           <View>
             <EquipmentsTable
-              items={reservationInfo?.items??[]}
+              items={equipmentData}
               width={contentWidth}
-              // onEdit={(item, index)=>{
-              //   editReservationItem(item, index);
-              // }}
-              // onDelete={(item, index)=>{
-              //   const updatedEquipmentData = [...equipmentData.slice(0, index), ...equipmentData.slice(index + 1)];
-              //   setEquipmentData(updatedEquipmentData);
-              // }}
+              onEdit={(item, index)=>{
+                editReservationItem(item, index);
+              }}
+              onDelete={(item, index)=>{
+                removeReservationItem(item, index);
+              }}
             />
           </View>
         </View>
@@ -131,6 +214,22 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         // onAdded={(paymentMethod, amount)=>{
         //   // addTransaction(paymentMethod, amount);
         // }}
+      />
+      <AddReservationItemModal
+        isModalVisible={isAddReservationItemModalVisible}
+        closeModal={closeAddReservationItemModal}
+        item={editingItem}
+        onAdded={(productLine, quantity)=>{
+          if (productLine) {
+            addReservationItem(productLine, quantity);
+          }
+        }}
+        onUpdated={(productLine, quantity)=>{
+          if (productLine) {
+            updateReservationItem(productLine, quantity);
+          }
+          editReservationItem(null, null);
+        }}
       />
     </BasicLayout>
   );
