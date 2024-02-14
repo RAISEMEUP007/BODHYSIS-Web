@@ -106,6 +106,31 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     })
   }
 
+  const confirmNextStage = () =>{
+    if(!reservationInfo || !reservationInfo.id) return;
+
+    if(reservationInfo.stage > 3) return;
+
+    const payload = {
+      id: reservationInfo.id,
+      stage: (reservationInfo.stage + 1),
+    }
+
+    updateReservation(payload, (jsonRes, status) => {
+      switch (status) {
+        case 201:
+          setReservationInfo(prev => {
+            return { ...prev, stage: (prev.stage + 1) };
+          });
+          break;
+        default:
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
+
   useEffect(() => {
     if (!initialData || !initialData.reservationId) {
       showAlert('error', 'Non valid reservation!');
@@ -132,6 +157,27 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     if(reservationInfo && reservationInfo.items) setEquipmentData(JSON.parse(reservationInfo.items));
   }, [reservationInfo])
 
+  const convertStageToString = (stage) => {
+    switch (stage) {
+      case 0: case '0': return 'Draft';
+      case 1: case '1': return 'Provisional';
+      case 2: case '2': return 'Confirmed';
+      case 3: case '3': return 'Checked out';
+      case 4: case '4': return 'Checked in';
+      default:  return 'Invalid stage';
+    }
+  }
+
+  const convertStageToBgColor = (stage) => {
+    switch (stage) {
+      case 1: case '1': return '#262E32';
+      case 2: case '2': return '#4379FF';
+      case 3: case '3': return '#B8393C';
+      case 4: case '4': return '#4CBA70';
+      default:  return '#262E32';
+    }
+  }
+
   return (
     <BasicLayout 
       goBack={()=>{
@@ -155,23 +201,28 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
             <ReservationExtensionPanel reservationId={reservationInfo?.id??null} openAddTransactionModal={openAddTransactionModal}/>
           </View>
           <View style={{flexDirection:'row', justifyContent:'space-between', marginVertical:18}}>
-            <View>
-              <TouchableOpacity style={[styles.nextStageButton]} >
+            <View style={{flexDirection:'row', alignItems:'center'}}>
+              <View style={[styles.stageText, {backgroundColor:convertStageToBgColor(reservationInfo?.stage??null)}]}>
+                <View style={[styles.circle, {left:10}]}></View>
+                <View style={[styles.circle, {right:10}]}></View>
+                <Text style={{color:'white', fontWeight:'bold', fontSize:15}}>{convertStageToString(reservationInfo?.stage??null)}</Text>
+              </View>
+              <TouchableOpacity style={[styles.nextStageButton]} onPress={confirmNextStage}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
                   <Text style={styles.buttonText}>Next stage</Text>
                   <FontAwesome5 name="angle-right" size={18} color="white" style={{marginLeft:10}}/>
                 </View>
               </TouchableOpacity>
             </View>
-            <View style={{flexDirection:'row'}}>
+            <View style={{flexDirection:'row', alignItems:'center'}}>
               <TouchableOpacity style={styles.outLineButton}>
                 <Text style={styles.outlineBtnText}>Print</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.outLineButton}>
                 <Text style={styles.outlineBtnText}>Email</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.outLineButton}>
-                <Text style={styles.outlineBtnText}>Stripe</Text>
+              <TouchableOpacity style={[styles.outLineButton, {borderColor: '#4379FF'}]}>
+                <Text style={[styles.outlineBtnText, {color:'#4379FF'}]}>Stripe</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
