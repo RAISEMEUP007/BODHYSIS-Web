@@ -14,6 +14,7 @@ import { ReservationExtensionPanel } from './ReservationExtensionPanel/Reservati
 import EquipmentsTable from './EquipmentsTable';
 import AddTransactionModal from './ReservationExtensionPanel/AddTransactionModal';
 import AddReservationItemModal from './AddReservationItemModal';
+import AddStripeModal from './AddTransactionModal';
 
 interface Props {
   openReservationScreen: (itemName: string, data?: any ) => void;
@@ -32,6 +33,15 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   };
   const closeAddTransactionModal = () => {
     setAddTransactionModalVisible(false);
+  };
+
+  const [isAddStripeModalVisible, setAddStripeModalVisible] = useState(false);
+  const openAddStripeModal = () => {
+    console.log('dfefe');
+    setAddStripeModalVisible(true);
+  };
+  const closeAddStripeModal = () => {
+    setAddStripeModalVisible(false);
   };
 
   const [equipmentData, setEquipmentData] = useState<Array<any>>([]);
@@ -221,7 +231,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               <TouchableOpacity style={styles.outLineButton}>
                 <Text style={styles.outlineBtnText}>Email</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.outLineButton, {borderColor: '#4379FF'}]}>
+              <TouchableOpacity style={[styles.outLineButton, {borderColor: '#4379FF'}]} onPress={openAddStripeModal}>
                 <Text style={[styles.outlineBtnText, {color:'#4379FF'}]}>Stripe</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]}>
@@ -230,10 +240,8 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
                   <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]} onPress={()=>{
-                openAddTransactionModal();
-              }}>
-                <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add Transactions</Text>
+              <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]} onPress={openAddTransactionModal}>
+                <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add transaction</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.outLineButton}>
                 <Text style={styles.outlineBtnText}>More</Text>
@@ -285,6 +293,11 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
           }
           editReservationItem(null, null);
         }}
+      />
+      <AddStripeModal
+        isModalVisible={isAddStripeModalVisible}
+        reservationId={reservationInfo?.id??null}
+        closeModal={closeAddStripeModal}
       />
     </BasicLayout>
   );

@@ -1,6 +1,6 @@
 // ModalBody.js
 import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 const ModalBody = ({ children, style={} }) => {
   return (

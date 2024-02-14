@@ -4,22 +4,24 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
-  Platform
+  Platform,
+  StyleSheet
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
-import { createTransaction } from '../../../api/Reservation';
-import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
-import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
-import ModalBody from '../../../common/components/basicmodal/ModalBody';
-import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
-import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-import NumericInput from '../../../common/components/formcomponents/NumericInput';
-import LabeledTextInput from '../../../common/components/input/LabeledTextInput';
-import { addTransactionModaltyles } from './styles/AddTransactionModalStyle';
+// import { createStripe } from '../../api/Reservation';
+import BasicModalContainer from '../../common/components/basicmodal/BasicModalContainer';
+import ModalHeader from '../../common/components/basicmodal/ModalHeader';
+import ModalBody from '../../common/components/basicmodal/ModalBody';
+import ModalFooter from '../../common/components/basicmodal/ModalFooter';
+import { msgStr } from '../../common/constants/Message';
+import { useAlertModal } from '../../common/hooks/UseAlertModal';
+import NumericInput from '../../common/components/formcomponents/NumericInput';
+import LabeledTextInput from '../../common/components/input/LabeledTextInput';
 
-interface AddTransactionModalProps {
+// import { addStripeModaltyles } from './styles/AddStripeModalStyle';
+
+interface AddStripeModalProps {
   isModalVisible: boolean;
   reservationId: number;
   closeModal: () => void;
@@ -29,13 +31,13 @@ interface AddTransactionModalProps {
   onClose?: () => void;
 }
 
-const AddTransactionModal = ({
+const AddStripeModal = ({
   isModalVisible,
   reservationId,
   closeModal,
   // onAdded,
   onClose,
-}: AddTransactionModalProps) => {
+}: AddStripeModalProps) => {
 
   const { showAlert } = useAlertModal();
   const [isLoading, setIsLoading] = useState(false);
@@ -87,12 +89,12 @@ const AddTransactionModal = ({
       return;
     }else if(!isNaN(parseInt(AmountTxt)) && parseInt(AmountTxt)>0){
       // onAdded(paymentMethod, AmountTxt);
-      addTransaction();
+      addStripe();
       closeModalhandler();
     }
   };
 
-  const addTransaction = () =>{
+  const addStripe = () =>{
     const payload = {
       reservation_id : reservationId,
       method: paymentMethod,
@@ -111,9 +113,9 @@ const AddTransactionModal = ({
       }
     };
 
-    createTransaction(payload, (jsonRes, status) => {
-      handleResponse(jsonRes, status);
-    });
+    // createStripe(payload, (jsonRes, status) => {
+    //   handleResponse(jsonRes, status);
+    // });
   }
 
   const closeModalhandler = () => {
@@ -141,53 +143,13 @@ const AddTransactionModal = ({
     <View style={{ position: 'absolute', width: '100%', height: '100%' }}>
       <BasicModalContainer>
         <ModalHeader
-          label={'Add Transaction'}
+          label={'Stripe'}
           closeModal={() => {
             closeModalhandler();
           }}
         />
         <ModalBody style={{ zIndex: 10 }}>
-          <Text style={styles.label}>Status</Text>
-          <Picker
-            style={styles.select}
-            selectedValue={paymentMethod}
-            onValueChange={(itemValue, itemIndex) => {
-              setPaymentMethod(itemValue);
-            }}
-          >
-            {paymentMethodArr.length > 0 &&
-              paymentMethodArr.map((statusItem, index) => {
-                return (
-                  <Picker.Item key={index} label={statusItem} value={statusItem} />
-                );
-              })}
-          </Picker>
-          {/* {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>} */}
-          <Text style={styles.label}>Amount</Text>
-          <NumericInput
-            // style={[styles.input, ]}
-            placeholder="Amount"
-            value={AmountTxt}
-            onChangeText={(value)=>{
-              setValidMessage2('');
-              setAmountTxt(value);
-            }}
-            placeholderTextColor="#ccc"
-            onBlur={checkInput2}
-          />
-          {ValidMessage2.trim() != '' && <Text style={styles.message}>{ValidMessage2}</Text>}
-          <LabeledTextInput
-            label='Note'
-            width={500}
-            // containerStyle={{marginRight:30}}
-            placeholder='Note'
-            placeholderTextColor="#ccc"
-            inputStyle={{height:120}}
-            multiline={true}
-            value={note}
-            onChangeText={setNote}
-            onBlur={checkInput}
-          />
+          <View></View>
         </ModalBody>
         <ModalFooter>
           <View style={{ flexDirection: 'row' }}>
@@ -210,6 +172,47 @@ const AddTransactionModal = ({
   ) : null;
 };
 
-const styles = addTransactionModaltyles;
+const styles = StyleSheet.create({
+  label: {
+    color: '#555',
+    fontSize: 12,
+  },
+  input: {
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginTop: 4,
+    marginBottom: 10,
+    padding: 10,
+    paddingHorizontal: 8,
+    minWidth: 300,
+  },
+  addButton: {
+    backgroundColor: '#007bff',
+    color: 'white',
+    padding: 10,
+    textAlign: 'center',
+    borderRadius: 5,
+    marginLeft:10,
+  },
+  message: {
+    width: '100%',
+    color: 'red',
+    marginBottom: 0,
+    marginTop: -10,
+    fontSize: 12,
+    paddingLeft: 5,
+  },
+  overlay: {
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+  },
+});
+;
 
-export default AddTransactionModal;
+export default AddStripeModal;

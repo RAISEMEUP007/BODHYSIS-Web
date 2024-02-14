@@ -60,7 +60,7 @@ const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
         <TouchableOpacity style={[styles.outLineButton, {borderColor:'#28A745'}]} onPress={()=>{openAddTransactionModal()}}>
           <View style={{flexDirection:'row'}}>
             <FontAwesome5 name={'plus'} size={14} color="#28A745" style={{marginRight:10, marginTop:3}}/>
-            <Text style={[styles.outlineBtnText, {color:'#28A745'}]}>Add Transaction</Text>
+            <Text style={[styles.outlineBtnText, {color:'#28A745'}]}>Add transaction</Text>
           </View>
         </TouchableOpacity>
       </View>
