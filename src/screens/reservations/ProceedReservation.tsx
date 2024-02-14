@@ -205,7 +205,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               <View style={[styles.stageText, {backgroundColor:convertStageToBgColor(reservationInfo?.stage??null)}]}>
                 <View style={[styles.circle, {left:10}]}></View>
                 <View style={[styles.circle, {right:10}]}></View>
-                <Text style={{color:'white', fontWeight:'bold', fontSize:15}}>{convertStageToString(reservationInfo?.stage??null)}</Text>
+                <Text style={{color:'white', fontWeight:'bold', fontSize:15, fontFamily:'monospace'}}>{convertStageToString(reservationInfo?.stage??null)}</Text>
               </View>
               <TouchableOpacity style={[styles.nextStageButton]} onPress={confirmNextStage}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
