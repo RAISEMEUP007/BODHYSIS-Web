@@ -233,7 +233,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]} onPress={()=>{
                 openAddTransactionModal();
               }}>
-                <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add transactions</Text>
+                <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add Transactions</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.outLineButton}>
                 <Text style={styles.outlineBtnText}>More</Text>
