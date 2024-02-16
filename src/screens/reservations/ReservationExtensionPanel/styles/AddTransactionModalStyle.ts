@@ -13,7 +13,6 @@ export const addTransactionModaltyles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
     paddingHorizontal: 8,
-    minWidth: 300,
   },
   inputDisable: {
     borderColor: '#ddd',
@@ -25,15 +24,6 @@ export const addTransactionModaltyles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 10,
     padding: 8,
-  },
-  deliveryButton: {
-    width: 140,
-    marginTop: 20,
-    padding: 8,
-    textAlign: 'center',
-    borderRadius: 5,
-    borderWidth: 2,
-    borderColor: '#6c757d',
   },
   addButton: {
     backgroundColor: '#007bff',
@@ -61,48 +51,25 @@ export const addTransactionModaltyles = StyleSheet.create({
     top: 0,
     left: 0,
   },
-  imagePicker: {
-    position: 'relative',
-    width: '100%',
-    height: 280,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: '#80C0FF80', // Warm color border with transparency
-    borderWidth: 2, // Border width
-    borderStyle: 'solid', // Border style
-    marginVertical: 10,
-  },
-  imageUpload: {
-    position: 'relative',
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  preView: {
-    width: '100%',
-    height: '100%',
-    opacity: 0,
-  },
-  fileInput: {
-    position: 'absolute',
-    width: 0,
-    height: 0,
-    Top: 0,
-    opacity: 0,
-    pointerEvents: 'none',
-  },
-  previewImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
-  },
-  boxText: {
-    fontWeight: 'bold',
-  },
   textarea: {
     height: TextdefaultSize * 6,
+  },
+  outLineButton: {
+    alignItems: 'center',
+    justifyContent:'center',
+    paddingVertical: 6,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: '#6c757d',
+    marginLeft: 13,
+    // fontFamily: 'san'
+  },
+  outlineBtnText: {
+    fontSize: 14,
+    letterSpacing: 1,
+    textAlign: 'center',
+    // color:'#6c757d',
+    // marginLeft: 10,
   },
 });

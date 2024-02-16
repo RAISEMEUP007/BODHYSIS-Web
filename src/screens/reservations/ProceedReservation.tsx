@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, TouchableOpacity, Text, TouchableHighlight } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Text, TouchableHighlight, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
@@ -14,7 +14,7 @@ import { ReservationExtensionPanel } from './ReservationExtensionPanel/Reservati
 import EquipmentsTable from './EquipmentsTable';
 import AddTransactionModal from './ReservationExtensionPanel/AddTransactionModal';
 import AddReservationItemModal from './AddReservationItemModal';
-import AddStripeModal from './AddTransactionModal';
+import AddCardModal from '../../common/components/stripe-react/AddCardModal';
 
 interface Props {
   openReservationScreen: (itemName: string, data?: any ) => void;
@@ -35,13 +35,12 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     setAddTransactionModalVisible(false);
   };
 
-  const [isAddStripeModalVisible, setAddStripeModalVisible] = useState(false);
-  const openAddStripeModal = () => {
-    console.log('dfefe');
-    setAddStripeModalVisible(true);
+  const [isAddCardModalVisible, setAddCardModalVisible] = useState(false);
+  const openAddCardModal = () => {
+    setAddCardModalVisible(true);
   };
-  const closeAddStripeModal = () => {
-    setAddStripeModalVisible(false);
+  const closeAddCardModal = () => {
+    setAddCardModalVisible(false);
   };
 
   const [equipmentData, setEquipmentData] = useState<Array<any>>([]);
@@ -189,7 +188,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   }
 
   return (
-    <BasicLayout 
+    <BasicLayout
       goBack={()=>{
         openReservationScreen('Reservations List');
       }} 
@@ -231,7 +230,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               <TouchableOpacity style={styles.outLineButton}>
                 <Text style={styles.outlineBtnText}>Email</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.outLineButton, {borderColor: '#4379FF'}]} onPress={openAddStripeModal}>
+              <TouchableOpacity style={[styles.outLineButton, {borderColor: '#4379FF'}]} onPress={openAddCardModal}>
                 <Text style={[styles.outlineBtnText, {color:'#4379FF'}]}>Stripe</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]}>
@@ -273,6 +272,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       <AddTransactionModal
         isModalVisible={isAddTransactionModalVisible}
         reservationId={reservationInfo?.id??null}
+        addCard={openAddCardModal}
         closeModal={closeAddTransactionModal}
         // onAdded={(paymentMethod, amount)=>{
         //   // addTransaction(paymentMethod, amount);
@@ -294,11 +294,13 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
           editReservationItem(null, null);
         }}
       />
-      <AddStripeModal
-        isModalVisible={isAddStripeModalVisible}
-        reservationId={reservationInfo?.id??null}
-        closeModal={closeAddStripeModal}
-      />
+      {Platform.OS === 'web' && (
+        <AddCardModal
+          isModalVisible={isAddCardModalVisible}
+          reservationId={reservationInfo?.id??null}
+          closeModal={closeAddCardModal}
+        />
+      )}
     </BasicLayout>
   );
 };
