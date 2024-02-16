@@ -50,6 +50,7 @@ const AddProductFamilyModal = ({
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [familyTxt, setFamilyTxt] = useState('');
+  const [displayNameTxt, setDisplayNameTxt] = useState('');
   const [summaryTxt, setSummaryTxt] = useState('');
   const [notesTxt, setNotesTxt] = useState('');
   const [selectedCategory, selectCategory] = useState({});
@@ -118,7 +119,9 @@ const AddProductFamilyModal = ({
         selectCategory(categories[0]);
       }
 
+      console.log(family);
       setFamilyTxt(family ? family.family : '');
+      setDisplayNameTxt(family ? family.display_name : '');
       setSummaryTxt(family ? family.summary : '');
       setNotesTxt(family ? family.notes : '');
       setImagePreviewUrl(family ? API_URL + family.img_url : '');
@@ -220,8 +223,11 @@ const AddProductFamilyModal = ({
 
     setIsLoading(true);
 
+    console.log((displayNameTxt || familyTxt));
+
     const formData = new FormData();
     formData.append('family', familyTxt);
+    formData.append('display_name', (displayNameTxt || familyTxt));
     formData.append('category_id', selectedCategory.id);
     if (selectedImage) formData.append('img', selectedImage);
     formData.append('summary', summaryTxt);
@@ -310,6 +316,15 @@ const AddProductFamilyModal = ({
                 onBlur={checkInput}
                 ref={defaultInputRef}
               />
+              <Text style={styles.label}>Display Name</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Dispaly Name"
+                value={displayNameTxt}
+                onChangeText={setDisplayNameTxt}
+                placeholderTextColor="#ccc"
+                onBlur={checkInput}
+              />
               {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
               {Platform.OS == 'web' && (
                 <View style={styles.imagePicker}>
@@ -320,7 +335,7 @@ const AddProductFamilyModal = ({
                     {imagePreviewUrl ? (
                       <Image source={{ uri: imagePreviewUrl }} style={styles.previewImage} />
                     ) : (
-                      <View style={styles.imageBox}>
+                      <View>
                         <Text style={styles.boxText}>Click to choose an image</Text>
                       </View>
                     )}
@@ -376,7 +391,6 @@ const AddProductFamilyModal = ({
                       ref={richText}
                       onChange={richTextHandle}
                       placeholder=""
-                      androidHardwareAccelerationDisabled={true}
                       style={styles.richTextEditorStyle}
                       initialHeight={250}
                     />
@@ -403,7 +417,7 @@ const AddProductFamilyModal = ({
                 <Editor
                   value={summaryTxt}
                   onTextChange={(e) => setSummaryTxt(e.htmlValue)}
-                  style={{ height: 185, marginBottom: '10px' }}
+                  style={{ height: 212, marginBottom: '10px' }}
                   onKeyDown={(event) => {
                     event.stopPropagation();
                   }}
@@ -415,7 +429,7 @@ const AddProductFamilyModal = ({
                 <Editor
                   value={notesTxt}
                   onTextChange={(e) => setNotesTxt(e.htmlValue)}
-                  style={{ height: 185, marginBottom: '10px' }}
+                  style={{ height: 212, marginBottom: '10px' }}
                   onKeyDown={(event) => {
                     event.stopPropagation();
                   }}
