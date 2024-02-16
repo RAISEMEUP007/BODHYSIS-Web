@@ -52,6 +52,8 @@ const AddTransactionModal = ({
   const { showAlert } = useAlertModal();
   const [isLoading, setIsLoading] = useState(false);
 
+  const customerId = "cus_PZjR9d1Hco07F0";
+
   const [paymentMethod, setPaymentMethod] = useState('');
   const [paymentsList, setPaymentsList] = useState<Payment[]>();
   const [paymentId, setPaymentId] = useState('');
@@ -65,8 +67,6 @@ const AddTransactionModal = ({
     'Other',
     'Stripe'
   ];
-
-  const customerId = "cus_PZX06ma31tIVTO";
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -96,12 +96,12 @@ const AddTransactionModal = ({
 
   useEffect(() => {
     const payload = {
-      customerId: 'cus_PZX06ma31tIVTO'
+      customerId: customerId
     }
     const response = getPaymentsList(payload, (jsonRes)=>{
       setPaymentsList(jsonRes);
     });
-    console.log('fwefwefwfewf');
+    
   }, [isModalVisible, addCard])
 
   const AddButtonHandler = () => {

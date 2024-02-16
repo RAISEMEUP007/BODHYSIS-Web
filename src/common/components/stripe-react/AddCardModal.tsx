@@ -76,12 +76,18 @@ const AddCardModal = ({
       },
       body: JSON.stringify({
         paymentId: paymentMethod.id,
-        customerId: "cus_PZX06ma31tIVTO",
+        customerId: "cus_PZjR9d1Hco07F0",
       }),
     });    
 
     console.log(response);
+    if (!response.ok) {
+      const errorMessage = await response.json();
+      setValidMessage(errorMessage.error);
+      return;
+    }
 
+    showAlert('success', 'Card Added successfully');
     if(onAdded) onAdded(paymentMethod);
     closeModalhandler();
   };
@@ -108,7 +114,7 @@ const AddCardModal = ({
           <View style={{width:700, marginTop:6, paddingVertical: 12, paddingHorizontal:8, borderWidth:1, borderColor: '#808080'}}>
             <CardElement options={{ style: {base: { fontSize: '16px' }}}} onChange={handleCardElementChange}/>
           </View>
-          <Text style={styles.message}>{ValidMessage}</Text>
+          <Text style={[styles.message, {width:700, flexWrap:'wrap'}]}>{ValidMessage}</Text>
         </ModalBody>
         <ModalFooter>
           <View style={{ flexDirection: 'row' }}>
