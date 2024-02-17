@@ -76,7 +76,7 @@ const AddCardModal = ({
       },
       body: JSON.stringify({
         paymentId: paymentMethod.id,
-        customerId: "cus_PZjR9d1Hco07F0",
+        customerId: "cus_PZkdPzrlEkhvwi",
       }),
     });    
 

@@ -52,7 +52,7 @@ const AddTransactionModal = ({
   const { showAlert } = useAlertModal();
   const [isLoading, setIsLoading] = useState(false);
 
-  const customerId = "cus_PZjR9d1Hco07F0";
+  const customerId = "cus_PZkdPzrlEkhvwi";
 
   const [paymentMethod, setPaymentMethod] = useState('');
   const [paymentsList, setPaymentsList] = useState<Payment[]>();
@@ -85,7 +85,7 @@ const AddTransactionModal = ({
   }, [closeModal]);
 
   useEffect(() => {
-    setPaymentMethod('');
+    setPaymentMethod('Lightspeed');
     setAmountTxt('');
     setPaymentId('');
     setNote('');
@@ -105,6 +105,8 @@ const AddTransactionModal = ({
   }, [isModalVisible, addCard])
 
   const AddButtonHandler = () => {
+    console.log(paymentMethod);
+    console.log(AmountTxt);
     if (!paymentMethod.trim()) {
       setValidMessage('Please select a product line');
       return;
@@ -130,6 +132,7 @@ const AddTransactionModal = ({
     const handleResponse = (jsonRes, status) => {
       switch (status) {
         case 201:
+          showAlert('success', 'Paid successfully');
           break;
         default:
           if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
