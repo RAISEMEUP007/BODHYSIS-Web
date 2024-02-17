@@ -67,6 +67,17 @@ const ReservationsList = ({ openReservationScreen }) => {
   };
 
   const renderTableData = () => {
+    const convertStageToString = (stage) => {
+      switch (stage) {
+        case 0: case '0': return 'Draft';
+        case 1: case '1': return 'Provisional';
+        case 2: case '2': return 'Confirmed';
+        case 3: case '3': return 'Checked out';
+        case 4: case '4': return 'Checked in';
+        default:  return 'Invalid stage';
+      }
+    }
+
     const rows = [];
     if (tableData.length > 0) {
       tableData.map((item, index) => {
@@ -110,7 +121,7 @@ const ReservationsList = ({ openReservationScreen }) => {
               <Text>{item.discount_code}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.Stage}</Text>
+              <Text>{convertStageToString(item.stage)}</Text>
             </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity

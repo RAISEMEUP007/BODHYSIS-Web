@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, TouchableOpacity, Text, TouchableHighlight } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Text, TouchableHighlight, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
@@ -14,6 +14,7 @@ import { ReservationExtensionPanel } from './ReservationExtensionPanel/Reservati
 import EquipmentsTable from './EquipmentsTable';
 import AddTransactionModal from './ReservationExtensionPanel/AddTransactionModal';
 import AddReservationItemModal from './AddReservationItemModal';
+import AddCardModal from '../../common/components/stripe-react/AddCardModal';
 
 interface Props {
   openReservationScreen: (itemName: string, data?: any ) => void;
@@ -32,6 +33,14 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   };
   const closeAddTransactionModal = () => {
     setAddTransactionModalVisible(false);
+  };
+
+  const [isAddCardModalVisible, setAddCardModalVisible] = useState(false);
+  const openAddCardModal = () => {
+    setAddCardModalVisible(true);
+  };
+  const closeAddCardModal = () => {
+    setAddCardModalVisible(false);
   };
 
   const [equipmentData, setEquipmentData] = useState<Array<any>>([]);
@@ -106,6 +115,31 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     })
   }
 
+  const confirmNextStage = () =>{
+    if(!reservationInfo || !reservationInfo.id) return;
+
+    if(reservationInfo.stage > 3) return;
+
+    const payload = {
+      id: reservationInfo.id,
+      stage: (reservationInfo.stage + 1),
+    }
+
+    updateReservation(payload, (jsonRes, status) => {
+      switch (status) {
+        case 201:
+          setReservationInfo(prev => {
+            return { ...prev, stage: (prev.stage + 1) };
+          });
+          break;
+        default:
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
+
   useEffect(() => {
     if (!initialData || !initialData.reservationId) {
       showAlert('error', 'Non valid reservation!');
@@ -132,8 +166,29 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     if(reservationInfo && reservationInfo.items) setEquipmentData(JSON.parse(reservationInfo.items));
   }, [reservationInfo])
 
+  const convertStageToString = (stage) => {
+    switch (stage) {
+      case 0: case '0': return 'Draft';
+      case 1: case '1': return 'Provisional';
+      case 2: case '2': return 'Confirmed';
+      case 3: case '3': return 'Checked out';
+      case 4: case '4': return 'Checked in';
+      default:  return 'Invalid stage';
+    }
+  }
+
+  const convertStageToBgColor = (stage) => {
+    switch (stage) {
+      case 1: case '1': return '#262E32';
+      case 2: case '2': return '#4379FF';
+      case 3: case '3': return '#B8393C';
+      case 4: case '4': return '#4CBA70';
+      default:  return '#262E32';
+    }
+  }
+
   return (
-    <BasicLayout 
+    <BasicLayout
       goBack={()=>{
         openReservationScreen('Reservations List');
       }} 
@@ -155,23 +210,28 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
             <ReservationExtensionPanel reservationId={reservationInfo?.id??null} openAddTransactionModal={openAddTransactionModal}/>
           </View>
           <View style={{flexDirection:'row', justifyContent:'space-between', marginVertical:18}}>
-            <View>
-              <TouchableOpacity style={[styles.nextStageButton]} >
+            <View style={{flexDirection:'row', alignItems:'center'}}>
+              <View style={[styles.stageText, {backgroundColor:convertStageToBgColor(reservationInfo?.stage??null)}]}>
+                <View style={[styles.circle, {left:10}]}></View>
+                <View style={[styles.circle, {right:10}]}></View>
+                <Text style={{color:'white', fontWeight:'bold', fontSize:15, fontFamily:'monospace'}}>{convertStageToString(reservationInfo?.stage??null)}</Text>
+              </View>
+              <TouchableOpacity style={[styles.nextStageButton]} onPress={confirmNextStage}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
                   <Text style={styles.buttonText}>Next stage</Text>
                   <FontAwesome5 name="angle-right" size={18} color="white" style={{marginLeft:10}}/>
                 </View>
               </TouchableOpacity>
             </View>
-            <View style={{flexDirection:'row'}}>
+            <View style={{flexDirection:'row', alignItems:'center'}}>
               <TouchableOpacity style={styles.outLineButton}>
                 <Text style={styles.outlineBtnText}>Print</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.outLineButton}>
                 <Text style={styles.outlineBtnText}>Email</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.outLineButton}>
-                <Text style={styles.outlineBtnText}>Stripe</Text>
+              <TouchableOpacity style={[styles.outLineButton, {borderColor: '#4379FF'}]} onPress={openAddCardModal}>
+                <Text style={[styles.outlineBtnText, {color:'#4379FF'}]}>Stripe</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
@@ -179,10 +239,8 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
                   <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]} onPress={()=>{
-                openAddTransactionModal();
-              }}>
-                <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add transactions</Text>
+              <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]} onPress={openAddTransactionModal}>
+                <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add transaction</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.outLineButton}>
                 <Text style={styles.outlineBtnText}>More</Text>
@@ -214,6 +272,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       <AddTransactionModal
         isModalVisible={isAddTransactionModalVisible}
         reservationId={reservationInfo?.id??null}
+        addCard={openAddCardModal}
         closeModal={closeAddTransactionModal}
         // onAdded={(paymentMethod, amount)=>{
         //   // addTransaction(paymentMethod, amount);
@@ -235,6 +294,13 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
           editReservationItem(null, null);
         }}
       />
+      {Platform.OS === 'web' && (
+        <AddCardModal
+          isModalVisible={isAddCardModalVisible}
+          reservationId={reservationInfo?.id??null}
+          closeModal={closeAddCardModal}
+        />
+      )}
     </BasicLayout>
   );
 };

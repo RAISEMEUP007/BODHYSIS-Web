@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, ScrollView, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { getTransactionsData } from '../../../api/Reservation';
+import { getReservationDetail, getTransactionsData } from '../../../api/Reservation';
 
 interface Props {
   reservationId: number;
@@ -20,7 +20,9 @@ const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
   //   // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
   // ];
 
+  const [reservationInfo, setReservationInfo] = useState<any>({});
   const [transactionData, setTransactionData] = useState([]);
+
 
   useEffect(()=>{
     getTransactionsData({reservation_id:reservationId}, (jsonRes, status, error) => {
@@ -34,12 +36,27 @@ const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
       }
     });
   }, [reservationId, openAddTransactionModal])
+
+  useEffect(() => {
+    if (reservationId) {
+      getReservationDetail(reservationId, (jsonRes, status, error) => {
+        switch (status) {
+          case 200:
+            setReservationInfo(jsonRes);
+            break;
+          default:
+            setReservationInfo({});
+            break;
+        }
+      });
+    }
+  }, [reservationId, openAddTransactionModal]);
   
   const renderItems = () => {
     return transactionData.map((transaction) => (
       <View key={transaction.id} style={styles.transactionItem}>
         <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:8}}>
-          <Text>{'User@gmail.com'}</Text>
+          <Text>{'customer_email@example.com'}</Text>
           <Text>{new Date(transaction.createdAt).toLocaleString('en-US', {
             year: 'numeric',
             month: '2-digit',
@@ -56,11 +73,17 @@ const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
 
   return (
     <View style={styles.container}>
-      <View style={{alignItems:'flex-end', paddingHorizontal:6, marginBottom:12}}>
+      <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:6, marginBottom:12}}>
+        <View style={{flexDirection:'row'}}>
+          <Text style={{fontSize:16, marginRight:8}}>Total</Text>
+          <Text style={{fontSize:16, marginRight:60}}>{parseFloat(reservationInfo.price).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</Text>
+          <Text style={{fontSize:16, marginRight:8}}>Paid</Text>
+          <Text style={{fontSize:16, marginRight:60}}>{parseFloat(reservationInfo.paid).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</Text>
+        </View>
         <TouchableOpacity style={[styles.outLineButton, {borderColor:'#28A745'}]} onPress={()=>{openAddTransactionModal()}}>
           <View style={{flexDirection:'row'}}>
             <FontAwesome5 name={'plus'} size={14} color="#28A745" style={{marginRight:10, marginTop:3}}/>
-            <Text style={[styles.outlineBtnText, {color:'#28A745'}]}>Add Transaction</Text>
+            <Text style={[styles.outlineBtnText, {color:'#28A745'}]}>Add transaction</Text>
           </View>
         </TouchableOpacity>
       </View>

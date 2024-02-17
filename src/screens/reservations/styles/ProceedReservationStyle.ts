@@ -1,7 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { TextMediumSize, TextSmallSize } from '../../../common/constants/Fonts';
-import { TextdefaultSize } from '../../../common/constants/Fonts';
-import { Colors } from '../../../common/constants/Colors';
 
 export const proceedReservationStyle = StyleSheet.create({
   topContainer: {alignItems:'center'},
@@ -22,23 +19,48 @@ export const proceedReservationStyle = StyleSheet.create({
     borderColor: '#6c757d',
     backgroundColor: '#0EA4AF',
   },
+  stageText: {
+    marginRight: 30, 
+    height: 43,
+    width: 165,
+    alignItems:'center',
+    justifyContent:'center',
+    backgroundColor:'#262E32', 
+    color:'white', 
+    borderRadius: 50,
+    border: 'double',
+    paddingBottom: 2,
+    // shadowColor: '#ccc', 
+    // shadowOffset: {
+    //   width: 8, 
+    //   height: 3,},
+    // shadowOpacity: 1, 
+    // shadowRadius: 0,
+  },
+  circle: {
+    position: 'absolute',
+    width: 10,
+    height: 10,
+    borderRadius: 10,
+    backgroundColor: '#f2f2f2',
+  },
   buttonText: {
-    fontSize: 14,
+    fontSize: 15,
     // letterSpacing: 1,
     fontFamily: 'monospace',
     marginLeft: 10,
     color: 'white',
   },
   outLineButton: {
+    alignItems: 'center',
     justifyContent:'center',
     paddingVertical: 6,
     paddingHorizontal: 20,
-    alignItems: 'center',
     borderRadius: 5,
     borderWidth: 2,
     borderColor: '#6c757d',
     marginLeft: 13,
-    fontFamily: 'san'
+    // fontFamily: 'san'
   },
   outlineBtnText: {
     fontSize: 14,
