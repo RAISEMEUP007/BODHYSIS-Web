@@ -17,6 +17,7 @@ import { API_URL } from '../../constants/AppConstants';
 
 interface AddCardModalProps {
   isModalVisible: boolean;
+  customerId: string;
   reservationId: number;
   closeModal: () => void;
   // item?: any;
@@ -27,6 +28,7 @@ interface AddCardModalProps {
 
 const AddCardModal = ({
   isModalVisible,
+  customerId,
   reservationId,
   closeModal,
   onAdded,
@@ -59,28 +61,36 @@ const AddCardModal = ({
     
     const cardElement = elements.getElement(CardElement);
 
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: cardElement,
-    });
+    // const { error, paymentMethod } = await stripe.createPaymentMethod({
+    //   type: 'card',
+    //   card: cardElement,
+    // });
+
+    const result = await stripe.createToken(cardElement);
+
+    console.log(result.token);
+
+    if( !result ){
+      setValidMessage('Error');
+      return;
+    }
     
-    if( error ){
-      setValidMessage(error.message);
+    if( result.error ){
+      setValidMessage( result.error.message);
       return;
     }
 
-    const response = await fetch(`${API_URL}/addpaymentmethodtocustomer`, {
+    const response = await fetch(`${API_URL}/stripe/addcardtokentocustomer/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        paymentId: paymentMethod.id,
-        customerId: "cus_PZkdPzrlEkhvwi",
+        cardToken: result.token.id,
+        customerId: customerId,
       }),
     });    
 
-    console.log(response);
     if (!response.ok) {
       const errorMessage = await response.json();
       setValidMessage(errorMessage.error);
@@ -88,7 +98,7 @@ const AddCardModal = ({
     }
 
     showAlert('success', 'Card Added successfully');
-    if(onAdded) onAdded(paymentMethod);
+    if(onAdded) onAdded(result.token);
     closeModalhandler();
   };
 

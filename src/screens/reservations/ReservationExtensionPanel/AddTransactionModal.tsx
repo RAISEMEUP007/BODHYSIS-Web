@@ -23,6 +23,7 @@ import { getPaymentsList } from '../../../api/Stripe';
 
 interface AddTransactionModalProps {
   isModalVisible: boolean;
+  customerId: string;
   reservationId: number;
   addCard?: ()=> void;
   closeModal: () => void;
@@ -42,6 +43,7 @@ type Payment = {
 
 const AddTransactionModal = ({
   isModalVisible,
+  customerId,
   reservationId,
   addCard,
   closeModal,
@@ -51,8 +53,6 @@ const AddTransactionModal = ({
 
   const { showAlert } = useAlertModal();
   const [isLoading, setIsLoading] = useState(false);
-
-  const customerId = "cus_PZkdPzrlEkhvwi";
 
   const [paymentMethod, setPaymentMethod] = useState('');
   const [paymentsList, setPaymentsList] = useState<Payment[]>();
@@ -105,8 +105,6 @@ const AddTransactionModal = ({
   }, [isModalVisible, addCard])
 
   const AddButtonHandler = () => {
-    console.log(paymentMethod);
-    console.log(AmountTxt);
     if (!paymentMethod.trim()) {
       setValidMessage('Please select a product line');
       return;

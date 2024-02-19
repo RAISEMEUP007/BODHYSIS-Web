@@ -22,6 +22,9 @@ interface Props {
 }
 
 export const ProceedReservation = ({ openReservationScreen, initialData }: Props) => {
+
+  const customerId = "cus_Palh9sinp7uw4u";
+
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -163,7 +166,13 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   }, [initialData]);
 
   useEffect(() => {
-    if(reservationInfo && reservationInfo.items) setEquipmentData(JSON.parse(reservationInfo.items));
+    if(reservationInfo) {
+      if(typeof reservationInfo.items === 'string'){
+        setEquipmentData(JSON.parse(reservationInfo.items));
+      }else if(typeof reservationInfo.items === 'object') {
+        setEquipmentData(reservationInfo.items);
+      }
+    }
   }, [reservationInfo])
 
   const convertStageToString = (stage) => {
@@ -271,6 +280,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       </ScrollView>
       <AddTransactionModal
         isModalVisible={isAddTransactionModalVisible}
+        customerId={customerId}
         reservationId={reservationInfo?.id??null}
         addCard={openAddCardModal}
         closeModal={closeAddTransactionModal}
@@ -297,6 +307,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       {Platform.OS === 'web' && (
         <AddCardModal
           isModalVisible={isAddCardModalVisible}
+          customerId = {customerId}
           reservationId={reservationInfo?.id??null}
           closeModal={closeAddCardModal}
         />
