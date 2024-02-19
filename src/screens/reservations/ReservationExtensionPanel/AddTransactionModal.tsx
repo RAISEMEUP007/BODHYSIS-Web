@@ -20,6 +20,7 @@ import NumericInput from '../../../common/components/formcomponents/NumericInput
 import LabeledTextInput from '../../../common/components/input/LabeledTextInput';
 import { addTransactionModaltyles } from './styles/AddTransactionModalStyle';
 import { getPaymentsList } from '../../../api/Stripe';
+import { API_URL } from '../../../common/constants/AppConstants';
 
 interface AddTransactionModalProps {
   isModalVisible: boolean;
@@ -87,7 +88,7 @@ const AddTransactionModal = ({
   useEffect(() => {
     setPaymentMethod('Lightspeed');
     setAmountTxt('');
-    setPaymentId('');
+    if(paymentsList && paymentsList.length > 0) setPaymentId(paymentsList[0].id);
     setNote('');
     if(isModalVisible == false){
       closeModalhandler();
@@ -119,7 +120,19 @@ const AddTransactionModal = ({
     }
   };
 
-  const addTransaction = () =>{
+  const addTransaction = async () =>{
+
+    if(paymentMethod == 'Stripe'){
+      const response = await addStripeTrans();
+      console.log(response);
+      console.log(response.ok);
+      if (!response || !response.ok) {
+        // const errorMessage = await response.json();
+        showAlert('error', "Error while making pyament on Stripe");
+        return;
+      }
+    }
+
     const payload = {
       reservation_id : reservationId,
       method: paymentMethod,
@@ -142,6 +155,26 @@ const AddTransactionModal = ({
     createTransaction(payload, (jsonRes, status) => {
       handleResponse(jsonRes, status);
     });
+  }
+
+  const addStripeTrans = async () => {
+    console.log(paymentId);
+    const payload = {
+      amount: parseFloat(AmountTxt) * 100,
+      currency: 'usd',
+      paymentMethod: paymentId,
+      customer: customerId,
+    }
+
+    const response = await fetch(`${API_URL}/stripe/makepayment/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });    
+
+    return response;
   }
 
   const closeModalhandler = () => {

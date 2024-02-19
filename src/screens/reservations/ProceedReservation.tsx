@@ -23,7 +23,7 @@ interface Props {
 
 export const ProceedReservation = ({ openReservationScreen, initialData }: Props) => {
 
-  const customerId = "cus_Palh9sinp7uw4u";
+  const customerId = "cus_PapWGjfCEdOh8J";
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
