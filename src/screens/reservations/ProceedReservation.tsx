@@ -177,6 +177,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
 
   const convertStageToString = (stage) => {
     switch (stage) {
+      case null: case 'null': return 'Draft';
       case 0: case '0': return 'Draft';
       case 1: case '1': return 'Provisional';
       case 2: case '2': return 'Confirmed';

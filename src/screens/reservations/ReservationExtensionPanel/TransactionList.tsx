@@ -70,15 +70,15 @@ const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
       </View>
     ));
   };
-
+  
   return (
     <View style={styles.container}>
       <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:6, marginBottom:12}}>
         <View style={{flexDirection:'row'}}>
           <Text style={{fontSize:16, marginRight:8}}>Total</Text>
-          <Text style={{fontSize:16, marginRight:60}}>{parseFloat(reservationInfo.price).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</Text>
+          <Text style={{fontSize:16, marginRight:60}}>{parseFloat(reservationInfo.price || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</Text>
           <Text style={{fontSize:16, marginRight:8}}>Paid</Text>
-          <Text style={{fontSize:16, marginRight:60}}>{parseFloat(reservationInfo.paid).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</Text>
+          <Text style={{fontSize:16, marginRight:60}}>{parseFloat(reservationInfo.paid || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</Text>
         </View>
         <TouchableOpacity style={[styles.outLineButton, {borderColor:'#28A745'}]} onPress={()=>{openAddTransactionModal()}}>
           <View style={{flexDirection:'row'}}>
