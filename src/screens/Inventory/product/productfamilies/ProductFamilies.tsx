@@ -207,7 +207,9 @@ const ProductFamilies = ({ navigation, openInventory }) => {
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
             </View>
-            <ScrollView>{renderTableData()}</ScrollView>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 240 }}>
+              {renderTableData()}
+            </ScrollView>
           </View>
 
           <AddProductFamilyModal

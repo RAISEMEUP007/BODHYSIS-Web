@@ -55,9 +55,9 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
     { id: 6, status: 'Transferred' },
   ];
 
-  const [selectedCategory, selectCategory] = useState({});
-  const [selectedFamily, selectFamily] = useState({});
-  const [selectedLine, selectLine] = useState({});
+  const [selectedCategory, selectCategory] = useState<any>({});
+  const [selectedFamily, selectFamily] = useState<any>({});
+  const [selectedLine, selectLine] = useState<any>({});
   const [ProductTxt, setProductTxt] = useState('');
   const [SizeTxt, setSizeTxt] = useState('');
   const [DescriptionTxt, setDescriptionTxt] = useState('');
@@ -67,10 +67,10 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   const [SerialNumber, setSerialNumber] = useState('');
   const [HomeLocation, setHomeLocation] = useState('');
   const [CurrentLocation, setCurrentLocation] = useState('');
-  const [selectedPriceGroup, selectPriceGroup] = useState({});
-  const [selectedHomeLocation, selectHomeLocation] = useState({});
-  const [selectedCurrentLocation, selectCurrentLocation] = useState({});
-  const [selectedStatus, selectStatus] = useState({});
+  const [selectedPriceGroup, selectPriceGroup] = useState<any>({});
+  const [selectedHomeLocation, selectHomeLocation] = useState<any>({});
+  const [selectedCurrentLocation, selectCurrentLocation] = useState<any>({});
+  const [selectedStatus, selectStatus] = useState<any>({});
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -130,7 +130,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
 
       if (Product && Product.price_group_id && PriceGroups) {
         const initalGroup = PriceGroups.find((priceGroup) => {
-          return priceGroup.id == Product.price_group_id;
+          return priceGroup.id == Product.family.price_group_id;
         });
         if (initalGroup) selectPriceGroup(initalGroup);
       } else if (PriceGroups.length > 0) {
@@ -321,7 +321,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
 
     setIsLoading(true);
 
-    const payload = {
+    const payload : any = {
       product: ProductTxt,
       category_id: selectedCategory.id,
       family_id: selectedFamily.id,
@@ -334,7 +334,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
       serial_number: SerialNumber,
       home_location: selectedHomeLocation.id,
       current_location: selectedCurrentLocation.id,
-      price_group_id: selectedPriceGroup.id,
+      // price_group_id: selectedPriceGroup.id,
       status: selectedStatus.id,
     };
     const handleResponse = (jsonRes, status) => {
@@ -523,7 +523,8 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
               </Picker>
 
               <Text style={styles.label}>Price Group</Text>
-              <Picker
+              {/* <Picker
+                enabled={false}
                 style={styles.select}
                 selectedValue={selectedPriceGroup.id}
                 onValueChange={(itemValue, itemIndex) => {
@@ -534,7 +535,14 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                   PriceGroups.map((group, index) => {
                     return <Picker.Item key={index} label={group.price_group} value={group.id} />;
                   })}
-              </Picker>
+              </Picker> */}
+              <TextInput
+                style={styles.input}
+                editable={false}
+                placeholder=""
+                defaultValue={selectedPriceGroup.price_group}
+                placeholderTextColor="#ccc"
+              />
 
               <Text style={styles.label}>Status</Text>
               <Picker

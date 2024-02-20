@@ -42,15 +42,15 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
   const [families, setFamilies] = useState([]);
   const [PriceGroups, setPriceGroups] = useState([]);
 
-  const [selectedCategory, selectCategory] = useState({});
-  const [selectedFamily, selectFamily] = useState({});
+  const [selectedCategory, selectCategory] = useState<any>({});
+  const [selectedFamily, selectFamily] = useState<any>({});
   const [LineTxt, setLineTxt] = useState('');
   const [SizeTxt, setSizeTxt] = useState('');
   const [SuitabilityTxt, setSuitabilityTxt] = useState('');
   const [QuantityTxt, setQuantityTxt] = useState('');
   const [HoldbackTxt, setHoldbackTxt] = useState('');
   const [ShortCodeTxt, setShortCodeTxt] = useState('');
-  const [selectedPriceGroup, selectPriceGroup] = useState({});
+  const [selectedPriceGroup, selectPriceGroup] = useState<any>({});
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -107,7 +107,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
 
       if (Line && PriceGroups) {
         const initalGroup = PriceGroups.find((priceGroup) => {
-          return priceGroup.id == Line.price_group_id;
+          return priceGroup.id == Line.family.price_group_id;
         });
         if (initalGroup) selectPriceGroup(initalGroup);
       } else if (PriceGroups.length > 0) {
@@ -204,7 +204,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
 
     setIsLoading(true);
 
-    const payload = {
+    const payload:any = {
       line: LineTxt,
       category_id: selectedCategory.id,
       family_id: selectedFamily.id,
@@ -212,7 +212,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
       suitability: SuitabilityTxt,
       holdback: HoldbackTxt,
       shortcode: ShortCodeTxt,
-      price_group_id: selectedPriceGroup.id,
+      // price_group_id: selectedPriceGroup.id,
     };
 
     const handleResponse = (jsonRes, status) => {
@@ -347,7 +347,8 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
           />
 
           <Text style={styles.label}>Price Group</Text>
-          <Picker
+          {/* <Picker
+            enabled={false}
             style={styles.select}
             selectedValue={selectedPriceGroup.id}
             onValueChange={(itemValue, itemIndex) => {
@@ -358,7 +359,14 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
               PriceGroups.map((item, index) => {
                 return <Picker.Item key={index} label={item.price_group} value={item.id} />;
               })}
-          </Picker>
+          </Picker> */}
+          <TextInput
+            style={styles.input}
+            editable={false}
+            placeholder=""
+            defaultValue={selectedPriceGroup.price_group}
+            placeholderTextColor="#ccc"
+          />
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={AddLineButtonHandler}>

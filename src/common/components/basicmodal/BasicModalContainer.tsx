@@ -4,11 +4,7 @@ import { View, Modal, StyleSheet, Platform } from 'react-native';
 const BasicModalContainer = ({ children }) => {
   return (
     <View style={styles.bootstrapModal}>
-      <View style={styles.modalContent} onKeyDown={(event) => {
-        // console.log(event);
-        // event.preventDefault();
-        // event.stopPropagation();
-      }}>
+      <View style={styles.modalContent}>
         {children}
       </View>
     </View>
