@@ -1,54 +1,60 @@
 import { API_URL } from '../common/constants/AppConstants';
 
-export const baseGetAPICall = (route, headers, callback) => {
-  fetch(`${API_URL}/${route}`, {
-    method: 'GET',
-    headers: headers,
-  })
-  .then(async res => {
-    try {
-      const jsonRes = await res.json();
+export const baseGetAPICall = async (route, headers, callback) => {
+  try {
+    const response = await fetch(`${API_URL}/${route}`, {
+      method: 'GET',
+      headers: headers,
+    });
+    
+    if(response.ok){
+      const jsonRes = await response.clone().json();
+      
       if (jsonRes) {
-        callback(jsonRes, res.status, null);
+        callback(jsonRes, response.status, null);
       }
-    } catch (error) {
-      console.log(error);
-      callback(null, res.status, error);
+    }else{
+      callback(null, response.status, response.statusText);
     }
-  })
-  .catch(error => {
+    
+    return response;
+  } catch (error) {
     console.log(error);
     callback(null, 500, error);
-  });
+    return error;
+  }
 };
 
-export const getAPICall = (route, callback) => {
-  baseGetAPICall(route, {'Content-Type': 'application/json'}, callback);
+export const getAPICall = async (route, callback) => {
+  return await baseGetAPICall(route, {'Content-Type': 'application/json'}, callback);
 };
 
-export const basePostAPICall = (route, headers, body, callback) => {
-  fetch(`${API_URL}/${route}`, {
-    method: 'POST',
-    headers: headers,
-    body: body,
-  })
-  .then(async res => {
-    try {
-      const jsonRes = await res.json();
+export const basePostAPICall = async (route, headers, body, callback) => {
+  try {
+    const response = await fetch(`${API_URL}/${route}`, {
+      method: 'POST',
+      headers: headers,
+      body: body,
+    });
+    
+    if(response.ok){
+      const jsonRes = await response.clone().json();
+      
       if (jsonRes) {
-        callback(jsonRes, res.status, null);
+        callback(jsonRes, response.status, null);
       }
-    } catch (error) {
-      console.log(error);
-      callback(null, res.status, error);
+    }else{
+      callback(null, response.status, response.statusText);
     }
-  })
-  .catch(error => {
+    
+    return response;
+  } catch (error) {
     console.log(error);
     callback(null, 500, error);
-  });
+    return error;
+  }
 };
 
-export const postAPICall = (route, payload, callback) => {
-  basePostAPICall(route, {'Content-Type': 'application/json'}, JSON.stringify(payload), callback);
+export const postAPICall = async (route, payload, callback) => {
+  return await basePostAPICall(route, {'Content-Type': 'application/json'}, JSON.stringify(payload), callback);
 };

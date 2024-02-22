@@ -7,7 +7,6 @@ import {
   View,
   ActivityIndicator,
   Platform,
-  Image,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
@@ -121,7 +120,6 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
     if (CategoryChanged && selectedCategory.id) {
       loadProductFamiliesData(selectedCategory.id, (jsonRes) => {
         setFamilies(jsonRes);
-        console.log(jsonRes);
         if (jsonRes.length > 0) selectFamily(jsonRes[0]);
       });
     }
@@ -364,7 +362,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
             style={styles.input}
             editable={false}
             placeholder=""
-            defaultValue={selectedPriceGroup.price_group}
+            value={selectedPriceGroup.price_group || ''}
             placeholderTextColor="#ccc"
           />
         </ModalBody>

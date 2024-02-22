@@ -540,7 +540,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                 style={styles.input}
                 editable={false}
                 placeholder=""
-                defaultValue={selectedPriceGroup.price_group}
+                value={selectedPriceGroup.price_group || ''}
                 placeholderTextColor="#ccc"
               />
 

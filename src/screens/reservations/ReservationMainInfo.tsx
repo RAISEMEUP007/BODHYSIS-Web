@@ -23,7 +23,7 @@ if (Platform.OS === 'web') {
   document.head.appendChild(link);
 }
 
-const ReservationMainInfo = ({ details }) => {
+const ReservationMainInfo = ({ details, setUpdateCount }) => {
   const { showAlert } = useAlertModal();
 
   const [inputValues, setInputValues] = useState({
@@ -158,6 +158,9 @@ const ReservationMainInfo = ({ details }) => {
       [fieldName]: value
     };
 
+    const discountInfo = discountCodes.find((item) => item.id === newValues.discountCode);
+    const discountAmount = discountInfo.type == 1 ? (Math.round(details.subtotal * discountInfo.amount) / 100) : discountInfo.amount;
+
     const payload = {
       id: details.id,
       start_date : newValues.startDate,
@@ -165,12 +168,15 @@ const ReservationMainInfo = ({ details }) => {
       promo_code: newValues.discountCode,
       start_location_id : newValues.startLocationId,
       end_location_id : newValues.endLocationId,
+      discount_amount: discountAmount,
+      total_price: details.subtotal + details.tax_amount - discountAmount,
     }
 
     updateReservation(payload, (jsonRes, status) => {
       switch (status) {
         case 201:
           setInputValues(newValues);
+          setUpdateCount(prev => prev + 1);
           break;
         default:
           if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
@@ -181,7 +187,7 @@ const ReservationMainInfo = ({ details }) => {
 
   };
 
-  const CustomInput = forwardRef(({ value, onChange, onClick }, ref) => (
+  const CustomInput = forwardRef(({ value, onChange, onClick }:any, ref) => (
     <input
       onClick={onClick}
       onChange={onChange}
@@ -231,7 +237,7 @@ const ReservationMainInfo = ({ details }) => {
           placeholder='Billable days'
           placeholderTextColor="#ccc"
           inputStyle={{marginVertical:6}}
-          value={inputValues.billableDays}
+          value={inputValues.billableDays.toString()}
           onChangeText={value => handleInputChange('billableDays', value)}
           editable={false}
         />

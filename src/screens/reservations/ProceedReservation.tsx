@@ -15,6 +15,7 @@ import EquipmentsTable from './EquipmentsTable';
 import AddTransactionModal from './ReservationExtensionPanel/AddTransactionModal';
 import AddReservationItemModal from './AddReservationItemModal';
 import AddCardModal from '../../common/components/stripe-react/AddCardModal';
+import { getHeaderData } from '../../api/Price';
 
 interface Props {
   openReservationScreen: (itemName: string, data?: any ) => void;
@@ -28,9 +29,12 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
+  const [updateCount, setUpdateCount] = useState<number>(0);
   const [reservationInfo, setReservationInfo] = useState<any>();
   const [contentWidth, setContentWidth] = useState<number>();
   const [isAddTransactionModalVisible, setAddTransactionModalVisible] = useState(false);
+  const [headerData, setHeaderData] = useState([]);
+
   const openAddTransactionModal = () => {
     setAddTransactionModalVisible(true);
   };
@@ -70,6 +74,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     const newData = [...equipmentData, equipment];
     saveReservationItems(newData, ()=>{
       setEquipmentData(newData);
+      setUpdateCount(prev => prev + 1);
     })
   }
 
@@ -85,6 +90,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   
     saveReservationItems(newData, ()=>{
       setEquipmentData(newData);
+      setUpdateCount(prev => prev + 1);
     })
   }
 
@@ -144,26 +150,23 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   }
 
   useEffect(() => {
-    if (!initialData || !initialData.reservationId) {
-      showAlert('error', 'Non valid reservation!');
-      openReservationScreen('Reservations List');
-    }else{
-      getReservationDetail(initialData.reservationId, (jsonRes, status, error) => {
-        switch (status) {
-          case 200:
-            setReservationInfo(jsonRes);
-            break;
-          case 500:
-            showAlert('error', msgStr('serverError'));
-            break;
-          default:
-            if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-            else showAlert('error', msgStr('unknownError'));
-            break;
-        }
-      });
-    }
-  }, [initialData]);
+    getHeaderData(initialData.price_table_id, (jsonRes, status, error) => {
+      switch (status) {
+        case 200:
+          setHeaderData(jsonRes);
+          break;
+        case 500:
+          showAlert('error', msgStr('serverError'));
+          setHeaderData([]);
+          break;
+        default:
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          setHeaderData([]);
+          break;
+      }
+    });
+  }, [initialData.price_table_id]);
 
   useEffect(() => {
     if(reservationInfo) {
@@ -216,7 +219,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               const { width } = event.nativeEvent.layout;
               setContentWidth(width);
             }}>
-            <ReservationMainInfo details={reservationInfo}/>
+            <ReservationMainInfo details={reservationInfo} setUpdateCount={setUpdateCount}/>
             <ReservationExtensionPanel reservationId={reservationInfo?.id??null} openAddTransactionModal={openAddTransactionModal}/>
           </View>
           <View style={{flexDirection:'row', justifyContent:'space-between', marginVertical:18}}>
@@ -282,7 +285,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       <AddTransactionModal
         isModalVisible={isAddTransactionModalVisible}
         customerId={customerId}
-        reservationId={reservationInfo?.id??null}
+        reservationInfo = {reservationInfo}
         addCard={openAddCardModal}
         closeModal={closeAddTransactionModal}
         // onAdded={(paymentMethod, amount)=>{

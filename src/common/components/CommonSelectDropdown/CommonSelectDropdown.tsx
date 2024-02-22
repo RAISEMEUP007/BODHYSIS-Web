@@ -136,11 +136,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.Neutrals.LIGHT_GRAY,
   },
   headerText: {
-    fontSize: 16,
+    fontSize: 14,
     // fontWeight: '600',
   },
   title: {
-    fontSize: 16,
+    fontSize: 14,
     // fontWeight: '600',
     marginBottom: 10,
   },

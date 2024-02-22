@@ -33,6 +33,14 @@ export const getPriceGroupsData = (callback) => {
   getAPICall('price/getpricegroupsdata', callback);
 }
 
+export const getPriceGroupValue = async (paylod, callback=()=>{}) => {
+  return await postAPICall('price/getpricegroupvalue', paylod, callback);
+}
+
+export const getPriceDataByGroup = async (paylod, callback=()=>{}) => {
+  return await postAPICall('price/getpricedatabygroup', paylod, callback);
+}
+
 export const createGroup = (group, tableId, callback) => {
   const payload = { group, tableId };
   console.log(payload);

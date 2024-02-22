@@ -14,6 +14,9 @@ import {
   useRequestPriceGroupsQuery,
   useRequestPriceLogicDataQuery,
 } from '../../redux/slices/baseApiSlice';
+import { getCustomersData } from '../../api/Customer';
+import { createReservation } from '../../api/Reservation';
+import { getHeaderData, getPriceDataByGroup, getPriceGroupValue } from '../../api/Price';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import {  DropdownData } from '../../common/components/CommonDropdown/CommonDropdown';
 import { BrandType } from '../../types/BrandType';
@@ -22,14 +25,11 @@ import { LocationType } from '../../types/LocationType';
 import { CommonSelectDropdown } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
 import AddCustomerModal from '../customer/customers/AddCustomerModal';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { getCustomersData } from '../../api/Customer';
 import { msgStr } from '../../common/constants/Message';
 import EquipmentsTable from './EquipmentsTable';
 import AddReservationItemModal from './AddReservationItemModal';
 import { createReservationStyle } from './styles/CreateReservationStyle';
-import { createReservation } from '../../api/Reservation';
-import { getHeaderData } from '../../api/Price';
-import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
+import { getStoreDetail } from '../../api/Settings';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -50,9 +50,11 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [customersData, setCustomers] = useState([]);
+  const [selectedPriceTable, setPriceTable] = useState<any>();
 
   const [customerId, selectCustomerId] = useState<number | null>(initialData?.initalCustomerId??null);
   const [brandId, selectBrandId] = useState<number | null>();
+  const [taxRate, setTaxRate] = useState<number>(0);
   const [locationId, selectLocationId] = useState<number | null>();
   const [startDate, setStartdate] = useState<Date>(new Date());
   const [endDate, setEnddate] = useState<Date>();
@@ -164,6 +166,23 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     return result;
   }, [locationsData]);
 
+  useEffect(()=>{
+    getStoreDetail(brandId, (jsonRes, status)=>{
+      if(status == 200) setTaxRate(jsonRes.sales_tax)
+    })
+  }, [brandId]);
+
+  const subTotal = useMemo(()=>{
+    if(equipmentData.length>0){
+      const subtotal = equipmentData.reduce((total, item) => total + item.price, 0);
+      return subtotal;
+    }else return 0;
+  }, [equipmentData]);
+
+  const taxAmount = useMemo(()=>{
+    return Math.round(taxRate * subTotal) / 100
+  }, [taxRate, subTotal]);
+
   const getPriceTableByBrandAndDate = (brandId, date) => {
     if(!priceLogicData || !priceLogicData.length) return null;
     let selectedPriceGroup = priceLogicData.find(group => 
@@ -204,6 +223,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
 
   useEffect(() => {
     const priceTable = getPriceTableByBrandAndDate(brandId, startDate);
+    setPriceTable(priceTable);
     if(priceTable){
       getHeaderData(priceTable.id, (jsonRes, status, error) => {
         switch (status) {
@@ -230,9 +250,67 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       brandId &&
       startDate &&
       endDate &&
+      selectedPriceTable &&
       equipmentData.length > 0
     );
-  }, [customerId, brandId, startDate, endDate, equipmentData]);
+  }, [customerId, brandId, startDate, endDate, selectedPriceTable, equipmentData]);
+
+  useEffect(() => {
+    const calculatePricedData = async () => {
+      if (equipmentData.length > 0) {
+        if (headerData && selectedPriceTable && startDate && endDate) {
+          const tableId = selectedPriceTable.id;
+          const pricedEquipmentData = await calculatePricedEquipmentData(tableId);
+          setEquipmentData(pricedEquipmentData);
+        }else{
+          const pricedEquipmentData = equipmentData.map((item) => ({ ...item, price: 0 }));
+          console.log(pricedEquipmentData);
+          setEquipmentData(pricedEquipmentData);
+        }
+      }
+    };
+  
+    calculatePricedData();
+  }, [selectedPriceTable, startDate, endDate, headerData, isAddReservationItemModalVisible]);
+
+  async function calculatePricedEquipmentData(tableId) {
+    const pricedEquipmentData = await Promise.all(equipmentData.map(async (item) => {
+      const payload = {
+        tableId,
+        groupId: item.family.price_group_id,
+      }
+      const response = await getPriceDataByGroup(payload);
+      const rows = await response.json();
+
+      const reversedHeaderData = headerData.slice().reverse();
+      const updatedReversedHeaderData = reversedHeaderData.map((item) => {
+        const value = rows.find((row) => row.point_id === item.id)?.value || 0;
+        const pricePMS = value/item.milliseconds;
+        const pricePH = value / (item.milliseconds / (1000 * 60 * 60));
+        const pricePD = value / (item.milliseconds / (1000 * 60 * 60 * 24));
+        return { ...item, value, pricePH, pricePD };
+      });
+
+      const diff = endDate.getTime() - startDate.getTime();
+
+      const basedonPoint  = updatedReversedHeaderData.find((item) => {
+        if(item.value>0 && item.milliseconds <= diff){
+          return item;
+        }
+      });
+
+      let price = 0;
+      if(basedonPoint){
+        if(Math.floor(diff/(1000 * 60 * 60 *24)) == 0) price = basedonPoint.pricePH * Math.floor(diff/(1000 * 60 * 60));
+        else price = basedonPoint.pricePD * Math.floor(diff/(1000 * 60 * 60 * 24));
+
+        price = Math.round(price*100)/100 * item.quantity;
+      }
+      console.log(price);
+      return { ...item, price };
+    }));
+    return pricedEquipmentData;
+  }
 
   const CreateReservationHandler = () => {
     setIsLoading(true);
@@ -245,11 +323,15 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       start_date : startDate,
       end_date : endDate,
       items : equipmentData,
+      subtotal : subTotal,
+      tax_rate : taxRate,
+      tax_amount : taxAmount,
+      total_price: subTotal + taxAmount,
+      price_table_id: selectedPriceTable.id,
       stage : 1,
     };
 
     const handleResponse = (jsonRes, status) => {
-      console.log(jsonRes);
       switch (status) {
         case 201:
           // showAlert('success', jsonRes.message);
@@ -270,7 +352,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     });
   };
   
-  const CustomInput = forwardRef(({ value, onChange, onClick }, ref) => (
+  const CustomInput = forwardRef(({ value, onChange, onClick }:any, ref) => (
     <input
       onClick={onClick}
       onChange={onChange}
@@ -279,6 +361,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       value={value}
     ></input>
   ))
+
   const renderDatePicker = (selectedDate, onChangeHandler) => {
     return (
       <View style={{}}>
@@ -338,6 +421,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                   else if(!brandId) showAlert('warning', 'Please select a brand.');
                   else if(!startDate) showAlert('warning', 'Please select Pick Up Time.');
                   else if(!endDate) showAlert('warning', 'Please select Drop off Time.');
+                  else if(!selectedPriceTable) showAlert('warning', 'No available Price table. Can not set price.');
                   else if(!equipmentData.length) showAlert('warning', 'Please add an item.');
                 }}
                 onPress={() => {
@@ -412,6 +496,10 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                 ></TextInput>}
               </View>
             </View>
+            <View style={[styles.reservationRow, {marginTop:16}]}>
+              <Text style={{marginRight:20, fontSize:14}}>{'Price Table:'}</Text>
+              <Text style={{marginRight:20, fontSize:15, color:(selectedPriceTable ? '#ff4d4d': '#999')}}>{selectedPriceTable ? selectedPriceTable.table_name : 'No available table'}</Text>
+            </View>
             <View style={[styles.reservationRow, {width:740}]}>
               <Slots
                 onSelect={(item) => {
@@ -420,7 +508,13 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                 items={headerData}
               />
             </View>
-            <View style={[styles.reservationRow, {marginTop:10, justifyContent:'flex-end'}]}>
+            <View style={[styles.reservationRow, {marginTop:10, alignItems:'flex-end', justifyContent:'space-between'}]}>
+              <View style={{flexDirection:'row'}}>
+                <Text style={{marginRight:8}}>Subtotal</Text>
+                <Text style={{marginRight:24}}>{subTotal.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+                <Text style={{marginRight:8}}>Tax</Text>
+                <Text>{taxAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+              </View>
               <TouchableHighlight style={[styles.addItemButton]} onPress={openAddReservationItemModal}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
                   <FontAwesome5 name="plus" size={14} color="white" style={{marginTop:3}}/>

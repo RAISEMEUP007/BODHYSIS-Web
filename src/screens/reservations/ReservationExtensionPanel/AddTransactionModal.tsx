@@ -25,7 +25,7 @@ import { API_URL } from '../../../common/constants/AppConstants';
 interface AddTransactionModalProps {
   isModalVisible: boolean;
   customerId: string;
-  reservationId: number;
+  reservationInfo: any;
   addCard?: ()=> void;
   closeModal: () => void;
   // item?: any;
@@ -45,7 +45,7 @@ type Payment = {
 const AddTransactionModal = ({
   isModalVisible,
   customerId,
-  reservationId,
+  reservationInfo,
   addCard,
   closeModal,
   // onAdded,
@@ -134,7 +134,7 @@ const AddTransactionModal = ({
     }
 
     const payload = {
-      reservation_id : reservationId,
+      reservation_id : reservationInfo.id,
       method: paymentMethod,
       amount: AmountTxt,
       note: note,
@@ -208,6 +208,32 @@ const AddTransactionModal = ({
           }}
         />
         <ModalBody style={{ zIndex: 10 }}>
+          <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10, marginBottom:12, paddingLeft:6, paddingRight:12}}>
+            <View>
+              <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:6}}>
+                <Text style={{marginRight:32}}>Subtotal</Text>
+                <Text>{reservationInfo.subtotal.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+              </View>
+              <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:6}}>
+                <Text style={{marginRight:32}}>Discounts</Text>
+                <Text>{reservationInfo.discount_amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+              </View>
+              <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:6}}>
+                <Text style={{marginRight:32}}>Tax</Text>
+                <Text>{reservationInfo.tax_amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+              </View>
+            </View>
+            <View>
+              <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:6}}>
+                <Text style={{marginRight:32}}>Total</Text>
+                <Text>{reservationInfo.total_price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+              </View>
+              <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:6}}>
+                <Text style={{marginRight:32}}>Paid</Text>
+                <Text>{reservationInfo.paid.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+              </View>
+            </View>
+          </View>
           <Text style={styles.label}>Status</Text>
           <Picker
             style={styles.select}

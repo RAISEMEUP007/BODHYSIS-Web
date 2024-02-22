@@ -204,8 +204,8 @@ export const deleteTimeformat = (id, callback) => {
   postAPICall('settings/deletetimeformat', payload, callback);
 }
 
-export const getStoreDetail = (brandId, callback) => {
-  getAPICall('settings/getstoredetail/' + brandId, callback);
+export const getStoreDetail = async (brandId, callback) => {
+  return await getAPICall('settings/getstoredetail/' + brandId, callback);
 }
 
 export const updateStoreDetail = (payload, callback) => {
