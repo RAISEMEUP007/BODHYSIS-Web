@@ -273,7 +273,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     calculatePricedData();
   }, [selectedPriceTable, startDate, endDate, headerData, isAddReservationItemModalVisible]);
 
-  async function calculatePricedEquipmentData(tableId) {
+  const calculatePricedEquipmentData = async (tableId) => {
     const pricedEquipmentData = await Promise.all(equipmentData.map(async (item) => {
       const payload = {
         tableId,

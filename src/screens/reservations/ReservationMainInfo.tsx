@@ -39,7 +39,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
     endLocationId: ''
   });
 
-  const[discountCodes, setDiscountCodes] = useState([]);
+  const [discountCodes, setDiscountCodes] = useState([]);
 
   useEffect(() => {
     if(details){

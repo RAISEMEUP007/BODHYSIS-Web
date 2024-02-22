@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, ScrollView, TouchableOpacity, Text, TouchableHighlight, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -15,7 +15,8 @@ import EquipmentsTable from './EquipmentsTable';
 import AddTransactionModal from './ReservationExtensionPanel/AddTransactionModal';
 import AddReservationItemModal from './AddReservationItemModal';
 import AddCardModal from '../../common/components/stripe-react/AddCardModal';
-import { getHeaderData } from '../../api/Price';
+import { getHeaderData, getPriceDataByGroup } from '../../api/Price';
+import { getDiscountCodesData } from '../../api/Settings';
 
 interface Props {
   openReservationScreen: (itemName: string, data?: any ) => void;
@@ -34,6 +35,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   const [contentWidth, setContentWidth] = useState<number>();
   const [isAddTransactionModalVisible, setAddTransactionModalVisible] = useState(false);
   const [headerData, setHeaderData] = useState([]);
+  const [discountCodes, setDiscountCodes] = useState([]);
 
   const openAddTransactionModal = () => {
     setAddTransactionModalVisible(true);
@@ -69,16 +71,17 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     setEditingIndex(index);
   };
 
-  const addReservationItem = (productLine, quantity) => {
+  const addReservationItem = async (productLine, quantity) => {
     const equipment = { ...productLine, quantity };
     const newData = [...equipmentData, equipment];
-    saveReservationItems(newData, ()=>{
-      setEquipmentData(newData);
+    const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
+    saveReservationItems(cacluatedPricedData, ()=>{
+      setEquipmentData(cacluatedPricedData);
       setUpdateCount(prev => prev + 1);
     })
   }
 
-  const updateReservationItem = (productLine, quantity) => {
+  const updateReservationItem = async (productLine, quantity) => {
     const newEquipment = { ...productLine, quantity };
     const replaceIndex = editingIndex;
     const newData = equipmentData.map((item, index) => {
@@ -88,17 +91,19 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       return item;
     });
   
-    saveReservationItems(newData, ()=>{
-      setEquipmentData(newData);
+    const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
+    saveReservationItems(cacluatedPricedData, ()=>{
+      setEquipmentData(cacluatedPricedData);
       setUpdateCount(prev => prev + 1);
     })
   }
 
-  const removeReservationItem = (item, index) => {
+  const removeReservationItem = async (item, index) => {
     showConfirm(msgStr('deleteConfirmStr'), () => {
       const updatedEquipmentData = [...equipmentData.slice(0, index), ...equipmentData.slice(index + 1)];
       saveReservationItems(updatedEquipmentData, ()=>{
         setEquipmentData(updatedEquipmentData);
+        setUpdateCount(prev => prev + 1);
       })
     });
   }
@@ -106,9 +111,19 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   const saveReservationItems = (items, callback) =>{
     if(!reservationInfo || !reservationInfo.id) return;
 
+    const subTotal = items.reduce((total, item) => total + item.price, 0);
+    const taxAmount = Math.round(subTotal * reservationInfo.tax_rate)/100;
+    const discountInfo = discountCodes.find((item) => item.id === reservationInfo.promo_code);
+    const discountAmount = discountInfo.type == 1 ? (Math.round(subTotal * discountInfo.amount) / 100) : discountInfo.amount;
+    const totalPrice = subTotal + taxAmount - discountAmount;
+
     const payload = {
       id: reservationInfo.id,
       items : items,
+      subtotal : subTotal,
+      tax_amount : taxAmount,
+      discount_amount : discountAmount,
+      total_price: totalPrice,
     }
 
     updateReservation(payload, (jsonRes, status) => {
@@ -149,24 +164,121 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     })
   }
 
-  useEffect(() => {
-    getHeaderData(initialData.price_table_id, (jsonRes, status, error) => {
+  useEffect(()=>{
+    getDiscountCodesData((jsonRes, status, error) => {
       switch (status) {
         case 200:
-          setHeaderData(jsonRes);
-          break;
-        case 500:
-          showAlert('error', msgStr('serverError'));
-          setHeaderData([]);
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          setHeaderData([]);
+          setDiscountCodes(jsonRes);
           break;
       }
     });
-  }, [initialData.price_table_id]);
+  }, [])
+
+  useEffect(() => {
+    if (!initialData || !initialData.reservationId) {
+      showAlert('error', 'Non valid reservation!');
+      openReservationScreen('Reservations List');
+    }else{
+      getReservationDetail(initialData.reservationId, (jsonRes, status, error) => {
+        switch (status) {
+          case 200:
+            if(jsonRes.total_price == 0){
+              jsonRes.total_price = jsonRes.subtotal + jsonRes.tax_amount - jsonRes.discount_amount;
+            }
+            setReservationInfo(jsonRes);
+            break;
+          case 500:
+            showAlert('error', msgStr('serverError'));
+            break;
+          default:
+            if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+            else showAlert('error', msgStr('unknownError'));
+            break;
+        }
+      });
+    }
+  }, [initialData, updateCount]);
+
+  
+  useEffect(() => {
+    if(reservationInfo && reservationInfo.price_table_id){
+      getHeaderData(reservationInfo.price_table_id, (jsonRes, status, error) => {
+        switch (status) {
+          case 200:
+            setHeaderData(jsonRes);
+            break;
+          case 500:
+            showAlert('error', msgStr('serverError'));
+            setHeaderData([]);
+            break;
+          default:
+            if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+            else showAlert('error', msgStr('unknownError'));
+            setHeaderData([]);
+            break;
+        }
+      });
+    }else setHeaderData([]);
+  }, [reservationInfo]);
+
+  const subTotal = useMemo(()=>{
+    if(equipmentData.length>0){
+      const subtotal = equipmentData.reduce((total, item) => total + item.price, 0);
+      return subtotal;
+    }else return 0;
+  }, [equipmentData]);
+
+  // const calculatePricedData = async (equipmentData) => {
+  //   if (equipmentData.length > 0) {
+  //     if (headerData && reservationInfo.price_table_id) {
+  //       const tableId = reservationInfo.price_table_id;
+  //       const pricedEquipmentData = await calculatePricedEquipmentData(tableId, equipmentData);
+  //       return pricedEquipmentData;
+  //     }else{
+  //       const pricedEquipmentData = equipmentData.map((item) => ({ ...item, price: 0 }));
+  //       return pricedEquipmentData;
+  //     }
+  //   }
+  //   return [];
+  // };
+
+  const calculatePricedEquipmentData = async (tableId, equipmentData) => {
+    const pricedEquipmentData = await Promise.all(equipmentData.map(async (item) => {
+      const payload = {
+        tableId,
+        groupId: item.family.price_group_id,
+      }
+      const response = await getPriceDataByGroup(payload);
+      const rows = await response.json();
+
+      const reversedHeaderData = headerData.slice().reverse();
+      const updatedReversedHeaderData = reversedHeaderData.map((item) => {
+        const value = rows.find((row) => row.point_id === item.id)?.value || 0;
+        const pricePMS = value/item.milliseconds;
+        const pricePH = value / (item.milliseconds / (1000 * 60 * 60));
+        const pricePD = value / (item.milliseconds / (1000 * 60 * 60 * 24));
+        return { ...item, value, pricePH, pricePD };
+      });
+
+      const diff = new Date(reservationInfo.end_date).getTime() - new Date(reservationInfo.start_date).getTime();
+
+      const basedonPoint  = updatedReversedHeaderData.find((item) => {
+        if(item.value>0 && item.milliseconds <= diff){
+          return item;
+        }
+      });
+
+      let price = 0;
+      if(basedonPoint){
+        if(Math.floor(diff/(1000 * 60 * 60 *24)) == 0) price = basedonPoint.pricePH * Math.floor(diff/(1000 * 60 * 60));
+        else price = basedonPoint.pricePD * Math.floor(diff/(1000 * 60 * 60 * 24));
+
+        price = Math.round(price*100)/100 * item.quantity;
+      }
+      return { ...item, price };
+    }));
+    return pricedEquipmentData;
+  }
 
   useEffect(() => {
     if(reservationInfo) {
