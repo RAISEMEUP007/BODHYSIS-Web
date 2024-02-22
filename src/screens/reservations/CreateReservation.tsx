@@ -277,7 +277,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     const pricedEquipmentData = await Promise.all(equipmentData.map(async (item) => {
       const payload = {
         tableId,
-        groupId: item.family.price_group_id,
+        groupId: item.line.price_group_id,
       }
       const response = await getPriceDataByGroup(payload);
       const rows = await response.json();
