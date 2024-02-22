@@ -53,7 +53,7 @@ const AddProductFamilyModal = ({
   const [displayNameTxt, setDisplayNameTxt] = useState('');
   const [summaryTxt, setSummaryTxt] = useState('');
   const [notesTxt, setNotesTxt] = useState('');
-  const [selectedCategory, selectCategory] = useState({});
+  const [selectedCategory, selectCategory] = useState<any>({});
   const [selectedPriceGroup, selectPriceGroup] = useState({});
 
   const inputRef = useRef(null);
@@ -195,7 +195,7 @@ const AddProductFamilyModal = ({
   };
 
   const handleImageUpload = () => {
-    const options = {
+    const options:any = {
       title: 'Select Image',
       storageOptions: {
         skipBackup: true,
@@ -203,7 +203,7 @@ const AddProductFamilyModal = ({
       },
     };
 
-    launchImageLibrary(options, (response) => {
+    launchImageLibrary(options, (response:any) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -232,7 +232,7 @@ const AddProductFamilyModal = ({
     if (selectedImage) formData.append('img', selectedImage);
     formData.append('summary', summaryTxt);
     formData.append('notes', notesTxt);
-    formData.append('price_group_id', selectedPriceGroup.id);
+    // formData.append('price_group_id', selectedPriceGroup.id);
 
     const handleResponse = (jsonRes, status) => {
       switch (status) {
@@ -316,6 +316,7 @@ const AddProductFamilyModal = ({
                 onBlur={checkInput}
                 ref={defaultInputRef}
               />
+              {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
               <Text style={styles.label}>Display Name</Text>
               <TextInput
                 style={styles.input}
@@ -323,9 +324,8 @@ const AddProductFamilyModal = ({
                 value={displayNameTxt}
                 onChangeText={setDisplayNameTxt}
                 placeholderTextColor="#ccc"
-                onBlur={checkInput}
+                // onBlur={checkInput}
               />
-              {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
               {Platform.OS == 'web' && (
                 <View style={styles.imagePicker}>
                   <TouchableOpacity
@@ -359,7 +359,7 @@ const AddProductFamilyModal = ({
                 </>
               )}
 
-              <Text style={styles.label}>Price Group</Text>
+              {/* <Text style={styles.label}>Price Group</Text>
               <Picker
                 style={styles.select}
                 selectedValue={selectedPriceGroup.id}
@@ -371,7 +371,7 @@ const AddProductFamilyModal = ({
                   PriceGroups.map((item, index) => {
                     return <Picker.Item key={index} label={item.price_group} value={item.id} />;
                   })}
-              </Picker>
+              </Picker> */}
             </View>
             <View style={{ paddingRight: 10, width: 660 }}>
               <Text style={styles.label}>Summary</Text>
@@ -417,7 +417,7 @@ const AddProductFamilyModal = ({
                 <Editor
                   value={summaryTxt}
                   onTextChange={(e) => setSummaryTxt(e.htmlValue)}
-                  style={{ height: 212, marginBottom: '10px' }}
+                  style={{ height: 175, marginBottom: '10px' }}
                   onKeyDown={(event) => {
                     event.stopPropagation();
                   }}
@@ -429,7 +429,7 @@ const AddProductFamilyModal = ({
                 <Editor
                   value={notesTxt}
                   onTextChange={(e) => setNotesTxt(e.htmlValue)}
-                  style={{ height: 212, marginBottom: '10px' }}
+                  style={{ height: 175, marginBottom: '10px' }}
                   onKeyDown={(event) => {
                     event.stopPropagation();
                   }}

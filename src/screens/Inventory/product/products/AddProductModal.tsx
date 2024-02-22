@@ -128,9 +128,9 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
       setHomeLocation(Product ? Product.home_location : '');
       setCurrentLocation(Product ? Product.current_location : '');
 
-      if (Product && Product.price_group_id && PriceGroups) {
+      if (Product && Product.line.price_group_id && PriceGroups) {
         const initalGroup = PriceGroups.find((priceGroup) => {
-          return priceGroup.id == Product.family.price_group_id;
+          return priceGroup.id == Product.line.price_group_id;
         });
         if (initalGroup) selectPriceGroup(initalGroup);
       } else if (PriceGroups.length > 0) {

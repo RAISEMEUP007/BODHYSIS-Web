@@ -106,7 +106,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
 
       if (Line && PriceGroups) {
         const initalGroup = PriceGroups.find((priceGroup) => {
-          return priceGroup.id == Line.family.price_group_id;
+          return priceGroup.id == Line.price_group_id;
         });
         if (initalGroup) selectPriceGroup(initalGroup);
       } else if (PriceGroups.length > 0) {
@@ -210,7 +210,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
       suitability: SuitabilityTxt,
       holdback: HoldbackTxt,
       shortcode: ShortCodeTxt,
-      // price_group_id: selectedPriceGroup.id,
+      price_group_id: selectedPriceGroup.id,
     };
 
     const handleResponse = (jsonRes, status) => {
@@ -345,8 +345,8 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
           />
 
           <Text style={styles.label}>Price Group</Text>
-          {/* <Picker
-            enabled={false}
+          <Picker
+            // enabled={false}
             style={styles.select}
             selectedValue={selectedPriceGroup.id}
             onValueChange={(itemValue, itemIndex) => {
@@ -357,14 +357,14 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
               PriceGroups.map((item, index) => {
                 return <Picker.Item key={index} label={item.price_group} value={item.id} />;
               })}
-          </Picker> */}
-          <TextInput
+          </Picker>
+          {/* <TextInput
             style={styles.input}
             editable={false}
             placeholder=""
             value={selectedPriceGroup.price_group || ''}
             placeholderTextColor="#ccc"
-          />
+          /> */}
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={AddLineButtonHandler}>
