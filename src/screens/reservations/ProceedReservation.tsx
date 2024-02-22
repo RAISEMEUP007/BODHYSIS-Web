@@ -42,6 +42,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   };
   const closeAddTransactionModal = () => {
     setAddTransactionModalVisible(false);
+    setUpdateCount(prev => prev + 1);
   };
 
   const [isAddCardModalVisible, setAddCardModalVisible] = useState(false);
@@ -113,8 +114,16 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
 
     const subTotal = items.reduce((total, item) => total + item.price, 0);
     const taxAmount = Math.round(subTotal * reservationInfo.tax_rate)/100;
-    const discountInfo = discountCodes.find((item) => item.id === reservationInfo.promo_code);
-    const discountAmount = discountInfo.type == 1 ? (Math.round(subTotal * discountInfo.amount) / 100) : discountInfo.amount;
+
+    let discountInfo;
+    let discountAmount;
+    if(reservationInfo.promo_code){
+      discountInfo = discountCodes.find((item) => item.id === reservationInfo.promo_code);
+      discountAmount = discountInfo.type == 1 ? (Math.round(subTotal * discountInfo.amount) / 100) : discountInfo.amount;
+    }else {
+      discountAmount = 0;
+    }
+
     const totalPrice = subTotal + taxAmount - discountAmount;
 
     const payload = {
@@ -199,7 +208,6 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     }
   }, [initialData, updateCount]);
 
-  
   useEffect(() => {
     if(reservationInfo && reservationInfo.price_table_id){
       getHeaderData(reservationInfo.price_table_id, (jsonRes, status, error) => {
@@ -246,7 +254,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     const pricedEquipmentData = await Promise.all(equipmentData.map(async (item) => {
       const payload = {
         tableId,
-        groupId: item.line.price_group_id,
+        groupId: item.price_group_id,
       }
       const response = await getPriceDataByGroup(payload);
       const rows = await response.json();

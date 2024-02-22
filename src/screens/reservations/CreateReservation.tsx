@@ -264,7 +264,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
           setEquipmentData(pricedEquipmentData);
         }else{
           const pricedEquipmentData = equipmentData.map((item) => ({ ...item, price: 0 }));
-          console.log(pricedEquipmentData);
           setEquipmentData(pricedEquipmentData);
         }
       }
@@ -277,7 +276,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     const pricedEquipmentData = await Promise.all(equipmentData.map(async (item) => {
       const payload = {
         tableId,
-        groupId: item.line.price_group_id,
+        groupId: item.price_group_id,
       }
       const response = await getPriceDataByGroup(payload);
       const rows = await response.json();
@@ -306,7 +305,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
 
         price = Math.round(price*100)/100 * item.quantity;
       }
-      console.log(price);
+      
       return { ...item, price };
     }));
     return pricedEquipmentData;
