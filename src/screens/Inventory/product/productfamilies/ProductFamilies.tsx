@@ -133,11 +133,11 @@ const ProductFamilies = ({ navigation, openInventory }) => {
             <View style={styles.categoryCell}>
               <Text style={styles.categoryCell}>{item.family}</Text>
             </View>
-            <View style={styles.categoryCell}>
-              <Text style={styles.categoryCell}>{item.display_name}</Text>
+            <View style={styles.cell}>
+              <Text>{item.display_name}</Text>
             </View>
             <View style={styles.cell}>
-              <Text style={styles.cell}>{item.category.category}</Text>
+              <Text>{item.category.category}</Text>
             </View>
             <View style={[styles.cell, { width: 100, paddingRight: 6, alignItems: 'flex-end' }]}>
               <Text>{item.quantity ? item.quantity : '0'}</Text>
@@ -207,7 +207,9 @@ const ProductFamilies = ({ navigation, openInventory }) => {
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
             </View>
-            <ScrollView>{renderTableData()}</ScrollView>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 240 }}>
+              {renderTableData()}
+            </ScrollView>
           </View>
 
           <AddProductFamilyModal

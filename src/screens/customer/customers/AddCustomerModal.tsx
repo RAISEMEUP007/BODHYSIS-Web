@@ -28,7 +28,7 @@ import DeliveryAddress from './DeliveryAddressModal';
 
 const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, closeModal }) => {
   const isUpdate = Customer ? true : false;
-  const customerId = useRef();
+  const customerId = useRef<any>();
 
   useEffect(() => {
     if (Customer) customerId.current = Customer.id;
@@ -157,7 +157,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
 
     setIsLoading(true);
 
-    const payload = {
+    const payload: any = {
       first_name: FirstNameTxt,
       last_name: LastNameTxt,
       email: EmailTxt,

@@ -20,10 +20,12 @@ import NumericInput from '../../../common/components/formcomponents/NumericInput
 import LabeledTextInput from '../../../common/components/input/LabeledTextInput';
 import { addTransactionModaltyles } from './styles/AddTransactionModalStyle';
 import { getPaymentsList } from '../../../api/Stripe';
+import { API_URL } from '../../../common/constants/AppConstants';
 
 interface AddTransactionModalProps {
   isModalVisible: boolean;
-  reservationId: number;
+  customerId: string;
+  reservationInfo: any;
   addCard?: ()=> void;
   closeModal: () => void;
   // item?: any;
@@ -42,7 +44,8 @@ type Payment = {
 
 const AddTransactionModal = ({
   isModalVisible,
-  reservationId,
+  customerId,
+  reservationInfo,
   addCard,
   closeModal,
   // onAdded,
@@ -51,8 +54,6 @@ const AddTransactionModal = ({
 
   const { showAlert } = useAlertModal();
   const [isLoading, setIsLoading] = useState(false);
-
-  const customerId = "cus_PZkdPzrlEkhvwi";
 
   const [paymentMethod, setPaymentMethod] = useState('');
   const [paymentsList, setPaymentsList] = useState<Payment[]>();
@@ -87,7 +88,7 @@ const AddTransactionModal = ({
   useEffect(() => {
     setPaymentMethod('Lightspeed');
     setAmountTxt('');
-    setPaymentId('');
+    if(paymentsList && paymentsList.length > 0) setPaymentId(paymentsList[0].id);
     setNote('');
     if(isModalVisible == false){
       closeModalhandler();
@@ -105,8 +106,6 @@ const AddTransactionModal = ({
   }, [isModalVisible, addCard])
 
   const AddButtonHandler = () => {
-    console.log(paymentMethod);
-    console.log(AmountTxt);
     if (!paymentMethod.trim()) {
       setValidMessage('Please select a product line');
       return;
@@ -121,9 +120,21 @@ const AddTransactionModal = ({
     }
   };
 
-  const addTransaction = () =>{
+  const addTransaction = async () =>{
+
+    if(paymentMethod == 'Stripe'){
+      const response = await addStripeTrans();
+      console.log(response);
+      console.log(response.ok);
+      if (!response || !response.ok) {
+        // const errorMessage = await response.json();
+        showAlert('error', "Error while making pyament on Stripe");
+        return;
+      }
+    }
+
     const payload = {
-      reservation_id : reservationId,
+      reservation_id : reservationInfo.id,
       method: paymentMethod,
       amount: AmountTxt,
       note: note,
@@ -144,6 +155,26 @@ const AddTransactionModal = ({
     createTransaction(payload, (jsonRes, status) => {
       handleResponse(jsonRes, status);
     });
+  }
+
+  const addStripeTrans = async () => {
+    console.log(paymentId);
+    const payload = {
+      amount: parseFloat(AmountTxt) * 100,
+      currency: 'usd',
+      paymentMethod: paymentId,
+      customer: customerId,
+    }
+
+    const response = await fetch(`${API_URL}/stripe/makepayment/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });    
+
+    return response;
   }
 
   const closeModalhandler = () => {
@@ -177,6 +208,32 @@ const AddTransactionModal = ({
           }}
         />
         <ModalBody style={{ zIndex: 10 }}>
+          <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10, marginBottom:12, paddingLeft:6, paddingRight:12}}>
+            <View>
+              <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:6}}>
+                <Text style={{marginRight:32}}>Subtotal</Text>
+                <Text>{reservationInfo.subtotal.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+              </View>
+              <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:6}}>
+                <Text style={{marginRight:32}}>Discounts</Text>
+                <Text>{reservationInfo.discount_amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+              </View>
+              <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:6}}>
+                <Text style={{marginRight:32}}>Tax</Text>
+                <Text>{reservationInfo.tax_amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+              </View>
+            </View>
+            <View>
+              <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:6}}>
+                <Text style={{marginRight:32}}>Total</Text>
+                <Text>{reservationInfo.total_price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+              </View>
+              <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:6}}>
+                <Text style={{marginRight:32}}>Paid</Text>
+                <Text>{reservationInfo.paid.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+              </View>
+            </View>
+          </View>
           <Text style={styles.label}>Status</Text>
           <Picker
             style={styles.select}

@@ -9,20 +9,8 @@ interface Props {
 }
 
 const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
-  // const
-  // // console.log(reservationId);
-  // const transactionData = [
-  //   // { id: 1, date: '2022-01-15', amount: 100.00, method: 'Stripe' },
-  //   // { id: 2, date: '2022-01-16', amount: 50.00, method: 'Credit' },
-  //   // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
-  //   // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
-  //   // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
-  //   // { id: 3, date: '2022-01-17', amount: 200.00, method: 'PayPal' },
-  // ];
-
   const [reservationInfo, setReservationInfo] = useState<any>({});
   const [transactionData, setTransactionData] = useState([]);
-
 
   useEffect(()=>{
     getTransactionsData({reservation_id:reservationId}, (jsonRes, status, error) => {
@@ -42,6 +30,9 @@ const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
       getReservationDetail(reservationId, (jsonRes, status, error) => {
         switch (status) {
           case 200:
+            if(jsonRes.total_price == 0){
+              jsonRes.total_price = jsonRes.subtotal + jsonRes.tax_amount - jsonRes.discount_amount;
+            }
             setReservationInfo(jsonRes);
             break;
           default:
@@ -70,15 +61,17 @@ const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
       </View>
     ));
   };
-
+  
   return (
     <View style={styles.container}>
       <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:6, marginBottom:12}}>
         <View style={{flexDirection:'row'}}>
           <Text style={{fontSize:16, marginRight:8}}>Total</Text>
-          <Text style={{fontSize:16, marginRight:60}}>{parseFloat(reservationInfo.price).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</Text>
+          <Text style={{fontSize:16, marginRight:60}}>
+            {parseFloat(reservationInfo.total_price).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}
+          </Text>
           <Text style={{fontSize:16, marginRight:8}}>Paid</Text>
-          <Text style={{fontSize:16, marginRight:60}}>{parseFloat(reservationInfo.paid).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</Text>
+          <Text style={{fontSize:16, marginRight:60}}>{parseFloat(reservationInfo.paid || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</Text>
         </View>
         <TouchableOpacity style={[styles.outLineButton, {borderColor:'#28A745'}]} onPress={()=>{openAddTransactionModal()}}>
           <View style={{flexDirection:'row'}}>

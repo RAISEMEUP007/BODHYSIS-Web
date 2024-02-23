@@ -48,6 +48,9 @@ const EquipmentsTable =  ({ items, onEdit, onDelete, width }: Props) => {
             <View style={[styles.cell, { width: 100, paddingRight: 6, alignItems: 'flex-end' }]}>
               <Text>{item.quantity ? item.quantity : '0'}</Text>
             </View>
+            <View style={[styles.cell, { width: 100, paddingRight: 6, alignItems: 'flex-end' }]}>
+              <Text>{(item.price ? item.price : 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+            </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
@@ -82,7 +85,7 @@ const EquipmentsTable =  ({ items, onEdit, onDelete, width }: Props) => {
           <Text style={[styles.columnHeader, { width: 60 }]}>{'No'}</Text>
           <Text style={[styles.columnHeader, { flex:1 }]}>{'Product Line'}</Text>
           <Text style={[styles.columnHeader, { width: 100 }]}>{'Quantity'}</Text>
-          {/* <Text style={[styles.columnHeader, { width: 100 }]}>{'Price'}</Text> */}
+          <Text style={[styles.columnHeader, { width: 100 }]}>{'Price'}</Text>
           <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
           <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
         </View>

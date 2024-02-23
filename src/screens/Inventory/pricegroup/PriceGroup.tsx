@@ -284,7 +284,7 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
                 </TouchableOpacity>
               </View>
               {/* <Text pointId={item.id}>{item.header}</Text> */}
-              <Text>{item.header}</Text>
+              <Text style={{textAlign:'center'}}>{item.header}</Text>
             </View>
           ))}
           <Text style={styles.columnHeader}>Extra day</Text>
