@@ -36,8 +36,10 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   const [isAddTransactionModalVisible, setAddTransactionModalVisible] = useState(false);
   const [headerData, setHeaderData] = useState([]);
   const [discountCodes, setDiscountCodes] = useState([]);
+  const [nextStageProcessingStatus, setNextStageProcessingStatus] = useState<boolean>(false);
 
-  const openAddTransactionModal = () => {
+  const openAddTransactionModal = (nextStageProcessingStatus) => {
+    setNextStageProcessingStatus(nextStageProcessingStatus);
     setAddTransactionModalVisible(true);
   };
   const closeAddTransactionModal = () => {
@@ -153,11 +155,19 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
 
     if(reservationInfo.stage > 3) return;
 
+    if(reservationInfo.paid < reservationInfo.total_price){
+      openAddTransactionModal(true);
+    }else processNextStage();
+
+    return;
+  }
+
+  const processNextStage = () => {
     const payload = {
       id: reservationInfo.id,
       stage: (reservationInfo.stage + 1),
     }
-
+    
     updateReservation(payload, (jsonRes, status) => {
       switch (status) {
         case 201:
@@ -170,6 +180,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
           else showAlert('error', msgStr('unknownError'));
           break;
       }
+      setNextStageProcessingStatus(false);
     })
   }
 
@@ -333,14 +344,14 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
           // setContentWidth(width);
         }}>
         <View style={styles.container}>
-          <View 
-          style={{flexDirection:'row'}}           
+          <View
+          style={{flexDirection:'row'}}
             onLayout={(event)=>{
               const { width } = event.nativeEvent.layout;
               setContentWidth(width);
             }}>
             <ReservationMainInfo details={reservationInfo} setUpdateCount={setUpdateCount}/>
-            <ReservationExtensionPanel reservationId={reservationInfo?.id??null} openAddTransactionModal={openAddTransactionModal}/>
+            <ReservationExtensionPanel reservationId={reservationInfo?.id??null} openAddTransactionModal={()=>openAddTransactionModal(false)}/>
           </View>
           <View style={{flexDirection:'row', justifyContent:'space-between', marginVertical:18}}>
             <View style={{flexDirection:'row', alignItems:'center'}}>
@@ -349,7 +360,13 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
                 <View style={[styles.circle, {right:10}]}></View>
                 <Text style={{color:'white', fontWeight:'bold', fontSize:15, fontFamily:'monospace'}}>{convertStageToString(reservationInfo?.stage??null)}</Text>
               </View>
-              <TouchableOpacity style={[styles.nextStageButton]} onPress={confirmNextStage}>
+              <TouchableOpacity 
+                disabled={(reservationInfo && reservationInfo.stage>3)?true:false}
+                style={[
+                  styles.nextStageButton,
+                  (reservationInfo && reservationInfo.stage > 3) && { backgroundColor: '#ccc' }
+                ]}
+                onPress={confirmNextStage}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
                   <Text style={styles.buttonText}>Next stage</Text>
                   <FontAwesome5 name="angle-right" size={18} color="white" style={{marginLeft:10}}/>
@@ -372,7 +389,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
                   <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]} onPress={openAddTransactionModal}>
+              <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]} onPress={()=>openAddTransactionModal(false)}>
                 <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add transaction</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.outLineButton}>
@@ -381,7 +398,10 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
             </View>
           </View>
           <View style={[styles.reservationRow, {justifyContent:'flex-end'}]}>
-            <TouchableHighlight style={[styles.addItemButton]} onPress={openAddReservationItemModal}>
+            <TouchableHighlight 
+              disabled={(reservationInfo && reservationInfo.stage>1 && true)} 
+              style={[styles.addItemButton, (reservationInfo && reservationInfo.stage>1 && {backgroundColor:'#ccc'})]} 
+              onPress={openAddReservationItemModal}>
               <View style={{flexDirection:'row', alignItems:'center'}}>
                 <FontAwesome5 name="plus" size={14} color="white" style={{marginTop:3}}/>
                 <Text style={styles.buttonText}>Add Items</Text>
@@ -404,13 +424,18 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       </ScrollView>
       <AddTransactionModal
         isModalVisible={isAddTransactionModalVisible}
+        nextStageProcessingStatus={nextStageProcessingStatus}
         customerId={customerId}
         reservationInfo = {reservationInfo}
         addCard={openAddCardModal}
         closeModal={closeAddTransactionModal}
-        // onAdded={(paymentMethod, amount)=>{
-        //   // addTransaction(paymentMethod, amount);
-        // }}
+        onAdded={(nextStageProcessingStatus)=>{
+          if(nextStageProcessingStatus) processNextStage();
+        }}
+        continueWithouProcessing={()=>{
+          if(nextStageProcessingStatus) processNextStage();
+          closeAddTransactionModal();
+        }}
       />
       <AddReservationItemModal
         isModalVisible={isAddReservationItemModalVisible}

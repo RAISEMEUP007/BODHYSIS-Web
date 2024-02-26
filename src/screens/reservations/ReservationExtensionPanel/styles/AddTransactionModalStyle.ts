@@ -28,10 +28,13 @@ export const addTransactionModaltyles = StyleSheet.create({
   addButton: {
     backgroundColor: '#007bff',
     color: 'white',
-    padding: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     textAlign: 'center',
     borderRadius: 5,
     marginLeft:10,
+    borderWidth:2, 
+    borderColor:'#007bff',
   },
   message: {
     width: '100%',

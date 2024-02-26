@@ -26,12 +26,13 @@ interface AddTransactionModalProps {
   isModalVisible: boolean;
   customerId: string;
   reservationInfo: any;
+  nextStageProcessingStatus?: boolean;
   addCard?: ()=> void;
   closeModal: () => void;
   // item?: any;
-  // onAdded?: (item, AmountTxt) => void;
+  onAdded?: (nextStageProcessing) => void;
   // onUpdated?: (item, AmountTxt) => void;
-  onClose?: () => void;
+  continueWithouProcessing?: (nextStageProcessing) => void;
 }
 
 type Payment = {
@@ -46,10 +47,11 @@ const AddTransactionModal = ({
   isModalVisible,
   customerId,
   reservationInfo,
+  nextStageProcessingStatus,
   addCard,
   closeModal,
-  // onAdded,
-  onClose,
+  onAdded,
+  continueWithouProcessing,
 }: AddTransactionModalProps) => {
 
   const { showAlert } = useAlertModal();
@@ -114,9 +116,7 @@ const AddTransactionModal = ({
       setValidMessage2(msgStr('emptyField'));
       return;
     }else if(!isNaN(parseInt(AmountTxt)) && parseInt(AmountTxt)>0){
-      // onAdded(paymentMethod, AmountTxt);
       addTransaction();
-      closeModalhandler();
     }
   };
 
@@ -150,6 +150,8 @@ const AddTransactionModal = ({
           else showAlert('error', msgStr('unknownError'));
           break;
       }
+      closeModalhandler();
+      onAdded(nextStageProcessingStatus);
     };
 
     createTransaction(payload, (jsonRes, status) => {
@@ -179,7 +181,7 @@ const AddTransactionModal = ({
 
   const closeModalhandler = () => {
     closeModal();
-    if(onClose) onClose();
+    // if(onClose) onClose(nextStageProcessingStatus);
   };
 
   const checkInput = () => {
@@ -301,13 +303,22 @@ const AddTransactionModal = ({
           />
         </ModalBody>
         <ModalFooter>
-          <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity onPress={closeModalhandler}>
-              <Text style={styles.addButton}>{'Cancel'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={AddButtonHandler}>
-              <Text style={styles.addButton}>{"Add"}</Text>
-            </TouchableOpacity>
+          <View style={{ flexDirection: 'row', width:'100%', alignItems:'center', justifyContent:'space-between' }}>
+            <View>
+              {nextStageProcessingStatus && (
+                <TouchableOpacity onPress={continueWithouProcessing}>
+                  <Text style={[styles.addButton, {backgroundColor:'transparent', color:'#0056b3', margin:0}]}>{"Continue without payment"}</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            <View style={{ flexDirection: 'row', alignItems:'center',}}>
+              <TouchableOpacity onPress={closeModalhandler}>
+                <Text style={[styles.addButton]}>{'Cancel'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={AddButtonHandler}>
+                <Text style={styles.addButton}>{"Add"}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ModalFooter>
       </BasicModalContainer>
