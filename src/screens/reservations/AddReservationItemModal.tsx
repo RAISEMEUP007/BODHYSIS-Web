@@ -25,7 +25,7 @@ interface AddReservationItemModalProps {
   closeModal: () => void;
   item?: any;
   onAdded?: (item, QuantityTxt) => void;
-  onUpdated?: (item, QuantityTxt) => void;
+  onUpdated?: (oldItem, newItem, QuantityTxt) => void;
   onClose?: () => void;
 }
 
@@ -68,10 +68,10 @@ const AddReservationItemModal = ({
   useEffect(()=>{
     if(productLinesData && productLinesData.length>0){
       if(item){
-        const itemId = item.id;
-        const selectedItem = productLinesData.find(item => item.id === itemId);
+        const lineId = item.line_id;
+        const selectedItem = productLinesData.find(item => item.id === lineId);
         selectProductLine(selectedItem);
-        setSelectedProductId(itemId);
+        setSelectedProductId(lineId);
       }else{
         selectProductLine(productLinesData[0]);
         setSelectedProductId(productLinesData[0].id);
@@ -97,8 +97,8 @@ const AddReservationItemModal = ({
       setValidMessage2(msgStr('emptyField'));
       return;
     }else if(!isNaN(parseInt(QuantityTxt)) && parseInt(QuantityTxt)>0){
-      if(mode == 'add' && onAdded) onAdded(selectedProductLine, QuantityTxt);
-      else if(mode == 'update' && onUpdated) onUpdated(selectedProductLine, QuantityTxt);
+      if(mode == 'add' && onAdded) onAdded(selectedProductLine, parseInt(QuantityTxt));
+      else if(mode == 'update' && onUpdated) onUpdated(item, selectedProductLine, parseInt(QuantityTxt));
       closeModalhandler();
     }
   };

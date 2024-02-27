@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, ScrollView, TouchableOpacity, Text, TouchableHighlight, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { v4 as uuidv4 } from 'uuid';
 
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
-import { getReservationDetail, updateReservation } from '../../api/Reservation';
+import { deleteReservationItem, getReservationDetail, updateReservation } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
 
 import { proceedReservationStyle } from './styles/ProceedReservationStyle';
@@ -75,28 +76,41 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   };
 
   const addReservationItem = async (productLine, quantity) => {
-    const equipment = { ...productLine, quantity };
-    const newData = [...equipmentData, equipment];
+    const newItem = {
+      ...productLine,
+      id: parseInt(uuidv4(), 16),
+      reservation_id: reservationInfo.id,
+      line_id: productLine.id,
+      price_group_id: productLine.price_group_id,
+      quantity: quantity
+    }
+    const newData = [...equipmentData, newItem];
     const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
     saveReservationItems(cacluatedPricedData, ()=>{
-      setEquipmentData(cacluatedPricedData);
       setUpdateCount(prev => prev + 1);
     })
   }
+  // console.log(equipmentData);
+  const updateReservationItem = async (oldLine, newLine, quantity) => {
+    const newItem = {
+      ...newLine,
+      id: oldLine.id,
+      reservation_id: oldLine.reservation_id,
+      line_id: newLine.id,
+      price_group_id: newLine.price_group_id,
+      quantity: quantity
+    }
 
-  const updateReservationItem = async (productLine, quantity) => {
-    const newEquipment = { ...productLine, quantity };
     const replaceIndex = editingIndex;
     const newData = equipmentData.map((item, index) => {
       if (index === replaceIndex) {
-        return { ...newEquipment };
+        return { ...newItem };
       }
       return item;
     });
   
     const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
-    saveReservationItems(cacluatedPricedData, ()=>{
-      setEquipmentData(cacluatedPricedData);
+    saveReservationItems(cacluatedPricedData, (jsonRes)=>{
       setUpdateCount(prev => prev + 1);
     })
   }
@@ -104,9 +118,12 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   const removeReservationItem = async (item, index) => {
     showConfirm(msgStr('deleteConfirmStr'), () => {
       const updatedEquipmentData = [...equipmentData.slice(0, index), ...equipmentData.slice(index + 1)];
-      saveReservationItems(updatedEquipmentData, ()=>{
-        setEquipmentData(updatedEquipmentData);
-        setUpdateCount(prev => prev + 1);
+      deleteReservationItem({id:item.id}, (jsonRes, status)=>{
+        if(status == 200){
+          saveReservationItems(updatedEquipmentData, (jsonRes)=>{
+            setUpdateCount(prev => prev + 1);
+          })
+        }
       })
     });
   }
@@ -140,7 +157,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     updateReservation(payload, (jsonRes, status) => {
       switch (status) {
         case 201:
-          callback();
+          callback(jsonRes);
           break;
         default:
           if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
@@ -446,9 +463,9 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
             addReservationItem(productLine, quantity);
           }
         }}
-        onUpdated={(productLine, quantity)=>{
-          if (productLine) {
-            updateReservationItem(productLine, quantity);
+        onUpdated={(oldLine, newLine, quantity)=>{
+          if (newLine) {
+            updateReservationItem(oldLine, newLine, quantity);
           }
           editReservationItem(null, null);
         }}
