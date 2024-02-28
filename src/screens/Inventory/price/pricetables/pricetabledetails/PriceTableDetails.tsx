@@ -19,6 +19,7 @@ import {
   setExtraDay,
   deleteGroup,
   deletePricePoint,
+  setActiveGroup,
 } from '../../../../../api/Price';
 import { msgStr } from '../../../../../common/constants/Message';
 import { useAlertModal } from '../../../../../common/hooks/UseAlertModal';
@@ -130,8 +131,13 @@ const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
     });
   };
 
-  const saveFree = (group, isFree) => {
-    setFree(group, isFree, (jsonRes, status, error) => {
+  const saveFree = (group, group_id, isFree) => {
+    const payload = { 
+      table_id : tableId,
+      group_id, 
+      isFree, 
+    };
+    setFree(payload, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           const updatedTableData = { ...tableData };
@@ -170,8 +176,13 @@ const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
     });
   };
 
-  const saveExtraDay = (group, extraDay) => {
-    setExtraDay(group, extraDay, (jsonRes, status, error) => {
+  const saveExtraDay = (group, group_id, extraDay) => {
+    const payload = {
+      table_id: tableId,
+      group_id: group_id,
+      extraDay: extraDay,
+    }
+    setExtraDay(payload, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           break;
@@ -201,9 +212,14 @@ const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
     });
   };
 
-  const removeGroup = (group) => {
+  const removeGroup = (group_id) => {
+    const payload = {
+      table_id : tableId,
+      group_id,
+      is_active : false,
+    }
     showConfirm(msgStr('deleteConfirmStr'), () => {
-      deleteGroup(group, (jsonRes, status, error) => {
+      setActiveGroup(payload, (jsonRes, status, error) => {
         switch (status) {
           case 200:
             setUpdateGroupTrigger(true);
@@ -217,6 +233,8 @@ const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
       });
     });
   };
+
+
 
   const renderTableHeader = () => {
     return (
@@ -267,7 +285,7 @@ const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
               </TouchableOpacity> */}
               <TouchableOpacity
                 onPress={() => {
-                  // removeGroup(i);
+                  removeGroup( tableData[i].group_id);
                 }}
               >
                 <FontAwesome5
@@ -282,7 +300,7 @@ const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
           <View style={[styles.cell, styles.cellcheckbox]}>
             <CheckBox
               value={tableData[i].is_free ? true : false}
-              onValueChange={(newValue) => saveFree(i, newValue)}
+              onValueChange={(newValue) => saveFree(i, tableData[i].group_id, newValue)}
             />
           </View>
           {tableData[i].data.map((cellData, index) => (
@@ -305,7 +323,7 @@ const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
               changeExtraDay(i, value);
             }}
             onBlur={(e) => {
-              saveExtraDay(i, tableData[i].extra_day);
+              saveExtraDay(i, tableData[i].group_id, tableData[i].extra_day);
             }}
           />
         </View>
@@ -345,6 +363,7 @@ const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
       <SelectPriceGroupModal
         isModalVisible={isSetPriceGroupVisible}
         tableId={tableId}
+        setUpdatePointTrigger={setUpdatePointTrigger}
         closeModal={closeSelectPriceGroupModal}
       />
 

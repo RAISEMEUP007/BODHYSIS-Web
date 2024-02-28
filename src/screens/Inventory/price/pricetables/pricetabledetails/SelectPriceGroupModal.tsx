@@ -20,7 +20,7 @@ import { selectPriceGroupModalStyle } from './styles/SelectPriceGroupModalStyle'
 import { TextMediumSize } from '../../../../../common/constants/Fonts';
 import { getPriceGroupActiveDataByTableId, setActiveGroup } from '../../../../../api/Price';
 
-const SelectPriceGroupModal = ({ isModalVisible, tableId, closeModal }) => {
+const SelectPriceGroupModal = ({ isModalVisible, tableId, setUpdatePointTrigger, closeModal }) => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -56,6 +56,7 @@ const SelectPriceGroupModal = ({ isModalVisible, tableId, closeModal }) => {
       switch (status) {
         case 200:
           setUpdatGroupListTrigger(false);
+          setUpdatePointTrigger(true);
           setTableData(jsonRes);
           break;
         case 500:

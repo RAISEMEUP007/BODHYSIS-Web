@@ -14,8 +14,7 @@ export const getTableData = (tableId, callback) => {
   getAPICall('price/gettabledata/' + tableId, callback);
 }
 
-export const setFree = (group, isFree, callback) => {
-  const payload = { group, isFree, };
+export const setFree = (payload, callback) => {
   postAPICall('price/setfree', payload, callback);
 }
 
@@ -29,8 +28,7 @@ export const setPriceData = (groupId, tableId, pointId, value, callback) => {
   postAPICall('price/setpricedata', payload, callback);
 }
 
-export const setExtraDay = (group, extraDay, callback) => {
-  const payload = { group, extraDay, };
+export const setExtraDay = (payload, callback) => {
   postAPICall('price/setextraday', payload, callback);
 }
 
