@@ -9,17 +9,17 @@ import {
   Platform,
 } from 'react-native';
 
-import { updateGroup } from '../../../api/Price';
-import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
-import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
-import ModalBody from '../../../common/components/basicmodal/ModalBody';
-import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
-import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { createGroup } from '../../../../api/Price';
+import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
+import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
+import ModalBody from '../../../../common/components/basicmodal/ModalBody';
+import ModalFooter from '../../../../common/components/basicmodal/ModalFooter';
+import { msgStr } from '../../../../common/constants/Message';
+import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 
 import { priceModalstyles } from './styles/PriceModalStyle';
 
-const UpdateGroupModal = ({
+const CreateGroupModal = ({
   isModalVisible,
   groupName,
   setUpdateGroupTrigger,
@@ -51,14 +51,11 @@ const UpdateGroupModal = ({
     if (!_groupName.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
-    } else if (groupName == _groupName) {
-      closeModal();
-      return;
     }
 
     setIsLoading(true);
 
-    updateGroup(groupName, _groupName, (jsonRes, status, error) => {
+    createGroup(_groupName, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           showAlert('success', jsonRes.message);
@@ -97,7 +94,7 @@ const UpdateGroupModal = ({
       }}
     >
       <BasicModalContainer>
-        <ModalHeader label={'Update price group'} closeModal={closeModal} />
+        <ModalHeader label={'Create price group'} closeModal={closeModal} />
         <ModalBody>
           <TextInput
             style={styles.input}
@@ -112,7 +109,7 @@ const UpdateGroupModal = ({
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={handleAddButtonClick}>
-            <Text style={styles.addButton}>Update</Text>
+            <Text style={styles.addButton}>Add</Text>
           </TouchableOpacity>
         </ModalFooter>
       </BasicModalContainer>
@@ -127,4 +124,4 @@ const UpdateGroupModal = ({
 
 const styles = priceModalstyles;
 
-export default UpdateGroupModal;
+export default CreateGroupModal;

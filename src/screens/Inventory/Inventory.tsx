@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 
@@ -9,12 +10,10 @@ import Seasons from './seasons/Seasons';
 import Brands from './brands/Brands';
 import Products from './product/products/Products';
 import ProductCategories from './product/productcategories/ProductCategories';
-import CreateReservation from '../reservations/CreateReservation';
-import { CreateReservationDetails } from '../reservations/CreateReservationDetails';
 import ProductFamilies from './product/productfamilies/ProductFamilies';
 import ProductLines from './product/productlines/ProductLines';
-import { ScrollView } from 'react-native-gesture-handler';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
+import PriceGroupLists from './price/pricegrouplist/PriceGroupList';
 
 const Inventory = ({ navigation, initalItem = null }) => {
   const [selectedItem, setSelectedItem] = useState(initalItem);
@@ -39,6 +38,8 @@ const Inventory = ({ navigation, initalItem = null }) => {
         return <PriceTables navigation={navigation} openInventory={handleItemClick} />;
       case 'Price Logic':
         return <PriceLogic navigation={navigation} openInventory={handleItemClick} />;
+      case 'Price Group':
+        return <PriceGroupLists navigation={navigation} openInventory={handleItemClick} />;
       case 'Seasons':
         return <Seasons navigation={navigation} openInventory={handleItemClick} />;
       case 'Brands':
@@ -86,7 +87,8 @@ const Inventory = ({ navigation, initalItem = null }) => {
             sectionTitle="Price Management"
             items={[
               { title: 'Price Tables', icon: 'table' },
-              { title: 'Price Logic', icon: 'table' },
+              { title: 'Price Logic', icon: 'funnel-dollar' },
+              { title: 'Price Group', icon: 'coins' },
               { title: 'Seasons', icon: 'tree' },
               { title: 'Brands', icon: 'tags' },
             ]}

@@ -14,7 +14,10 @@ export const baseGetAPICall = async (route, headers, callback) => {
         callback(jsonRes, response.status, null);
       }
     }else{
-      callback(null, response.status, response.statusText);
+      const jsonRes = await response.clone().json();
+      if(jsonRes){
+        callback(jsonRes, response.status, response.statusText);
+      }else callback(null, response.status, response.statusText);
     }
     
     return response;
@@ -44,7 +47,10 @@ export const basePostAPICall = async (route, headers, body, callback) => {
         callback(jsonRes, response.status, null);
       }
     }else{
-      callback(null, response.status, response.statusText);
+      const jsonRes = await response.clone().json();
+      if(jsonRes){
+        callback(jsonRes, response.status, response.statusText);
+      }else callback(null, response.status, response.statusText);
     }
     
     return response;

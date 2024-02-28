@@ -398,7 +398,6 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
 
           <UpdateGroupModal
             isModalVisible={isUpdateGroupModalVisible}
-            tableId={tableId}
             groupName={groupName}
             setUpdateGroupTrigger={setUpdateGroupTrigger}
             closeModal={closeUpdateGroupModal}
