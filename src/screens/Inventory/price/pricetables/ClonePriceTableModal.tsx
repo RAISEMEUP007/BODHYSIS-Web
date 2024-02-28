@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Text,
   TextInput,
@@ -9,27 +9,29 @@ import {
   Platform,
 } from 'react-native';
 
-import { updateGroup } from '../../../api/Price';
-import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
-import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
-import ModalBody from '../../../common/components/basicmodal/ModalBody';
-import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
-import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { clonePriceTableCell } from '../../../../api/Price';
+import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
+import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
+import ModalBody from '../../../../common/components/basicmodal/ModalBody';
+import ModalFooter from '../../../../common/components/basicmodal/ModalFooter';
+import { msgStr } from '../../../../common/constants/Message';
+import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 
-import { priceModalstyles } from './styles/PriceModalStyle';
+import { priceModalstyles } from './styles/PriceTableModalStyle';
 
-const UpdateGroupModal = ({
+const ClonePriceTableModal = ({
+  cloneSource,
   isModalVisible,
-  groupName,
-  setUpdateGroupTrigger,
+  setUpdatePriceTableTrigger,
   closeModal,
 }) => {
+  const inputRef = useRef(null);
+
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const [_groupName, setGroupname] = useState(groupName);
+  const [_priceTable, setPriceTable] = useState('');
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -47,22 +49,25 @@ const UpdateGroupModal = ({
     }
   }, [closeModal]);
 
-  const handleAddButtonClick = () => {
-    if (!_groupName.trim()) {
+  useEffect(() => {
+    if (isModalVisible && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isModalVisible]);
+
+  const handleCloneButtonClick = () => {
+    if (!_priceTable.trim()) {
       setValidMessage(msgStr('emptyField'));
-      return;
-    } else if (groupName == _groupName) {
-      closeModal();
       return;
     }
 
     setIsLoading(true);
 
-    updateGroup(groupName, _groupName, (jsonRes, status, error) => {
+    clonePriceTableCell(cloneSource.id, _priceTable, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           showAlert('success', jsonRes.message);
-          setUpdateGroupTrigger(true);
+          setUpdatePriceTableTrigger(true);
           closeModal();
           break;
         case 409:
@@ -79,7 +84,7 @@ const UpdateGroupModal = ({
   };
 
   const checkInput = () => {
-    if (!_groupName.trim()) {
+    if (!_priceTable.trim()) {
       setValidMessage(msgStr('emptyField'));
     } else {
       setValidMessage('');
@@ -93,26 +98,27 @@ const UpdateGroupModal = ({
       visible={isModalVisible}
       onShow={() => {
         setValidMessage('');
-        setGroupname(groupName);
+        setPriceTable('');
       }}
     >
       <BasicModalContainer>
-        <ModalHeader label={'Update price group'} closeModal={closeModal} />
+        <ModalHeader label={'Copy ' + cloneSource.table_name} closeModal={closeModal} />
         <ModalBody>
           <TextInput
+            ref={inputRef}
             style={styles.input}
-            onChangeText={setGroupname}
-            value={_groupName}
-            placeholder="Price group name"
+            onChangeText={setPriceTable}
+            value={_priceTable}
+            placeholder={'New Table Name'}
             placeholderTextColor="#ccc"
-            onSubmitEditing={handleAddButtonClick}
+            onSubmitEditing={handleCloneButtonClick}
             onBlur={checkInput}
           />
           {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
         </ModalBody>
         <ModalFooter>
-          <TouchableOpacity onPress={handleAddButtonClick}>
-            <Text style={styles.addButton}>Update</Text>
+          <TouchableOpacity onPress={handleCloneButtonClick}>
+            <Text style={styles.addButton}>Copy</Text>
           </TouchableOpacity>
         </ModalFooter>
       </BasicModalContainer>
@@ -127,4 +133,4 @@ const UpdateGroupModal = ({
 
 const styles = priceModalstyles;
 
-export default UpdateGroupModal;
+export default ClonePriceTableModal;

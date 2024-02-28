@@ -9,22 +9,17 @@ import {
   Platform,
 } from 'react-native';
 
-import { clonePriceTableCell } from '../../../api/Price';
-import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
-import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
-import ModalBody from '../../../common/components/basicmodal/ModalBody';
-import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
-import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { savePriceTableCell } from '../../../../api/Price';
+import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
+import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
+import ModalBody from '../../../../common/components/basicmodal/ModalBody';
+import ModalFooter from '../../../../common/components/basicmodal/ModalFooter';
+import { msgStr } from '../../../../common/constants/Message';
+import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 
 import { priceModalstyles } from './styles/PriceTableModalStyle';
 
-const ClonePriceTableModal = ({
-  cloneSource,
-  isModalVisible,
-  setUpdatePriceTableTrigger,
-  closeModal,
-}) => {
+const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeModal }) => {
   const inputRef = useRef(null);
 
   const { showAlert } = useAlertModal();
@@ -55,7 +50,7 @@ const ClonePriceTableModal = ({
     }
   }, [isModalVisible]);
 
-  const handleCloneButtonClick = () => {
+  const handleAddButtonClick = () => {
     if (!_priceTable.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
@@ -63,7 +58,7 @@ const ClonePriceTableModal = ({
 
     setIsLoading(true);
 
-    clonePriceTableCell(cloneSource.id, _priceTable, (jsonRes, status, error) => {
+    savePriceTableCell(-1, 'table_name', _priceTable, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           showAlert('success', jsonRes.message);
@@ -102,23 +97,23 @@ const ClonePriceTableModal = ({
       }}
     >
       <BasicModalContainer>
-        <ModalHeader label={'Copy ' + cloneSource.table_name} closeModal={closeModal} />
+        <ModalHeader label={'Price Table'} closeModal={closeModal} />
         <ModalBody>
           <TextInput
             ref={inputRef}
             style={styles.input}
             onChangeText={setPriceTable}
             value={_priceTable}
-            placeholder={'New Table Name'}
+            placeholder="priceTable"
             placeholderTextColor="#ccc"
-            onSubmitEditing={handleCloneButtonClick}
+            onSubmitEditing={handleAddButtonClick}
             onBlur={checkInput}
           />
           {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
         </ModalBody>
         <ModalFooter>
-          <TouchableOpacity onPress={handleCloneButtonClick}>
-            <Text style={styles.addButton}>Copy</Text>
+          <TouchableOpacity onPress={handleAddButtonClick}>
+            <Text style={styles.addButton}>Add</Text>
           </TouchableOpacity>
         </ModalFooter>
       </BasicModalContainer>
@@ -133,4 +128,4 @@ const ClonePriceTableModal = ({
 
 const styles = priceModalstyles;
 
-export default ClonePriceTableModal;
+export default AddPriceTableModal;

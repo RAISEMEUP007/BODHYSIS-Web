@@ -4,10 +4,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 
-import PriceTables from './pricetables/PriceTables';
-import PriceLogic from './pricelogic/PriceLogic';
+import PriceTables from './price/pricetables/PriceTables';
+import PriceLogic from './price/pricelogic/PriceLogic';
 import Seasons from './seasons/Seasons';
-import Brands from './brands/Brands';
+import Brands from './price/brands/Brands';
 import Products from './product/products/Products';
 import ProductCategories from './product/productcategories/ProductCategories';
 import ProductFamilies from './product/productfamilies/ProductFamilies';

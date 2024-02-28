@@ -19,29 +19,22 @@ import {
   setExtraDay,
   deleteGroup,
   deletePricePoint,
-  getSeasonsData,
-  getBrandsData,
-} from '../../../api/Price';
-import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
-import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
+} from '../../../../../api/Price';
+import { msgStr } from '../../../../../common/constants/Message';
+import { useAlertModal } from '../../../../../common/hooks/UseAlertModal';
+import { useConfirmModal } from '../../../../../common/hooks/UseConfirmModal';
+import { TextMediumSize } from '../../../../../common/constants/Fonts';
+import BasicLayout from '../../../../../common/components/CustomLayout/BasicLayout';
 
 import { priceGroupStyles } from './styles/PriceGroupStyle';
-import CreateGroupModal from './CreateGroupModal';
 import PricePointModal from './PricePointModal';
-import UpdateGroupModal from './UpdateGroupModal';
-import { TextMediumSize } from '../../../common/constants/Fonts';
 
-const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
+const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
   const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
-  const [groupName, setGroupName] = useState('');
-  const [isGroupModalVisible, setGroupModalVisible] = useState(false);
-  const [isUpdateGroupModalVisible, setUpdateGroupModalVisible] = useState(false);
   const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
   const [updateGroupTrigger, setUpdateGroupTrigger] = useState(false);
   const [updatePointTrigger, setUpdatePointTrigger] = useState(true);
@@ -53,33 +46,16 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
     if (updatePointTrigger == true) {
       getHeader();
       getTable();
-      //getSeasons();
-      //getBrands();
       setUpdatePointTrigger(false);
     }
   }, [updatePointTrigger]);
 
   useEffect(() => {
     if (updateGroupTrigger == true) {
-      // getSeasons();
-      // getBrands();
       getTable();
     }
   }, [updateGroupTrigger]);
 
-  const openGroupModal = () => {
-    setGroupModalVisible(true);
-  };
-  const closeGroupModal = () => {
-    setGroupModalVisible(false);
-  };
-  const openUpdateGroupModal = (group) => {
-    setGroupName(group);
-    setUpdateGroupModalVisible(true);
-  };
-  const closeUpdateGroupModal = () => {
-    setUpdateGroupModalVisible(false);
-  };
   const openPriceModal = () => {
     setAddPriceModalVisible(true);
   };
@@ -132,40 +108,6 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
         case 200:
           setTableData(jsonRes);
           setUpdateGroupTrigger(false);
-          break;
-        case 500:
-          showAlert('error', msgStr('serverError'));
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
-      }
-    });
-  };
-
-  const getSeasons = () => {
-    getSeasonsData((jsonRes, status, error) => {
-      switch (status) {
-        case 200:
-          // setSeasonData(jsonRes);
-          break;
-        case 500:
-          showAlert('error', msgStr('serverError'));
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
-      }
-    });
-  };
-
-  const getBrands = () => {
-    getBrandsData((jsonRes, status, error) => {
-      switch (status) {
-        case 200:
-          // setBrandData(jsonRes);
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -303,7 +245,7 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
             <View>
               <TouchableOpacity
                 onPress={() => {
-                  openUpdateGroupModal(i);
+                  // openUpdateGroupModal(i);
                 }}
               >
                 <FontAwesome5
@@ -372,7 +314,7 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
       <ScrollView horizontal={true}>
         <View style={styles.container}>
           <View style={styles.toolbar}>
-            <TouchableHighlight style={styles.button} onPress={openGroupModal}>
+            <TouchableHighlight style={styles.button} onPress={()=>{}}>
               <Text style={styles.buttonText}>Create price group</Text>
             </TouchableHighlight>
             <TouchableHighlight style={styles.button} onPress={openPriceModal}>
@@ -388,21 +330,6 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
             </View>
           </View>
 
-          <CreateGroupModal
-            isModalVisible={isGroupModalVisible}
-            tableId={tableId}
-            groupName={''}
-            setUpdateGroupTrigger={setUpdateGroupTrigger}
-            closeModal={closeGroupModal}
-          />
-
-          <UpdateGroupModal
-            isModalVisible={isUpdateGroupModalVisible}
-            groupName={groupName}
-            setUpdateGroupTrigger={setUpdateGroupTrigger}
-            closeModal={closeUpdateGroupModal}
-          />
-
           <PricePointModal
             isModalVisible={isAddPriceModalVisible}
             tableId={tableId}
@@ -417,4 +344,4 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
 
 const styles = priceGroupStyles;
 
-export default PriceGroup;
+export default PriceTableDetails;

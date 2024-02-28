@@ -92,7 +92,7 @@ const PriceGroupLists = ({ navigation, openInventory }) => {
       tableData.map((item, index) => {
         rows.push(
           <View key={index} style={styles.tableRow}>
-            <View style={[styles.cell, { width: 400 }]}>
+            <View style={[styles.cell, { width: 250 }]}>
               <Text>{item.price_group}</Text>
             </View>
             <View style={[styles.cell, { width: 400 }]}>
@@ -142,7 +142,7 @@ const PriceGroupLists = ({ navigation, openInventory }) => {
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader, { width: 400 }]}>{'Price group'}</Text>
+              <Text style={[styles.columnHeader, { width: 250 }]}>{'Price group'}</Text>
               <Text style={[styles.columnHeader, { width: 400 }]}>{'Description'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>

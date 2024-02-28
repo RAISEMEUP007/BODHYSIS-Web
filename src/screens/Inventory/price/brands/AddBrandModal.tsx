@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   TextInput,
@@ -9,24 +9,22 @@ import {
   Platform,
 } from 'react-native';
 
-import { savePriceTableCell } from '../../../api/Price';
-import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
-import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
-import ModalBody from '../../../common/components/basicmodal/ModalBody';
-import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
-import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { saveBrandCell } from '../../../../api/Price';
+import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
+import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
+import ModalBody from '../../../../common/components/basicmodal/ModalBody';
+import ModalFooter from '../../../../common/components/basicmodal/ModalFooter';
+import { msgStr } from '../../../../common/constants/Message';
+import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 
-import { priceModalstyles } from './styles/PriceTableModalStyle';
+import { priceModalstyles } from './styles/BrandModalStyle';
 
-const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeModal }) => {
-  const inputRef = useRef(null);
-
+const AddBrandModal = ({ isModalVisible, setUpdateBrandTrigger, closeModal }) => {
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const [_priceTable, setPriceTable] = useState('');
+  const [_brand, setBrand] = useState('');
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -44,25 +42,19 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
     }
   }, [closeModal]);
 
-  useEffect(() => {
-    if (isModalVisible && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isModalVisible]);
-
   const handleAddButtonClick = () => {
-    if (!_priceTable.trim()) {
+    if (!_brand.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
     }
 
     setIsLoading(true);
 
-    savePriceTableCell(-1, 'table_name', _priceTable, (jsonRes, status, error) => {
+    saveBrandCell(-1, 'brand', _brand, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           showAlert('success', jsonRes.message);
-          setUpdatePriceTableTrigger(true);
+          setUpdateBrandTrigger(true);
           closeModal();
           break;
         case 409:
@@ -79,7 +71,7 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
   };
 
   const checkInput = () => {
-    if (!_priceTable.trim()) {
+    if (!_brand.trim()) {
       setValidMessage(msgStr('emptyField'));
     } else {
       setValidMessage('');
@@ -93,18 +85,17 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
       visible={isModalVisible}
       onShow={() => {
         setValidMessage('');
-        setPriceTable('');
+        setBrand('');
       }}
     >
       <BasicModalContainer>
-        <ModalHeader label={'Price Table'} closeModal={closeModal} />
+        <ModalHeader label={'Brand'} closeModal={closeModal} />
         <ModalBody>
           <TextInput
-            ref={inputRef}
             style={styles.input}
-            onChangeText={setPriceTable}
-            value={_priceTable}
-            placeholder="priceTable"
+            onChangeText={setBrand}
+            value={_brand}
+            placeholder="brand"
             placeholderTextColor="#ccc"
             onSubmitEditing={handleAddButtonClick}
             onBlur={checkInput}
@@ -128,4 +119,4 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
 
 const styles = priceModalstyles;
 
-export default AddPriceTableModal;
+export default AddBrandModal;

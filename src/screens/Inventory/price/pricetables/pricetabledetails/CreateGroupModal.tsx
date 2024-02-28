@@ -8,25 +8,29 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 
-import { createPricePoint } from '../../../api/Price';
-import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
-import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
-import ModalBody from '../../../common/components/basicmodal/ModalBody';
-import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
-import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { createGroup } from '../../../../../api/Price';
+import BasicModalContainer from '../../../../../common/components/basicmodal/BasicModalContainer';
+import ModalHeader from '../../../../../common/components/basicmodal/ModalHeader';
+import ModalBody from '../../../../../common/components/basicmodal/ModalBody';
+import ModalFooter from '../../../../../common/components/basicmodal/ModalFooter';
+import { msgStr } from '../../../../../common/constants/Message';
+import { useAlertModal } from '../../../../../common/hooks/UseAlertModal';
 
 import { priceModalstyles } from './styles/PriceModalStyle';
 
-const PricePointModal = ({ isModalVisible, tableId, setUpdatePointTrigger, closeModal }) => {
+const CreateGroupModal = ({
+  isModalVisible,
+  tableId,
+  groupName,
+  setUpdateGroupTrigger,
+  closeModal,
+}) => {
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const [duration, setDuration] = useState('');
-  const [selectedOption, setSelectedOption] = useState('Hour(s)');
+  const [_groupName, setGroupname] = useState(groupName);
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -45,25 +49,25 @@ const PricePointModal = ({ isModalVisible, tableId, setUpdatePointTrigger, close
   }, [closeModal]);
 
   const handleAddButtonClick = () => {
-    if (!duration.trim()) {
+    if (!_groupName.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
     }
 
     setIsLoading(true);
 
-    createPricePoint(duration, selectedOption, tableId, (jsonRes, status, error) => {
+    createGroup(_groupName, tableId, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           showAlert('success', jsonRes.message);
-          setUpdatePointTrigger(true);
+          setUpdateGroupTrigger(true);
           closeModal();
           break;
         case 409:
           setValidMessage(jsonRes.error);
           break;
         default:
-          if (jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           closeModal();
           break;
@@ -73,7 +77,7 @@ const PricePointModal = ({ isModalVisible, tableId, setUpdatePointTrigger, close
   };
 
   const checkInput = () => {
-    if (!duration.trim()) {
+    if (!_groupName.trim()) {
       setValidMessage(msgStr('emptyField'));
     } else {
       setValidMessage('');
@@ -81,28 +85,28 @@ const PricePointModal = ({ isModalVisible, tableId, setUpdatePointTrigger, close
   };
 
   return (
-    <Modal animationType="none" transparent={true} visible={isModalVisible}>
+    <Modal
+      animationType="none"
+      transparent={true}
+      visible={isModalVisible}
+      onShow={() => {
+        setValidMessage('');
+        setGroupname(groupName);
+      }}
+    >
       <BasicModalContainer>
-        <ModalHeader label={'Add Duration'} closeModal={closeModal} />
+        <ModalHeader label={'Create price group'} closeModal={closeModal} />
         <ModalBody>
           <TextInput
             style={styles.input}
-            onChangeText={setDuration}
-            value={duration}
-            placeholder="Duration"
+            onChangeText={setGroupname}
+            value={_groupName}
+            placeholder="Price group name"
             placeholderTextColor="#ccc"
+            onSubmitEditing={handleAddButtonClick}
             onBlur={checkInput}
           />
           {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
-          <Picker
-            selectedValue={selectedOption}
-            style={styles.select}
-            onValueChange={(itemValue, itemIndex) => setSelectedOption(itemValue)}
-          >
-            <Picker.Item label="Hours(s)" value="Hours(s)" />
-            <Picker.Item label="Day(s)" value="Day(s)" />
-            <Picker.Item label="Week(s)" value="Week(s)" />
-          </Picker>
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={handleAddButtonClick}>
@@ -121,4 +125,4 @@ const PricePointModal = ({ isModalVisible, tableId, setUpdatePointTrigger, close
 
 const styles = priceModalstyles;
 
-export default PricePointModal;
+export default CreateGroupModal;

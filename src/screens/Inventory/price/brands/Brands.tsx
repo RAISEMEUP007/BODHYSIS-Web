@@ -10,16 +10,16 @@ import {
 } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { getBrandsData, saveBrandCell, deleteBrand } from '../../../api/Price';
-import { msgStr } from '../../../common/constants/Message';
-import { TextMediumSize } from '../../../common/constants/Fonts';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
+import { getBrandsData, saveBrandCell, deleteBrand } from '../../../../api/Price';
+import { msgStr } from '../../../../common/constants/Message';
+import { TextMediumSize } from '../../../../common/constants/Fonts';
+import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
+import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
 
 import { brandsStyle } from './styles/BrandsStyle';
 import AddBrandModal from './AddBrandModal';
-import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
-import StoreDetails from '../../settings/storedetails/StoreDetails';
+import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout';
+import StoreDetails from '../../../settings/storedetails/StoreDetails';
 
 const Brands = ({ navigation, openInventory }) => {
   const screenHeight = Dimensions.get('window').height;
