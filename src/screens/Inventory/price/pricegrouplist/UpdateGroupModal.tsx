@@ -9,22 +9,27 @@ import {
   Platform,
 } from 'react-native';
 
-import { saveBrandCell } from '../../../api/Price';
-import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
-import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
-import ModalBody from '../../../common/components/basicmodal/ModalBody';
-import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
-import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { updateGroup } from '../../../../api/Price';
+import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
+import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
+import ModalBody from '../../../../common/components/basicmodal/ModalBody';
+import ModalFooter from '../../../../common/components/basicmodal/ModalFooter';
+import { msgStr } from '../../../../common/constants/Message';
+import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 
-import { priceModalstyles } from './styles/BrandModalStyle';
+import { priceModalstyles } from './styles/PriceModalStyle';
 
-const AddBrandModal = ({ isModalVisible, setUpdateBrandTrigger, closeModal }) => {
+const UpdateGroupModal = ({
+  isModalVisible,
+  groupName,
+  setUpdateGroupTrigger,
+  closeModal,
+}) => {
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const [_brand, setBrand] = useState('');
+  const [_groupName, setGroupname] = useState(groupName);
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -43,18 +48,21 @@ const AddBrandModal = ({ isModalVisible, setUpdateBrandTrigger, closeModal }) =>
   }, [closeModal]);
 
   const handleAddButtonClick = () => {
-    if (!_brand.trim()) {
+    if (!_groupName.trim()) {
       setValidMessage(msgStr('emptyField'));
+      return;
+    } else if (groupName == _groupName) {
+      closeModal();
       return;
     }
 
     setIsLoading(true);
 
-    saveBrandCell(-1, 'brand', _brand, (jsonRes, status, error) => {
+    updateGroup(groupName, _groupName, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           showAlert('success', jsonRes.message);
-          setUpdateBrandTrigger(true);
+          setUpdateGroupTrigger(true);
           closeModal();
           break;
         case 409:
@@ -71,7 +79,7 @@ const AddBrandModal = ({ isModalVisible, setUpdateBrandTrigger, closeModal }) =>
   };
 
   const checkInput = () => {
-    if (!_brand.trim()) {
+    if (!_groupName.trim()) {
       setValidMessage(msgStr('emptyField'));
     } else {
       setValidMessage('');
@@ -85,17 +93,17 @@ const AddBrandModal = ({ isModalVisible, setUpdateBrandTrigger, closeModal }) =>
       visible={isModalVisible}
       onShow={() => {
         setValidMessage('');
-        setBrand('');
+        setGroupname(groupName);
       }}
     >
       <BasicModalContainer>
-        <ModalHeader label={'Brand'} closeModal={closeModal} />
+        <ModalHeader label={'Update price group'} closeModal={closeModal} />
         <ModalBody>
           <TextInput
             style={styles.input}
-            onChangeText={setBrand}
-            value={_brand}
-            placeholder="brand"
+            onChangeText={setGroupname}
+            value={_groupName}
+            placeholder="Price group name"
             placeholderTextColor="#ccc"
             onSubmitEditing={handleAddButtonClick}
             onBlur={checkInput}
@@ -104,7 +112,7 @@ const AddBrandModal = ({ isModalVisible, setUpdateBrandTrigger, closeModal }) =>
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={handleAddButtonClick}>
-            <Text style={styles.addButton}>Add</Text>
+            <Text style={styles.addButton}>Update</Text>
           </TouchableOpacity>
         </ModalFooter>
       </BasicModalContainer>
@@ -119,4 +127,4 @@ const AddBrandModal = ({ isModalVisible, setUpdateBrandTrigger, closeModal }) =>
 
 const styles = priceModalstyles;
 
-export default AddBrandModal;
+export default UpdateGroupModal;

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { TextSmallSize } from '../../../../common/constants/Fonts';
+import { TextSmallSize } from '../../../../../common/constants/Fonts';
 
 export const priceModalstyles = StyleSheet.create({
   input: {

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { TextMediumSize, TextSmallSize } from '../../../../common/constants/Fonts';
-import { TextdefaultSize } from '../../../../common/constants/Fonts';
+import { TextMediumSize, TextSmallSize } from '../../../../../../common/constants/Fonts';
+import { TextdefaultSize } from '../../../../../../common/constants/Fonts';
 
 export const priceGroupStyles = StyleSheet.create({
   container: {

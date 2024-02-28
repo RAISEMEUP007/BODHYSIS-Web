@@ -9,28 +9,22 @@ import {
   Platform,
 } from 'react-native';
 
-import { updateGroup } from '../../../api/Price';
-import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
-import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
-import ModalBody from '../../../common/components/basicmodal/ModalBody';
-import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
-import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { saveBrandCell } from '../../../../api/Price';
+import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
+import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
+import ModalBody from '../../../../common/components/basicmodal/ModalBody';
+import ModalFooter from '../../../../common/components/basicmodal/ModalFooter';
+import { msgStr } from '../../../../common/constants/Message';
+import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 
-import { priceModalstyles } from './styles/PriceModalStyle';
+import { priceModalstyles } from './styles/BrandModalStyle';
 
-const UpdateGroupModal = ({
-  isModalVisible,
-  tableId,
-  groupName,
-  setUpdateGroupTrigger,
-  closeModal,
-}) => {
+const AddBrandModal = ({ isModalVisible, setUpdateBrandTrigger, closeModal }) => {
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const [_groupName, setGroupname] = useState(groupName);
+  const [_brand, setBrand] = useState('');
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -49,21 +43,18 @@ const UpdateGroupModal = ({
   }, [closeModal]);
 
   const handleAddButtonClick = () => {
-    if (!_groupName.trim()) {
+    if (!_brand.trim()) {
       setValidMessage(msgStr('emptyField'));
-      return;
-    } else if (groupName == _groupName) {
-      closeModal();
       return;
     }
 
     setIsLoading(true);
 
-    updateGroup(groupName, _groupName, tableId, (jsonRes, status, error) => {
+    saveBrandCell(-1, 'brand', _brand, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           showAlert('success', jsonRes.message);
-          setUpdateGroupTrigger(true);
+          setUpdateBrandTrigger(true);
           closeModal();
           break;
         case 409:
@@ -80,7 +71,7 @@ const UpdateGroupModal = ({
   };
 
   const checkInput = () => {
-    if (!_groupName.trim()) {
+    if (!_brand.trim()) {
       setValidMessage(msgStr('emptyField'));
     } else {
       setValidMessage('');
@@ -94,17 +85,17 @@ const UpdateGroupModal = ({
       visible={isModalVisible}
       onShow={() => {
         setValidMessage('');
-        setGroupname(groupName);
+        setBrand('');
       }}
     >
       <BasicModalContainer>
-        <ModalHeader label={'Update price group'} closeModal={closeModal} />
+        <ModalHeader label={'Brand'} closeModal={closeModal} />
         <ModalBody>
           <TextInput
             style={styles.input}
-            onChangeText={setGroupname}
-            value={_groupName}
-            placeholder="Price group name"
+            onChangeText={setBrand}
+            value={_brand}
+            placeholder="brand"
             placeholderTextColor="#ccc"
             onSubmitEditing={handleAddButtonClick}
             onBlur={checkInput}
@@ -113,7 +104,7 @@ const UpdateGroupModal = ({
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={handleAddButtonClick}>
-            <Text style={styles.addButton}>Update</Text>
+            <Text style={styles.addButton}>Add</Text>
           </TouchableOpacity>
         </ModalFooter>
       </BasicModalContainer>
@@ -128,4 +119,4 @@ const UpdateGroupModal = ({
 
 const styles = priceModalstyles;
 
-export default UpdateGroupModal;
+export default AddBrandModal;

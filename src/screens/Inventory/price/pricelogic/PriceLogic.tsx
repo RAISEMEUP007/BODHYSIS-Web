@@ -30,12 +30,12 @@ import {
   getSeasonsData,
   getBrandsData,
   getPriceTablesData,
-} from '../../../api/Price';
-import { msgStr } from '../../../common/constants/Message';
-import { TextMediumSize } from '../../../common/constants/Fonts';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
-import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
+} from '../../../../api/Price';
+import { msgStr } from '../../../../common/constants/Message';
+import { TextMediumSize } from '../../../../common/constants/Fonts';
+import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
+import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
+import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout';
 
 import { priceLogicStyle } from './styles/PriceLogicStyle';
 

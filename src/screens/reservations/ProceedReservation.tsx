@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, ScrollView, TouchableOpacity, Text, TouchableHighlight, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { v4 as uuidv4 } from 'uuid';
 
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
-import { getReservationDetail, updateReservation } from '../../api/Reservation';
+import { deleteReservationItem, getReservationDetail, updateReservation } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
 
 import { proceedReservationStyle } from './styles/ProceedReservationStyle';
@@ -36,8 +37,10 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   const [isAddTransactionModalVisible, setAddTransactionModalVisible] = useState(false);
   const [headerData, setHeaderData] = useState([]);
   const [discountCodes, setDiscountCodes] = useState([]);
+  const [nextStageProcessingStatus, setNextStageProcessingStatus] = useState<boolean>(false);
 
-  const openAddTransactionModal = () => {
+  const openAddTransactionModal = (nextStageProcessingStatus) => {
+    setNextStageProcessingStatus(nextStageProcessingStatus);
     setAddTransactionModalVisible(true);
   };
   const closeAddTransactionModal = () => {
@@ -73,28 +76,41 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   };
 
   const addReservationItem = async (productLine, quantity) => {
-    const equipment = { ...productLine, quantity };
-    const newData = [...equipmentData, equipment];
+    const newItem = {
+      ...productLine,
+      id: parseInt(uuidv4(), 16),
+      reservation_id: reservationInfo.id,
+      line_id: productLine.id,
+      price_group_id: productLine.price_group_id,
+      quantity: quantity
+    }
+    const newData = [...equipmentData, newItem];
     const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
     saveReservationItems(cacluatedPricedData, ()=>{
-      setEquipmentData(cacluatedPricedData);
       setUpdateCount(prev => prev + 1);
     })
   }
+  // console.log(equipmentData);
+  const updateReservationItem = async (oldLine, newLine, quantity) => {
+    const newItem = {
+      ...newLine,
+      id: oldLine.id,
+      reservation_id: oldLine.reservation_id,
+      line_id: newLine.id,
+      price_group_id: newLine.price_group_id,
+      quantity: quantity
+    }
 
-  const updateReservationItem = async (productLine, quantity) => {
-    const newEquipment = { ...productLine, quantity };
     const replaceIndex = editingIndex;
     const newData = equipmentData.map((item, index) => {
       if (index === replaceIndex) {
-        return { ...newEquipment };
+        return { ...newItem };
       }
       return item;
     });
   
     const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
-    saveReservationItems(cacluatedPricedData, ()=>{
-      setEquipmentData(cacluatedPricedData);
+    saveReservationItems(cacluatedPricedData, (jsonRes)=>{
       setUpdateCount(prev => prev + 1);
     })
   }
@@ -102,9 +118,12 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   const removeReservationItem = async (item, index) => {
     showConfirm(msgStr('deleteConfirmStr'), () => {
       const updatedEquipmentData = [...equipmentData.slice(0, index), ...equipmentData.slice(index + 1)];
-      saveReservationItems(updatedEquipmentData, ()=>{
-        setEquipmentData(updatedEquipmentData);
-        setUpdateCount(prev => prev + 1);
+      deleteReservationItem({id:item.id}, (jsonRes, status)=>{
+        if(status == 200){
+          saveReservationItems(updatedEquipmentData, (jsonRes)=>{
+            setUpdateCount(prev => prev + 1);
+          })
+        }
       })
     });
   }
@@ -138,7 +157,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     updateReservation(payload, (jsonRes, status) => {
       switch (status) {
         case 201:
-          callback();
+          callback(jsonRes);
           break;
         default:
           if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
@@ -153,11 +172,19 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
 
     if(reservationInfo.stage > 3) return;
 
+    if(reservationInfo.paid < reservationInfo.total_price){
+      openAddTransactionModal(true);
+    }else processNextStage();
+
+    return;
+  }
+
+  const processNextStage = () => {
     const payload = {
       id: reservationInfo.id,
       stage: (reservationInfo.stage + 1),
     }
-
+    
     updateReservation(payload, (jsonRes, status) => {
       switch (status) {
         case 201:
@@ -170,6 +197,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
           else showAlert('error', msgStr('unknownError'));
           break;
       }
+      setNextStageProcessingStatus(false);
     })
   }
 
@@ -333,14 +361,14 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
           // setContentWidth(width);
         }}>
         <View style={styles.container}>
-          <View 
-          style={{flexDirection:'row'}}           
+          <View
+          style={{flexDirection:'row'}}
             onLayout={(event)=>{
               const { width } = event.nativeEvent.layout;
               setContentWidth(width);
             }}>
             <ReservationMainInfo details={reservationInfo} setUpdateCount={setUpdateCount}/>
-            <ReservationExtensionPanel reservationId={reservationInfo?.id??null} openAddTransactionModal={openAddTransactionModal}/>
+            <ReservationExtensionPanel reservationId={reservationInfo?.id??null} openAddTransactionModal={()=>openAddTransactionModal(false)}/>
           </View>
           <View style={{flexDirection:'row', justifyContent:'space-between', marginVertical:18}}>
             <View style={{flexDirection:'row', alignItems:'center'}}>
@@ -349,7 +377,13 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
                 <View style={[styles.circle, {right:10}]}></View>
                 <Text style={{color:'white', fontWeight:'bold', fontSize:15, fontFamily:'monospace'}}>{convertStageToString(reservationInfo?.stage??null)}</Text>
               </View>
-              <TouchableOpacity style={[styles.nextStageButton]} onPress={confirmNextStage}>
+              <TouchableOpacity 
+                disabled={(reservationInfo && reservationInfo.stage>3)?true:false}
+                style={[
+                  styles.nextStageButton,
+                  (reservationInfo && reservationInfo.stage > 3) && { backgroundColor: '#ccc' }
+                ]}
+                onPress={confirmNextStage}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
                   <Text style={styles.buttonText}>Next stage</Text>
                   <FontAwesome5 name="angle-right" size={18} color="white" style={{marginLeft:10}}/>
@@ -372,7 +406,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
                   <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]} onPress={openAddTransactionModal}>
+              <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]} onPress={()=>openAddTransactionModal(false)}>
                 <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add transaction</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.outLineButton}>
@@ -381,7 +415,10 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
             </View>
           </View>
           <View style={[styles.reservationRow, {justifyContent:'flex-end'}]}>
-            <TouchableHighlight style={[styles.addItemButton]} onPress={openAddReservationItemModal}>
+            <TouchableHighlight 
+              disabled={(reservationInfo && reservationInfo.stage>1 && true)} 
+              style={[styles.addItemButton, (reservationInfo && reservationInfo.stage>1 && {backgroundColor:'#ccc'})]} 
+              onPress={openAddReservationItemModal}>
               <View style={{flexDirection:'row', alignItems:'center'}}>
                 <FontAwesome5 name="plus" size={14} color="white" style={{marginTop:3}}/>
                 <Text style={styles.buttonText}>Add Items</Text>
@@ -404,13 +441,18 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       </ScrollView>
       <AddTransactionModal
         isModalVisible={isAddTransactionModalVisible}
+        nextStageProcessingStatus={nextStageProcessingStatus}
         customerId={customerId}
         reservationInfo = {reservationInfo}
         addCard={openAddCardModal}
         closeModal={closeAddTransactionModal}
-        // onAdded={(paymentMethod, amount)=>{
-        //   // addTransaction(paymentMethod, amount);
-        // }}
+        onAdded={(nextStageProcessingStatus)=>{
+          if(nextStageProcessingStatus) processNextStage();
+        }}
+        continueWithouProcessing={()=>{
+          if(nextStageProcessingStatus) processNextStage();
+          closeAddTransactionModal();
+        }}
       />
       <AddReservationItemModal
         isModalVisible={isAddReservationItemModalVisible}
@@ -421,9 +463,9 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
             addReservationItem(productLine, quantity);
           }
         }}
-        onUpdated={(productLine, quantity)=>{
-          if (productLine) {
-            updateReservationItem(productLine, quantity);
+        onUpdated={(oldLine, newLine, quantity)=>{
+          if (newLine) {
+            updateReservationItem(oldLine, newLine, quantity);
           }
           editReservationItem(null, null);
         }}

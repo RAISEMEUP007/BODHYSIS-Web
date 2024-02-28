@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   TextInput,
@@ -8,25 +8,25 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 
-import { savePriceTableCell } from '../../../api/Price';
-import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
-import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
-import ModalBody from '../../../common/components/basicmodal/ModalBody';
-import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
-import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { createPricePoint } from '../../../../../api/Price';
+import BasicModalContainer from '../../../../../common/components/basicmodal/BasicModalContainer';
+import ModalHeader from '../../../../../common/components/basicmodal/ModalHeader';
+import ModalBody from '../../../../../common/components/basicmodal/ModalBody';
+import ModalFooter from '../../../../../common/components/basicmodal/ModalFooter';
+import { msgStr } from '../../../../../common/constants/Message';
+import { useAlertModal } from '../../../../../common/hooks/UseAlertModal';
 
-import { priceModalstyles } from './styles/PriceTableModalStyle';
+import { priceModalstyles } from './styles/PriceModalStyle';
 
-const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeModal }) => {
-  const inputRef = useRef(null);
-
+const PricePointModal = ({ isModalVisible, tableId, setUpdatePointTrigger, closeModal }) => {
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const [_priceTable, setPriceTable] = useState('');
+  const [duration, setDuration] = useState('');
+  const [selectedOption, setSelectedOption] = useState('Hour(s)');
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -44,32 +44,26 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
     }
   }, [closeModal]);
 
-  useEffect(() => {
-    if (isModalVisible && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isModalVisible]);
-
   const handleAddButtonClick = () => {
-    if (!_priceTable.trim()) {
+    if (!duration.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
     }
 
     setIsLoading(true);
 
-    savePriceTableCell(-1, 'table_name', _priceTable, (jsonRes, status, error) => {
+    createPricePoint(duration, selectedOption, tableId, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           showAlert('success', jsonRes.message);
-          setUpdatePriceTableTrigger(true);
+          setUpdatePointTrigger(true);
           closeModal();
           break;
         case 409:
           setValidMessage(jsonRes.error);
           break;
         default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          if (jsonRes.error) showAlert('error', jsonRes.error);
           else showAlert('error', msgStr('unknownError'));
           closeModal();
           break;
@@ -79,7 +73,7 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
   };
 
   const checkInput = () => {
-    if (!_priceTable.trim()) {
+    if (!duration.trim()) {
       setValidMessage(msgStr('emptyField'));
     } else {
       setValidMessage('');
@@ -87,29 +81,28 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
   };
 
   return (
-    <Modal
-      animationType="none"
-      transparent={true}
-      visible={isModalVisible}
-      onShow={() => {
-        setValidMessage('');
-        setPriceTable('');
-      }}
-    >
+    <Modal animationType="none" transparent={true} visible={isModalVisible}>
       <BasicModalContainer>
-        <ModalHeader label={'Price Table'} closeModal={closeModal} />
+        <ModalHeader label={'Add Duration'} closeModal={closeModal} />
         <ModalBody>
           <TextInput
-            ref={inputRef}
             style={styles.input}
-            onChangeText={setPriceTable}
-            value={_priceTable}
-            placeholder="priceTable"
+            onChangeText={setDuration}
+            value={duration}
+            placeholder="Duration"
             placeholderTextColor="#ccc"
-            onSubmitEditing={handleAddButtonClick}
             onBlur={checkInput}
           />
           {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
+          <Picker
+            selectedValue={selectedOption}
+            style={styles.select}
+            onValueChange={(itemValue, itemIndex) => setSelectedOption(itemValue)}
+          >
+            <Picker.Item label="Hours(s)" value="Hours(s)" />
+            <Picker.Item label="Day(s)" value="Day(s)" />
+            <Picker.Item label="Week(s)" value="Week(s)" />
+          </Picker>
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={handleAddButtonClick}>
@@ -128,4 +121,4 @@ const AddPriceTableModal = ({ isModalVisible, setUpdatePriceTableTrigger, closeM
 
 const styles = priceModalstyles;
 
-export default AddPriceTableModal;
+export default PricePointModal;

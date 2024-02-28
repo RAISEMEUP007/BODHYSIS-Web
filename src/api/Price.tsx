@@ -4,13 +4,17 @@ export const getHeaderData = (tableId, callback) => {
   getAPICall('price/getheaderdata/' + tableId, callback);
 }
 
+export const getPriceGroupActiveDataByTableId = (tableId, callback) => {
+  if(!tableId) tableId = 0;
+  getAPICall('price/getpricegroupactivedatabytableid/' + tableId, callback);
+}
+
 export const getTableData = (tableId, callback) => {
   if(!tableId) tableId = 0;
   getAPICall('price/gettabledata/' + tableId, callback);
 }
 
-export const setFree = (group, isFree, callback) => {
-  const payload = { group, isFree, };
+export const setFree = (payload, callback) => {
   postAPICall('price/setfree', payload, callback);
 }
 
@@ -24,13 +28,16 @@ export const setPriceData = (groupId, tableId, pointId, value, callback) => {
   postAPICall('price/setpricedata', payload, callback);
 }
 
-export const setExtraDay = (group, extraDay, callback) => {
-  const payload = { group, extraDay, };
+export const setExtraDay = (payload, callback) => {
   postAPICall('price/setextraday', payload, callback);
 }
 
 export const getPriceGroupsData = (callback) => {
   getAPICall('price/getpricegroupsdata', callback);
+}
+
+export const setActiveGroup = (paylod, callback) => {
+  postAPICall('price/setactivegroup', paylod, callback);
 }
 
 export const getPriceGroupValue = async (paylod, callback=()=>{}) => {
@@ -41,14 +48,13 @@ export const getPriceDataByGroup = async (paylod, callback=()=>{}) => {
   return await postAPICall('price/getpricedatabygroup', paylod, callback);
 }
 
-export const createGroup = (group, tableId, callback) => {
-  const payload = { group, tableId };
-  console.log(payload);
+export const createGroup = (group, callback) => {
+  const payload = { group };
   postAPICall('price/creategroup', payload, callback);
 }
 
-export const updateGroup = (oldName, newName, tableId, callback) => {
-  const payload = { oldName, newName, tableId };
+export const updateGroup = (oldName, newName, callback) => {
+  const payload = { oldName, newName, };
   postAPICall('price/updategroup', payload, callback);
 }
 
@@ -57,8 +63,8 @@ export const createPricePoint = (duration, durationType, tableId, callback) => {
   postAPICall('price/addpricepoint', payload, callback);
 }
 
-export const deleteGroup = (group, callback) => {
-  const payload = { group };
+export const deleteGroup = (id, callback) => {
+  const payload = { id };
   postAPICall('price/deletegroup', payload, callback);
 }
 

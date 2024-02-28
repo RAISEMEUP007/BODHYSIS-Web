@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { TextMediumSize, TextSmallSize } from '../../../../common/constants/Fonts';
-import { TextdefaultSize } from '../../../../common/constants/Fonts';
+import { TextMediumSize, TextSmallSize } from '../../../../../common/constants/Fonts';
+import { TextdefaultSize } from '../../../../../common/constants/Fonts';
 
 export const priceLogicStyle = StyleSheet.create({
   container: {
@@ -16,12 +16,12 @@ export const priceLogicStyle = StyleSheet.create({
     padding: 6,
     height: 17,
     fontSize: TextdefaultSize,
-    lineHeight: '1.5',
+    lineHeight: 1.5,
     color: '#495057',
     backgroundColor: '#fff',
     backgroundClip: 'padding-box',
     border: '1px solid #ced4da',
-    borderRadius: '.25rem',
+    borderRadius: 10,
     transition: 'border-color .15s ease-in-out, box-shadow 0.15s-in-out',
   },
 

@@ -11,17 +11,16 @@ import {
 } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { getPriceTablesData, savePriceTableCell, deletePriceTable } from '../../../api/Price';
-import { msgStr } from '../../../common/constants/Message';
-import { TextMediumSize } from '../../../common/constants/Fonts';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
-import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
+import { getPriceTablesData, savePriceTableCell, deletePriceTable } from '../../../../api/Price';
+import { msgStr } from '../../../../common/constants/Message';
+import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
+import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
+import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout';
 
 import { priceTablesStyle } from './styles/PriceTablesStyle';
 import AddPriceTableModal from './AddPriceTableModal';
 import ClonePriceTableModal from './ClonePriceTableModal';
-import PriceGroup from '../pricegroup/PriceGroup';
+import PriceTableDetails from './pricetabledetails/PriceTableDetails';
 
 const PriceTables = ({ navigation, openInventory, selectedTableId = null }) => {
   const screenHeight = Dimensions.get('window').height;
@@ -129,7 +128,7 @@ const PriceTables = ({ navigation, openInventory, selectedTableId = null }) => {
 
   if (selectedTable) {
     return (
-      <PriceGroup
+      <PriceTableDetails
         tableId={selectedTable}
         tableName={selectedTableName}
         openPriceTable={openPriceTable}

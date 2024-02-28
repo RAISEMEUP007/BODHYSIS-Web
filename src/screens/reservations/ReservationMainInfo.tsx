@@ -205,6 +205,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           onChange={(date) => onChangeHandler(date)}
           customInput={<CustomInput />}
           minDate={minDate}
+          // disabled={true}
           peekNextMonth
           showMonthDropdown
           showYearDropdown

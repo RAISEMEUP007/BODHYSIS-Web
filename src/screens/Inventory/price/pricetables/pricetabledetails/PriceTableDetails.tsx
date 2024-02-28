@@ -19,73 +19,60 @@ import {
   setExtraDay,
   deleteGroup,
   deletePricePoint,
-  getSeasonsData,
-  getBrandsData,
-} from '../../../api/Price';
-import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
-import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
+  setActiveGroup,
+} from '../../../../../api/Price';
+import { msgStr } from '../../../../../common/constants/Message';
+import { useAlertModal } from '../../../../../common/hooks/UseAlertModal';
+import { useConfirmModal } from '../../../../../common/hooks/UseConfirmModal';
+import { TextMediumSize } from '../../../../../common/constants/Fonts';
+import BasicLayout from '../../../../../common/components/CustomLayout/BasicLayout';
 
 import { priceGroupStyles } from './styles/PriceGroupStyle';
-import CreateGroupModal from './CreateGroupModal';
 import PricePointModal from './PricePointModal';
-import UpdateGroupModal from './UpdateGroupModal';
-import { TextMediumSize } from '../../../common/constants/Fonts';
+import SelectPriceGroupModal from './SelectPriceGroupModal';
 
-const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
+const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
   const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
-
-  const [groupName, setGroupName] = useState('');
-  const [isGroupModalVisible, setGroupModalVisible] = useState(false);
-  const [isUpdateGroupModalVisible, setUpdateGroupModalVisible] = useState(false);
-  const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
+  
   const [updateGroupTrigger, setUpdateGroupTrigger] = useState(false);
   const [updatePointTrigger, setUpdatePointTrigger] = useState(true);
-
+  
   const [headerData, setHeaderData] = useState([]);
   const [tableData, setTableData] = useState({});
-
-  useEffect(() => {
-    if (updatePointTrigger == true) {
-      getHeader();
-      getTable();
-      //getSeasons();
-      //getBrands();
-      setUpdatePointTrigger(false);
-    }
-  }, [updatePointTrigger]);
-
-  useEffect(() => {
-    if (updateGroupTrigger == true) {
-      // getSeasons();
-      // getBrands();
-      getTable();
-    }
-  }, [updateGroupTrigger]);
-
-  const openGroupModal = () => {
-    setGroupModalVisible(true);
-  };
-  const closeGroupModal = () => {
-    setGroupModalVisible(false);
-  };
-  const openUpdateGroupModal = (group) => {
-    setGroupName(group);
-    setUpdateGroupModalVisible(true);
-  };
-  const closeUpdateGroupModal = () => {
-    setUpdateGroupModalVisible(false);
-  };
+  
+  const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
   const openPriceModal = () => {
     setAddPriceModalVisible(true);
   };
   const closePriceModal = () => {
     setAddPriceModalVisible(false);
   };
+
+  const [isSetPriceGroupVisible, setSetPriceGroupVisible] = useState(false);
+
+  const openSelectPriceGroupModal = () => {
+    setSetPriceGroupVisible(true);
+  };
+  const closeSelectPriceGroupModal = () => {
+    setSetPriceGroupVisible(false);
+  };
+
+  useEffect(() => {
+    if (updatePointTrigger == true) {
+      getHeader();
+      getTable();
+      setUpdatePointTrigger(false);
+    }
+  }, [updatePointTrigger]);
+
+  useEffect(() => {
+    if (updateGroupTrigger == true) {
+      getTable();
+    }
+  }, [updateGroupTrigger]);
 
   const changeCellData = (group, index, newVal) => {
     const updatedTableData = { ...tableData };
@@ -144,42 +131,13 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
     });
   };
 
-  const getSeasons = () => {
-    getSeasonsData((jsonRes, status, error) => {
-      switch (status) {
-        case 200:
-          // setSeasonData(jsonRes);
-          break;
-        case 500:
-          showAlert('error', msgStr('serverError'));
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
-      }
-    });
-  };
-
-  const getBrands = () => {
-    getBrandsData((jsonRes, status, error) => {
-      switch (status) {
-        case 200:
-          // setBrandData(jsonRes);
-          break;
-        case 500:
-          showAlert('error', msgStr('serverError'));
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
-      }
-    });
-  };
-
-  const saveFree = (group, isFree) => {
-    setFree(group, isFree, (jsonRes, status, error) => {
+  const saveFree = (group, group_id, isFree) => {
+    const payload = { 
+      table_id : tableId,
+      group_id, 
+      isFree, 
+    };
+    setFree(payload, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           const updatedTableData = { ...tableData };
@@ -218,8 +176,13 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
     });
   };
 
-  const saveExtraDay = (group, extraDay) => {
-    setExtraDay(group, extraDay, (jsonRes, status, error) => {
+  const saveExtraDay = (group, group_id, extraDay) => {
+    const payload = {
+      table_id: tableId,
+      group_id: group_id,
+      extraDay: extraDay,
+    }
+    setExtraDay(payload, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           break;
@@ -249,9 +212,14 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
     });
   };
 
-  const removeGroup = (group) => {
+  const removeGroup = (group_id) => {
+    const payload = {
+      table_id : tableId,
+      group_id,
+      is_active : false,
+    }
     showConfirm(msgStr('deleteConfirmStr'), () => {
-      deleteGroup(group, (jsonRes, status, error) => {
+      setActiveGroup(payload, (jsonRes, status, error) => {
         switch (status) {
           case 200:
             setUpdateGroupTrigger(true);
@@ -265,6 +233,8 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
       });
     });
   };
+
+
 
   const renderTableHeader = () => {
     return (
@@ -301,9 +271,9 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
           <View style={[styles.groupCell]}>
             <Text>{i}</Text>
             <View>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
-                  openUpdateGroupModal(i);
+                  // openUpdateGroupModal(i);
                 }}
               >
                 <FontAwesome5
@@ -312,10 +282,10 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
                   name="pencil-alt"
                   color="black"
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity
                 onPress={() => {
-                  removeGroup(i);
+                  removeGroup( tableData[i].group_id);
                 }}
               >
                 <FontAwesome5
@@ -330,7 +300,7 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
           <View style={[styles.cell, styles.cellcheckbox]}>
             <CheckBox
               value={tableData[i].is_free ? true : false}
-              onValueChange={(newValue) => saveFree(i, newValue)}
+              onValueChange={(newValue) => saveFree(i, tableData[i].group_id, newValue)}
             />
           </View>
           {tableData[i].data.map((cellData, index) => (
@@ -353,7 +323,7 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
               changeExtraDay(i, value);
             }}
             onBlur={(e) => {
-              saveExtraDay(i, tableData[i].extra_day);
+              saveExtraDay(i, tableData[i].group_id, tableData[i].extra_day);
             }}
           />
         </View>
@@ -372,8 +342,8 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
       <ScrollView horizontal={true}>
         <View style={styles.container}>
           <View style={styles.toolbar}>
-            <TouchableHighlight style={styles.button} onPress={openGroupModal}>
-              <Text style={styles.buttonText}>Create price group</Text>
+            <TouchableHighlight style={styles.button} onPress={openSelectPriceGroupModal}>
+              <Text style={styles.buttonText}>Set price group</Text>
             </TouchableHighlight>
             <TouchableHighlight style={styles.button} onPress={openPriceModal}>
               <Text style={styles.buttonText}>Add Duration</Text>
@@ -387,35 +357,26 @@ const PriceGroup = ({ tableId, tableName, openPriceTable }) => {
               </ScrollView>
             </View>
           </View>
-
-          <CreateGroupModal
-            isModalVisible={isGroupModalVisible}
-            tableId={tableId}
-            groupName={''}
-            setUpdateGroupTrigger={setUpdateGroupTrigger}
-            closeModal={closeGroupModal}
-          />
-
-          <UpdateGroupModal
-            isModalVisible={isUpdateGroupModalVisible}
-            tableId={tableId}
-            groupName={groupName}
-            setUpdateGroupTrigger={setUpdateGroupTrigger}
-            closeModal={closeUpdateGroupModal}
-          />
-
-          <PricePointModal
-            isModalVisible={isAddPriceModalVisible}
-            tableId={tableId}
-            setUpdatePointTrigger={setUpdatePointTrigger}
-            closeModal={closePriceModal}
-          />
         </View>
       </ScrollView>
+      
+      <SelectPriceGroupModal
+        isModalVisible={isSetPriceGroupVisible}
+        tableId={tableId}
+        setUpdatePointTrigger={setUpdatePointTrigger}
+        closeModal={closeSelectPriceGroupModal}
+      />
+
+      <PricePointModal
+        isModalVisible={isAddPriceModalVisible}
+        tableId={tableId}
+        setUpdatePointTrigger={setUpdatePointTrigger}
+        closeModal={closePriceModal}
+      />
     </BasicLayout>
   );
 };
 
 const styles = priceGroupStyles;
 
-export default PriceGroup;
+export default PriceTableDetails;

@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
-import { TextMediumSize, TextSmallSize } from '../../../../common/constants/Fonts';
-import { TextdefaultSize } from '../../../../common/constants/Fonts';
+import { TextMediumSize, TextSmallSize } from '../../../../../common/constants/Fonts';
+import { TextdefaultSize } from '../../../../../common/constants/Fonts';
 
-export const priceTablesStyle = StyleSheet.create({
+export const brandsStyle = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
@@ -11,17 +11,9 @@ export const priceTablesStyle = StyleSheet.create({
   },
 
   tableContainer: {
+    borderRadius: 4,
     marginBottom: 16,
-    marginTop: 10,
     overflow: 'hidden',
-    borderTopWidth: 1,
-    borderTopColor: '#bfbfbf',
-    borderLeftWidth: 1,
-    borderLeftColor: '#06685ea3',
-    borderRightWidth: 1,
-    borderRightColor: '#06685ea3',
-    borderBottomWidth: 1,
-    borderBottomColor: '#bfbfbf',
   },
   
   toolbar: {
@@ -54,7 +46,7 @@ export const priceTablesStyle = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ced4da',
     borderRadius: 5,
-    width: 100,
+    width: 150,
     paddingVertical: 5,
     paddingHorizontal: 10,
   },
@@ -65,14 +57,25 @@ export const priceTablesStyle = StyleSheet.create({
     flexDirection: 'column',
   },
   tableHeader: {
+    marginTop: 10,
     flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    borderLeftWidth: 1,
+    borderLeftColor: '#06685ea3',
+    borderRightWidth: 1,
+    borderRightColor: '#06685ea3',
   },
   tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    borderLeftWidth: 1,
+    borderLeftColor: '#06685ea3',
+    borderRightWidth: 1,
+    borderRightColor: '#06685ea3',
   },
   columnHeader: {
     fontWeight: 'bold',
@@ -80,28 +83,20 @@ export const priceTablesStyle = StyleSheet.create({
     alignItems: 'flex-start',
     paddingHorizontal: 14,
     paddingVertical: 8,
-    width: 100,
+    width: 200,
     borderRightWidth: 1,
     borderRightColor: '#ccc',
   },
   cell: {
     position: 'relative',
     padding: 2,
-    width: 100,
+    width: 200,
     alignItems: 'flex-start',
-    justifyContent: 'center',
-    paddingLeft: 6,
   },
   cellInput: {
-    width: "85%",
+    width: 150,
     paddingHorizontal: 12,
     paddingVertical: 6,
-  },
-  categoryCell: {
-    width: 250,
-    paddingHorizontal: 6,
-    paddingVertical: 6,
-    justifyContent: "center",
   },
   focusedCell: {
     borderWidth: 1,
@@ -141,32 +136,5 @@ export const priceTablesStyle = StyleSheet.create({
     justifyContent: 'center',
     textAlign: 'center',
     paddingHorizontal:0
-  },
-  imageCell: {
-    width: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-  },
-  cellImage: { 
-    width: "100%", 
-    height: 50, 
-    resizeMode: 'contain'
-  },
-  familyRow: {
-    marginLeft: 20,
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-    borderLeftWidth: 1,
-    borderLeftColor: '#06685ea3',
-    borderRightWidth: 1,
-    borderRightColor: '#06685ea3',
-  },
-  familyIconCell: {
-    width: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
   },
 });
