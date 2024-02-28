@@ -4,6 +4,11 @@ export const getHeaderData = (tableId, callback) => {
   getAPICall('price/getheaderdata/' + tableId, callback);
 }
 
+export const getPriceGroupActiveDataByTableId = (tableId, callback) => {
+  if(!tableId) tableId = 0;
+  getAPICall('price/getpricegroupactivedatabytableid/' + tableId, callback);
+}
+
 export const getTableData = (tableId, callback) => {
   if(!tableId) tableId = 0;
   getAPICall('price/gettabledata/' + tableId, callback);
@@ -31,6 +36,10 @@ export const setExtraDay = (group, extraDay, callback) => {
 
 export const getPriceGroupsData = (callback) => {
   getAPICall('price/getpricegroupsdata', callback);
+}
+
+export const setActiveGroup = (paylod, callback) => {
+  postAPICall('price/setactivegroup', paylod, callback);
 }
 
 export const getPriceGroupValue = async (paylod, callback=()=>{}) => {

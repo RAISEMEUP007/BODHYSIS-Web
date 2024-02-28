@@ -10,7 +10,6 @@ import Inventory from './Inventory/Inventory';
 import Settings from './settings/Settings';
 import Customers from './customer/customers/Customers';
 import Reservations from './reservations/Reservations';
-import CreateReservation from './reservations/CreateReservation';
 
 const MainDrawer = ({ navigation }) => {
   const { isLargeScreen } = useScreenSize();
@@ -22,7 +21,6 @@ const MainDrawer = ({ navigation }) => {
   };
 
   const ReservationScreen = ({ navigation, route }) => {
-    // console.log(route.params);
     return <Reservations navigation={navigation} initialData={route.params}/>;
   };
 
@@ -63,7 +61,7 @@ const MainDrawer = ({ navigation }) => {
   return (
     <>
       <Drawer.Navigator
-        initialRouteName="Reservation"
+        initialRouteName="Inventory"
         drawerContent={(props) => <DrawerContent {...props} />}
         screenOptions={{
           drawerType: Platform.OS == 'web' && isLargeScreen ? 'permanent' : 'front',

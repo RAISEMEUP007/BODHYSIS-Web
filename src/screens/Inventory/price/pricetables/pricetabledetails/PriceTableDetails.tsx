@@ -28,19 +28,36 @@ import BasicLayout from '../../../../../common/components/CustomLayout/BasicLayo
 
 import { priceGroupStyles } from './styles/PriceGroupStyle';
 import PricePointModal from './PricePointModal';
+import SelectPriceGroupModal from './SelectPriceGroupModal';
 
 const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
   const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
-
-  const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
+  
   const [updateGroupTrigger, setUpdateGroupTrigger] = useState(false);
   const [updatePointTrigger, setUpdatePointTrigger] = useState(true);
-
+  
   const [headerData, setHeaderData] = useState([]);
   const [tableData, setTableData] = useState({});
+  
+  const [isAddPriceModalVisible, setAddPriceModalVisible] = useState(false);
+  const openPriceModal = () => {
+    setAddPriceModalVisible(true);
+  };
+  const closePriceModal = () => {
+    setAddPriceModalVisible(false);
+  };
+
+  const [isSetPriceGroupVisible, setSetPriceGroupVisible] = useState(false);
+
+  const openSelectPriceGroupModal = () => {
+    setSetPriceGroupVisible(true);
+  };
+  const closeSelectPriceGroupModal = () => {
+    setSetPriceGroupVisible(false);
+  };
 
   useEffect(() => {
     if (updatePointTrigger == true) {
@@ -55,13 +72,6 @@ const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
       getTable();
     }
   }, [updateGroupTrigger]);
-
-  const openPriceModal = () => {
-    setAddPriceModalVisible(true);
-  };
-  const closePriceModal = () => {
-    setAddPriceModalVisible(false);
-  };
 
   const changeCellData = (group, index, newVal) => {
     const updatedTableData = { ...tableData };
@@ -243,7 +253,7 @@ const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
           <View style={[styles.groupCell]}>
             <Text>{i}</Text>
             <View>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
                   // openUpdateGroupModal(i);
                 }}
@@ -254,10 +264,10 @@ const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
                   name="pencil-alt"
                   color="black"
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity
                 onPress={() => {
-                  removeGroup(i);
+                  // removeGroup(i);
                 }}
               >
                 <FontAwesome5
@@ -314,8 +324,8 @@ const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
       <ScrollView horizontal={true}>
         <View style={styles.container}>
           <View style={styles.toolbar}>
-            <TouchableHighlight style={styles.button} onPress={()=>{}}>
-              <Text style={styles.buttonText}>Create price group</Text>
+            <TouchableHighlight style={styles.button} onPress={openSelectPriceGroupModal}>
+              <Text style={styles.buttonText}>Set price group</Text>
             </TouchableHighlight>
             <TouchableHighlight style={styles.button} onPress={openPriceModal}>
               <Text style={styles.buttonText}>Add Duration</Text>
@@ -329,15 +339,21 @@ const PriceTableDetails = ({ tableId, tableName, openPriceTable }) => {
               </ScrollView>
             </View>
           </View>
-
-          <PricePointModal
-            isModalVisible={isAddPriceModalVisible}
-            tableId={tableId}
-            setUpdatePointTrigger={setUpdatePointTrigger}
-            closeModal={closePriceModal}
-          />
         </View>
       </ScrollView>
+      
+      <SelectPriceGroupModal
+        isModalVisible={isSetPriceGroupVisible}
+        tableId={tableId}
+        closeModal={closeSelectPriceGroupModal}
+      />
+
+      <PricePointModal
+        isModalVisible={isAddPriceModalVisible}
+        tableId={tableId}
+        setUpdatePointTrigger={setUpdatePointTrigger}
+        closeModal={closePriceModal}
+      />
     </BasicLayout>
   );
 };
