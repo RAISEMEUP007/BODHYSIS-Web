@@ -6,6 +6,7 @@ import {
   Platform,
   ScrollView,
   Switch,
+  TouchableHighlight,
 } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -17,8 +18,8 @@ import { useAlertModal } from '../../../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../../../common/hooks/UseConfirmModal';
 
 import { selectPriceGroupModalStyle } from './styles/SelectPriceGroupModalStyle';
-import { TextMediumSize } from '../../../../../common/constants/Fonts';
 import { getPriceGroupActiveDataByTableId, setActiveGroup } from '../../../../../api/Price';
+import CreateGroupModal from '../../pricegrouplist/CreateGroupModal';
 
 const SelectPriceGroupModal = ({ isModalVisible, tableId, setUpdatePointTrigger, closeModal }) => {
   const { showAlert } = useAlertModal();
@@ -26,6 +27,14 @@ const SelectPriceGroupModal = ({ isModalVisible, tableId, setUpdatePointTrigger,
 
   const [tableData, setTableData] = useState([]);
   const [updatGroupListTrigger, setUpdatGroupListTrigger] = useState(true);
+
+  const [isGroupModalVisible, setGroupModalVisible] = useState(false);
+  const openGroupModal = () => {
+    setGroupModalVisible(true);
+  };
+  const closeGroupModal = () => {
+    setGroupModalVisible(false);
+  };
 
   useEffect(() => {
     if (updatGroupListTrigger == true) getTable();
@@ -124,16 +133,28 @@ const SelectPriceGroupModal = ({ isModalVisible, tableId, setUpdatePointTrigger,
         <ModalHeader label={'Select price group'} closeModal={closeModal} />
         <ModalBody>
           <View style={{ flex: 1, alignItems: 'flex-start' }}>
+            <View style={styles.toolbar}>
+              <TouchableHighlight style={styles.button} onPress={openGroupModal}>
+                <Text style={styles.buttonText}>Add</Text>
+              </TouchableHighlight>
+            </View>
             <View style={[styles.tableContainer]}>
               <View style={styles.tableHeader}>
                 <Text style={[styles.columnHeader, { width: 300 }]}>{'Price group'}</Text>
                 <Text style={[styles.columnHeader, styles.IconCell]}>{'Active'}</Text>
               </View>
-              <ScrollView style={{ height: 400 }}>{renderTableData()}</ScrollView>
+              <ScrollView style={{ height: 450}}>{renderTableData()}</ScrollView>
             </View>
           </View>
         </ModalBody>
       </BasicModalContainer>
+
+      <CreateGroupModal
+        isModalVisible={isGroupModalVisible}
+        groupName={''}
+        setUpdateGroupTrigger={setUpdatGroupListTrigger}
+        closeModal={closeGroupModal}
+      />
     </View>
   ) : null;
 };
