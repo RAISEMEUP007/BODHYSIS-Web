@@ -79,6 +79,7 @@ const AddReservationItemModal = ({
     }
   }, [productLinesData, isModalVisible])
 
+  // console.log(selectedProductLine);
   useEffect(() => {
     if(isModalVisible == true){
       setQuantityTxt(item?item.quantity:'');

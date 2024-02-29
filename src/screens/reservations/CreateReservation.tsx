@@ -63,6 +63,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   const [endDate, setEnddate] = useState<Date>();
   const [headerData, setHeaderData] = useState([]);
   const [equipmentData, setEquipmentData] = useState<Array<any>>([]);
+  const [itemOperations, setItemOperations] = useState<number>(0);
 
   const [updateCustomerTrigger, setUpdateCustomerTrigger] = useState(true);
   const [isAddReservationItemModalVisible, setAddReservationItemModalVisible] = useState(false);
@@ -268,6 +269,49 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     );
   }, [customerId, brandId, startDate, endDate, selectedPriceTable, equipmentData]);
 
+  const addReservationItem = (productLine, quantity) => {
+    const existingProduct = equipmentData.find(item => item.id === productLine.id);
+    if (existingProduct) {
+      showConfirm(
+        `${productLine.line} ${productLine.size} is already in the reservation items. \nDo you want to increase the quantity?`,
+        ()=>{
+        const updatedEquipmentData = equipmentData.map(item => {
+          if (item.id === productLine.id) {
+            return { ...item, quantity: item.quantity + quantity };
+          }
+          return item;
+        });
+  
+        setEquipmentData(updatedEquipmentData);
+        setItemOperations(prev=>prev+1);
+      });
+    } else {
+      const equipment = { ...productLine, line_id: productLine.id, quantity };
+      setEquipmentData(prevEquipmentData => [...prevEquipmentData, equipment]);
+      setItemOperations(prev=>prev+1);
+    }
+  }
+
+  const updateReservationItem = (oldLine, productLine, quantity) => {
+    const existingProduct = equipmentData.find(item => item.id === productLine.id);
+
+    if (oldLine.id != productLine.id && existingProduct) {
+      showAlert('warning', `${productLine.line} ${productLine.size} is already in the reservation items.`);
+    }else {
+      const newEquipment = { ...productLine, line_id: productLine.id, quantity };
+      const replaceIndex = editingIndex;
+      setEquipmentData(prevEquipmentData => {
+        return prevEquipmentData.map((item, index) => {
+          if (index === replaceIndex) {
+            return { ...newEquipment };
+          }
+          return item;
+        });
+      });
+      setItemOperations(prev=>prev+1);
+    }
+  }
+  
   useEffect(() => {
     const calculatePricedData = async () => {
       if (equipmentData.length > 0) {
@@ -283,7 +327,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     };
   
     calculatePricedData();
-  }, [selectedPriceTable, startDate, endDate, headerData, isAddReservationItemModalVisible]);
+  }, [selectedPriceTable, startDate, endDate, headerData, itemOperations]);
 
   const calculatePricedEquipmentData = async (tableId) => {
     const pricedEquipmentData = await Promise.all(equipmentData.map(async (item) => {
@@ -328,6 +372,32 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     setIsLoading(true);
 
     const payload = {
+      start_date : startDate,
+      end_date : endDate,
+      items : equipmentData,
+    };
+
+    verifyQauntity(payload, (jsonRes, status) => {
+      switch (status) {
+        case 200:
+          submitReservation();
+          break;
+        case 400:
+          openReviewQuantityCustomerModal(jsonRes.quantities);
+          break;
+        default:
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+      setIsLoading(false);
+    });
+  };
+
+  const submitReservation = () => {
+    setIsLoading(true);
+
+    const payload = {
       customer_id : customerId,
       brand_id : brandId,
       start_location_id : locationId,
@@ -343,29 +413,9 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       stage : 1,
     };
 
-    verifyQauntity(payload, (jsonRes, status) => {
-      switch (status) {
-        case 200:
-          createReservation(payload, (jsonRes, status) => {
-            handleResponse(jsonRes, status);
-          });
-          break;
-        case 400:
-          openReviewQuantityCustomerModal(jsonRes.quantities);
-          
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
-      }
-      setIsLoading(false);
-    });
-
     const handleResponse = (jsonRes, status) => {
       switch (status) {
         case 201:
-          // showAlert('success', jsonRes.message);
           openReservationScreen('Proceed Reservation', {reservationId:jsonRes.reservation.id});
           break;
         case 409:
@@ -377,7 +427,11 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       }
       setIsLoading(false);
     };
-  };
+
+    createReservation(payload, (jsonRes, status) => {
+      handleResponse(jsonRes, status);
+    });
+  }
   
   const CustomInput = forwardRef(({ value, onChange, onClick }:any, ref) => (
     <input
@@ -573,39 +627,12 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
           item={editingItem}
           onAdded={(productLine, quantity)=>{
             if (productLine) {
-              const existingProduct = equipmentData.find(item => item.id === productLine.id);
-
-              if (existingProduct) {
-                showConfirm(
-                  `${productLine.line} ${productLine.size} is already in the reservation items. \nDo you want to increase the quantity?`,
-                  ()=>{
-                  const updatedEquipmentData = equipmentData.map(item => {
-                    if (item.id === productLine.id) {
-                      return { ...item, quantity: item.quantity + quantity };
-                    }
-                    return item;
-                  });
-            
-                  setEquipmentData(updatedEquipmentData);
-                });
-              } else {
-                const equipment = { ...productLine, quantity };
-                setEquipmentData(prevEquipmentData => [...prevEquipmentData, equipment]);
-              }
+              addReservationItem(productLine, quantity);
             }
           }}
-          onUpdated={(productLine, quantity)=>{
+          onUpdated={(oldLine, productLine, quantity)=>{
             if (productLine) {
-              const newEquipment = { ...productLine, quantity };
-              const replaceIndex = editingIndex;
-              setEquipmentData(prevEquipmentData => {
-                return prevEquipmentData.map((item, index) => {
-                  if (index === replaceIndex) {
-                    return { ...newEquipment };
-                  }
-                  return item;
-                });
-              });
+              updateReservationItem(oldLine, productLine, quantity);
             }
             editReservationItem(null, null);
           }}
@@ -615,7 +642,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
           closeModal = {closeReviewQuantityCustomerModal}
           quantitiesData = {reviewQuantities}
           onContinue={()=>{
-            console.log('ddd');
+            submitReservation();
           }}
         />
         {isLoading && (

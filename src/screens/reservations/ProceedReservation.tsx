@@ -76,43 +76,70 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   };
 
   const addReservationItem = async (productLine, quantity) => {
-    const newItem = {
-      ...productLine,
-      id: parseInt(uuidv4(), 16),
-      reservation_id: reservationInfo.id,
-      line_id: productLine.id,
-      price_group_id: productLine.price_group_id,
-      quantity: quantity
+    const existingProduct = equipmentData.find(item => item.line_id === productLine.id);
+
+    if (existingProduct) {
+      showConfirm(
+        `${productLine.line} ${productLine.size} is already in the reservation items. \nDo you want to increase the quantity?`,
+        async ()=>{
+        const updatedEquipmentData = equipmentData.map(item => {
+          if (item.line_id === productLine.id) {
+            return { ...item, quantity: item.quantity + quantity };
+          }
+          return item;
+        });
+  
+        // setEquipmentData(updatedEquipmentData);
+        const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, updatedEquipmentData);
+        saveReservationItems(cacluatedPricedData, ()=>{
+          setUpdateCount(prev => prev + 1);
+        })
+      });
+    } else {
+      const newItem = {
+        ...productLine,
+        id: parseInt(uuidv4(), 16),
+        reservation_id: reservationInfo.id,
+        line_id: productLine.id,
+        price_group_id: productLine.price_group_id,
+        quantity: quantity
+      }
+      const newData = [...equipmentData, newItem];
+      const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
+      saveReservationItems(cacluatedPricedData, ()=>{
+        setUpdateCount(prev => prev + 1);
+      })
     }
-    const newData = [...equipmentData, newItem];
-    const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
-    saveReservationItems(cacluatedPricedData, ()=>{
-      setUpdateCount(prev => prev + 1);
-    })
   }
   // console.log(equipmentData);
   const updateReservationItem = async (oldLine, newLine, quantity) => {
-    const newItem = {
-      ...newLine,
-      id: oldLine.id,
-      reservation_id: oldLine.reservation_id,
-      line_id: newLine.id,
-      price_group_id: newLine.price_group_id,
-      quantity: quantity
-    }
+    const existingProduct = equipmentData.find(item => item.line_id === newLine.id);
 
-    const replaceIndex = editingIndex;
-    const newData = equipmentData.map((item, index) => {
-      if (index === replaceIndex) {
-        return { ...newItem };
+    if (oldLine.line_id != newLine.id && existingProduct) {
+      showAlert('warning', `${newLine.line} ${newLine.size} is already in the reservation items.`);
+    }else {
+      const newItem = {
+        ...newLine,
+        id: oldLine.id,
+        reservation_id: oldLine.reservation_id,
+        line_id: newLine.id,
+        price_group_id: newLine.price_group_id,
+        quantity: quantity
       }
-      return item;
-    });
   
-    const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
-    saveReservationItems(cacluatedPricedData, (jsonRes)=>{
-      setUpdateCount(prev => prev + 1);
-    })
+      const replaceIndex = editingIndex;
+      const newData = equipmentData.map((item, index) => {
+        if (index === replaceIndex) {
+          return { ...newItem };
+        }
+        return item;
+      });
+    
+      const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
+      saveReservationItems(cacluatedPricedData, (jsonRes)=>{
+        setUpdateCount(prev => prev + 1);
+      })
+    }
   }
 
   const removeReservationItem = async (item, index) => {
