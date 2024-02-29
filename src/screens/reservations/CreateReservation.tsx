@@ -15,9 +15,10 @@ import {
   useRequestPriceLogicDataQuery,
 } from '../../redux/slices/baseApiSlice';
 import { getCustomersData } from '../../api/Customer';
-import { createReservation } from '../../api/Reservation';
+import { createReservation, verifyQauntity } from '../../api/Reservation';
 import { getHeaderData, getPriceDataByGroup, getPriceGroupValue } from '../../api/Price';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
+import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
 import {  DropdownData } from '../../common/components/CommonDropdown/CommonDropdown';
 import { BrandType } from '../../types/BrandType';
 import { CustomerType } from '../../types/CustomerTypes';
@@ -30,6 +31,7 @@ import EquipmentsTable from './EquipmentsTable';
 import AddReservationItemModal from './AddReservationItemModal';
 import { createReservationStyle } from './styles/CreateReservationStyle';
 import { getStoreDetail } from '../../api/Settings';
+import QuantitiesDetailsModal from './QuantitiesDetailsModal';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -46,6 +48,7 @@ interface Props {
 
 const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   const { showAlert } = useAlertModal();
+  const { showConfirm } = useConfirmModal();
   const navigation = useNavigation();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -88,6 +91,16 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   const closeAddCustomerModal = () => {
     setAddModalVisible(false);
     setSelectedCustomer(null);
+  };
+
+  const [isReviewQuantityModalVisible, setReviewQuantityModalVisible] = useState(false);
+  const [reviewQuantities, setQuantitesData] = useState(null);
+  const openReviewQuantityCustomerModal = (quantities) => {
+    setQuantitesData(quantities);
+    setReviewQuantityModalVisible(true);
+  };
+  const closeReviewQuantityCustomerModal = () => {
+    setReviewQuantityModalVisible(false);
   };
 
   const getCustomers = () => {
@@ -311,7 +324,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     return pricedEquipmentData;
   }
 
-  const CreateReservationHandler = () => {
+  const CreateReservationHandler = async () => {
     setIsLoading(true);
 
     const payload = {
@@ -330,6 +343,25 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       stage : 1,
     };
 
+    verifyQauntity(payload, (jsonRes, status) => {
+      switch (status) {
+        case 200:
+          createReservation(payload, (jsonRes, status) => {
+            handleResponse(jsonRes, status);
+          });
+          break;
+        case 400:
+          openReviewQuantityCustomerModal(jsonRes.quantities);
+          
+          break;
+        default:
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+      setIsLoading(false);
+    });
+
     const handleResponse = (jsonRes, status) => {
       switch (status) {
         case 201:
@@ -345,10 +377,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       }
       setIsLoading(false);
     };
-
-    createReservation(payload, (jsonRes, status) => {
-      handleResponse(jsonRes, status);
-    });
   };
   
   const CustomInput = forwardRef(({ value, onChange, onClick }:any, ref) => (
@@ -545,8 +573,25 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
           item={editingItem}
           onAdded={(productLine, quantity)=>{
             if (productLine) {
-              const equipment = { ...productLine, quantity };
-              setEquipmentData(prevEquipmentData => [...prevEquipmentData, equipment]);
+              const existingProduct = equipmentData.find(item => item.id === productLine.id);
+
+              if (existingProduct) {
+                showConfirm(
+                  `${productLine.line} ${productLine.size} is already in the reservation items. \nDo you want to increase the quantity?`,
+                  ()=>{
+                  const updatedEquipmentData = equipmentData.map(item => {
+                    if (item.id === productLine.id) {
+                      return { ...item, quantity: item.quantity + quantity };
+                    }
+                    return item;
+                  });
+            
+                  setEquipmentData(updatedEquipmentData);
+                });
+              } else {
+                const equipment = { ...productLine, quantity };
+                setEquipmentData(prevEquipmentData => [...prevEquipmentData, equipment]);
+              }
             }
           }}
           onUpdated={(productLine, quantity)=>{
@@ -563,6 +608,14 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
               });
             }
             editReservationItem(null, null);
+          }}
+        />
+        <QuantitiesDetailsModal
+          isModalVisible = {isReviewQuantityModalVisible}
+          closeModal = {closeReviewQuantityCustomerModal}
+          quantitiesData = {reviewQuantities}
+          onContinue={()=>{
+            console.log('ddd');
           }}
         />
         {isLoading && (
