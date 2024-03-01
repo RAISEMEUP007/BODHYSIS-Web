@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { getTaxcodesData, deleteTaxcode } from '../../../api/Settings';
@@ -13,6 +13,7 @@ import { TaxcodesStyle } from './styles/TaxcodesStyle';
 import AddTaxcodeModal from './AddTaxcodeModal';
 
 const Taxcodes = ({ navigation, openInventory }) => {
+  const screenHeight = Dimensions.get('window').height;
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
@@ -142,7 +143,9 @@ const Taxcodes = ({ navigation, openInventory }) => {
             <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
             <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
           </View>
-          <ScrollView>{renderTableData()}</ScrollView>
+          <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
+            {renderTableData()}
+          </ScrollView>
         </View>
 
         <AddTaxcodeModal

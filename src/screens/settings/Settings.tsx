@@ -73,9 +73,10 @@ const Settings = ({navigation, initalItem = null}) => {
                         { title: "Reservation Types", icon: 'calendar-check' },
                         { title: "Trucks", icon: 'truck' },
                         // { title: "Store Details", icon: 'store' },
-                        { title: "Discount Codes", icon: 'check' },
-                        { title: "Tax Codes", icon: 'check' },
-                        { title: "Color Combinations", icon: 'check' },
+                        { title: "Discount Codes", icon: 'percentage' },
+                        { title: "Tax Codes", icon: 'money-check-alt' },
+                        { title: "Color Combinations", icon: 'palette' },
+                        { title: "Extras", icon: 'plus-circle' },
                     ]} handleItemClick={handleItemClick} />
                 </View>
             </ScrollView>
