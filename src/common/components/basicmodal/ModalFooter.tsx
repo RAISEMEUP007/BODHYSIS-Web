@@ -13,6 +13,7 @@ const ModalFooter = ({ children }) => {
 const styles = StyleSheet.create({
   modalFooter: {
     alignItems: 'flex-end',
+    padding: 16,
   },
 });
 

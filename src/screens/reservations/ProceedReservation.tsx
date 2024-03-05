@@ -75,7 +75,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     setEditingIndex(index);
   };
 
-  const addReservationItem = async (productLine, quantity) => {
+  const addReservationItem = async (productLine, quantity, extras) => {
     const existingProduct = equipmentData.find(item => item.line_id === productLine.id);
 
     if (existingProduct) {
@@ -84,7 +84,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         async ()=>{
         const updatedEquipmentData = equipmentData.map(item => {
           if (item.line_id === productLine.id) {
-            return { ...item, quantity: item.quantity + quantity };
+            return { ...item, quantity: item.quantity + quantity, extras:extras };
           }
           return item;
         });
@@ -102,7 +102,8 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         reservation_id: reservationInfo.id,
         line_id: productLine.id,
         price_group_id: productLine.price_group_id,
-        quantity: quantity
+        quantity: quantity,
+        extras: extras,
       }
       const newData = [...equipmentData, newItem];
       const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
@@ -112,7 +113,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     }
   }
   // console.log(equipmentData);
-  const updateReservationItem = async (oldLine, newLine, quantity) => {
+  const updateReservationItem = async (oldLine, newLine, quantity, extras) => {
     const existingProduct = equipmentData.find(item => item.line_id === newLine.id);
 
     if (oldLine.line_id != newLine.id && existingProduct) {
@@ -124,7 +125,8 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         reservation_id: oldLine.reservation_id,
         line_id: newLine.id,
         price_group_id: newLine.price_group_id,
-        quantity: quantity
+        quantity: quantity,
+        extras: extras,
       }
   
       const replaceIndex = editingIndex;
@@ -338,6 +340,12 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
 
         price = Math.round(price*100)/100 * item.quantity;
       }
+
+      //calcualte extras price
+      if(item.extras && item.extras.length>0){
+        let extrasPrice = item.extras.reduce((total, extra) => total + extra.fixed_price, 0);
+        price += extrasPrice;
+      }
       return { ...item, price };
     }));
     return pricedEquipmentData;
@@ -462,6 +470,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               onDelete={(item, index)=>{
                 removeReservationItem(item, index);
               }}
+              isExtra={true}
             />
           </View>
         </View>
@@ -485,17 +494,18 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         isModalVisible={isAddReservationItemModalVisible}
         closeModal={closeAddReservationItemModal}
         item={editingItem}
-        onAdded={(productLine, quantity)=>{
+        onAdded={(productLine, quantity, extras)=>{
           if (productLine) {
-            addReservationItem(productLine, quantity);
+            addReservationItem(productLine, quantity, extras);
           }
         }}
-        onUpdated={(oldLine, newLine, quantity)=>{
+        onUpdated={(oldLine, newLine, quantity, extras)=>{
           if (newLine) {
-            updateReservationItem(oldLine, newLine, quantity);
+            updateReservationItem(oldLine, newLine, quantity, extras);
           }
           editReservationItem(null, null);
         }}
+        isExtra={true}
       />
       {Platform.OS === 'web' && (
         <AddCardModal

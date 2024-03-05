@@ -1,6 +1,7 @@
 // ModalBody.js
 import React from 'react';
 import { View, ViewStyle, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 interface ModalBodyProps {
   children?: React.ReactNode;
@@ -10,15 +11,17 @@ interface ModalBodyProps {
 const ModalBody = ({ children, style = {} }: ModalBodyProps) => {
   return (
     <View style={[styles.modalBody, style]}>
-      {children}
+      <ScrollView contentContainerStyle={{paddingHorizontal:8}}>
+        {children}
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   modalBody: {
-    marginBottom: 15,
-    padding: 1,
+    flex:1,
+    paddingHorizontal:8
   },
 });
 

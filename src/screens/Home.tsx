@@ -61,7 +61,7 @@ const MainDrawer = ({ navigation }) => {
   return (
     <>
       <Drawer.Navigator
-        initialRouteName="Settings"
+        initialRouteName="Reservation"
         drawerContent={(props) => <DrawerContent {...props} />}
         screenOptions={{
           drawerType: Platform.OS == 'web' && isLargeScreen ? 'permanent' : 'front',
