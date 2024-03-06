@@ -129,7 +129,7 @@ const ProductLines = ({ navigation, openInventory }) => {
               <Text>{item.category ? item.category.category : ''}</Text>
             </View>
             <View style={styles.cell}>
-              <Text>{item.family ? (item.family.display_name || item.family.family) : ''}</Text>
+              <Text>{item.family ? (item.family.family) : ''}</Text>
             </View>
             <View style={[styles.cell, { width: 100 }]}>
               <Text>{item.size ? item.size : ''}</Text>

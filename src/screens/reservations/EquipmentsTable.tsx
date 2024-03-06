@@ -15,9 +15,10 @@ interface Props {
   onDelete?: (item, index) => void;
   width?: number;
   isExtra? : boolean;
+  extraWith? : number;
 }
 
-const EquipmentsTable =  ({ items, onEdit, onDelete, width, isExtra }: Props) => {
+const EquipmentsTable =  ({ items, onEdit, onDelete, width, isExtra, extraWith }: Props) => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
   const scrollViewRef = useRef();
@@ -54,8 +55,8 @@ const EquipmentsTable =  ({ items, onEdit, onDelete, width, isExtra }: Props) =>
               <Text>{(item.price ? item.price : 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
             </View>
             {isExtra && (
-              <View style={[styles.cell, { width: 400, flexDirection:'row', alignItems:'center', justifyContent:'flex-start', paddingVertical:2, paddingHorizontal:6}]}>
-              {item.extras.map((extra, index) => (
+              <View style={[styles.cell, { width: extraWith || 400, flexDirection:'row', alignItems:'center', justifyContent:'flex-start', paddingVertical:2, paddingHorizontal:6}]}>
+              {item && item.extras && item.extras.map((extra, index) => (
                 <Tooltip key={index} title={extra.name} enterTouchDelay={100} leaveTouchDelay={100}>
                   <View style={{borderWidth:1, borderColor:'#ccc', margin:4, paddingTop: 1, paddingBottom:4, paddingHorizontal:8, borderRadius:10, maxWidth:110, backgroundColor:'#6B3FA0'}}>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={{color:'white'}}>
@@ -102,7 +103,7 @@ const EquipmentsTable =  ({ items, onEdit, onDelete, width, isExtra }: Props) =>
           <Text style={[styles.columnHeader, { width: 100 }]}>{'Quantity'}</Text>
           <Text style={[styles.columnHeader, { width: 100 }]}>{'Price'}</Text>
           {isExtra && (
-            <Text style={[styles.columnHeader, { width: 400 }]}>{'Extras'}</Text>
+            <Text style={[styles.columnHeader, { width: extraWith || 400 }]}>{'Extras'}</Text>
           )}
           <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
           <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
