@@ -76,20 +76,35 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   };
 
   const addReservationItem = async (productLine, quantity, extras) => {
-    const existingProduct = equipmentData.find(item => item.line_id === productLine.id);
+    const arraysAreEqual = (arr1, arr2) => {
+      if (arr1.length !== arr2.length) {
+        return false;
+      }
+      const arr1Ids = arr1.map(item => item.id).sort();
+      const arr2Ids = arr2.map(item => item.id).sort();
+      for(let i = 0; i < arr1Ids.length; i++) {
+        if (arr1Ids[i] !== arr2Ids[i]) {
+          return false;
+        }
+      }
+      return true;
+    };
+    
+    const existingProduct = equipmentData.find(item => {
+      return item.line_id === productLine.id && arraysAreEqual(item.extras, extras);
+    });
 
     if (existingProduct) {
       showConfirm(
-        `${productLine.line} ${productLine.size} is already in the reservation items. \nDo you want to increase the quantity?`,
+        `${productLine.line} ${productLine.size} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
         async ()=>{
         const updatedEquipmentData = equipmentData.map(item => {
-          if (item.line_id === productLine.id) {
+          if (item.line_id === productLine.id && arraysAreEqual(item.extras, extras)) {
             return { ...item, quantity: item.quantity + quantity, extras:extras };
           }
           return item;
         });
-  
-        // setEquipmentData(updatedEquipmentData);
+
         const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, updatedEquipmentData);
         saveReservationItems(cacluatedPricedData, ()=>{
           setUpdateCount(prev => prev + 1);
@@ -112,7 +127,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       })
     }
   }
-  // console.log(equipmentData);
+
   const updateReservationItem = async (oldLine, newLine, quantity, extras) => {
     const existingProduct = equipmentData.find(item => item.line_id === newLine.id);
 
