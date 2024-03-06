@@ -75,44 +75,88 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     setEditingIndex(index);
   };
 
-  const addReservationItem = async (productLine, quantity) => {
-    const newItem = {
-      ...productLine,
-      id: parseInt(uuidv4(), 16),
-      reservation_id: reservationInfo.id,
-      line_id: productLine.id,
-      price_group_id: productLine.price_group_id,
-      quantity: quantity
-    }
-    const newData = [...equipmentData, newItem];
-    const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
-    saveReservationItems(cacluatedPricedData, ()=>{
-      setUpdateCount(prev => prev + 1);
-    })
-  }
-  // console.log(equipmentData);
-  const updateReservationItem = async (oldLine, newLine, quantity) => {
-    const newItem = {
-      ...newLine,
-      id: oldLine.id,
-      reservation_id: oldLine.reservation_id,
-      line_id: newLine.id,
-      price_group_id: newLine.price_group_id,
-      quantity: quantity
-    }
-
-    const replaceIndex = editingIndex;
-    const newData = equipmentData.map((item, index) => {
-      if (index === replaceIndex) {
-        return { ...newItem };
+  const addReservationItem = async (productLine, quantity, extras) => {
+    const arraysAreEqual = (arr1, arr2) => {
+      if (arr1.length !== arr2.length) {
+        return false;
       }
-      return item;
+      const arr1Ids = arr1.map(item => item.id).sort();
+      const arr2Ids = arr2.map(item => item.id).sort();
+      for(let i = 0; i < arr1Ids.length; i++) {
+        if (arr1Ids[i] !== arr2Ids[i]) {
+          return false;
+        }
+      }
+      return true;
+    };
+    
+    const existingProduct = equipmentData.find(item => {
+      return item.line_id === productLine.id && arraysAreEqual(item.extras, extras);
     });
+
+    if (existingProduct) {
+      showConfirm(
+        `${productLine.line} ${productLine.size} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
+        async ()=>{
+        const updatedEquipmentData = equipmentData.map(item => {
+          if (item.line_id === productLine.id && arraysAreEqual(item.extras, extras)) {
+            return { ...item, quantity: item.quantity + quantity, extras:extras };
+          }
+          return item;
+        });
+
+        const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, updatedEquipmentData);
+        saveReservationItems(cacluatedPricedData, ()=>{
+          setUpdateCount(prev => prev + 1);
+        })
+      });
+    } else {
+      const newItem = {
+        ...productLine,
+        id: parseInt(uuidv4(), 16),
+        reservation_id: reservationInfo.id,
+        line_id: productLine.id,
+        price_group_id: productLine.price_group_id,
+        quantity: quantity,
+        extras: extras,
+      }
+      const newData = [...equipmentData, newItem];
+      const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
+      saveReservationItems(cacluatedPricedData, ()=>{
+        setUpdateCount(prev => prev + 1);
+      })
+    }
+  }
+
+  const updateReservationItem = async (oldLine, newLine, quantity, extras) => {
+    const existingProduct = equipmentData.find(item => item.line_id === newLine.id);
+
+    if (oldLine.line_id != newLine.id && existingProduct) {
+      showAlert('warning', `${newLine.line} ${newLine.size} is already in the reservation items.`);
+    }else {
+      const newItem = {
+        ...newLine,
+        id: oldLine.id,
+        reservation_id: oldLine.reservation_id,
+        line_id: newLine.id,
+        price_group_id: newLine.price_group_id,
+        quantity: quantity,
+        extras: extras,
+      }
   
-    const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
-    saveReservationItems(cacluatedPricedData, (jsonRes)=>{
-      setUpdateCount(prev => prev + 1);
-    })
+      const replaceIndex = editingIndex;
+      const newData = equipmentData.map((item, index) => {
+        if (index === replaceIndex) {
+          return { ...newItem };
+        }
+        return item;
+      });
+    
+      const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
+      saveReservationItems(cacluatedPricedData, (jsonRes)=>{
+        setUpdateCount(prev => prev + 1);
+      })
+    }
   }
 
   const removeReservationItem = async (item, index) => {
@@ -311,6 +355,12 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
 
         price = Math.round(price*100)/100 * item.quantity;
       }
+
+      //calcualte extras price
+      if(item.extras && item.extras.length>0){
+        let extrasPrice = item.extras.reduce((total, extra) => total + extra.fixed_price, 0);
+        price += extrasPrice;
+      }
       return { ...item, price };
     }));
     return pricedEquipmentData;
@@ -435,6 +485,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               onDelete={(item, index)=>{
                 removeReservationItem(item, index);
               }}
+              isExtra={true}
             />
           </View>
         </View>
@@ -458,17 +509,18 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         isModalVisible={isAddReservationItemModalVisible}
         closeModal={closeAddReservationItemModal}
         item={editingItem}
-        onAdded={(productLine, quantity)=>{
+        onAdded={(productLine, quantity, extras)=>{
           if (productLine) {
-            addReservationItem(productLine, quantity);
+            addReservationItem(productLine, quantity, extras);
           }
         }}
-        onUpdated={(oldLine, newLine, quantity)=>{
+        onUpdated={(oldLine, newLine, quantity, extras)=>{
           if (newLine) {
-            updateReservationItem(oldLine, newLine, quantity);
+            updateReservationItem(oldLine, newLine, quantity, extras);
           }
           editReservationItem(null, null);
         }}
+        isExtra={true}
       />
       {Platform.OS === 'web' && (
         <AddCardModal

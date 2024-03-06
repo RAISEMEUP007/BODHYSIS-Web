@@ -121,7 +121,7 @@ const SelectPriceGroupModal = ({ isModalVisible, tableId, setUpdatePointTrigger,
       });
     } else {
       <View style={{ alignItems: 'center', paddingTop: 10 }}>
-        <Text>No Address</Text>
+        <Text>No Groups</Text>
       </View>;
     }
     return <>{rows}</>;

@@ -19,9 +19,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
+    flexDirection: 'column',
+    maxHeight: '90%',
     backgroundColor: 'white',
     borderRadius: 5,
-    padding: 26,
+    padding: 10,
   },
 });
 

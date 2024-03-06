@@ -2,6 +2,7 @@ import React from 'react';
 import { Platform } from 'react-native';
 import {loadStripe} from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
+import { Provider as PaperProvider } from 'react-native-paper';
 
 import { STRIPE_PUBLIC_KEY } from '../../../env';
 import { AlertModalProvider } from './alertmodal/Provider';
@@ -22,11 +23,13 @@ const StripeProviderBaseoffPlatform = ({ children }) => {
 export const Providers = ({ children }) => (
   <StripeProviderBaseoffPlatform>
     <ScreenSizesProvider>
-      <AlertModalProvider>
-        <ConfirmModalProvider>
-          <BasicModalProvider>{children}</BasicModalProvider>
-        </ConfirmModalProvider>
-      </AlertModalProvider>
+      <PaperProvider>
+        <AlertModalProvider>
+          <ConfirmModalProvider>
+            <BasicModalProvider>{children}</BasicModalProvider>
+          </ConfirmModalProvider>
+        </AlertModalProvider>
+      </PaperProvider>
     </ScreenSizesProvider>
   </StripeProviderBaseoffPlatform>
 );

@@ -6,7 +6,6 @@ import {
   View,
   ActivityIndicator,
   Platform,
-  File,
 } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import { Editor } from 'primereact/editor';

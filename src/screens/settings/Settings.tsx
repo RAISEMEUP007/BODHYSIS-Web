@@ -16,6 +16,7 @@ import StoreDetails from './storedetails/StoreDetails';
 import DiscountCodes from './dicountcodes/DiscountCodes';
 import Taxcodes from './taxcodes/Taxcodes';
 import Colorcombinations from './colorcombinations/Colorcombinations';
+import Extras from './Extras/Extras';
 
 const Settings = ({navigation, initalItem = null}) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);
@@ -46,6 +47,8 @@ const Settings = ({navigation, initalItem = null}) => {
                 return <Taxcodes navigation={navigation} openInventory={handleItemClick}/>;
             case 'Color Combinations':
                 return <Colorcombinations navigation={navigation} openInventory={handleItemClick}/>;
+            case 'Extras':
+                return <Extras navigation={navigation} openInventory={handleItemClick}/>;
             default:
                 return (
                     <View style={{ marginTop: 20, paddingHorizontal: 10, paddingVertical:2, height: 28, justifyContent: 'center', flexDirection: 'row',}}>
@@ -73,9 +76,10 @@ const Settings = ({navigation, initalItem = null}) => {
                         { title: "Reservation Types", icon: 'calendar-check' },
                         { title: "Trucks", icon: 'truck' },
                         // { title: "Store Details", icon: 'store' },
-                        { title: "Discount Codes", icon: 'check' },
-                        { title: "Tax Codes", icon: 'check' },
-                        { title: "Color Combinations", icon: 'check' },
+                        { title: "Discount Codes", icon: 'percentage' },
+                        { title: "Tax Codes", icon: 'money-check-alt' },
+                        { title: "Color Combinations", icon: 'palette' },
+                        { title: "Extras", icon: 'plus-circle' },
                     ]} handleItemClick={handleItemClick} />
                 </View>
             </ScrollView>

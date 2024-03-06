@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import { TextMediumSize, TextSmallSize } from '../../../../common/constants/Fonts';
 import { TextdefaultSize } from '../../../../common/constants/Fonts';
 
-export const TagsStyle = StyleSheet.create({
+export const extrasStyle = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
@@ -54,7 +54,7 @@ export const TagsStyle = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ced4da',
     borderRadius: 5,
-    width: 150,
+    width: 200,
     paddingVertical: 5,
     paddingHorizontal: 10,
   },
@@ -78,19 +78,22 @@ export const TagsStyle = StyleSheet.create({
     fontWeight: 'bold',
     backgroundColor: '#f5f5f5',
     alignItems: 'flex-start',
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    width: 200,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    // fontSize: TextdefaultSize,
+    width: 150,
     borderRightWidth: 1,
     borderRightColor: '#ccc',
   },
   cell: {
     position: 'relative',
     padding: 2,
-    width: 200,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    fontSize: TextdefaultSize,
+    width: 150,
     alignItems: 'flex-start',
     justifyContent: 'center',
-    paddingLeft: 6,
   },
   cellInput: {
     width: 150,
@@ -98,7 +101,7 @@ export const TagsStyle = StyleSheet.create({
     paddingVertical: 6,
   },
   categoryCell: {
-    width: 400,
+    width: 300,
     paddingHorizontal: 6,
     paddingVertical: 6,
     justifyContent: 'center',
@@ -136,7 +139,7 @@ export const TagsStyle = StyleSheet.create({
     top: -20,
   },
   IconCell: {
-    width: 60,
+    width: 70,
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',

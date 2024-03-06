@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { getColorcombinationsData, deleteColorcombination } from '../../../api/Settings';
@@ -13,7 +13,9 @@ import { ColorcombinationsStyle } from './styles/ColorcombinationsStyle';
 import AddColorcombinationModal from './AddColorcombinationModal';
 
 const Colorcombinations = ({ navigation, openInventory }) => {
+  const screenHeight = Dimensions.get('window').height;
   const { showAlert } = useAlertModal();
+
   const { showConfirm } = useConfirmModal();
 
   const [tableData, setTableData] = useState([]);
@@ -139,7 +141,9 @@ const Colorcombinations = ({ navigation, openInventory }) => {
             <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
             <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
           </View>
-          <ScrollView>{renderTableData()}</ScrollView>
+          <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
+            {renderTableData()}
+          </ScrollView>
         </View>
 
         <AddColorcombinationModal

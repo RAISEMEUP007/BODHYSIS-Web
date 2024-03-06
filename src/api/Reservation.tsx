@@ -1,5 +1,9 @@
 import { basePostAPICall, getAPICall, postAPICall } from './BaseAPI';
 
+export const verifyQauntity = async (payload, callback) => {
+  return await postAPICall('reservation/verifyquantity', payload, callback);
+};
+
 export const createReservation = (payload, callback) => {
   postAPICall('reservations/createreservation', payload, callback);
 };

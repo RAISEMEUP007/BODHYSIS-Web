@@ -11,11 +11,17 @@ export const ManufacturesStyle = StyleSheet.create({
   },
 
   tableContainer: {
-    borderRadius: 4,
     marginBottom: 16,
     marginTop: 10,
     overflow: 'hidden',
-    borderTopColor: '#ddd',
+    borderTopWidth: 1,
+    borderTopColor: '#bfbfbf',
+    borderLeftWidth: 1,
+    borderLeftColor: '#06685ea3',
+    borderRightWidth: 1,
+    borderRightColor: '#06685ea3',
+    borderBottomWidth: 1,
+    borderBottomColor: '#bfbfbf',
   },
 
   toolbar: {
@@ -59,25 +65,14 @@ export const ManufacturesStyle = StyleSheet.create({
     flexDirection: 'column',
   },
   tableHeader: {
-    marginTop: 10,
     flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-    borderLeftWidth: 1,
-    borderLeftColor: '#06685ea3',
-    borderRightWidth: 1,
-    borderRightColor: '#06685ea3',
   },
   tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-    borderLeftWidth: 1,
-    borderLeftColor: '#06685ea3',
-    borderRightWidth: 1,
-    borderRightColor: '#06685ea3',
   },
   columnHeader: {
     fontWeight: 'bold',
@@ -86,8 +81,8 @@ export const ManufacturesStyle = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
     width: 200,
-    borderLeftWidth: 1,
-    borderLeftColor: '#ccc',
+    borderRightWidth: 1,
+    borderRightColor: '#ccc',
   },
   cell: {
     position: 'relative',

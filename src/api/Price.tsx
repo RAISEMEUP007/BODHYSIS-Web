@@ -32,8 +32,8 @@ export const setExtraDay = (payload, callback) => {
   postAPICall('price/setextraday', payload, callback);
 }
 
-export const getPriceGroupsData = (callback) => {
-  getAPICall('price/getpricegroupsdata', callback);
+export const getPriceGroupsData = async (callback) => {
+  return await getAPICall('price/getpricegroupsdata', callback);
 }
 
 export const setActiveGroup = (paylod, callback) => {

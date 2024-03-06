@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {  ScrollView,  View,  Text,  TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { Tooltip } from 'react-native-paper';
 
 import { TextMediumSize } from '../../common/constants/Fonts';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
@@ -13,9 +14,10 @@ interface Props {
   onEdit?: (item, index) => void;
   onDelete?: (item, index) => void;
   width?: number;
+  isExtra? : boolean;
 }
 
-const EquipmentsTable =  ({ items, onEdit, onDelete, width }: Props) => {
+const EquipmentsTable =  ({ items, onEdit, onDelete, width, isExtra }: Props) => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
   const scrollViewRef = useRef();
@@ -51,6 +53,19 @@ const EquipmentsTable =  ({ items, onEdit, onDelete, width }: Props) => {
             <View style={[styles.cell, { width: 100, paddingRight: 6, alignItems: 'flex-end' }]}>
               <Text>{(item.price ? item.price : 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
             </View>
+            {isExtra && (
+              <View style={[styles.cell, { width: 400, flexDirection:'row', alignItems:'center', justifyContent:'flex-start', paddingVertical:2, paddingHorizontal:6}]}>
+              {item.extras.map((extra, index) => (
+                <Tooltip key={index} title={extra.name} enterTouchDelay={100} leaveTouchDelay={100}>
+                  <View style={{borderWidth:1, borderColor:'#ccc', margin:4, paddingTop: 1, paddingBottom:4, paddingHorizontal:8, borderRadius:10, maxWidth:110, backgroundColor:'#6B3FA0'}}>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={{color:'white'}}>
+                      {extra.name}
+                    </Text>
+                  </View>
+                </Tooltip>
+              ))}
+              </View>
+            )}
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
@@ -86,6 +101,9 @@ const EquipmentsTable =  ({ items, onEdit, onDelete, width }: Props) => {
           <Text style={[styles.columnHeader, { flex:1 }]}>{'Product Line'}</Text>
           <Text style={[styles.columnHeader, { width: 100 }]}>{'Quantity'}</Text>
           <Text style={[styles.columnHeader, { width: 100 }]}>{'Price'}</Text>
+          {isExtra && (
+            <Text style={[styles.columnHeader, { width: 400 }]}>{'Extras'}</Text>
+          )}
           <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
           <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
         </View>

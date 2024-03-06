@@ -288,3 +288,20 @@ export const deleteColorcombination = (id, callback) => {
   const payload = { id };
   postAPICall('settings/deletecolorcombination', payload, callback);
 }
+
+export const getExtrasData = (callback) => {
+  getAPICall('settings/getextrasdata', callback);
+}
+
+export const createExtra = (payload, callback) => {
+  basePostAPICall('settings/createextra', {}, payload, callback);
+};
+
+export const updateExtra = (payload, callback) => {
+  basePostAPICall('settings/updateextra', {}, payload, callback);
+};
+
+export const deleteExtra = (id, callback) => {
+  const payload = { id };
+  postAPICall('settings/deleteextra', payload, callback);
+}
