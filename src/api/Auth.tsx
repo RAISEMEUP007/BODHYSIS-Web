@@ -6,6 +6,10 @@ export const login = (email, password, callback) => {
   postAPICall('login', payload, callback);
 };
 
+export const logout = async (callback) => {
+  return await postAPICall('logout', {}, callback);
+};
+
 export const signup = (email, password, name, callback) => {
   const payload = { email, password, name };
   postAPICall('signup', payload, callback);
