@@ -33,9 +33,10 @@ const Products = ({ navigation, openInventory, data }) => {
   const initialMount = useRef(true);
   const screenHeight = Dimensions.get('window').height;
   const StatusObj = {
+    0: 'Ready',
     1: 'Ordered',
-    2: 'Ready',
-    3: 'Checked out',
+    2: 'Checked out',
+    // 3: 'Checked in',
     4: 'Broken',
     5: 'Sold',
     6: 'Transferred',

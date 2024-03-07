@@ -47,9 +47,10 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   const [Locations, setLocations] = useState([]);
 
   const StatusArr = [
+    { id: 0, status: 'Ready' },
     { id: 1, status: 'Ordered' },
-    { id: 2, status: 'Ready' },
-    { id: 3, status: 'Checked out' },
+    { id: 2, status: 'Checked out' },
+    // { id: 3, status: 'Checked in' },
     { id: 4, status: 'Broken' },
     { id: 5, status: 'Sold' },
     { id: 6, status: 'Transferred' },
