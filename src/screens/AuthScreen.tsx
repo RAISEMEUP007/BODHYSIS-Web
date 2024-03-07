@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ImageBackground, View, Image, Text, TouchableOpacity, TextInput } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
 import { login, signup } from '../api/Auth';
@@ -27,7 +28,8 @@ const AuthScreen = () => {
     setIsLogin(!isLogin);
   };
 
-  const onLoggedIn = (token) => {
+  const onLoggedIn = async (token) => {
+    await AsyncStorage.setItem('access-token', token);
     navigation.navigate('Home');
   };
 
@@ -45,9 +47,10 @@ const AuthScreen = () => {
         resetValidMessage();
         switch (status) {
           case 200:
+            console.log(jsonRes);
             onLoggedIn(jsonRes.token);
             break;
-          case 401:
+          case 403:
             setPassValidMessage(msgStr('errorComparingPassword'));
             break;
           case 404:

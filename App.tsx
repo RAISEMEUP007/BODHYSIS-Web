@@ -11,6 +11,7 @@ import { AuthScreen, Home, RecoverPass, ChangePass } from './src/screens';
 import { ConfirmModal } from './src/common/components/confirmmodal/ConfirmModals';
 import { store } from './src/redux/store';
 import { Provider } from 'react-redux';
+import { setNavigator } from './src/common/utils/NavigationUtils';
 
 const Stack = createStackNavigator();
 
@@ -32,7 +33,7 @@ const GlobalModals = () => {
 };
 
 export default function App() {
-  const [initialRoute, setInitalRoute] = useState('Home');
+  const [initialRoute, setInitalRoute] = useState('Auth');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -61,7 +62,7 @@ export default function App() {
   return (
     <Providers>
       <Provider store={store}>
-        <NavigationContainer>
+        <NavigationContainer ref={(ref) => setNavigator(ref)}>
           <Stack.Navigator
             initialRouteName={initialRoute}
             screenOptions={{ presentation: 'modal' }}

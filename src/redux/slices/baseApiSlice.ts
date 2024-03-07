@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../../common/constants/AppConstants';
 import { ProductCategoriesArrayType } from '../../types/ProductCategoryType';
 import { BrandsArrayType } from '../../types/BrandType';
@@ -26,7 +27,13 @@ type JSON = Record<string, any> | undefined;
 export const baseApiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: API_URL,
-    prepareHeaders: (headers, _) => {
+    prepareHeaders: async (headers, { getState }) => {
+      const accessToken = await AsyncStorage.getItem('access-token');
+
+      if (accessToken) {
+        headers.set('Authorization', `Bearer ${accessToken}`);
+      }
+
       headers.set('accept', 'application/json');
       return headers;
     },

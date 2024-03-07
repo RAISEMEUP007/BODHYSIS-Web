@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, Platform } from 'react-native';
 import { createDrawerNavigator, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useScreenSize } from '../common/hooks/UseScreenDimention';
 import Dashboard from './Dashboard';
@@ -10,6 +9,7 @@ import Inventory from './Inventory/Inventory';
 import Settings from './settings/Settings';
 import Customers from './customer/customers/Customers';
 import Reservations from './reservations/Reservations';
+import { logout } from '../api/Auth';
 
 const MainDrawer = ({ navigation }) => {
   const { isLargeScreen } = useScreenSize();
@@ -53,7 +53,11 @@ const MainDrawer = ({ navigation }) => {
           labelStyle={{ color: 'black', fontWeight: 'bold' }}
         />
         <DrawerItemList {...props} />
-        <DrawerItem label="Log out" onPress={() => navigation.navigate('Auth')} />
+        <DrawerItem label="Log out" onPress={async () => {
+          await logout(()=>{});
+          await AsyncStorage.setItem('access-token', '');
+          navigation.navigate('Auth')
+        }} />
       </>
     );
   };

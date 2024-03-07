@@ -1,11 +1,21 @@
 import { API_URL } from '../common/constants/AppConstants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { navigateToLogin } from '../common/utils/NavigationUtils';
 
 export const baseGetAPICall = async (route, headers, callback) => {
+  const token = await AsyncStorage.getItem('access-token');
+  headers.Authorization = `Bearer ${token}`;
   try {
     const response = await fetch(`${API_URL}/${route}`, {
       method: 'GET',
       headers: headers,
     });
+
+    if (response.status === 401) {
+      await AsyncStorage.removeItem('access-token');
+      navigateToLogin();
+      return;
+    }
     
     if(response.ok){
       const jsonRes = await response.clone().json();
@@ -34,11 +44,19 @@ export const getAPICall = async (route, callback) => {
 
 export const basePostAPICall = async (route, headers, body, callback) => {
   try {
+    const token = await AsyncStorage.getItem('access-token');
+    headers.Authorization = `Bearer ${token}`;
     const response = await fetch(`${API_URL}/${route}`, {
       method: 'POST',
       headers: headers,
       body: body,
     });
+    
+    if (response.status === 401) {
+      await AsyncStorage.removeItem('access-token');
+      navigateToLogin();
+      return;
+    }
     
     if(response.ok){
       const jsonRes = await response.clone().json();
