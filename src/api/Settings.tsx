@@ -34,8 +34,8 @@ export const deleteTag = (id, callback) => {
   postAPICall('settings/deletetag', payload, callback);
 }
 
-export const getLocationsData = (callback) => {
-  getAPICall('settings/getlocationsdata/', callback);
+export const getLocationsData = async (callback = (jR, s, e)=>{}) => {
+  return await getAPICall('settings/getlocationsdata/', callback);
 }
 
 export const updateLocation = (payload, callback) => {

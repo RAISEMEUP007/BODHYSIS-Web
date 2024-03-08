@@ -47,8 +47,7 @@ const AuthScreen = () => {
         resetValidMessage();
         switch (status) {
           case 200:
-            console.log(jsonRes);
-            onLoggedIn(jsonRes.token);
+            onLoggedIn(jsonRes.refreshToken);
             break;
           case 403:
             setPassValidMessage(msgStr('errorComparingPassword'));

@@ -122,8 +122,8 @@ const ProductLines = ({ navigation, openInventory }) => {
       tableData.map((item, index) => {
         rows.push(
           <View key={index} style={styles.tableRow}>
-            <View style={styles.categoryCell}>
-              <Text style={styles.categoryCell}>{item.line}</Text>
+            <View style={styles.cell}>
+              <Text>{item.line}</Text>
             </View>
             <View style={styles.cell}>
               <Text>{item.category ? item.category.category : ''}</Text>
@@ -134,6 +134,9 @@ const ProductLines = ({ navigation, openInventory }) => {
             <View style={[styles.cell, { width: 100 }]}>
               <Text>{item.size ? item.size : ''}</Text>
             </View>
+            {/* <View style={styles.cell}>
+              <Text>{item.barcode ? (item.barcode) : ''}</Text>
+            </View> */}
             <View style={[styles.cell, { width: 100, paddingRight: 6, alignItems: 'flex-end' }]}>
               <Text>{item.quantity ? item.quantity : '0'}</Text>
             </View>
@@ -194,10 +197,11 @@ const ProductLines = ({ navigation, openInventory }) => {
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader, styles.categoryCell]}>{'Line'}</Text>
+              <Text style={[styles.columnHeader]}>{'Line'}</Text>
               <Text style={[styles.columnHeader]}>{'Category'}</Text>
               <Text style={[styles.columnHeader]}>{'Family'}</Text>
               <Text style={[styles.columnHeader, { width: 100 }]}>{'Size'}</Text>
+              {/* <Text style={[styles.columnHeader]}>{'Barcode'}</Text> */}
               <Text style={[styles.columnHeader, { width: 100 }]}>{'Quantity'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'SKUs'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>

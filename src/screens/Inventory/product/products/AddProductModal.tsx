@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   TextInput,
@@ -7,7 +7,6 @@ import {
   View,
   ActivityIndicator,
   Platform,
-  Image,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
@@ -18,7 +17,6 @@ import {
   getProductFamiliesData,
   getProductLinesData,
 } from '../../../../api/Product';
-import { getPriceGroupsData } from '../../../../api/Price';
 import { getLocationsData } from '../../../../api/Settings';
 import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
@@ -28,13 +26,9 @@ import { msgStr } from '../../../../common/constants/Message';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 
 import { productModalstyles } from './styles/ProductModalStyle';
-import NumericInput from '../../../../common/components/formcomponents/NumericInput';
 
 const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, closeModal }) => {
   const isUpdate = Product ? true : false;
-
-  const [StartInitalizing, setStartInitalizing] = useState(false);
-  const [CategoryChanged, setCategoryChanged] = useState(false);
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
@@ -43,13 +37,13 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   const [categories, setCategories] = useState([]);
   const [families, setFamilies] = useState([]);
   const [lines, setLines] = useState([]);
-  const [PriceGroups, setPriceGroups] = useState([]);
   const [Locations, setLocations] = useState([]);
 
   const StatusArr = [
+    { id: 0, status: 'Ready' },
     { id: 1, status: 'Ordered' },
-    { id: 2, status: 'Ready' },
-    { id: 3, status: 'Checked out' },
+    { id: 2, status: 'Checked out' },
+    // { id: 3, status: 'Checked in' },
     { id: 4, status: 'Broken' },
     { id: 5, status: 'Sold' },
     { id: 6, status: 'Transferred' },
@@ -65,12 +59,10 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   const [BarcodeTxt, setBarcodeTxt] = useState('');
   const [QuantityTxt, setQuantityTxt] = useState('');
   const [SerialNumber, setSerialNumber] = useState('');
-  const [HomeLocation, setHomeLocation] = useState('');
-  const [CurrentLocation, setCurrentLocation] = useState('');
-  const [selectedPriceGroup, selectPriceGroup] = useState<any>({});
   const [selectedHomeLocation, selectHomeLocation] = useState<any>({});
   const [selectedCurrentLocation, selectCurrentLocation] = useState<any>({});
   const [selectedStatus, selectStatus] = useState<any>({});
+  const [PriceGroupTxt, setPriceGroupTxt] = useState('');
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -89,7 +81,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   }, [closeModal]);
 
   useEffect(() => {
-    if (StartInitalizing) {
+    if (isModalVisible) {
       setValidMessage('');
       if (Product && Product.category_id && categories) {
         const initalCategory = categories.find((category) => {
@@ -125,17 +117,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
       setBarcodeTxt(Product ? Product.barcode : '');
       setQuantityTxt(Product ? Product.quantity : '');
       setSerialNumber(Product ? Product.serial_number : '');
-      setHomeLocation(Product ? Product.home_location : '');
-      setCurrentLocation(Product ? Product.current_location : '');
-
-      if (Product && Product.line.price_group_id && PriceGroups) {
-        const initalGroup = PriceGroups.find((priceGroup) => {
-          return priceGroup.id == Product.line.price_group_id;
-        });
-        if (initalGroup) selectPriceGroup(initalGroup);
-      } else if (PriceGroups.length > 0) {
-        selectPriceGroup(PriceGroups[0]);
-      }
+      setPriceGroupTxt(Product?.line?.price_group?.price_group??'');
 
       if (Product && Product.home_location && Locations) {
         const initalHomeLocation = Locations.find((location) => {
@@ -160,158 +142,75 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
           return status.id == Product.status;
         });
         if (initalStatus) selectStatus(initalStatus);
-      }
+      }else selectStatus(StatusArr[0]);
 
       setIsLoading(false);
     }
-  }, [StartInitalizing]);
+  }, [isModalVisible]);
 
   useEffect(() => {
-    if (CategoryChanged)
-      if (selectedCategory.id) {
-        loadProductFamiliesData(selectedCategory.id, (jsonRes) => {
-          setFamilies(jsonRes);
-          if (jsonRes.length > 0) selectFamily(jsonRes[0]);
-          else {
-            selectFamily({});
-          }
-        });
-      } else {
-        setFamilies([]);
-        selectFamily({});
+    const fetchData = async () => {
+      try {
+        const response = await getProductCategoriesData();
+        const categoriesData = await response.json();
+        setCategories(categoriesData);
+
+        const response2 = await getLocationsData();
+        const locationsData = await response2.json();
+        setLocations(locationsData);
+      } catch (error) {
+        console.log(error);
       }
+    };
+ 
+    fetchData();
+ }, [isModalVisible]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const categoryId = selectedCategory?.id??0;
+        const response = await getProductFamiliesData(categoryId);
+        const familiesData = await response.json();
+        setFamilies(familiesData);
+
+        if(familiesData.length>0){
+          if(Product && Product.family_id && familiesData.find(item=>item.id == Product.family_id)){
+            selectFamily(familiesData.find(item=>item.id == Product.family_id));
+          }else selectFamily(familiesData[0])
+        }else selectFamily({});
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    fetchData();
   }, [selectedCategory]);
 
   useEffect(() => {
-    if (CategoryChanged)
-      if (selectedFamily.id) {
-        loadProductLinesData(selectedFamily.id, (jsonRes) => {
-          setLines(jsonRes);
-          if (jsonRes.length > 0) selectLine(jsonRes[0]);
-          else {
-            selectLine({});
-          }
-        });
-      } else {
-        setLines([]);
-        selectLine({});
+    const fetchData = async () => {
+      try {
+        const familyId = selectedFamily?.id??0;
+        const response = await getProductLinesData(familyId);
+        const linesData = await response.json();
+        setLines(linesData);
+
+        if(linesData.length>0){
+          if(Product && Product.line_id && linesData.find(item=>item.id == Product.line_id)){
+            selectLine(linesData.find(item=>item.id == Product.line_id));
+          }else selectLine(linesData[0])
+        }else selectLine({});
+      } catch (error) {
+        console.log(error);
       }
-  }, [selectedFamily]);
+    }
+
+    fetchData();
+  }, [selectedCategory, selectedFamily]);
 
   useEffect(() => {
-    if (isModalVisible) {
-      loadPriceGroupsData(() => {
-        loadLocationsData(() => {
-          loadProductCategoriesData((categories) => {
-            let categoryId = null;
-            if (Product) categoryId = Product.category_id;
-            else categoryId = categories[0] ? categories[0].id : null;
-            loadProductFamiliesData(categoryId, (families) => {
-              let familyId = null;
-              if (Product) familyId = Product.family_id;
-              else familyId = families[0] ? families[0].id : null;
-              loadProductLinesData(familyId, (lines) => {
-                if (categories.length) setCategories(categories);
-                else setCategories([]);
-                if (families.length) setFamilies(families);
-                else setFamilies([]);
-                if (lines.length) setLines(lines);
-                else setLines([]);
-                setStartInitalizing(true);
-              });
-            });
-          });
-        });
-      });
-    }
-  }, [isModalVisible]);
-
-  const loadProductCategoriesData = (callback) => {
-    getProductCategoriesData((jsonRes, status, error) => {
-      switch (status) {
-        case 200:
-          callback(jsonRes);
-          break;
-        case 500:
-          showAlert('error', msgStr('serverError'));
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
-      }
-    });
-  };
-
-  const loadProductFamiliesData = (categoryId, callback) => {
-    getProductFamiliesData(categoryId, (jsonRes, status, error) => {
-      switch (status) {
-        case 200:
-          callback(jsonRes);
-          break;
-        case 500:
-          showAlert('error', msgStr('serverError'));
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
-      }
-    });
-  };
-
-  const loadPriceGroupsData = (callback) => {
-    getPriceGroupsData((jsonRes, status, error) => {
-      switch (status) {
-        case 200:
-          setPriceGroups(jsonRes);
-          callback();
-          break;
-        case 500:
-          showAlert('error', msgStr('serverError'));
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
-      }
-    });
-  };
-
-  const loadProductLinesData = (familyId, callback) => {
-    getProductLinesData(familyId, (jsonRes, status, error) => {
-      switch (status) {
-        case 200:
-          callback(jsonRes);
-          break;
-        case 500:
-          showAlert('error', msgStr('serverError'));
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
-      }
-    });
-  };
-
-  const loadLocationsData = (callback) => {
-    getLocationsData((jsonRes, status, error) => {
-      switch (status) {
-        case 200:
-          setLocations(jsonRes);
-          callback();
-          break;
-        case 500:
-          showAlert('error', msgStr('serverError'));
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
-      }
-    });
-  };
+    setPriceGroupTxt(selectedLine?.price_group?.price_group??'');
+  }, [selectedCategory, selectedFamily, selectedLine]);
 
   const AddProductButtonHandler = () => {
     if (!ProductTxt.trim()) {
@@ -334,7 +233,6 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
       serial_number: SerialNumber,
       home_location: selectedHomeLocation.id,
       current_location: selectedCurrentLocation.id,
-      // price_group_id: selectedPriceGroup.id,
       status: selectedStatus.id,
     };
     const handleResponse = (jsonRes, status) => {
@@ -382,12 +280,10 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
       transparent={true}
       visible={isModalVisible}
       onShow={() => {
-        setStartInitalizing(false);
-        setCategoryChanged(false);
       }}
     >
       <BasicModalContainer>
-        <ModalHeader label={'Product'} closeModal={closeModal} />
+        <ModalHeader label={(isUpdate?'Update':'Add')+' product'} closeModal={closeModal} />
         <ModalBody>
           <View style={{ flexDirection: 'row' }}>
             <View style={{ flex: 1, paddingRight: 10 }}>
@@ -397,7 +293,6 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                 selectedValue={selectedCategory.id}
                 onValueChange={(itemValue, itemIndex) => {
                   selectCategory(categories[itemIndex]);
-                  setCategoryChanged(true);
                 }}
               >
                 {categories.length > 0 &&
@@ -414,7 +309,6 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                 selectedValue={selectedFamily.id}
                 onValueChange={(itemValue, itemIndex) => {
                   selectFamily(families[itemIndex]);
-                  setCategoryChanged(true);
                 }}
               >
                 {families.length > 0 &&
@@ -453,23 +347,6 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                 onBlur={checkInput}
               />
               {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
-              {/* <Text style={styles.label}>Size</Text>
-              <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} placeholderTextColor="#ccc"/> */}
-              <Text style={styles.label}>Description</Text>
-              <TextInput
-                style={[styles.input, styles.textarea]}
-                placeholder="Description"
-                value={DescriptionTxt}
-                multiline={true}
-                onChangeText={setDescriptionTxt}
-                placeholderTextColor="#ccc"
-              />
-              {/* <Text style={styles.label}>Item Id</Text>
-              <TextInput style={styles.input} placeholder="Description" value={ItemIdTxt} onChangeText={setItemIdTxt} placeholderTextColor="#ccc"/> */}
-              {/* <Text style={styles.label}>Quantity</Text>
-              <NumericInput   placeholder="Quantity" value={QuantityTxt} onChangeText={setQuantityTxt}></NumericInput> */}
-            </View>
-            <View style={{ flex: 1, paddingLeft: 10 }}>
               <Text style={styles.label}>Barcode</Text>
               <TextInput
                 style={[styles.input]}
@@ -478,6 +355,8 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                 onChangeText={setBarcodeTxt}
                 placeholderTextColor="#ccc"
               />
+            </View>
+            <View style={{ flex: 1, paddingLeft: 10 }}>
               <Text style={styles.label}>Serial Number</Text>
               <TextInput
                 style={styles.input}
@@ -486,10 +365,6 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                 onChangeText={setSerialNumber}
                 placeholderTextColor="#ccc"
               />
-              {/* <Text style={styles.label}>Home Location</Text>
-              <TextInput style={styles.input} placeholder="Home Location" value={HomeLocation} onChangeText={setHomeLocation} placeholderTextColor="#ccc"/>
-              <Text style={styles.label}>Current Location</Text>
-              <TextInput style={styles.input} placeholder="Current Location" value={CurrentLocation} onChangeText={setCurrentLocation} placeholderTextColor="#ccc"/> */}
               <Text style={styles.label}>Home Location</Text>
               <Picker
                 style={styles.select}
@@ -521,29 +396,6 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                     );
                   })}
               </Picker>
-
-              <Text style={styles.label}>Price Group</Text>
-              {/* <Picker
-                enabled={false}
-                style={styles.select}
-                selectedValue={selectedPriceGroup.id}
-                onValueChange={(itemValue, itemIndex) => {
-                  selectPriceGroup(PriceGroups[itemIndex]);
-                }}
-              >
-                {PriceGroups.length > 0 &&
-                  PriceGroups.map((group, index) => {
-                    return <Picker.Item key={index} label={group.price_group} value={group.id} />;
-                  })}
-              </Picker> */}
-              <TextInput
-                style={styles.input}
-                editable={false}
-                placeholder=""
-                value={selectedPriceGroup.price_group || ''}
-                placeholderTextColor="#ccc"
-              />
-
               <Text style={styles.label}>Status</Text>
               <Picker
                 style={styles.select}
@@ -559,6 +411,17 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                     );
                   })}
               </Picker>
+              <Text style={styles.label}>Description</Text>
+              <TextInput
+                style={[styles.input]}
+                placeholder="Description"
+                value={DescriptionTxt}
+                multiline={true}
+                onChangeText={setDescriptionTxt}
+                placeholderTextColor="#ccc"
+              />
+              {/* <Text style={styles.label}>Price Group</Text>
+              <Text style={[styles.input, {borderColor:'#666', color:'#666'}]}>{PriceGroupTxt}</Text> */}
             </View>
           </View>
         </ModalBody>
