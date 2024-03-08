@@ -228,7 +228,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
       size: SizeTxt,
       description: DescriptionTxt,
       item_id: ItemIdTxt,
-      // barcode: BarcodeTxt,
+      barcode: BarcodeTxt,
       quantity: QuantityTxt,
       serial_number: SerialNumber,
       home_location: selectedHomeLocation.id,
@@ -347,6 +347,16 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                 onBlur={checkInput}
               />
               {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
+              <Text style={styles.label}>Barcode</Text>
+              <TextInput
+                style={[styles.input]}
+                placeholder="Barcode"
+                value={BarcodeTxt}
+                onChangeText={setBarcodeTxt}
+                placeholderTextColor="#ccc"
+              />
+            </View>
+            <View style={{ flex: 1, paddingLeft: 10 }}>
               <Text style={styles.label}>Serial Number</Text>
               <TextInput
                 style={styles.input}
@@ -355,16 +365,6 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                 onChangeText={setSerialNumber}
                 placeholderTextColor="#ccc"
               />
-            </View>
-            <View style={{ flex: 1, paddingLeft: 10 }}>
-              {/* <Text style={styles.label}>Barcode</Text>
-              <TextInput
-                style={[styles.input]}
-                placeholder="Barcode"
-                value={BarcodeTxt}
-                onChangeText={setBarcodeTxt}
-                placeholderTextColor="#ccc"
-              /> */}
               <Text style={styles.label}>Home Location</Text>
               <Picker
                 style={styles.select}
@@ -413,7 +413,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
               </Picker>
               <Text style={styles.label}>Description</Text>
               <TextInput
-                style={[styles.input, styles.textarea]}
+                style={[styles.input]}
                 placeholder="Description"
                 value={DescriptionTxt}
                 multiline={true}

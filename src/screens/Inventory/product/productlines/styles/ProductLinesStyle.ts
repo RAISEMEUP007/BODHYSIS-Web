@@ -86,16 +86,11 @@ export const productLinesStyle = StyleSheet.create({
   },
   cell: {
     position: 'relative',
-    padding: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     width: 200,
     alignItems: 'flex-start',
     justifyContent: 'center',
-    paddingLeft: 6,
-  },
-  cellInput: {
-    width: 200,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
   },
   categoryCell: {
     width: 300,

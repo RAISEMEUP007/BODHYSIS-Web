@@ -24,6 +24,7 @@ import { msgStr } from '../../../../common/constants/Message';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 
 import { productModalstyles } from './styles/ProductModalStyle';
+import { getLocationsData } from '../../../../api/Settings';
 const QuickAddProductModal = ({
   isModalVisible,
   setUpdateProductsTrigger,
@@ -37,6 +38,7 @@ const QuickAddProductModal = ({
   const [categories, setCategories] = useState([]);
   const [families, setFamilies] = useState([]);
   const [lines, setLines] = useState([]);
+  const [Locations, setLocations] = useState([]);
   // const [PriceGroups, setPriceGroups] = useState([]);
   const StatusArr = [
     { id: 1, status: 'Ordered' },
@@ -51,7 +53,7 @@ const QuickAddProductModal = ({
   const [selectedFamily, selectFamily] = useState<{ [key: string]: any }>({});
   const [selectedLine, selectLine] = useState<{ [key: string]: any }>({});
   const [ProductTxt, setProductTxt] = useState('');
-  const [SizeTxt, setSizeTxt] = useState('');
+  // const [SizeTxt, setSizeTxt] = useState('');
   const [DescriptionTxt, setDescriptionTxt] = useState('');
   const [ItemIdTxt, setItemIdTxt] = useState('');
   const [BarcodeTxt, setBarcodeTxt] = useState('');
@@ -59,8 +61,10 @@ const QuickAddProductModal = ({
   const [SerialNumber, setSerialNumber] = useState('');
   const [HomeLocation, setHomeLocation] = useState('');
   const [CurrentLocation, setCurrentLocation] = useState('');
-  const [selectedPriceGroup, selectPriceGroup] = useState<{ [key: string]: any }>({});
+  // const [selectedPriceGroup, selectPriceGroup] = useState<{ [key: string]: any }>({});
   const [selectedStatus, selectStatus] = useState<{ [key: string]: any }>({});
+  const [selectedHomeLocation, selectHomeLocation] = useState<any>({});
+  const [selectedCurrentLocation, selectCurrentLocation] = useState<any>({});
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -84,6 +88,10 @@ const QuickAddProductModal = ({
         const response = await getProductCategoriesData();
         const categoriesData = await response.json();
         setCategories(categoriesData);
+
+        const response2 = await getLocationsData();
+        const locationsData = await response2.json();
+        setLocations(locationsData);
       } catch (error) {
         console.log(error);
       }
@@ -131,7 +139,7 @@ const QuickAddProductModal = ({
   }, [selectedCategory, selectedFamily]);
 
   const AddProductButtonHandler = () => {
-    if (!SizeTxt.trim()) {
+    if (!QuantityTxt.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
     }
@@ -139,20 +147,20 @@ const QuickAddProductModal = ({
     setIsLoading(true);
 
     const payload = {
-      product: selectedLine.line + ' ' + SizeTxt + ' ' + selectedCategory.category,
+      product: selectedLine.line + ' ' + selectedLine.line.size + ' ' + selectedCategory.category,
       category_id: selectedCategory.id,
       family_id: selectedFamily.id,
       line_id: selectedLine.id,
       line: selectedLine.line,
-      size: SizeTxt,
+      // size: SizeTxt,
       description: DescriptionTxt,
       item_id: ItemIdTxt,
       barcode: BarcodeTxt,
       quantity: 1,
       rowcounts: QuantityTxt,
       serial_number: SerialNumber,
-      home_location: HomeLocation,
-      current_location: CurrentLocation,
+      home_location: selectedHomeLocation.id,
+      current_location: selectedCurrentLocation.id,
       status: selectedStatus.id,
     };
     const handleResponse = (jsonRes, status) => {
@@ -180,7 +188,7 @@ const QuickAddProductModal = ({
   };
 
   const checkInput = () => {
-    if (!SizeTxt.trim()) {
+    if (!QuantityTxt.trim()) {
       setValidMessage(msgStr('emptyField'));
     } else {
       setValidMessage('');
@@ -257,13 +265,69 @@ const QuickAddProductModal = ({
               {(ValidMessage.trim() != '') && <Text style={styles.message}>{ValidMessage}</Text>} */}
               {/* <Text style={styles.label}>Size</Text>
               <TextInput style={styles.input} placeholder="Size" value={SizeTxt} onChangeText={setSizeTxt} onBlur={checkInput} placeholderTextColor="#ccc"/> */}
-              {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
               <Text style={styles.label}>Quantity</Text>
               <TextInput
                 style={[styles.input]}
                 placeholder="Quantity"
                 value={QuantityTxt}
                 onChangeText={setQuantityTxt}
+                onBlur={checkInput}
+                placeholderTextColor="#ccc"
+              />
+              {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
+              <Text style={styles.label}>Home Location</Text>
+              <Picker
+                style={styles.select}
+                selectedValue={selectedHomeLocation.id}
+                onValueChange={(itemValue, itemIndex) => {
+                  selectHomeLocation(Locations[itemIndex]);
+                }}
+              >
+                {Locations.length > 0 &&
+                  Locations.map((location, index) => {
+                    return (
+                      <Picker.Item key={index} label={location.location} value={location.id} />
+                    );
+                  })}
+              </Picker>
+
+              <Text style={styles.label}>Current Location</Text>
+              <Picker
+                style={styles.select}
+                selectedValue={selectedCurrentLocation.id}
+                onValueChange={(itemValue, itemIndex) => {
+                  selectCurrentLocation(Locations[itemIndex]);
+                }}
+              >
+                {Locations.length > 0 &&
+                  Locations.map((location, index) => {
+                    return (
+                      <Picker.Item key={index} label={location.location} value={location.id} />
+                    );
+                  })}
+              </Picker>
+              <Text style={styles.label}>Status</Text>
+              <Picker
+                style={styles.select}
+                selectedValue={selectedStatus.id}
+                onValueChange={(itemValue, itemIndex) => {
+                  selectStatus(StatusArr[itemIndex]);
+                }}
+              >
+                {StatusArr.length > 0 &&
+                  StatusArr.map((statusItem, index) => {
+                    return (
+                      <Picker.Item key={index} label={statusItem.status} value={statusItem.id} />
+                    );
+                  })}
+              </Picker>
+              <Text style={styles.label}>Description</Text>
+              <TextInput
+                style={[styles.input]}
+                placeholder="Description"
+                value={DescriptionTxt}
+                multiline={true}
+                onChangeText={setDescriptionTxt}
                 placeholderTextColor="#ccc"
               />
             </View>
