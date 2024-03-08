@@ -1,7 +1,7 @@
 import { getAPICall, postAPICall, basePostAPICall } from './BaseAPI';
 
-export const getProductCategoriesData = (callback) => {
-  getAPICall('product/getproductcategoriesdata', callback);
+export const getProductCategoriesData = async (callback = (jR, s, e)=>{}) => {
+  return await getAPICall('product/getproductcategoriesdata', callback);
 }
 
 export const createProductCategory = (payload, callback) => {
@@ -22,9 +22,9 @@ export const deleteProductCategory = (id, callback) => {
   postAPICall('product/deleteproductcategory', payload, callback);
 }
 
-export const getProductFamiliesData = (categoryId, callback) => {
+export const getProductFamiliesData = async (categoryId, callback = (jR, s, e)=>{}) => {
   if(!categoryId) categoryId = 0;
-  getAPICall('product/getproductfamiliesdata/'+categoryId, callback);
+  return await getAPICall('product/getproductfamiliesdata/'+categoryId, callback);
 }
 
 export const createProductFamily = (payload, callback) => {
@@ -40,8 +40,8 @@ export const deleteProductFamily = (id, callback) => {
   postAPICall('product/deleteproductfamily', payload, callback);
 }
 
-export const getProductLinesData = (familyId, callback) => {
-  getAPICall('product/getproductlinesdata/'+familyId, callback);
+export const getProductLinesData = async (familyId, callback = (jR, s, e)=>{}) => {
+  return await getAPICall('product/getproductlinesdata/'+familyId, callback);
 }
 
 export const updateProductLine = (payload, callback) => {

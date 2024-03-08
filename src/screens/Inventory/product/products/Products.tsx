@@ -506,7 +506,6 @@ const Products = ({ navigation, openInventory, data }) => {
           />
           <QuickAddProductModal
             isModalVisible={isQuickAddModalVisible}
-            Product={selectedProduct}
             setUpdateProductsTrigger={setUpdateProductsTrigger}
             closeModal={closeQuickAddProductModal}
           />

@@ -90,6 +90,15 @@ const MainDrawer = ({ navigation }) => {
           }}
         />
         <Drawer.Screen
+          name="Delivery Order"
+          component={ReservationScreen}
+          options={{
+            drawerLabel: 'Delivery Order',
+            unmountOnBlur: true,
+            headerShown: false,
+          }}
+        />
+        <Drawer.Screen
           name="Inventory"
           component={InventoryScreen}
           options={{
