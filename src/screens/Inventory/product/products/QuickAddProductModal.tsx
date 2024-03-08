@@ -41,9 +41,10 @@ const QuickAddProductModal = ({
   const [Locations, setLocations] = useState([]);
   // const [PriceGroups, setPriceGroups] = useState([]);
   const StatusArr = [
+    { id: 0, status: 'Ready' },
     { id: 1, status: 'Ordered' },
-    { id: 2, status: 'Ready' },
-    { id: 3, status: 'Checked out' },
+    { id: 2, status: 'Checked out' },
+    // { id: 3, status: 'Checked in' },
     { id: 4, status: 'Broken' },
     { id: 5, status: 'Sold' },
     { id: 6, status: 'Transferred' },
@@ -67,20 +68,12 @@ const QuickAddProductModal = ({
   const [selectedCurrentLocation, selectCurrentLocation] = useState<any>({});
 
   useEffect(() => {
-    if (Platform.OS === 'web') {
-      const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-          closeModal();
-        }
-      };
-
-      window.addEventListener('keydown', handleKeyDown);
-
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-      };
+    if (isModalVisible) {
+      setQuantityTxt('');
+      setDescriptionTxt('');
+      selectStatus(StatusArr[0]);
     }
-  }, [closeModal]);
+  }, [isModalVisible]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,6 +85,37 @@ const QuickAddProductModal = ({
         const response2 = await getLocationsData();
         const locationsData = await response2.json();
         setLocations(locationsData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+ 
+    fetchData();
+ }, [isModalVisible]);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getProductCategoriesData();
+        const categoriesData = await response.json();
+        setCategories(categoriesData);
+
+        if(categoriesData.length>0){
+          selectCategory(categoriesData[0])
+        }else selectCategory({});
+
+        const response2 = await getLocationsData();
+        const locationsData = await response2.json();
+        setLocations(locationsData);
+
+        if(locationsData.length>0){
+          selectHomeLocation(locationsData[0])
+          selectCurrentLocation(locationsData[0])
+        }else{
+          selectHomeLocation({});
+          selectCurrentLocation({});
+        } 
       } catch (error) {
         console.log(error);
       }
@@ -117,7 +141,7 @@ const QuickAddProductModal = ({
     }
 
     fetchData();
-  }, [selectedCategory]);
+  }, [isModalVisible, selectedCategory]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -151,7 +175,7 @@ const QuickAddProductModal = ({
       category_id: selectedCategory.id,
       family_id: selectedFamily.id,
       line_id: selectedLine.id,
-      line: selectedLine.line,
+      line: selectedLine,
       // size: SizeTxt,
       description: DescriptionTxt,
       item_id: ItemIdTxt,
@@ -163,6 +187,7 @@ const QuickAddProductModal = ({
       current_location: selectedCurrentLocation.id,
       status: selectedStatus.id,
     };
+
     const handleResponse = (jsonRes, status) => {
       switch (status) {
         case 201:

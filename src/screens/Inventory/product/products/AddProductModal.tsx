@@ -142,7 +142,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
           return status.id == Product.status;
         });
         if (initalStatus) selectStatus(initalStatus);
-      }
+      }else selectStatus(StatusArr[0]);
 
       setIsLoading(false);
     }
