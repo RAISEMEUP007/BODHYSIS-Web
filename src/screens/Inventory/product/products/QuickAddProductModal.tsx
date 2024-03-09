@@ -171,7 +171,7 @@ const QuickAddProductModal = ({
     setIsLoading(true);
 
     const payload = {
-      product: selectedLine.line + ' ' + selectedLine.line.size + ' ' + selectedCategory.category,
+      product: selectedLine.line + ' ' + selectedLine?.line?.size??'' + ' ' + selectedCategory.category,
       category_id: selectedCategory.id,
       family_id: selectedFamily.id,
       line_id: selectedLine.id,
