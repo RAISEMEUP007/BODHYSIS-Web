@@ -10,6 +10,7 @@ import Settings from './settings/Settings';
 import Customers from './customer/customers/Customers';
 import Reservations from './reservations/Reservations';
 import { logout } from '../api/Auth';
+import Orders from './orders/Orders';
 
 const MainDrawer = ({ navigation }) => {
   const { isLargeScreen } = useScreenSize();
@@ -34,6 +35,10 @@ const MainDrawer = ({ navigation }) => {
 
   const SettingsScreen = ({ navigation }) => {
     return <Settings navigation={navigation} />;
+  };
+
+  const DeliveryOrderScreen = ({ navigation }) => {
+    return <Orders navigation={navigation} />;
   };
 
   const DrawerContent = (props) => {
@@ -65,7 +70,7 @@ const MainDrawer = ({ navigation }) => {
   return (
     <>
       <Drawer.Navigator
-        initialRouteName="Reservation"
+        initialRouteName="Delivery Order"
         drawerContent={(props) => <DrawerContent {...props} />}
         screenOptions={{
           drawerType: Platform.OS == 'web' && isLargeScreen ? 'permanent' : 'front',
@@ -91,7 +96,7 @@ const MainDrawer = ({ navigation }) => {
         />
         <Drawer.Screen
           name="Delivery Order"
-          component={ReservationScreen}
+          component={DeliveryOrderScreen}
           options={{
             drawerLabel: 'Delivery Order',
             unmountOnBlur: true,
