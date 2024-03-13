@@ -6,6 +6,7 @@ import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 import OrdersList from './OrdersList';
 // import CreateOrder from './CreateOrder';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
+import { ActionOrder } from './ActionOrder';
 // import { ProceedOrder } from './ProceedOrder';
 
 interface Props {
@@ -37,13 +38,13 @@ const Orders = ({ navigation, initialData }: Props) => {
             openOrderScreen={handleItemClick}
           />
         );
-      // case 'Proceed Order':
-      //   return (
-      //     <ProceedOrder
-      //       openOrderScreen={handleItemClick}
-      //       initialData={data}
-      //     />
-      //   );
+      case 'Action Order':
+        return (
+          <ActionOrder
+            openOrderScreen={handleItemClick}
+            initialData={data}
+          />
+        );
       default:
         return (
           <View
@@ -72,11 +73,11 @@ const Orders = ({ navigation, initialData }: Props) => {
     <BasicLayout navigation={navigation} screenName={'Orders'}>
       <ScrollView>
         <View style={styles.container}>
-          <TouchNavGroup
+          {/* <TouchNavGroup
             sectionTitle="Create Resservation"
             items={[{ title: 'Create Orders', icon: 'check' }]}
             handleItemClick={handleItemClick}
-          />
+          /> */}
           <TouchNavGroup
             sectionTitle="Orders List"
             items={[{ title: 'Orders List', icon: 'table' }]}

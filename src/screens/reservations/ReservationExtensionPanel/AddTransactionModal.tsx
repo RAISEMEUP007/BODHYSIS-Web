@@ -239,7 +239,7 @@ const AddTransactionModal = ({
               </View>
             </View>
           </View>
-          <Text style={styles.label}>Status</Text>
+          <Text style={styles.label}>Method</Text>
           <Picker
             style={styles.select}
             selectedValue={paymentMethod}

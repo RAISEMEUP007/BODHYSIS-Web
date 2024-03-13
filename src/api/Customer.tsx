@@ -1,41 +1,41 @@
 import { getAPICall, postAPICall } from './BaseAPI';
 
-export const getCustomersData = (callback) => {
-  getAPICall('customer/getcustomersdata/', callback);
+export const getCustomersData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('customer/getcustomersdata/', cb);
 }
 
-export const updateCustomer = (payload, callback) => {
-  postAPICall('customer/updatecustomer', payload, callback);
+export const updateCustomer = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('customer/updatecustomer', payload, cb);
 };
 
-export const createCustomer = (payload, callback) => {
-  postAPICall('customer/createcustomer', payload, callback);
+export const createCustomer = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('customer/createcustomer', payload, cb);
 };
 
-export const deleteCustomer = (id, callback) => {
+export const deleteCustomer = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('customer/deletecustomer', payload, callback);
+  postAPICall('customer/deletecustomer', payload, cb);
 }
 
-export const getDeliveryAddressesData = (customerId, callback) => {
-  postAPICall('customer/getdeliveryaddressesdata/', {customer_id: customerId}, callback);
+export const getDeliveryAddressesData = (customerId, cb=(jR, s, e)=>{}) => {
+  postAPICall('customer/getdeliveryaddressesdata/', {customer_id: customerId}, cb);
 }
 
-export const updateDeliveryAddress = (payload, callback) => {
+export const updateDeliveryAddress = (payload, cb=(jR, s, e)=>{}) => {
   console.log(payload);
-  postAPICall('customer/updatedeliverydddress', payload, callback);
+  postAPICall('customer/updatedeliverydddress', payload, cb);
 };
 
-export const createDeliveryAddress = (payload, callback) => {
-  postAPICall('customer/createdeliverydddress', payload, callback);
+export const createDeliveryAddress = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('customer/createdeliverydddress', payload, cb);
 };
 
-export const deleteDeliveryAddress = (id, callback) => {
+export const deleteDeliveryAddress = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('customer/deletedeliverydddress', payload, callback);
+  postAPICall('customer/deletedeliverydddress', payload, cb);
 }
 
-export const deleteDeliveryAddressByCId = (customerId, callback) => {
+export const deleteDeliveryAddressByCId = (customerId, cb=(jR, s, e)=>{}) => {
   const payload = { customerId };
-  postAPICall('customer/deletedeliveryaddressbycid', payload, callback);
+  postAPICall('customer/deletedeliveryaddressbycid', payload, cb);
 }

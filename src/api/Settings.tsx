@@ -1,307 +1,307 @@
 import { basePostAPICall, getAPICall, postAPICall } from './BaseAPI';
 
-export const getManufacturesData = (callback) => {
-  getAPICall('settings/getmanufacturesdata/', callback);
+export const getManufacturesData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('settings/getmanufacturesdata/', cb);
 }
 
-export const updateManufacture = (payload, callback) => {
-  postAPICall('settings/updatemanufacture', payload, callback);
+export const updateManufacture = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/updatemanufacture', payload, cb);
 };
 
-export const createManufacture = (payload, callback) => {
-  postAPICall('settings/createmanufacture', payload, callback);
+export const createManufacture = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/createmanufacture', payload, cb);
 };
 
-export const deleteManufacture = (id, callback) => {
+export const deleteManufacture = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletemanufacture', payload, callback);
+  postAPICall('settings/deletemanufacture', payload, cb);
 }
 
-export const getTagsData = (callback) => {
-  getAPICall('settings/gettagsdata/', callback);
+export const getTagsData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('settings/gettagsdata/', cb);
 }
 
-export const updateTag = (payload, callback) => {
-  postAPICall('settings/updatetag', payload, callback);
+export const updateTag = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/updatetag', payload, cb);
 };
 
-export const createTag = (payload, callback) => {
-  postAPICall('settings/createtag', payload, callback);
+export const createTag = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/createtag', payload, cb);
 };
 
-export const deleteTag = (id, callback) => {
+export const deleteTag = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletetag', payload, callback);
+  postAPICall('settings/deletetag', payload, cb);
 }
 
-export const getLocationsData = async (callback = (jR, s, e)=>{}) => {
-  return await getAPICall('settings/getlocationsdata/', callback);
+export const getLocationsData = async (cb = (jR, s, e)=>{}) => {
+  return await getAPICall('settings/getlocationsdata/', cb);
 }
 
-export const updateLocation = (payload, callback) => {
-  postAPICall('settings/updatelocation', payload, callback);
+export const updateLocation = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/updatelocation', payload, cb);
 };
 
-export const createLocation = (payload, callback) => {
-  postAPICall('settings/createlocation', payload, callback);
+export const createLocation = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/createlocation', payload, cb);
 };
 
-export const deleteLocation = (id, callback) => {
+export const deleteLocation = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletelocation', payload, callback);
+  postAPICall('settings/deletelocation', payload, cb);
 }
 
-export const getCountriesData = (callback) => {
-  getAPICall('settings/getcountriesdata/', callback);
+export const getCountriesData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('settings/getcountriesdata/', cb);
 }
 
-export const updateCountry = (payload, callback) => {
-  postAPICall('settings/updatecountry', payload, callback);
+export const updateCountry = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/updatecountry', payload, cb);
 };
 
-export const createCountry = (payload, callback) => {
-  postAPICall('settings/createcountry', payload, callback);
+export const createCountry = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/createcountry', payload, cb);
 };
 
-export const deleteCountry = (id, callback) => {
+export const deleteCountry = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletecountry', payload, callback);
+  postAPICall('settings/deletecountry', payload, cb);
 }
 
-export const getLanguagesData = (callback) => {
-  getAPICall('settings/getlanguagesdata/', callback);
+export const getLanguagesData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('settings/getlanguagesdata/', cb);
 }
 
-export const updateLanguage = (payload, callback) => {
-  postAPICall('settings/updatelanguage', payload, callback);
+export const updateLanguage = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/updatelanguage', payload, cb);
 };
 
-export const createLanguage = (payload, callback) => {
-  postAPICall('settings/createlanguage', payload, callback);
+export const createLanguage = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/createlanguage', payload, cb);
 };
 
-export const deleteLanguage = (id, callback) => {
+export const deleteLanguage = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletelanguage', payload, callback);
+  postAPICall('settings/deletelanguage', payload, cb);
 }
 
-export const getDocumentsData = (callback) => {
-  getAPICall('settings/getdocumentsdata', callback);
+export const getDocumentsData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('settings/getdocumentsdata', cb);
 }
 
-export const createDocument = (payload, callback) => {
-  basePostAPICall('settings/createdocument', {}, payload, callback);
+export const createDocument = (payload, cb=(jR, s, e)=>{}) => {
+  basePostAPICall('settings/createdocument', {}, payload, cb);
 };
 
-export const updateDocument = (payload, callback) => {
-  basePostAPICall('settings/updatedocument', {}, payload, callback);
+export const updateDocument = (payload, cb=(jR, s, e)=>{}) => {
+  basePostAPICall('settings/updatedocument', {}, payload, cb);
 };
 
-export const deleteDocument = (id, callback) => {
+export const deleteDocument = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletedocument', payload, callback);
+  postAPICall('settings/deletedocument', payload, cb);
 }
 
-export const getReservationTypesData = (callback) => {
-  getAPICall('settings/getreservationtypesdata', callback);
+export const getReservationTypesData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('settings/getreservationtypesdata', cb);
 }
 
-export const createReservationType = (payload, callback) => {
-  basePostAPICall('settings/createreservationtype', {}, payload, callback);
+export const createReservationType = (payload, cb=(jR, s, e)=>{}) => {
+  basePostAPICall('settings/createreservationtype', {}, payload, cb);
 };
 
-export const updateReservationType = (payload, callback) => {
-  basePostAPICall('settings/updatereservationtype', {}, payload, callback);
+export const updateReservationType = (payload, cb=(jR, s, e)=>{}) => {
+  basePostAPICall('settings/updatereservationtype', {}, payload, cb);
 };
 
-export const deleteReservationType = (id, callback) => {
+export const deleteReservationType = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletereservationtype', payload, callback);
+  postAPICall('settings/deletereservationtype', payload, cb);
 }
 
-export const getTrucksData = (callback) => {
-  getAPICall('settings/gettrucksdata/', callback);
+export const getTrucksData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('settings/gettrucksdata/', cb);
 }
 
-export const updateTruck = (payload, callback) => {
-  postAPICall('settings/updatetruck', payload, callback);
+export const updateTruck = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/updatetruck', payload, cb);
 };
 
-export const createTruck = (payload, callback) => {
-  postAPICall('settings/createtruck', payload, callback);
+export const createTruck = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/createtruck', payload, cb);
 };
 
-export const deleteTruck = (id, callback) => {
+export const deleteTruck = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletetruck', payload, callback);
+  postAPICall('settings/deletetruck', payload, cb);
 }
 
-export const getTimezonesData = (callback) => {
-  getAPICall('settings/gettimezonesdata/', callback);
+export const getTimezonesData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('settings/gettimezonesdata/', cb);
 }
 
-export const updateTimezone = (payload, callback) => {
-  postAPICall('settings/updatetimezone', payload, callback);
+export const updateTimezone = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/updatetimezone', payload, cb);
 };
 
-export const createTimezone = (payload, callback) => {
-  postAPICall('settings/createtimezone', payload, callback);
+export const createTimezone = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/createtimezone', payload, cb);
 };
 
-export const deleteTimezone = (id, callback) => {
+export const deleteTimezone = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletetimezone', payload, callback);
+  postAPICall('settings/deletetimezone', payload, cb);
 }
 
-export const getCurrenciesData = (callback) => {
-  getAPICall('settings/getcurrenciesdata/', callback);
+export const getCurrenciesData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('settings/getcurrenciesdata/', cb);
 }
 
-export const updateCurrency = (payload, callback) => {
-  postAPICall('settings/updatecurrency', payload, callback);
+export const updateCurrency = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/updatecurrency', payload, cb);
 };
 
-export const createCurrency = (payload, callback) => {
-  postAPICall('settings/createcurrency', payload, callback);
+export const createCurrency = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/createcurrency', payload, cb);
 };
 
-export const deleteCurrency = (id, callback) => {
+export const deleteCurrency = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletecurrency', payload, callback);
+  postAPICall('settings/deletecurrency', payload, cb);
 }
 
-export const getDateformatsData = (callback) => {
-  getAPICall('settings/getdateformatsdata/', callback);
+export const getDateformatsData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('settings/getdateformatsdata/', cb);
 }
 
-export const updateDateformat = (payload, callback) => {
-  postAPICall('settings/updatedateformat', payload, callback);
+export const updateDateformat = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/updatedateformat', payload, cb);
 };
 
-export const createDateformat = (payload, callback) => {
-  postAPICall('settings/createdateformat', payload, callback);
+export const createDateformat = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/createdateformat', payload, cb);
 };
 
-export const deleteDateformat = (id, callback) => {
+export const deleteDateformat = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletedateformat', payload, callback);
+  postAPICall('settings/deletedateformat', payload, cb);
 }
 
-export const getTimeformatsData = (callback) => {
-  getAPICall('settings/gettimeformatsdata/', callback);
+export const getTimeformatsData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('settings/gettimeformatsdata/', cb);
 }
 
-export const updateTimeformat = (payload, callback) => {
-  postAPICall('settings/updatetimeformat', payload, callback);
+export const updateTimeformat = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/updatetimeformat', payload, cb);
 };
 
-export const createTimeformat = (payload, callback) => {
-  postAPICall('settings/createtimeformat', payload, callback);
+export const createTimeformat = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/createtimeformat', payload, cb);
 };
 
-export const deleteTimeformat = (id, callback) => {
+export const deleteTimeformat = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletetimeformat', payload, callback);
+  postAPICall('settings/deletetimeformat', payload, cb);
 }
 
-export const getStoreDetail = async (brandId, callback) => {
-  return await getAPICall('settings/getstoredetail/' + brandId, callback);
+export const getStoreDetail = async (brandId, cb=(jR, s, e)=>{}) => {
+  return await getAPICall('settings/getstoredetail/' + brandId, cb);
 }
 
-export const updateStoreDetail = (payload, callback) => {
-  basePostAPICall('settings/updatestoredetail', {}, payload, callback);
+export const updateStoreDetail = (payload, cb=(jR, s, e)=>{}) => {
+  basePostAPICall('settings/updatestoredetail', {}, payload, cb);
 };
 
-export const getDiscountCodesData = (callback) => {
-  getAPICall('settings/getdiscountcodesdata/', callback);
+export const getDiscountCodesData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('settings/getdiscountcodesdata/', cb);
 }
 
-export const updateDiscountCode = (payload, callback) => {
-  postAPICall('settings/updatediscountcode', payload, callback);
+export const updateDiscountCode = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/updatediscountcode', payload, cb);
 };
 
-export const createDiscountCode = (payload, callback) => {
-  postAPICall('settings/creatediscountcode', payload, callback);
+export const createDiscountCode = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/creatediscountcode', payload, cb);
 };
 
-export const quickAddDiscountCode = (payload, callback) => {
-  postAPICall('settings/quickadddiscountcode', payload, callback);
+export const quickAddDiscountCode = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/quickadddiscountcode', payload, cb);
 };
 
-export const deleteDiscountCode = (id, callback) => {
+export const deleteDiscountCode = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletediscountcode', payload, callback);
+  postAPICall('settings/deletediscountcode', payload, cb);
 }
 
-export const getExclusionsData = (DiscountCodeId, callback) => {
-  postAPICall('settings/getexclusionsdata/', {discountcode_id: DiscountCodeId}, callback);
+export const getExclusionsData = (DiscountCodeId, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/getexclusionsdata/', {discountcode_id: DiscountCodeId}, cb);
 }
 
-export const updateExclusion = (payload, callback) => {
-  postAPICall('settings/updateexclusion', payload, callback);
+export const updateExclusion = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/updateexclusion', payload, cb);
 };
 
-export const createExclusion = (payload, callback) => {
-  postAPICall('settings/createexclusion', payload, callback);
+export const createExclusion = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/createexclusion', payload, cb);
 };
 
-export const deleteExclusion = (id, callback) => {
+export const deleteExclusion = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deleteexclusion', payload, callback);
+  postAPICall('settings/deleteexclusion', payload, cb);
 }
 
-export const deleteExclusionByDCId = (DiscountCodeId, callback) => {
+export const deleteExclusionByDCId = (DiscountCodeId, cb=(jR, s, e)=>{}) => {
   const payload = { DiscountCodeId };
-  postAPICall('settings/deleteexclusionbydcid', payload, callback);
+  postAPICall('settings/deleteexclusionbydcid', payload, cb);
 }
 
-export const getTaxcodesData = (callback) => {
-  getAPICall('settings/gettaxcodesdata/', callback);
+export const getTaxcodesData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('settings/gettaxcodesdata/', cb);
 }
 
-export const updateTaxcode = (payload, callback) => {
-  postAPICall('settings/updatetaxcode', payload, callback);
+export const updateTaxcode = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/updatetaxcode', payload, cb);
 };
 
-export const createTaxcode = (payload, callback) => {
-  postAPICall('settings/createtaxcode', payload, callback);
+export const createTaxcode = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/createtaxcode', payload, cb);
 };
 
-export const deleteTaxcode = (id, callback) => {
+export const deleteTaxcode = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletetaxcode', payload, callback);
+  postAPICall('settings/deletetaxcode', payload, cb);
 }
 
-export const getColorcombinationsData = (callback) => {
-  getAPICall('settings/getcolorcombinationsdata/', callback);
+export const getColorcombinationsData = async (cb=(jR, s, e)=>{}) => {
+  return await getAPICall('settings/getcolorcombinationsdata/', cb);
 }
 
-export const updateColorcombination = (payload, callback) => {
-  postAPICall('settings/updatecolorcombination', payload, callback);
+export const updateColorcombination = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/updatecolorcombination', payload, cb);
 };
 
-export const createColorcombination = (payload, callback) => {
-  postAPICall('settings/createcolorcombination', payload, callback);
+export const createColorcombination = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('settings/createcolorcombination', payload, cb);
 };
 
-export const deleteColorcombination = (id, callback) => {
+export const deleteColorcombination = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deletecolorcombination', payload, callback);
+  postAPICall('settings/deletecolorcombination', payload, cb);
 }
 
-export const getExtrasData = (callback) => {
-  getAPICall('settings/getextrasdata', callback);
+export const getExtrasData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('settings/getextrasdata', cb);
 }
 
-export const createExtra = (payload, callback) => {
-  basePostAPICall('settings/createextra', {}, payload, callback);
+export const createExtra = (payload, cb=(jR, s, e)=>{}) => {
+  basePostAPICall('settings/createextra', {}, payload, cb);
 };
 
-export const updateExtra = (payload, callback) => {
-  basePostAPICall('settings/updateextra', {}, payload, callback);
+export const updateExtra = (payload, cb=(jR, s, e)=>{}) => {
+  basePostAPICall('settings/updateextra', {}, payload, cb);
 };
 
-export const deleteExtra = (id, callback) => {
+export const deleteExtra = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
-  postAPICall('settings/deleteextra', payload, callback);
+  postAPICall('settings/deleteextra', payload, cb);
 }

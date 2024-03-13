@@ -1,33 +1,33 @@
 import { basePostAPICall, getAPICall, postAPICall } from './BaseAPI';
 
-export const verifyQauntity = async (payload, callback) => {
-  return await postAPICall('reservation/verifyquantity', payload, callback);
+export const verifyQauntity = async (payload, cb=(jR, s, e)=>{}) => {
+  return await postAPICall('reservation/verifyquantity', payload, cb);
 };
 
-export const createReservation = (payload, callback) => {
-  postAPICall('reservations/createreservation', payload, callback);
+export const createReservation = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('reservations/createreservation', payload, cb);
 };
 
-export const getReservationsData = (callback) => {
-  getAPICall('reservations/getreservationsdata/', callback);
+export const getReservationsData = (cb=(jR, s, e)=>{}) => {
+  getAPICall('reservations/getreservationsdata/', cb);
 }
 
-export const getReservationDetail = (id, callback) => {
-  getAPICall('reservations/getreservationdetails/' + id, callback);
+export const getReservationDetail = async (id, cb=(jR, s, e)=>{}) => {
+  return await getAPICall('reservations/getreservationdetails/' + id, cb);
 }
 
-export const updateReservation = (payload, callback) => {
-  postAPICall('reservations/updatereservation', payload, callback);
+export const updateReservation = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('reservations/updatereservation', payload, cb);
 };
 
-export const deleteReservationItem = (payload, callback) => {
-  postAPICall('reservation/removereservationitem', payload, callback);
+export const deleteReservationItem = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('reservation/removereservationitem', payload, cb);
 };
 
-export const createTransaction = (payload, callback) => {
-  postAPICall('reservation/createtransaction', payload, callback);
+export const createTransaction = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('reservation/createtransaction', payload, cb);
 };
 
-export const  getTransactionsData= (payload, callback) => {
-  postAPICall('reservation/gettransactionsdata/', payload, callback);
+export const  getTransactionsData= (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('reservation/gettransactionsdata/', payload, cb);
 }

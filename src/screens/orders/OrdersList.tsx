@@ -50,17 +50,6 @@ const OrdersList = ({ openOrderScreen }) => {
   };
 
   const renderTableData = () => {
-    const convertStageToString = (stage) => {
-      switch (stage) {
-        case null: case 'null': return 'Draft';
-        case 0: case '0': return 'Draft';
-        case 1: case '1': return 'Provisional';
-        case 2: case '2': return 'Confirmed';
-        case 3: case '3': return 'Checked out';
-        case 4: case '4': return 'Checked in';
-        default:  return 'Invalid stage';
-      }
-    }
 
     const rows = [];
     if (tableData.length > 0) {
@@ -72,12 +61,6 @@ const OrdersList = ({ openOrderScreen }) => {
             </View>
             <View style={[styles.cell]}>
               <Text>{item.brand}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.start_location}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.end_location}</Text>
             </View>
             <View style={[styles.cell]}>
               <Text>{item.start_date ? new Date(item.start_date).toLocaleString('en-US', {
@@ -102,15 +85,18 @@ const OrdersList = ({ openOrderScreen }) => {
               </Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.discount_code}</Text>
+              <Text>{item.start_location}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{convertStageToString(item.stage)}</Text>
+              <Text>{item.end_location}</Text>
+            </View>
+            <View style={[styles.IconCell]}>
+              <Text>{item?.color_id?'YES':'NO'}</Text>
             </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
-                  openOrderScreen('Proceed Order', {orderId:item.id})
+                  openOrderScreen('Action Order', {orderId:item.id})
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="arrow-right" color="black" />
@@ -144,13 +130,12 @@ const OrdersList = ({ openOrderScreen }) => {
             <View style={styles.tableHeader}>
               <Text style={[styles.columnHeader]}>{'Customer Name'}</Text>
               <Text style={[styles.columnHeader]}>{'Brand'}</Text>
-              <Text style={[styles.columnHeader]}>{'Start Location'}</Text>
-              <Text style={[styles.columnHeader]}>{'End Location'}</Text>
               <Text style={[styles.columnHeader]}>{'Start Date'}</Text>
               <Text style={[styles.columnHeader]}>{'End Date'}</Text>
-              <Text style={[styles.columnHeader]}>{'Promo Code'}</Text>
-              <Text style={[styles.columnHeader]}>{'Stage'}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{'Proceed'}</Text>
+              <Text style={[styles.columnHeader]}>{'Start Location'}</Text>
+              <Text style={[styles.columnHeader]}>{'End Location'}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{'Locked'}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{'Action'}</Text>
               {/* <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text> */}
             </View>
             <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
