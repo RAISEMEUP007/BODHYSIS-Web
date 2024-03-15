@@ -98,7 +98,7 @@ const Trucks = ({ navigation, openInventory }) => {
       tableData.map((item, index) => {
         rows.push(
           <View key={index} style={styles.tableRow}>
-            <View style={[styles.cell, { width: 300 }]}>
+            <View style={[styles.cell, {width:200}]}>
               <Text>{item.name}</Text>
             </View>
             <View style={[styles.cell]}>
@@ -106,6 +106,27 @@ const Trucks = ({ navigation, openInventory }) => {
             </View>
             <View style={[styles.cell]}>
               <Text>{item.barcode}</Text>
+            </View>
+            <View style={[styles.cell]}>
+              <Text>{item.max_capacity}</Text>
+            </View>
+            <View style={[styles.cell]}>
+              <Text>{item.hhi_resort}</Text>
+            </View>
+            <View style={[styles.cell]}>
+              <Text>{item.ocean1}</Text>
+            </View>
+            <View style={[styles.cell]}>
+              <Text>{item.pd_pass}</Text>
+            </View>
+            <View style={[styles.cell]}>
+              <Text>{item.sp_pass}</Text>
+            </View>
+            <View style={[styles.cell]}>
+              <Text>{item.sy_pass}</Text>
+            </View>
+            <View style={[styles.cell]}>
+              <Text>{item.notes}</Text>
             </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity
@@ -151,9 +172,16 @@ const Trucks = ({ navigation, openInventory }) => {
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader, { width: 300 }]}>{'Name'}</Text>
+              <Text style={[styles.columnHeader, {width:200}]}>{'Name'}</Text>
               <Text style={[styles.columnHeader]}>{'Short Name'}</Text>
               <Text style={[styles.columnHeader]}>{'Barcode'}</Text>
+              <Text style={[styles.columnHeader]}>{'Max Capacity'}</Text>
+              <Text style={[styles.columnHeader]}>{'HHI Resort'}</Text>
+              <Text style={[styles.columnHeader]}>{'Ocean1'}</Text>
+              <Text style={[styles.columnHeader]}>{'PD Pass'}</Text>
+              <Text style={[styles.columnHeader]}>{'SP Pass'}</Text>
+              <Text style={[styles.columnHeader]}>{'SY Pass'}</Text>
+              <Text style={[styles.columnHeader]}>{'Actions'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
             </View>

@@ -95,11 +95,6 @@ export const trucksStyle = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
-  cellInput: {
-    width: 150,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
   categoryCell: {
     width: 300,
     paddingHorizontal: 6,
