@@ -171,18 +171,14 @@ const QuickAddProductModal = ({
     setIsLoading(true);
 
     const payload = {
-      product: selectedLine.line + ' ' + selectedLine?.line?.size??'' + ' ' + selectedCategory.category,
       category_id: selectedCategory.id,
       family_id: selectedFamily.id,
       line_id: selectedLine.id,
       line: selectedLine,
-      // size: SizeTxt,
       description: DescriptionTxt,
       item_id: ItemIdTxt,
-      barcode: BarcodeTxt,
       quantity: 1,
       rowcounts: QuantityTxt,
-      serial_number: SerialNumber,
       home_location: selectedHomeLocation.id,
       current_location: selectedCurrentLocation.id,
       status: selectedStatus.id,
