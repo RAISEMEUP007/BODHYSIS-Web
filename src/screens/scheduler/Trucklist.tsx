@@ -53,7 +53,8 @@ const Trucklist = ({ trucks, style }: Props) => {
 
 const styles = StyleSheet.create({
   table: {
-    height: '100%',
+    // height: '100%',
+    flex:1,
     borderWidth: 1,
     borderColor: '#b3b3b3',
   },
@@ -84,7 +85,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   selectedRow: {
-    backgroundColor: 'lightblue',
+    backgroundColor: '#d6d8d9',
+    color: '#1b1e21',
   },
   alignRight:{
     textAlign:'right',
