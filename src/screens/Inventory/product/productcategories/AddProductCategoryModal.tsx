@@ -35,7 +35,7 @@ const AddProductCategoryModal = ({
 
   const [_productCategory, setProductCategory] = useState('');
   const [Tags, setTags] = useState([]);
-  const [selectedTag, selectTag] = useState({});
+  const [selectedTag, selectTag] = useState<any>({});
 
   const inputRef = useRef(null);
   const defaultInputRef = useRef(null);
@@ -108,7 +108,7 @@ const AddProductCategoryModal = ({
     });
   };
 
-  const loadTagData = (callback) => {
+  const loadTagData = () => {
     getTagsData((jsonRes, status, error) => {
       switch (status) {
         case 200:
@@ -167,7 +167,7 @@ const AddProductCategoryModal = ({
               {imagePreviewUrl ? (
                 <Image source={{ uri: imagePreviewUrl }} style={styles.previewImage} />
               ) : (
-                <View style={styles.imageBox}>
+                <View>
                   <Text style={styles.boxText}>Click to choose an image</Text>
                 </View>
               )}
@@ -182,7 +182,7 @@ const AddProductCategoryModal = ({
           <Text style={styles.label}>Tag</Text>
           <Picker
             style={styles.select}
-            selectedValue={selectedTag.id}
+            selectedValue={selectedTag?.id??null}
             onValueChange={(itemValue, itemIndex) => {
               selectTag(Tags[itemIndex]);
             }}

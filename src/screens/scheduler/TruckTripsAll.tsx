@@ -1,56 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ViewStyle } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
-import { TextSmallSize } from '../../common/constants/Fonts';
+import { getDrivers } from '../../api/User';
 
 interface Props {
+  Trucks: Array<any>,
   style?: ViewStyle;
 }
 
-const TruckTrips = ({ style }: Props) => {
-  const [selectedItem, setSelectedItem] = useState(null);
+const TruckTripsAll = ({ Trucks, style }: Props) => {
+  const [drivers, setDrivers] = useState();
 
-  const data = [
-    {
-      id: 1,
-      truck_id: 2,
-      selected: false,
-      orderedList: [
-        { id: '1', truck: 'A1', driver_id: 'D1', reservation_id: '1', location: 'Location A', type:1 },
-        { id: '2', truck: 'B1', driver_id: 'D2', reservation_id: '2', location: 'Location B', type:2 },
-      ]
-    },
-    {
-      id: 2,
-      truck_id: 2,
-      selected: true,
-      orderedList: [
-        { id: '1', truck: 'C1', driver_id: 'D3', reservation_id: '3', location: 'Location C', type:3 },
-        { id: '2', truck: 'D1', driver_id: 'D4', reservation_id: '4', location: 'Location D', type:2 },
-      ]
-    }
-  ];
+  useEffect(()=>{
+    getDrivers((jsonRes)=>{
+      setDrivers(jsonRes.map(item=>({id:item.id, title:item.name})))
+    });
+  }, []);
 
-  const renderTrips = (trips) => {
-    return trips.map((trip, index) => {
+  const renderTrips = (truck) => {
+    return truck.trips.map((trip, index) => {
       return (
-        <View key={index} style={[styles.tripTicket, index == 1 && styles.selectedTicketOut]}>
-          <View style={[{flex:1, margin:3, padding:9}, index == 1 && styles.selectedTicketIn]}>
+        <View key={index} style={[styles.tripTicket, index == 100 && styles.selectedTicketOut]}>
+          <View style={[{flex:1, margin:3, padding:9}, index == 100 && styles.selectedTicketIn]}>
             <View style={styles.tripHeader}>
+              <Text style={styles.tripNo}>{truck.truck}</Text>
               <Text style={styles.tripNo}>{`Trip #${index + 1}`}</Text>
             </View>
             <AutocompleteDropdown
               clearOnFocus={false}
-              closeOnBlur={true}
-              closeOnSubmit={false}
-              onSelectItem={setSelectedItem}
-              dataSet={[
-                { id: '1', title: 'Alpha' },
-                { id: '2', title: 'Beta' },
-                { id: '3', title: 'Gamma' },
-              ]}
+              showChevron={false}
+              closeOnBlur={false}
+              // closeOnSubmit={false}
+              onSelectItem={item => {
+
+              }}
+              onBlur={()=>{
+
+              }}
+              dataSet={drivers}
               emptyResultText={'No Driver'}
               containerStyle={{ marginTop:15, }}
               inputContainerStyle={{
@@ -71,13 +60,19 @@ const TruckTrips = ({ style }: Props) => {
                 },
               }}
               rightButtonsContainerStyle={{
-                right: 16,
+                right: 24,
+                // marginRight: 16,
                 height: 30,
                 alignSelf: 'center',
               }}
+              suggestionsListContainerStyle={{ 
+                borderWidth: 1,
+                borderColor: '#bfbfbf',
+              }}
+              renderItem={(item, text) => <Text style={{ color: '#333333', padding: 10 }}>{item.title}</Text>}
             />
             <View style={styles.orderedList}>
-              <ScrollView>
+              <ScrollView style={{height:250}}>
                 {renderOrderList(trip.orderedList)}
               </ScrollView>
             </View>
@@ -120,14 +115,15 @@ const TruckTrips = ({ style }: Props) => {
 
   return (
     <View  style={style}>
-      <View style={styles.TruckTripsContainer}>
-        <ScrollView horizontal={true}>
-          {renderTrips(data)}
-          <TouchableOpacity style={[styles.tripTicket, styles.plusButton]}>
-            <FontAwesome5 name="plus-circle" size={36} color="#666"></FontAwesome5>
-          </TouchableOpacity>
-        </ScrollView>
-      </View>
+      <ScrollView horizontal={true}>
+        <View style={styles.TruckTripsContainer}>
+          {Trucks && Trucks.map((truck, index) => (
+            <ScrollView key={index} style={styles.scrollColumn}>
+              {renderTrips(truck)}
+            </ScrollView>
+          ))}
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -135,9 +131,15 @@ const TruckTrips = ({ style }: Props) => {
 const styles = StyleSheet.create({
   TruckTripsContainer: {
     flexDirection: 'row',
-    height: '100%',
-    paddingHorizontal:12,
-    backgroundColor:'#e5e4e4',
+    paddingLeft:20,
+    paddingVertical:10,
+    backgroundColor:'#C1C1C1',
+  },
+  scrollColumn: {
+    paddingRight: 10,
+    marginRight: 20,
+    borderRightWidth: 1,
+    borderColor: '#0088cc',
   },
   tripTicket: {
     flex:1,
@@ -146,8 +148,7 @@ const styles = StyleSheet.create({
     borderWidth:0,
     borderColor: '#bfbfbf',
     width: 300,
-    marginRight: 12,
-    marginVertical: 12,
+    marginBottom: 12,
   },
   selectedTicketOut: {
     borderWidth: 1,
@@ -158,7 +159,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 1, // Shadow opacity
     shadowRadius: 20, // Shadow radius
     elevation: 5, // Elevation for Android
-  
   },
   selectedTicketIn: {
     borderWidth: 1,
@@ -176,7 +176,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tripHeader: {
-    flexDirection:'row-reverse',
+    flexDirection:'row',
+    justifyContent:'space-between',
     padding: 6,
     paddingRight: 10,
   },
@@ -202,4 +203,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TruckTrips;
+export default TruckTripsAll;

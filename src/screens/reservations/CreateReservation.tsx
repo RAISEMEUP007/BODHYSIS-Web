@@ -463,8 +463,8 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     <input
       onClick={onClick}
       onChange={onChange}
-      ref={ref}
-      style={styles.input}
+      // ref={ref}
+      style={styles.dateInput}
       value={value}
     ></input>
   ))
