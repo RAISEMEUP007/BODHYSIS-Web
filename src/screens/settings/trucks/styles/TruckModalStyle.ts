@@ -13,7 +13,7 @@ export const truckModalstyles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
     paddingHorizontal: 8,
-    width: 400,
+    width: 350,
   },
   inputDisable: {
     borderColor: '#ddd',

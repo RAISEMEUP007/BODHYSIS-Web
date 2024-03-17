@@ -332,7 +332,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
             placeholder="Holdback Percentage"
             value={HoldbackTxt}
             onChangeText={setHoldbackTxt}
-            validMinNumber={1}
+            validMinNumber={0}
             validMaxNumber={100}
           ></NumericInput>
           <Text style={styles.label}>Short Code / Name Stem</Text>

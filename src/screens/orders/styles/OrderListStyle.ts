@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
-import { TextMediumSize, TextSmallSize } from '../../../../common/constants/Fonts';
-import { TextdefaultSize } from '../../../../common/constants/Fonts';
+import { TextMediumSize, TextSmallSize } from '../../../common/constants/Fonts';
+import { TextdefaultSize } from '../../../common/constants/Fonts';
 
-export const trucksStyle = StyleSheet.create({
+export const orderListsStyle = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
@@ -22,6 +22,7 @@ export const trucksStyle = StyleSheet.create({
     borderRightColor: '#06685ea3',
     borderBottomWidth: 1,
     borderBottomColor: '#bfbfbf',
+    // width: 800,
   },
 
   toolbar: {
@@ -81,7 +82,7 @@ export const trucksStyle = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 6,
     // fontSize: TextdefaultSize,
-    width: 150,
+    width: 160,
     borderRightWidth: 1,
     borderRightColor: '#ccc',
   },
@@ -91,9 +92,14 @@ export const trucksStyle = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 8,
     fontSize: TextdefaultSize,
-    width: 150,
+    width: 160,
     alignItems: 'flex-start',
     justifyContent: 'center',
+  },
+  cellInput: {
+    width: 150,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   categoryCell: {
     width: 300,
@@ -134,7 +140,7 @@ export const trucksStyle = StyleSheet.create({
     top: -20,
   },
   IconCell: {
-    width: 70,
+    width: 80,
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',

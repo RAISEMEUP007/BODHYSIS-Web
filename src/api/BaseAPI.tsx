@@ -2,7 +2,7 @@ import { API_URL } from '../common/constants/AppConstants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { navigateToLogin } from '../common/utils/NavigationUtils';
 
-export const baseGetAPICall = async (route, headers, callback) => {
+export const baseGetAPICall = async (route, headers, callback=(jR, s, e)=>{}) => {
   const token = await AsyncStorage.getItem('access-token');
   headers.Authorization = `Bearer ${token}`;
   try {
@@ -38,11 +38,11 @@ export const baseGetAPICall = async (route, headers, callback) => {
   }
 };
 
-export const getAPICall = async (route, callback) => {
+export const getAPICall = async (route, callback=(jR, s, e)=>{}) => {
   return await baseGetAPICall(route, {'Content-Type': 'application/json'}, callback);
 };
 
-export const basePostAPICall = async (route, headers, body, callback) => {
+export const basePostAPICall = async (route, headers, body, callback=(jR, s, e)=>{}) => {
   try {
     const token = await AsyncStorage.getItem('access-token');
     headers.Authorization = `Bearer ${token}`;
@@ -79,6 +79,6 @@ export const basePostAPICall = async (route, headers, body, callback) => {
   }
 };
 
-export const postAPICall = async (route, payload, callback) => {
+export const postAPICall = async (route, payload, callback=(jR, s, e)=>{}) => {
   return await basePostAPICall(route, {'Content-Type': 'application/json'}, JSON.stringify(payload), callback);
 };

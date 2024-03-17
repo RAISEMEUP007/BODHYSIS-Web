@@ -7,6 +7,7 @@ import {
   StyleSheet
 } from 'react-native';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import BasicModalContainer from '../basicmodal/BasicModalContainer';
 import ModalHeader from '../basicmodal/ModalHeader';
@@ -80,10 +81,12 @@ const AddCardModal = ({
       return;
     }
 
+    const token = await AsyncStorage.getItem('access-token');
     const response = await fetch(`${API_URL}/stripe/addcardtokentocustomer/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         cardToken: result.token.id,

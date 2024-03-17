@@ -9,6 +9,7 @@ import { AlertModalProvider } from './alertmodal/Provider';
 import { ConfirmModalProvider } from './confirmmodal/Provider';
 import { BasicModalProvider } from './basicmodal/Provider';
 import { ScreenSizesProvider } from './screensizes/Provider';
+import { AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
 
 const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
 
@@ -21,15 +22,17 @@ const StripeProviderBaseoffPlatform = ({ children }) => {
 }
 
 export const Providers = ({ children }) => (
-  <StripeProviderBaseoffPlatform>
-    <ScreenSizesProvider>
-      <PaperProvider>
-        <AlertModalProvider>
-          <ConfirmModalProvider>
-            <BasicModalProvider>{children}</BasicModalProvider>
-          </ConfirmModalProvider>
-        </AlertModalProvider>
-      </PaperProvider>
-    </ScreenSizesProvider>
-  </StripeProviderBaseoffPlatform>
+  <AutocompleteDropdownContextProvider>
+    <StripeProviderBaseoffPlatform>
+      <ScreenSizesProvider>
+        <PaperProvider>
+          <AlertModalProvider>
+            <ConfirmModalProvider>
+              <BasicModalProvider>{children}</BasicModalProvider>
+            </ConfirmModalProvider>
+          </AlertModalProvider>
+        </PaperProvider>
+      </ScreenSizesProvider>
+    </StripeProviderBaseoffPlatform>
+  </AutocompleteDropdownContextProvider>
 );

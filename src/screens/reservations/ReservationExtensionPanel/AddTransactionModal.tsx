@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { FontAwesome5 } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { createTransaction } from '../../../api/Reservation';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
@@ -168,10 +169,12 @@ const AddTransactionModal = ({
       customer: customerId,
     }
 
+    const token = await AsyncStorage.getItem('access-token');
     const response = await fetch(`${API_URL}/stripe/makepayment/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(payload),
     });    
@@ -236,7 +239,7 @@ const AddTransactionModal = ({
               </View>
             </View>
           </View>
-          <Text style={styles.label}>Status</Text>
+          <Text style={styles.label}>Method</Text>
           <Picker
             style={styles.select}
             selectedValue={paymentMethod}

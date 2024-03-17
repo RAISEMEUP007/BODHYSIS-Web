@@ -12,7 +12,7 @@ const NumericInput = ({ validMinNumber = null, validMaxNumber = null, onChangeTe
 
   const handleInputChange = (text) => {
     text = String(text);
-    if (text === "") {
+    if (text == "") {
       setInputValue(text);
       setValidationMessage("");
     } else if (/^-?\d*\.?\d*$/.test(text)) {
