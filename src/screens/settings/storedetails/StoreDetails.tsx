@@ -89,7 +89,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
   const [StoreWavier, setStoreWavier] = useState('');
   const [documentId, setDocumentId] = useState(0);
   const [isDocument, setIsDocument] = useState(0);
-  const [selectedDocument, setSelectedDocument] = useState({});
+  const [selectedDocument, setSelectedDocument] = useState<any>({});
 
   useEffect(() => {
     getLanguagesData((jsonRes, status, error) => {
@@ -168,7 +168,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
         if (jsonRes.state) setStateTxt(jsonRes.state);
         if (jsonRes.postal_code) setPostalCodeTxt(jsonRes.postal_code);
         if (jsonRes.latitude) setShopLatitudeTxt(jsonRes.latitude);
-        if (jsonRes.longitutde) setShopLongitudeTxt(jsonRes.longitutde);
+        if (jsonRes.longitude) setShopLongitudeTxt(jsonRes.longitude);
         if (jsonRes.phone_number) setPhoneNumberTxt(jsonRes.phone_number);
         if (jsonRes.country_id) setCountry(jsonRes.country_id);
         if (jsonRes.primary_language_id) setPrimaryLanguage(jsonRes.primary_language_id);
@@ -216,7 +216,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
     formData.append('state', StateTxt);
     formData.append('postal_code', PostalCodeTxt);
     formData.append('latitude', ShopLatitudeTxt.toString());
-    formData.append('longitutde', ShopLongitudeTxt.toString());
+    formData.append('longitude', ShopLongitudeTxt.toString());
     formData.append('phone_number', phoneNumberTxt);
     formData.append('country_id', Country.toString());
     formData.append('primary_language_id', PrimaryLanguage.toString());
