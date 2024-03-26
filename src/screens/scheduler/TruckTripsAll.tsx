@@ -115,7 +115,7 @@ const TruckTripsAll = ({ Trucks, style }: Props) => {
 
   return (
     <View  style={style}>
-      <ScrollView horizontal={true}>
+      <ScrollView horizontal={true} contentContainerStyle={{flex:1, backgroundColor:'#C1C1C1',}}>
         <View style={styles.TruckTripsContainer}>
           {Trucks && Trucks.map((truck, index) => (
             <ScrollView key={index} style={styles.scrollColumn}>
@@ -130,6 +130,7 @@ const TruckTripsAll = ({ Trucks, style }: Props) => {
 
 const styles = StyleSheet.create({
   TruckTripsContainer: {
+    minWidth: '100%',
     flexDirection: 'row',
     paddingLeft:20,
     paddingVertical:10,
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderWidth:0,
     borderColor: '#bfbfbf',
-    width: 300,
+    minWidth: 300,
     marginBottom: 12,
   },
   selectedTicketOut: {

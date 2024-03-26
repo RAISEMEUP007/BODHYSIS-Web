@@ -510,7 +510,7 @@ const Scheduler = ({ navigation }: Props) => {
   return (
     <BasicLayout navigation={navigation} screenName={'Scheduler'}>
       <View style={{flex:1, paddingVertical:20, paddingHorizontal:30, justifyContent:'center'}}>
-        <View  style={{height:'100%', maxWidth:1600, backgroundColor:'white', padding:24}}>
+        <View  style={{height:'100%', backgroundColor:'white', padding:24}}>
           {Platform.OS == 'web' && renderDatePicker(date, (date)=>setDate(date))}
           {/* <DailyOrderPanel style={{height:'50%'}}/> */}
           <TruckTripsAll Trucks={Trucks} style={{flex:1, borderWidth: 1, borderColor: '#b3b3b3', marginTop:10}}/>
@@ -522,14 +522,6 @@ const Scheduler = ({ navigation }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    width: '90%',
-    maxWidth: 1000,
-    margin: 'auto',
-    marginTop: 40,
-  },
   dateInput:{
     borderTopWidth:0,
     borderRightWidth:0,
