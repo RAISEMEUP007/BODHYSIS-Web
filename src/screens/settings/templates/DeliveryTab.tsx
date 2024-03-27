@@ -56,7 +56,6 @@ export function DeliveryTab() {
   };
 
   function handleOnPressSave() {
-    console.log(template)
     setIsLoading(true);
     if (template.id) {     
       editTemplate(template, handleResponse);
