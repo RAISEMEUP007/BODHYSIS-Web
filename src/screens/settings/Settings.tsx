@@ -17,8 +17,9 @@ import DiscountCodes from './dicountcodes/DiscountCodes';
 import Taxcodes from './taxcodes/Taxcodes';
 import Colorcombinations from './colorcombinations/Colorcombinations';
 import Extras from './Extras/Extras';
+import { Templates } from './templates/Templates';
 
-const Settings = ({navigation, initalItem = null}) => {
+const Settings = ({navigation, initalItem = 'Templates'}) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);
     
     const handleItemClick = (itemName) => {
@@ -49,6 +50,8 @@ const Settings = ({navigation, initalItem = null}) => {
                 return <Colorcombinations navigation={navigation} openInventory={handleItemClick}/>;
             case 'Extras':
                 return <Extras navigation={navigation} openInventory={handleItemClick}/>;
+            case 'Templates':
+                return <Templates navigation={navigation} openInventory={handleItemClick}/>;
             default:
                 return (
                     <View style={{ marginTop: 20, paddingHorizontal: 10, paddingVertical:2, height: 28, justifyContent: 'center', flexDirection: 'row',}}>
@@ -80,6 +83,7 @@ const Settings = ({navigation, initalItem = null}) => {
                         { title: "Tax Codes", icon: 'money-check-alt' },
                         { title: "Color Combinations", icon: 'palette' },
                         { title: "Extras", icon: 'plus-circle' },
+                        { title: "Templates", icon: 'mail-bulk' },
                     ]} handleItemClick={handleItemClick} />
                 </View>
             </ScrollView>
