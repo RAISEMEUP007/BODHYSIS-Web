@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginBottom: 10,
   },
-  textInput: {
+  text: {
     fontSize: 12,
     backgroundColor: Colors.Neutrals.LIGHT_GRAY,
     paddingHorizontal: 10,
