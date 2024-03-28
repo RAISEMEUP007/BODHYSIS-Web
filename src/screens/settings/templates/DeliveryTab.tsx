@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, TextInput, View } from 'react-native';
 import { CommonButton } from '../../../common/components/CommonButton/CommonButton';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import {
@@ -10,6 +10,7 @@ import {
 import { msgStr } from '../../../common/constants/Message';
 
 const typeTab = 'delivery';
+const tags=['[customer-name]','[pictures]','[lock-combo]','[location]','[delivery-number]','[color]','[rack]','[geo-lat]','[geo-long]']
 export function DeliveryTab() {
   const [template, setTemplate] = useState({ id: null, message: '', type: typeTab });
 
@@ -19,10 +20,10 @@ export function DeliveryTab() {
 
   const getTemplate = () => {
     setIsLoading(true);
-    getTemplatesDataByType(typeTab,(jsonRes, status, error) => {
+    getTemplatesDataByType(typeTab, (jsonRes, status, error) => {
       switch (status) {
         case 200:
-          jsonRes?.template&&setTemplate(jsonRes?.template);
+          jsonRes?.template && setTemplate(jsonRes?.template);
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -43,7 +44,7 @@ export function DeliveryTab() {
   const handleResponse = (jsonRes, status) => {
     switch (status) {
       case 200:
-        jsonRes?.template&&setTemplate(jsonRes.template)     
+        jsonRes?.template && setTemplate(jsonRes.template);
         break;
       case 409:
         break;
@@ -57,7 +58,7 @@ export function DeliveryTab() {
 
   function handleOnPressSave() {
     setIsLoading(true);
-    if (template.id) {     
+    if (template.id) {
       editTemplate(template, handleResponse);
     } else {
       createTemplate(template, handleResponse);
@@ -88,6 +89,18 @@ export function DeliveryTab() {
           </View>
         )}
       </View>
+      <View style={styles.availableTags}>
+        <Text style={styles.availableTagsTitle}>AVAILABLE TAGS</Text>
+        <View style={styles.separator} />
+        <View style={styles.tagsContent}>
+        {tags.map(tag=>(
+          <Text 
+          key={tag}
+          style={styles.availableTagsTags}>{tag}</Text>
+
+        ))}
+        </View>
+      </View>
     </View>
   );
 }
@@ -99,19 +112,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   content: {
-    flex: 1,
     backgroundColor: 'white',
     padding: 24,
   },
   input: {
-    height: '80%',
-    borderWidth: 1,
+    height: 400,
+    backgroundColor: '#f2f2f2',
     padding: 8,
   },
   footer: {
     marginTop: 16,
   },
-  overlay: {    
+  overlay: {
     backgroundColor: 'rgba(183, 173, 173, 0.137)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -121,4 +133,22 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
   },
+  availableTags: {
+    padding: 24,
+    marginTop: 16,
+    backgroundColor: 'white',
+  },
+  availableTagsTitle: {
+    color: '#56A036',
+    fontSize: 24,
+    fontWeight: '500',
+  },
+  separator: {
+    borderWidth: 1,
+    marginTop: 16,
+    marginBottom: 24,
+    borderColor: '#E0E0E0',
+  },
+  availableTagsTags: { color: '#56A036', fontWeight: '700', },
+  tagsContent: { flexDirection: 'row', gap:2 },
 });
