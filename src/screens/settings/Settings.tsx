@@ -19,7 +19,7 @@ import Colorcombinations from './colorcombinations/Colorcombinations';
 import Extras from './Extras/Extras';
 import { Templates } from './templates/Templates';
 
-const Settings = ({navigation, initalItem = 'Templates'}) => {
+const Settings = ({navigation, initalItem }) => {
     const [selectedItem, setSelectedItem] = useState(initalItem);
     
     const handleItemClick = (itemName) => {
