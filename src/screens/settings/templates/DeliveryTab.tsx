@@ -83,11 +83,7 @@ export function DeliveryTab() {
         <View style={styles.footer}>
           <CommonButton label="Save" onPress={handleOnPressSave} type="square" />
         </View>
-        {isLoading && (
-          <View style={styles.overlay}>
-            <ActivityIndicator size="large" color="#0000ff" />
-          </View>
-        )}
+      
       </View>
       <View style={styles.availableTags}>
         <Text style={styles.availableTagsTitle}>AVAILABLE TAGS</Text>
@@ -101,6 +97,11 @@ export function DeliveryTab() {
         ))}
         </View>
       </View>
+      {isLoading && (
+          <View style={styles.overlay}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        )}
     </View>
   );
 }
