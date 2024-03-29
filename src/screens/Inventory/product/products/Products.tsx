@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   TextInput,
+  Pressable,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -28,6 +29,7 @@ import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout'
 import { productsStyle } from './styles/ProductsStyle';
 import AddProductModal from './AddProductModal';
 import QuickAddProductModal from './QuickAddProductModal';
+import { ActivityIndicator } from 'react-native-paper';
 
 const Products = ({ navigation, openInventory, data }) => {
   const initialMount = useRef(true);
@@ -86,6 +88,10 @@ const Products = ({ navigation, openInventory, data }) => {
   const [families, setFamilies] = useState([]);
   const [lines, setLines] = useState([]);
   const [Locations, setLocations] = useState([]);
+
+  const [sortColumn, setSortColumn] = useState('');
+  const [sortDirection, setSortDirection] = useState('asc');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (data == null && updateProductTrigger == true) {
@@ -253,13 +259,13 @@ const Products = ({ navigation, openInventory, data }) => {
   };
 
   const getTable = () => {
-    console.log('loadTable');
     const CFLOption = {
       category_id: searchCategory,
       family_id: searchFamily,
       line_id: searchProductLine,
     };
 
+    setIsLoading(true);
     getProductsData(CFLOption, (jsonRes, status, error) => {
       switch (status) {
         case 200:
@@ -274,14 +280,55 @@ const Products = ({ navigation, openInventory, data }) => {
           else showAlert('error', msgStr('unknownError'));
           break;
       }
+      setIsLoading(false);
     });
   };
 
+  const sortData = (column) =>{
+    setIsLoading(true);
+    const direction = column === sortColumn && sortDirection === 'desc' ? 'asc' : 'desc';
+
+    setSortColumn(column);
+    setSortDirection(direction);
+  }
+
+  const getSortedData = (tableData) => {
+    if(sortColumn && sortDirection){
+      tableData.sort((a, b) => {
+        let A; let B;
+
+        if(sortColumn == 'category'){
+          A = a.category.category;  B = b.category.category;
+        }else if(sortColumn == 'family'){
+          A = a.family.family; B = b.family.family;
+        }else if(sortColumn == 'line'){
+          A = a.line.line; B = b.line.line;
+        }else if(sortColumn == 'size'){
+          A = a.line.size; B = b.line.size;
+        }else if(sortColumn == 'home_location'){
+          A = a.home_location_tbl.location; B = b.home_location_tbl.location;
+        }else if(sortColumn == 'current_location'){
+          A = a.current_location_tbl.location; B = b.current_location_tbl.location;
+        }else{
+          A = a[sortColumn];
+          B = b[sortColumn];
+        }
+
+        if (typeof A === 'number' && typeof B === 'number') {
+          return sortDirection === 'asc' ? A - B : B - A;
+        } else {
+          const textA = String(A).toUpperCase();
+          const textB = String(B).toUpperCase();
+          return sortDirection === 'asc' ? textA.localeCompare(textB) : textB.localeCompare(textA);
+        }
+      });
+
+      return tableData;
+    }else return tableData;
+  }
+
   const renderTableData = () => {
     const filteredData = tableData.filter((item) => {
-      // const isProductMatch = searchProduct.trim()
-      //   ? item.product.toLowerCase().includes(searchProduct.trim().toLowerCase())
-      //   : true;
       const isBarcodeMatch = searchBarcode.trim()
         ? item.barcode && item.barcode.toLowerCase().includes(searchBarcode.trim().toLowerCase())
         : true;
@@ -297,9 +344,11 @@ const Products = ({ navigation, openInventory, data }) => {
       return isBarcodeMatch && isSizeMatch && isLocationMatch;
     });
 
+    const sortedData = getSortedData(filteredData);
+    
     const rows = [];
-    if (filteredData.length > 0) {
-      filteredData.map((item, index) => {
+    if (sortedData.length > 0) {
+      sortedData.map((item, index) => {
         rows.push(
           <View key={index} style={styles.tableRow}>
             {/* <View style={[styles.cell, styles.categoryCell]}>
@@ -480,22 +529,73 @@ const Products = ({ navigation, openInventory, data }) => {
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
-              {/* <Text style={[styles.columnHeader, { width: 250 }]}>{'Product'}</Text> */}
-              <Text style={[styles.columnHeader]}>{'Category'}</Text>
-              <Text style={[styles.columnHeader, { width: 200 }]}>{'Family'}</Text>
-              <Text style={[styles.columnHeader]}>{'Line'}</Text>
-              <Text style={[styles.columnHeader, { width: 80 }]}>{'Size'}</Text>
-              <Text style={[styles.columnHeader]}>{'Barcode'}</Text>
-              {/* <Text style={[styles.columnHeader]}>{'Serial Number'}</Text> */}
-              <Text style={[styles.columnHeader]}>{'Home Location'}</Text>
-              <Text style={[styles.columnHeader]}>{'Current Location'}</Text>
-              <Text style={[styles.columnHeader, { width: 80 }]}>{'Status'}</Text>
+              <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('category')}>
+                <Text>{'Category'}</Text>
+                {sortColumn == 'category' && sortDirection == 'desc'?
+                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+                }
+              </Pressable>
+              <Pressable style={[styles.columnHeader, styles.sortableColumn, { width: 200 }]} onPress={()=>sortData('family')}>
+                <Text>{'Family'}</Text>
+                {sortColumn == 'family' && sortDirection == 'desc'?
+                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+                }
+              </Pressable>
+              <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('line')}>
+                <Text>{'Line'}</Text>
+                {sortColumn == 'line' && sortDirection == 'desc'?
+                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+                }
+              </Pressable>
+              <Pressable style={[styles.columnHeader, styles.sortableColumn, { width: 80 }]} onPress={()=>sortData('size')}>
+                <Text>{'Size'}</Text>
+                {sortColumn == 'size' && sortDirection == 'desc'?
+                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+                }
+              </Pressable>
+              <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('barcode')}>
+                <Text>{'Barcode'}</Text>
+                {sortColumn == 'barcode' && sortDirection == 'desc'?
+                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+                }
+              </Pressable>
+              <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('home_location')}>
+                <Text>{'Home location'}</Text>
+                {sortColumn == 'home_location' && sortDirection == 'desc'?
+                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+                }
+              </Pressable>
+              <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('current_location')}>
+                <Text>{'Current location'}</Text>
+                {sortColumn == 'current_location' && sortDirection == 'desc'?
+                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+                }
+              </Pressable>
+              <Pressable style={[styles.columnHeader, styles.sortableColumn, { width: 80 }]} onPress={()=>sortData('status')}>
+                <Text>{'Status'}</Text>
+                {sortColumn == 'status' && sortDirection == 'desc'?
+                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+                }
+              </Pressable>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
             </View>
             <ScrollView style={{ flex: 1, maxHeight: screenHeight - 350 }}>
               {renderTableData()}
             </ScrollView>
+            {isLoading && (
+              <View style={styles.overlay}>
+                <ActivityIndicator size="small" color="#006fe6" />
+              </View>
+            )}
           </View>
 
           <AddProductModal

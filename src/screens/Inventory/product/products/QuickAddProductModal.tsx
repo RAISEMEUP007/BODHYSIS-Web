@@ -6,7 +6,6 @@ import {
   Modal,
   View,
   ActivityIndicator,
-  Platform,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 

@@ -189,4 +189,18 @@ export const productsStyle = StyleSheet.create({
     justifyContent: 'center',
     textAlign: 'center',
   },
+  sortableColumn: {
+    flexDirection:'row', 
+    alignItems:'center',
+    justifyContent: 'space-between',
+  },
+  overlay: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f2f2f2',
+    opacity: 0.4
+  }
 });
