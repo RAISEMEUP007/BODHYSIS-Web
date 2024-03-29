@@ -67,6 +67,8 @@ export const productsStyle = StyleSheet.create({
   searchLabel: {
     marginHorizontal: 10,
     fontSize: TextdefaultSize,
+    width:80,
+    textAlign:'right',
   },
   searchInput: {
     flex: 1,
@@ -77,7 +79,7 @@ export const productsStyle = StyleSheet.create({
     borderColor: '#999',
     borderRadius: 5,
     fontSize: TextSmallSize,
-    // width:  160,
+    width: 240,
   },
   searchPicker: {
     minWidth: 240,
@@ -104,22 +106,17 @@ export const productsStyle = StyleSheet.create({
     alignItems: 'flex-start',
     paddingHorizontal: 14,
     paddingVertical: 8,
-    width: 100,
+    width: 150,
     borderRightWidth: 1,
     borderRightColor: '#ccc',
   },
   cell: {
     position: 'relative',
-    padding: 2,
-    width: 100,
+    padding: 10,
+    width: 150,
     alignItems: 'flex-start',
     justifyContent: 'center',
-    paddingLeft: 6,
-  },
-  cellInput: {
-    width: 100,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingLeft: 14,
   },
   categoryCell: {
     width: 250,

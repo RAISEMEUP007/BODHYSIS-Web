@@ -279,9 +279,9 @@ const Products = ({ navigation, openInventory, data }) => {
 
   const renderTableData = () => {
     const filteredData = tableData.filter((item) => {
-      const isProductMatch = searchProduct.trim()
-        ? item.product.toLowerCase().includes(searchProduct.trim().toLowerCase())
-        : true;
+      // const isProductMatch = searchProduct.trim()
+      //   ? item.product.toLowerCase().includes(searchProduct.trim().toLowerCase())
+      //   : true;
       const isBarcodeMatch = searchBarcode.trim()
         ? item.barcode && item.barcode.toLowerCase().includes(searchBarcode.trim().toLowerCase())
         : true;
@@ -294,7 +294,7 @@ const Products = ({ navigation, openInventory, data }) => {
             (item.current_location && item.current_location == searchLocation)
           : true;
 
-      return isProductMatch && isBarcodeMatch && isSizeMatch && isLocationMatch;
+      return isBarcodeMatch && isSizeMatch && isLocationMatch;
     });
 
     const rows = [];
@@ -302,39 +302,39 @@ const Products = ({ navigation, openInventory, data }) => {
       filteredData.map((item, index) => {
         rows.push(
           <View key={index} style={styles.tableRow}>
-            <View style={[styles.cell, styles.categoryCell]}>
+            {/* <View style={[styles.cell, styles.categoryCell]}>
               <Text style={styles.categoryCell}>{item.product}</Text>
-            </View>
+            </View> */}
             <View style={styles.cell}>
-              <Text style={styles.cell}>{item.category ? item.category.category : ''}</Text>
+              <Text>{item.category ? item.category.category : ''}</Text>
             </View>
-            <View style={styles.cell}>
-              <Text style={styles.cell}>{item.family ? (item.family.family) : ''}</Text>
+            <View style={[styles.cell, { width: 200 }]}>
+              <Text>{item.family ? (item.family.family) : ''}</Text>
             </View>
-            <View style={styles.cell}>
-              <Text style={styles.cell}>{item.line ? item.line.line : ''}</Text>
+            <View style={[styles.cell]}>
+              <Text>{item.line ? item.line.line : ''}</Text>
             </View>
-            <View style={[styles.cell, { width: 100 }]}>
+            <View style={[styles.cell, { width: 80 }]}>
               <Text>{item.line ? item.line.size : ''}</Text>
             </View>
             <View style={styles.cell}>
-              <Text style={styles.cell}>{item.barcode ? item.barcode : ''}</Text>
+              <Text>{item.barcode ? item.barcode : ''}</Text>
             </View>
+            {/* <View style={styles.cell}>
+              <Text>{item.serial_number ? item.serial_number : ''}</Text>
+            </View> */}
             <View style={styles.cell}>
-              <Text style={styles.cell}>{item.serial_number ? item.serial_number : ''}</Text>
-            </View>
-            <View style={styles.cell}>
-              <Text style={styles.cell}>
+              <Text>
                 {item.home_location_tbl ? item.home_location_tbl.location : ''}
               </Text>
             </View>
             <View style={styles.cell}>
-              <Text style={styles.cell}>
+              <Text>
                 {item.current_location_tbl ? item.current_location_tbl.location : ''}
               </Text>
             </View>
-            <View style={styles.cell}>
-              <Text style={styles.cell}>{item.status ? StatusObj[item.status] : ''}</Text>
+            <View style={[styles.cell, { width: 80 }]}>
+              <Text>{item.status != null ? StatusObj[item.status] : ''}</Text>
             </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity
@@ -377,7 +377,7 @@ const Products = ({ navigation, openInventory, data }) => {
             <View style={styles.searchBox}>
               <Text style={styles.searchLabel}>Category</Text>
               <Picker
-                style={[styles.searchInput, styles.searchPicker]}
+                style={[styles.searchInput]}
                 selectedValue={searchCategory}
                 onValueChange={setSearchCategory}
               >
@@ -393,7 +393,7 @@ const Products = ({ navigation, openInventory, data }) => {
             <View style={styles.searchBox}>
               <Text style={styles.searchLabel}>Family</Text>
               <Picker
-                style={[styles.searchInput, styles.searchPicker]}
+                style={[styles.searchInput]}
                 selectedValue={searchFamily}
                 onValueChange={setSearchFamily}
               >
@@ -407,7 +407,7 @@ const Products = ({ navigation, openInventory, data }) => {
             <View style={styles.searchBox}>
               <Text style={styles.searchLabel}>Line</Text>
               <Picker
-                style={[styles.searchInput, styles.searchPicker]}
+                style={[styles.searchInput]}
                 selectedValue={searchProductLine}
                 onValueChange={setSearchProductLine}
               >
@@ -426,7 +426,7 @@ const Products = ({ navigation, openInventory, data }) => {
             </View>
           </View>
           <View style={styles.toolbar}>
-            <View style={styles.searchBox}>
+            {/* <View style={styles.searchBox}>
               <Text style={styles.searchLabel}>Product</Text>
               <TextInput
                 style={styles.searchInput}
@@ -434,7 +434,7 @@ const Products = ({ navigation, openInventory, data }) => {
                 value={searchProduct}
                 onChangeText={setSearchProduct}
               />
-            </View>
+            </View> */}
             <View style={styles.searchBox}>
               <Text style={styles.searchLabel}>Size</Text>
               <TextInput
@@ -480,16 +480,16 @@ const Products = ({ navigation, openInventory, data }) => {
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader, { width: 250 }]}>{'Product'}</Text>
+              {/* <Text style={[styles.columnHeader, { width: 250 }]}>{'Product'}</Text> */}
               <Text style={[styles.columnHeader]}>{'Category'}</Text>
-              <Text style={[styles.columnHeader]}>{'Family'}</Text>
+              <Text style={[styles.columnHeader, { width: 200 }]}>{'Family'}</Text>
               <Text style={[styles.columnHeader]}>{'Line'}</Text>
-              <Text style={[styles.columnHeader, { width: 100 }]}>{'Size'}</Text>
+              <Text style={[styles.columnHeader, { width: 80 }]}>{'Size'}</Text>
               <Text style={[styles.columnHeader]}>{'Barcode'}</Text>
-              <Text style={[styles.columnHeader]}>{'Serial Number'}</Text>
+              {/* <Text style={[styles.columnHeader]}>{'Serial Number'}</Text> */}
               <Text style={[styles.columnHeader]}>{'Home Location'}</Text>
               <Text style={[styles.columnHeader]}>{'Current Location'}</Text>
-              <Text style={[styles.columnHeader]}>{'Status'}</Text>
+              <Text style={[styles.columnHeader, { width: 80 }]}>{'Status'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
             </View>
