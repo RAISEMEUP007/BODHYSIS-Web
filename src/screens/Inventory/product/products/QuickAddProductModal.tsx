@@ -6,7 +6,6 @@ import {
   Modal,
   View,
   ActivityIndicator,
-  Platform,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
@@ -55,7 +54,7 @@ const QuickAddProductModal = ({
   const [selectedLine, selectLine] = useState<{ [key: string]: any }>({});
   const [ProductTxt, setProductTxt] = useState('');
   // const [SizeTxt, setSizeTxt] = useState('');
-  const [DescriptionTxt, setDescriptionTxt] = useState('');
+  // const [DescriptionTxt, setDescriptionTxt] = useState('');
   const [ItemIdTxt, setItemIdTxt] = useState('');
   const [BarcodeTxt, setBarcodeTxt] = useState('');
   const [QuantityTxt, setQuantityTxt] = useState('');
@@ -70,7 +69,7 @@ const QuickAddProductModal = ({
   useEffect(() => {
     if (isModalVisible) {
       setQuantityTxt('');
-      setDescriptionTxt('');
+      // setDescriptionTxt('');
       selectStatus(StatusArr[0]);
     }
   }, [isModalVisible]);
@@ -175,7 +174,7 @@ const QuickAddProductModal = ({
       family_id: selectedFamily.id,
       line_id: selectedLine.id,
       line: selectedLine,
-      description: DescriptionTxt,
+      // description: DescriptionTxt,
       item_id: ItemIdTxt,
       quantity: 1,
       rowcounts: QuantityTxt,
@@ -342,7 +341,7 @@ const QuickAddProductModal = ({
                     );
                   })}
               </Picker>
-              <Text style={styles.label}>Description</Text>
+              {/* <Text style={styles.label}>Description</Text>
               <TextInput
                 style={[styles.input]}
                 placeholder="Description"
@@ -350,7 +349,7 @@ const QuickAddProductModal = ({
                 multiline={true}
                 onChangeText={setDescriptionTxt}
                 placeholderTextColor="#ccc"
-              />
+              /> */}
             </View>
           </View>
         </ModalBody>
