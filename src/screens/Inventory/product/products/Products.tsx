@@ -287,6 +287,7 @@ const Products = ({ navigation, openInventory, data }) => {
   const sortData = (column) =>{
     setIsLoading(true);
     const direction = column === sortColumn && sortDirection === 'desc' ? 'asc' : 'desc';
+    setTimeout(()=>{setIsLoading(false)}, 100)
 
     setSortColumn(column);
     setSortDirection(direction);
