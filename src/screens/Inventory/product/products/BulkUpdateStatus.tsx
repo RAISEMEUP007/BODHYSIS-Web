@@ -10,9 +10,8 @@ import {
 import { Picker } from '@react-native-picker/picker';
 
 import {
-  updateBulkLocation,
+  updateBulkStatus,
 } from '../../../../api/Product';
-import { getLocationsData } from '../../../../api/Settings';
 import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../../common/components/basicmodal/ModalBody';
@@ -22,15 +21,24 @@ import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 
 import { productModalstyles } from './styles/ProductModalStyle';
 
-const BulkUpdateLocationModal = ({ isModalVisible, ids, setUpdateProductsTrigger, closeModal }) => {
+const BulkUpdateStatus = ({ isModalVisible, ids, setUpdateProductsTrigger, closeModal }) => {
 
   const { showAlert } = useAlertModal();
 
   const [isLoading, setIsLoading] = useState(false);
   const [Locations, setLocations] = useState([]);
 
-  const [selectedHomeLocation, selectHomeLocation] = useState<number>(0);
-  const [selectedCurrentLocation, selectCurrentLocation] = useState<number>(0);
+  const [selectedStatus, selectStatus] = useState<number>(-1);
+
+  const StatusArr = [
+    { id: 0, status: 'Ready' },
+    { id: 1, status: 'Ordered' },
+    { id: 2, status: 'Checked out' },
+    // { id: 3, status: 'Checked in' },
+    { id: 4, status: 'Broken' },
+    { id: 5, status: 'Sold' },
+    { id: 6, status: 'Transferred' },
+  ];
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -55,29 +63,13 @@ const BulkUpdateLocationModal = ({ isModalVisible, ids, setUpdateProductsTrigger
         closeModal();
       }
       setIsLoading(false);
-      selectHomeLocation(0);
-      selectCurrentLocation(0);
+      selectStatus(-1);
     }
   }, [isModalVisible]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response2 = await getLocationsData();
-        const locationsData = await response2.json();
-        setLocations(locationsData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
- 
-    fetchData();
- }, []);
-
-
   const AddProductButtonHandler = () => {
-    if(!selectedHomeLocation && !selectedCurrentLocation){
-      showAlert('warning', 'No location selected');
+    if(selectedStatus<0){
+      showAlert('warning', 'No status selected');
       closeModal();
       return;
     }
@@ -86,9 +78,9 @@ const BulkUpdateLocationModal = ({ isModalVisible, ids, setUpdateProductsTrigger
 
     const payload : any = {
       ids: ids,
+      status: selectedStatus,
     };
-    if(selectedHomeLocation) payload.home_location = selectedHomeLocation;
-    if(selectedCurrentLocation) payload.current_location = selectedCurrentLocation;
+
     const handleResponse = (jsonRes, status) => {
       switch (status) {
         case 201:
@@ -105,7 +97,7 @@ const BulkUpdateLocationModal = ({ isModalVisible, ids, setUpdateProductsTrigger
       setIsLoading(false);
     };
 
-    updateBulkLocation(payload, (jsonRes, status) => {
+    updateBulkStatus(payload, (jsonRes, status) => {
       handleResponse(jsonRes, status);
     });
   };
@@ -123,37 +115,19 @@ const BulkUpdateLocationModal = ({ isModalVisible, ids, setUpdateProductsTrigger
         <ModalBody>
           <View style={{ flexDirection: 'row' }}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.label}>Home Location</Text>
+              <Text style={styles.label}>Status</Text>
               <Picker
                 style={styles.select}
-                selectedValue={selectedHomeLocation}
+                selectedValue={selectedStatus}
                 onValueChange={(itemValue, itemIndex) => {
-                  console.log(itemValue);
-                  selectHomeLocation(itemValue);
+                  selectStatus(itemValue);
                 }}
               >
-                <Picker.Item label={''} value={0} />
-                {Locations.length > 0 &&
-                  Locations.map((location, index) => {
+                <Picker.Item label={''} value={-1} />
+                {StatusArr.length > 0 &&
+                  StatusArr.map((statusItem, index) => {
                     return (
-                      <Picker.Item key={index} label={location.location} value={location.id} />
-                    );
-                  })}
-              </Picker>
-
-              <Text style={styles.label}>Current Location</Text>
-              <Picker
-                style={styles.select}
-                selectedValue={selectedCurrentLocation}
-                onValueChange={(itemValue, itemIndex) => {
-                  selectCurrentLocation(itemValue);
-                }}
-              >
-                <Picker.Item label={''} value={0} />
-                {Locations.length > 0 &&
-                  Locations.map((location, index) => {
-                    return (
-                      <Picker.Item key={index} label={location.location} value={location.id} />
+                      <Picker.Item key={index} label={statusItem.status} value={statusItem.id} />
                     );
                   })}
               </Picker>
@@ -177,4 +151,4 @@ const BulkUpdateLocationModal = ({ isModalVisible, ids, setUpdateProductsTrigger
 
 const styles = productModalstyles;
 
-export default BulkUpdateLocationModal;
+export default BulkUpdateStatus;

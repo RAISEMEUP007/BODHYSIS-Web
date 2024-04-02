@@ -32,6 +32,7 @@ import { productsStyle } from './styles/ProductsStyle';
 import AddProductModal from './AddProductModal';
 import QuickAddProductModal from './QuickAddProductModal';
 import BulkUpdateLocationModal from './BulkUpdateLocationModal';
+import BulkUpdateStatus from './BulkUpdateStatus';
 
 const Products = ({ navigation, openInventory, data }) => {
   const initialMount = useRef(true);
@@ -86,8 +87,8 @@ const Products = ({ navigation, openInventory, data }) => {
   const bulkUpdateLocation = () => { setBulkUpdateLocationVisible(true); }
   const closeBulkUpdateLocation = () => { setBulkUpdateLocationVisible(false); }
 
-  const blukUPdateStatus = () => { setBulkUpdateLocationVisible(true); }
-  const closeBlukUPdateStatus = () => { setBulkUpdateLocationVisible(false); }
+  const blukUPdateStatus = () => { setBulkUpdateStatusVisible(true); }
+  const closeBlukUPdateStatus = () => { setBulkUpdateStatusVisible(false); }
 
   const [searchCategory, setSearchCategory] = useState(0);
   const [searchFamily, setSearchFamily] = useState(0);
@@ -659,6 +660,12 @@ const Products = ({ navigation, openInventory, data }) => {
         ids={checkedItemIds}
         setUpdateProductsTrigger={setUpdateProductsTrigger}
         closeModal={closeBulkUpdateLocation}
+      />
+      <BulkUpdateStatus
+        isModalVisible={isBulkUpdateStatusVisible}
+        ids={checkedItemIds}
+        setUpdateProductsTrigger={setUpdateProductsTrigger}
+        closeModal={closeBlukUPdateStatus}
       />
     </BasicLayout>
   );
