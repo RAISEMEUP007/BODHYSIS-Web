@@ -77,9 +77,6 @@ const MainDrawer = ({ navigation }) => {
       <Drawer.Navigator
         initialRouteName="Settings"
         drawerContent={(props) => <DrawerContent {...props} />}
-        screenOptions={{
-          drawerType: Platform.OS == 'web' && isLargeScreen ? 'permanent' : 'front',
-        }}
       >
         <Drawer.Screen
           name="Dashboard"

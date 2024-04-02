@@ -45,7 +45,9 @@ const BasicLayout = ({
         {navigation && navigation.toggleDrawer && (
           <TouchableOpacity
             style={[styles.Icon, { marginRight: 8 }]}
-            onPress={navigation.toggleDrawer}
+            onPress={()=>navigation.toggleDrawer({
+              side: 'left'
+            })}
           >
             <FontAwesome5 name="bars" size={20} color="#000" />
           </TouchableOpacity>
