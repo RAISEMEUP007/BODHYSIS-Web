@@ -23,7 +23,7 @@ const MainDrawer = ({ navigation }) => {
   };
 
   const ReservationScreen = ({ navigation, route }) => {
-    return <Reservations navigation={navigation} initialData={route.params}/>;
+    return <Reservations navigation={navigation} initialData={route.params} />;
   };
 
   const InventoryScreen = ({ navigation }) => {
@@ -63,11 +63,14 @@ const MainDrawer = ({ navigation }) => {
           labelStyle={{ color: 'black', fontWeight: 'bold' }}
         />
         <DrawerItemList {...props} />
-        <DrawerItem label="Log out" onPress={async () => {
-          await logout(()=>{});
-          await AsyncStorage.setItem('access-token', '');
-          navigation.navigate('Auth')
-        }} />
+        <DrawerItem
+          label="Log out"
+          onPress={async () => {
+            await logout(() => {});
+            await AsyncStorage.setItem('access-token', '');
+            navigation.navigate('Auth');
+          }}
+        />
       </>
     );
   };
@@ -84,6 +87,12 @@ const MainDrawer = ({ navigation }) => {
         <Drawer.Screen
           name="Dashboard"
           component={DashboardScreen}
+          listeners={{
+            drawerItemPress: (e) => {
+              e.preventDefault();
+              navigation.navigate('Dashboard');
+            },
+          }}
           options={{
             drawerLabel: 'Dashboard',
             unmountOnBlur: true,
@@ -93,6 +102,12 @@ const MainDrawer = ({ navigation }) => {
         <Drawer.Screen
           name="Reservation"
           component={ReservationScreen}
+          listeners={{
+            drawerItemPress: (e) => {
+              e.preventDefault();
+              navigation.navigate('Reservation');
+            },
+          }}
           options={{
             drawerLabel: 'Reservation',
             unmountOnBlur: true,
@@ -102,6 +117,12 @@ const MainDrawer = ({ navigation }) => {
         <Drawer.Screen
           name="Delivery Order"
           component={DeliveryOrderScreen}
+          listeners={{
+            drawerItemPress: (e) => {
+              e.preventDefault();
+              navigation.navigate('Delivery Order');
+            },
+          }}
           options={{
             drawerLabel: 'Delivery Order',
             unmountOnBlur: true,
@@ -111,6 +132,12 @@ const MainDrawer = ({ navigation }) => {
         <Drawer.Screen
           name="Inventory"
           component={InventoryScreen}
+          listeners={{
+            drawerItemPress: (e) => {
+              e.preventDefault();
+              navigation.navigate('Inventory');
+            },
+          }}
           options={{
             drawerLabel: 'Inventory',
             unmountOnBlur: true,
@@ -120,6 +147,12 @@ const MainDrawer = ({ navigation }) => {
         <Drawer.Screen
           name="Customer"
           component={CustomerScreen}
+          listeners={{
+            drawerItemPress: (e) => {
+              e.preventDefault();
+              navigation.navigate('Customer');
+            },
+          }}
           options={{
             drawerLabel: 'Customer',
             unmountOnBlur: true,
@@ -129,6 +162,12 @@ const MainDrawer = ({ navigation }) => {
         <Drawer.Screen
           name="Scheduler"
           component={SchedulerScreen}
+          listeners={{
+            drawerItemPress: (e) => {
+              e.preventDefault();
+              navigation.navigate('Scheduler');
+            },
+          }}
           options={{
             drawerLabel: 'Scheduler',
             unmountOnBlur: true,
@@ -138,6 +177,12 @@ const MainDrawer = ({ navigation }) => {
         <Drawer.Screen
           name="Settings"
           component={SettingsScreen}
+          listeners={{
+            drawerItemPress: (e) => {
+              e.preventDefault();
+              navigation.navigate('Settings');
+            },
+          }}
           options={{
             drawerLabel: 'Settings',
             unmountOnBlur: true,
