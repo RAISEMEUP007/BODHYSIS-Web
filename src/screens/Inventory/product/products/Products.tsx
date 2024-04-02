@@ -10,6 +10,8 @@ import {
   Pressable,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { ActivityIndicator } from 'react-native-paper';
+import Checkbox from 'expo-checkbox';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import {
@@ -19,7 +21,7 @@ import {
   getProductFamiliesData,
   getProductLinesData,
 } from '../../../../api/Product';
-import { getLocationsData } from '../../../../api/Settings';
+import { getLocationsData, updateLocation } from '../../../../api/Settings';
 import { msgStr } from '../../../../common/constants/Message';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
@@ -29,8 +31,7 @@ import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout'
 import { productsStyle } from './styles/ProductsStyle';
 import AddProductModal from './AddProductModal';
 import QuickAddProductModal from './QuickAddProductModal';
-import { ActivityIndicator } from 'react-native-paper';
-import Checkbox from 'expo-checkbox';
+import BulkUpdateLocationModal from './BulkUpdateLocationModal';
 
 const Products = ({ navigation, openInventory, data }) => {
   const initialMount = useRef(true);
@@ -57,6 +58,9 @@ const Products = ({ navigation, openInventory, data }) => {
   const [isQuickAddModalVisible, setQuickAddModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  const [isBulkUpdateLocationVisible, setBulkUpdateLocationVisible] = useState(false);
+  const [isBulkUpdateStatusVisible, setBulkUpdateStatusVisible] = useState(false);
+
   const openAddProductModal = () => {
     setAddModalVisible(true);
     setSelectedProduct(null);
@@ -78,6 +82,12 @@ const Products = ({ navigation, openInventory, data }) => {
     setQuickAddModalVisible(false);
     setSelectedProduct(null);
   };
+
+  const bulkUpdateLocation = () => { setBulkUpdateLocationVisible(true); }
+  const closeBulkUpdateLocation = () => { setBulkUpdateLocationVisible(false); }
+
+  const blukUPdateStatus = () => { setBulkUpdateLocationVisible(true); }
+  const closeBlukUPdateStatus = () => { setBulkUpdateLocationVisible(false); }
 
   const [searchCategory, setSearchCategory] = useState(0);
   const [searchFamily, setSearchFamily] = useState(0);
@@ -550,6 +560,13 @@ const Products = ({ navigation, openInventory, data }) => {
             <TouchableHighlight style={styles.button} onPress={openQuickAddProductModal}>
               <Text style={styles.buttonText}>Quick Add</Text>
             </TouchableHighlight>
+            <Text style={{marginLeft:50, marginRight:5}}>Bulk Actions</Text>
+            <TouchableHighlight style={styles.bulkbutton} onPress={bulkUpdateLocation}>
+              <Text style={styles.buttonText}>Update Location</Text>
+            </TouchableHighlight>
+            <TouchableHighlight style={styles.bulkbutton} onPress={blukUPdateStatus}>
+              <Text style={styles.buttonText}>Update Status</Text>
+            </TouchableHighlight>
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
@@ -624,20 +641,25 @@ const Products = ({ navigation, openInventory, data }) => {
               </View>
             )}
           </View>
-
-          <AddProductModal
-            isModalVisible={isAddModalVisible}
-            Product={selectedProduct}
-            setUpdateProductsTrigger={setUpdateProductsTrigger}
-            closeModal={closeAddProductModal}
-          />
-          <QuickAddProductModal
-            isModalVisible={isQuickAddModalVisible}
-            setUpdateProductsTrigger={setUpdateProductsTrigger}
-            closeModal={closeQuickAddProductModal}
-          />
         </View>
       </ScrollView>
+      <AddProductModal
+        isModalVisible={isAddModalVisible}
+        Product={selectedProduct}
+        setUpdateProductsTrigger={setUpdateProductsTrigger}
+        closeModal={closeAddProductModal}
+      />
+      <QuickAddProductModal
+        isModalVisible={isQuickAddModalVisible}
+        setUpdateProductsTrigger={setUpdateProductsTrigger}
+        closeModal={closeQuickAddProductModal}
+      />
+      <BulkUpdateLocationModal
+        isModalVisible={isBulkUpdateLocationVisible}
+        ids={checkedItemIds}
+        setUpdateProductsTrigger={setUpdateProductsTrigger}
+        closeModal={closeBulkUpdateLocation}
+      />
     </BasicLayout>
   );
 };

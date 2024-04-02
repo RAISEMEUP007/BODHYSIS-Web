@@ -43,6 +43,13 @@ export const productsStyle = StyleSheet.create({
     paddingHorizontal: TextSmallSize,
     margin: 5,
   },
+  bulkbutton: {
+    backgroundColor: '#17A2B8',
+    borderRadius: 4,
+    paddingVertical: TextSmallSize/2,
+    paddingHorizontal: TextSmallSize,
+    margin: 5,
+  },
   toolbarLabel: {
     fontSize: TextdefaultSize,
     margin: 5,

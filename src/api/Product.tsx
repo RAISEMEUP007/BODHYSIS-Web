@@ -89,3 +89,7 @@ export const getQuantitiesByFamily = (cb=(jR, s, e)=>{}) => {
 export const getQuantitiesByCategory = (cb=(jR, s, e)=>{}) => {
   getAPICall('product/getquantitiesbycategory', cb);
 }
+
+export const updateBulkLocation = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('product/updatebulklocation', payload, cb);
+};
