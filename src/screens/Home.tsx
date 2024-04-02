@@ -13,7 +13,7 @@ import { logout } from '../api/Auth';
 import Orders from './orders/Orders';
 import Scheduler from './scheduler/Scheduler';
 
-const MainDrawer = ({ navigation }) => {
+const MainDrawer = () => {
   const { isLargeScreen } = useScreenSize();
 
   const Drawer = createDrawerNavigator();
