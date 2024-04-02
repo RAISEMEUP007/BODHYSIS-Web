@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import {
   ScrollView,
   View,
@@ -30,6 +30,7 @@ import { productsStyle } from './styles/ProductsStyle';
 import AddProductModal from './AddProductModal';
 import QuickAddProductModal from './QuickAddProductModal';
 import { ActivityIndicator } from 'react-native-paper';
+import Checkbox from 'expo-checkbox';
 
 const Products = ({ navigation, openInventory, data }) => {
   const initialMount = useRef(true);
@@ -49,6 +50,8 @@ const Products = ({ navigation, openInventory, data }) => {
 
   const [tableData, setTableData] = useState([]);
   const [updateProductTrigger, setUpdateProductsTrigger] = useState(false);
+  const [checkedItemIds, setCheckedItemIds] = useState([]);
+  const [isCheckedAll, setIsCheckAll] = useState(false);
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [isQuickAddModalVisible, setQuickAddModalVisible] = useState(false);
@@ -92,6 +95,61 @@ const Products = ({ navigation, openInventory, data }) => {
   const [sortColumn, setSortColumn] = useState('');
   const [sortDirection, setSortDirection] = useState('asc');
   const [isLoading, setIsLoading] = useState(false);
+
+  const getSortedData = (tableData) => {
+    if(sortColumn && sortDirection){
+      tableData.sort((a, b) => {
+        let A; let B;
+        if(sortColumn == 'category'){
+          A = a.category.category;  B = b.category.category;
+        }else if(sortColumn == 'family'){
+          A = a.family.family; B = b.family.family;
+        }else if(sortColumn == 'line'){
+          A = a.line.line; B = b.line.line;
+        }else if(sortColumn == 'size'){
+          A = a.line.size; B = b.line.size;
+        }else if(sortColumn == 'home_location'){
+          A = a.home_location_tbl.location; B = b.home_location_tbl.location;
+        }else if(sortColumn == 'current_location'){
+          A = a.current_location_tbl.location; B = b.current_location_tbl.location;
+        }else{
+          A = a[sortColumn];
+          B = b[sortColumn];
+        }
+
+        if (typeof A === 'number' && typeof B === 'number') {
+          return sortDirection === 'asc' ? A - B : B - A;
+        } else {
+          const textA = String(A).toUpperCase();
+          const textB = String(B).toUpperCase();
+          return sortDirection === 'asc' ? textA.localeCompare(textB) : textB.localeCompare(textA);
+        }
+      });
+
+      return tableData;
+    }else return tableData;
+  }
+
+  const filteredAndSortedData = useMemo(()=>{
+    const filteredData = tableData.filter((item) => {
+      const isBarcodeMatch = searchBarcode.trim()
+        ? item.barcode && item.barcode.toLowerCase().includes(searchBarcode.trim().toLowerCase())
+        : true;
+      const isSizeMatch = searchSize.trim()
+        ? item.line && item.line.size.toLowerCase().includes(searchSize.trim().toLowerCase())
+        : true;
+      const isLocationMatch =
+        searchLocation != 0
+          ? (item.home_location && item.home_location == searchLocation) ||
+            (item.current_location && item.current_location == searchLocation)
+          : true;
+
+      return isBarcodeMatch && isSizeMatch && isLocationMatch;
+    });
+
+    return getSortedData(filteredData);
+
+  }, [tableData, searchBarcode, searchSize, searchLocation, sortColumn, sortDirection]);
 
   useEffect(() => {
     if (data == null && updateProductTrigger == true) {
@@ -284,6 +342,22 @@ const Products = ({ navigation, openInventory, data }) => {
     });
   };
 
+  const setIsChecked = (itemId, value) => {
+    setCheckedItemIds((prevIds) => {
+      if (value) {
+        return [...prevIds, itemId];
+      } else {
+        return prevIds.filter((id) => id !== itemId);
+      }
+    });
+  }
+
+  const updateCheckedAll = (value) => {
+    const updatedCheckedItemIds = value ? filteredAndSortedData.map((item) => item.id) : [];
+    setCheckedItemIds(updatedCheckedItemIds);
+    setIsCheckAll(value);
+  }
+
   const sortData = (column) =>{
     setIsLoading(true);
     const direction = column === sortColumn && sortDirection === 'desc' ? 'asc' : 'desc';
@@ -293,68 +367,17 @@ const Products = ({ navigation, openInventory, data }) => {
     setSortDirection(direction);
   }
 
-  const getSortedData = (tableData) => {
-    if(sortColumn && sortDirection){
-      tableData.sort((a, b) => {
-        let A; let B;
-
-        if(sortColumn == 'category'){
-          A = a.category.category;  B = b.category.category;
-        }else if(sortColumn == 'family'){
-          A = a.family.family; B = b.family.family;
-        }else if(sortColumn == 'line'){
-          A = a.line.line; B = b.line.line;
-        }else if(sortColumn == 'size'){
-          A = a.line.size; B = b.line.size;
-        }else if(sortColumn == 'home_location'){
-          A = a.home_location_tbl.location; B = b.home_location_tbl.location;
-        }else if(sortColumn == 'current_location'){
-          A = a.current_location_tbl.location; B = b.current_location_tbl.location;
-        }else{
-          A = a[sortColumn];
-          B = b[sortColumn];
-        }
-
-        if (typeof A === 'number' && typeof B === 'number') {
-          return sortDirection === 'asc' ? A - B : B - A;
-        } else {
-          const textA = String(A).toUpperCase();
-          const textB = String(B).toUpperCase();
-          return sortDirection === 'asc' ? textA.localeCompare(textB) : textB.localeCompare(textA);
-        }
-      });
-
-      return tableData;
-    }else return tableData;
-  }
-
   const renderTableData = () => {
-    const filteredData = tableData.filter((item) => {
-      const isBarcodeMatch = searchBarcode.trim()
-        ? item.barcode && item.barcode.toLowerCase().includes(searchBarcode.trim().toLowerCase())
-        : true;
-      const isSizeMatch = searchSize.trim()
-        ? item.line && item.line.size.toLowerCase().includes(searchSize.trim().toLowerCase())
-        : true;
-      const isLocationMatch =
-        searchLocation != 0
-          ? (item.home_location && item.home_location == searchLocation) ||
-            (item.current_location && item.current_location == searchLocation)
-          : true;
-
-      return isBarcodeMatch && isSizeMatch && isLocationMatch;
-    });
-
-    const sortedData = getSortedData(filteredData);
-    
     const rows = [];
-    if (sortedData.length > 0) {
-      sortedData.map((item, index) => {
+    if (filteredAndSortedData.length > 0) {
+      filteredAndSortedData.map((item, index) => {
         rows.push(
           <View key={index} style={styles.tableRow}>
-            {/* <View style={[styles.cell, styles.categoryCell]}>
-              <Text style={styles.categoryCell}>{item.product}</Text>
-            </View> */}
+            <View style={[styles.cell, {width:50, alignItems:"center", justifyContent:'center', padding:0}]}>
+              <Checkbox 
+                value={checkedItemIds.includes(item.id)}
+                onValueChange={(value)=>setIsChecked(item.id, value)}/>
+            </View>
             <View style={styles.cell}>
               <Text>{item.category ? item.category.category : ''}</Text>
             </View>
@@ -530,6 +553,9 @@ const Products = ({ navigation, openInventory, data }) => {
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
+              <View style={[styles.columnHeader, {width:50, alignItems:"center", justifyContent:'center', padding:0}]}>
+                <Checkbox value={isCheckedAll} onValueChange={updateCheckedAll}/>
+              </View>
               <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('category')}>
                 <Text>{'Category'}</Text>
                 {sortColumn == 'category' && sortDirection == 'desc'?

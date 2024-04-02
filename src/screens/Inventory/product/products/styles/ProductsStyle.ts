@@ -118,12 +118,6 @@ export const productsStyle = StyleSheet.create({
     justifyContent: 'center',
     paddingLeft: 14,
   },
-  categoryCell: {
-    width: 250,
-    paddingHorizontal: 6,
-    paddingVertical: 6,
-    justifyContent: "center",
-  },
   focusedCell: {
     borderWidth: 1,
     borderColor: "#ccc",
