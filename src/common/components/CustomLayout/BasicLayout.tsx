@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { NavigationProp } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 interface Props {
-  navigation?: NavigationProp<any>;
   goHome?: () => void;
   goBack?: () => void;
   screenName: string;
@@ -14,7 +13,6 @@ interface Props {
 }
 
 const BasicLayout = ({
-  navigation,
   goHome,
   goBack,
   screenName,
@@ -39,13 +37,16 @@ const BasicLayout = ({
     }
   }, [goBack]);
 
+  const navigation = useNavigation()
   return (
     <View style={{ ...styles.container, ...containerStyle }}>
       <View style={styles.header}>
         {navigation && navigation.toggleDrawer && (
           <TouchableOpacity
             style={[styles.Icon, { marginRight: 8 }]}
-            onPress={navigation.toggleDrawer}
+            onPress={()=>navigation.toggleDrawer({
+              side: 'left'
+            })}
           >
             <FontAwesome5 name="bars" size={20} color="#000" />
           </TouchableOpacity>
