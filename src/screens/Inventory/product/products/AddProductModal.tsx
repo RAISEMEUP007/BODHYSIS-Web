@@ -52,17 +52,17 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   const [selectedCategory, selectCategory] = useState<any>({});
   const [selectedFamily, selectFamily] = useState<any>({});
   const [selectedLine, selectLine] = useState<any>({});
-  const [ProductTxt, setProductTxt] = useState('');
+  // const [ProductTxt, setProductTxt] = useState('');
   const [SizeTxt, setSizeTxt] = useState('');
-  const [DescriptionTxt, setDescriptionTxt] = useState('');
+  // const [DescriptionTxt, setDescriptionTxt] = useState('');
   const [ItemIdTxt, setItemIdTxt] = useState('');
   const [BarcodeTxt, setBarcodeTxt] = useState('');
   const [QuantityTxt, setQuantityTxt] = useState('');
-  const [SerialNumber, setSerialNumber] = useState('');
+  // const [SerialNumber, setSerialNumber] = useState('');
   const [selectedHomeLocation, selectHomeLocation] = useState<any>({});
   const [selectedCurrentLocation, selectCurrentLocation] = useState<any>({});
   const [selectedStatus, selectStatus] = useState<any>({});
-  const [PriceGroupTxt, setPriceGroupTxt] = useState('');
+  // const [PriceGroupTxt, setPriceGroupTxt] = useState('');
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -110,14 +110,14 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
         selectLine(lines[0]);
       }
 
-      setProductTxt(Product ? Product.product : '');
+      // setProductTxt(Product ? Product.product : '');
       setSizeTxt(Product ? Product.size : '');
-      setDescriptionTxt(Product ? Product.description : '');
+      // setDescriptionTxt(Product ? Product.description : '');
       setItemIdTxt(Product ? Product.item_id : '');
       setBarcodeTxt(Product ? Product.barcode : '');
       setQuantityTxt(Product ? Product.quantity : '');
-      setSerialNumber(Product ? Product.serial_number : '');
-      setPriceGroupTxt(Product?.line?.price_group?.price_group??'');
+      // setSerialNumber(Product ? Product.serial_number : '');
+      // setPriceGroupTxt(Product?.line?.price_group?.price_group??'');
 
       if (Product && Product.home_location && Locations) {
         const initalHomeLocation = Locations.find((location) => {
@@ -141,6 +141,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
         const initalStatus = StatusArr.find((status) => {
           return status.id == Product.status;
         });
+        console.log(initalStatus);
         if (initalStatus) selectStatus(initalStatus);
       }else selectStatus(StatusArr[0]);
 
@@ -208,12 +209,12 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
     fetchData();
   }, [selectedCategory, selectedFamily]);
 
-  useEffect(() => {
-    setPriceGroupTxt(selectedLine?.price_group?.price_group??'');
-  }, [selectedCategory, selectedFamily, selectedLine]);
+  // useEffect(() => {
+  //   setPriceGroupTxt(selectedLine?.price_group?.price_group??'');
+  // }, [selectedCategory, selectedFamily, selectedLine]);
 
   const AddProductButtonHandler = () => {
-    if (!ProductTxt.trim()) {
+    if (!BarcodeTxt.trim()) {
       setValidMessage(msgStr('emptyField'));
       return;
     }
@@ -221,16 +222,16 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
     setIsLoading(true);
 
     const payload : any = {
-      product: ProductTxt,
+      // product: ProductTxt,
       category_id: selectedCategory.id,
       family_id: selectedFamily.id,
       line_id: selectedLine.id,
       size: SizeTxt,
-      description: DescriptionTxt,
+      // description: DescriptionTxt,
       item_id: ItemIdTxt,
       barcode: BarcodeTxt,
       quantity: QuantityTxt,
-      serial_number: SerialNumber,
+      // serial_number: SerialNumber,
       home_location: selectedHomeLocation.id,
       current_location: selectedCurrentLocation.id,
       status: selectedStatus.id,
@@ -267,7 +268,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   };
 
   const checkInput = () => {
-    if (!ProductTxt.trim()) {
+    if (!BarcodeTxt.trim()) {
       setValidMessage(msgStr('emptyField'));
     } else {
       setValidMessage('');
@@ -286,7 +287,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
         <ModalHeader label={(isUpdate?'Update':'Add')+' product'} closeModal={closeModal} />
         <ModalBody>
           <View style={{ flexDirection: 'row' }}>
-            <View style={{ flex: 1, paddingRight: 10 }}>
+            <View style={{ flex: 1 }}>
               <Text style={styles.label}>Category</Text>
               <Picker
                 style={styles.select}
@@ -337,7 +338,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                   })}
               </Picker>
 
-              <Text style={styles.label}>Product</Text>
+              {/* <Text style={styles.label}>Product</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Product"
@@ -345,26 +346,27 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                 onChangeText={setProductTxt}
                 placeholderTextColor="#ccc"
                 onBlur={checkInput}
-              />
-              {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
+              /> */}
               <Text style={styles.label}>Barcode</Text>
               <TextInput
                 style={[styles.input]}
                 placeholder="Barcode"
                 value={BarcodeTxt}
                 onChangeText={setBarcodeTxt}
+                onBlur={checkInput}
                 placeholderTextColor="#ccc"
               />
-            </View>
-            <View style={{ flex: 1, paddingLeft: 10 }}>
-              <Text style={styles.label}>Serial Number</Text>
+              {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
+            {/* </View>
+            <View style={{ flex: 1, paddingLeft: 10 }}> */}
+              {/* <Text style={styles.label}>Serial Number</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Serial Number"
                 value={SerialNumber}
                 onChangeText={setSerialNumber}
                 placeholderTextColor="#ccc"
-              />
+              /> */}
               <Text style={styles.label}>Home Location</Text>
               <Picker
                 style={styles.select}
@@ -411,7 +413,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                     );
                   })}
               </Picker>
-              <Text style={styles.label}>Description</Text>
+              {/* <Text style={styles.label}>Description</Text>
               <TextInput
                 style={[styles.input]}
                 placeholder="Description"
@@ -419,7 +421,7 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
                 multiline={true}
                 onChangeText={setDescriptionTxt}
                 placeholderTextColor="#ccc"
-              />
+              /> */}
               {/* <Text style={styles.label}>Price Group</Text>
               <Text style={[styles.input, {borderColor:'#666', color:'#666'}]}>{PriceGroupTxt}</Text> */}
             </View>
