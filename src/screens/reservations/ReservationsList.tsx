@@ -96,25 +96,19 @@ const ReservationsList = ({ openReservationScreen }) => {
             <View style={[styles.cell]}>
               <Text>{item.end_location}</Text>
             </View>
-            <View style={[styles.cell]}>
+            <View style={[styles.cell, {width:100}]}>
               <Text>{item.start_date ? new Date(item.start_date).toLocaleString('en-US', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true,
               }) : ''}
               </Text>
             </View>
-            <View style={[styles.cell]}>
+            <View style={[styles.cell, {width:100}]}>
               <Text>{item.end_date ? new Date(item.end_date).toLocaleString('en-US', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true,
               }) : ''}
               </Text>
             </View>
@@ -170,8 +164,8 @@ const ReservationsList = ({ openReservationScreen }) => {
               <Text style={[styles.columnHeader]}>{'Brand'}</Text>
               <Text style={[styles.columnHeader]}>{'Start Location'}</Text>
               <Text style={[styles.columnHeader]}>{'End Location'}</Text>
-              <Text style={[styles.columnHeader]}>{'Start Date'}</Text>
-              <Text style={[styles.columnHeader]}>{'End Date'}</Text>
+              <Text style={[styles.columnHeader, {width:100}]}>{'Start Date'}</Text>
+              <Text style={[styles.columnHeader, {width:100}]}>{'End Date'}</Text>
               <Text style={[styles.columnHeader]}>{'Promo Code'}</Text>
               <Text style={[styles.columnHeader]}>{'Stage'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Proceed'}</Text>
