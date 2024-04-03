@@ -27,8 +27,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
   const { showAlert } = useAlertModal();
 
   const [inputValues, setInputValues] = useState({
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: '',
+    endDate: '',
     billableDays: 0,
     reservationDuration: '',
     discountCode: '',
@@ -43,12 +43,12 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
 
   useEffect(() => {
     if(details){
-      const _startDate = new Date(details.start_date) || new Date();
-      const _endDate = new Date(details.end_date) || new Date();
+      const _startDate = new Date(details.start_date).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit',})
+      const _endDate = new Date(details.end_date).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', })
 
-      const billableDays = Math.ceil((_endDate.getTime() - _startDate.getTime()) / (1000 * 60 * 60 * 24));
+      const billableDays = Math.ceil((details.end_date.getTime() - details.start_date.getTime()) / (1000 * 60 * 60 * 24));
 
-      const totalHours = (_endDate.getTime() - _startDate.getTime()) / (1000 * 60 * 60);
+      const totalHours = (details.end_date.getTime() - details.start_date.getTime()) / (1000 * 60 * 60);
       const days = Math.floor(totalHours / 24);
       const hours = Math.floor(totalHours % 24);
       const durationText = hours > 0 ? `${days} days and ${hours} hours` : `${days} days`;
@@ -187,47 +187,49 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
 
   };
 
-  const CustomInput = forwardRef(({ value, onChange, onClick }:any, ref) => (
-    <input
-      onClick={onClick}
-      onChange={onChange}
-      ref={ref}
-      style={styles.input}
-      value={value}
-    ></input>
-  ))
+  // const CustomInput = forwardRef(({ value, onChange, onClick }:any, ref) => (
+  //   <input
+  //     onClick={onClick}
+  //     onChange={onChange}
+  //     ref={ref}
+  //     style={styles.input}
+  //     value={value}
+  //   ></input>
+  // ))
 
-  const renderDatePicker = (selectedDate, onChangeHandler, minDate = null) => {
-    return (
-      <View>
-        <DatePicker
-          selected={selectedDate}
-          onChange={(date) => onChangeHandler(date)}
-          customInput={<CustomInput />}
-          minDate={minDate}
-          // disabled={true}
-          peekNextMonth
-          showMonthDropdown
-          showYearDropdown
-          dropdownMode="select"
-          timeInputLabel="Time:"
-          dateFormat="MM/dd/yyyy hh:mm aa"
-          showTimeSelect
-        />
-      </View>
-    );
-  };
+  // const renderDatePicker = (selectedDate, onChangeHandler, minDate = null) => {
+  //   return (
+  //     <View>
+  //       <DatePicker
+  //         selected={selectedDate}
+  //         onChange={(date) => onChangeHandler(date)}
+  //         customInput={<CustomInput />}
+  //         minDate={minDate}
+  //         // disabled={true}
+  //         peekNextMonth
+  //         showMonthDropdown
+  //         showYearDropdown
+  //         dropdownMode="select"
+  //         timeInputLabel="Time:"
+  //         dateFormat="MM/dd/yyyy hh:mm aa"
+  //         showTimeSelect
+  //       />
+  //     </View>
+  //   );
+  // };
 
   return (
     <View>
       <View style={[styles.reservationRow, {zIndex:10}]}>
         <View>
           <Text style={{marginBottom:6, color:"#555555"}}>{'Start date'}</Text>
-          {Platform.OS == 'web' && renderDatePicker(inputValues.startDate, (date)=>{handleInputChange('startDate', date)})}
+          {/* {Platform.OS == 'web' && renderDatePicker(inputValues.startDate, (date)=>{handleInputChange('startDate', date)})} */}
+          <Text style={styles.text} selectable={true}>{inputValues.startDate || ' '}</Text>
         </View>
         <View>
           <Text style={{marginBottom:6, color:"#555555"}}>{'End date'}</Text>
-          {Platform.OS == 'web' && renderDatePicker(inputValues.endDate, (date)=>{handleInputChange('endDate', date)}, inputValues.startDate)}
+          {/* {Platform.OS == 'web' && renderDatePicker(inputValues.endDate, (date)=>{handleInputChange('endDate', date)}, inputValues.startDate)} */}
+          <Text style={styles.text} selectable={true}>{inputValues.endDate || ' '}</Text>
         </View>
       </View>
       <View style={styles.reservationRow}>
@@ -259,6 +261,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
             marginRight: 30,
           }}
           width={300}
+          height={40}
           onItemSelected={(item) => {
             handleInputChange('discountCode', item.value.id);
           }}
@@ -305,6 +308,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
             marginRight: 30,
           }}
           width={300}
+          height={40}
           onItemSelected={(item) => {
             handleInputChange('startLocationId', item.value.id);
           }}
@@ -319,6 +323,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
             // marginRight: 40,
           }}
           width={300}
+          height={40}
           onItemSelected={(item) => {
             handleInputChange('endLocationId', item.value.id);
           }}

@@ -61,7 +61,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   const [brandId, selectBrandId] = useState<number | null>();
   const [taxRate, setTaxRate] = useState<number>(0);
   const [locationId, selectLocationId] = useState<number | null>();
-  const [startDate, setStartdate] = useState<Date>(new Date());
+  const [startDate, setStartdate] = useState<Date>(()=>{ const date = new Date(); date.setHours(0, 0, 0, 0); return date;});
   const [endDate, setEnddate] = useState<Date>();
   const [headerData, setHeaderData] = useState([]);
   const [equipmentData, setEquipmentData] = useState<Array<any>>([]);
@@ -480,9 +480,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
           showMonthDropdown
           showYearDropdown
           dropdownMode="select"
-          timeInputLabel="Time:"
-          dateFormat="MM/dd/yyyy hh:mm aa"
-          showTimeSelect
+          dateFormat="MM/dd/yyyy"
         />
       </View>
     );
@@ -500,14 +498,13 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
           showMonthDropdown
           showYearDropdown
           dropdownMode="select"
-          timeInputLabel="Time:"
-          dateFormat="MM/dd/yyyy hh:mm aa"
-          showTimeSelect
+          dateFormat="MM/dd/yyyy"
         />
       </View>
     );
   };
-
+  console.log(startDate);
+  console.log(endDate);
   const renderInitial = () => {
     return (
       <BasicLayout
@@ -624,7 +621,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                 <View style={[styles.reservationRow, {zIndex:10}]}>
                   <View style={{marginRight:40}}>
                     <Text style={{marginBottom:10}}>{'Pick Up Time'}</Text>
-                    {Platform.OS == 'web' && renderDatePicker(startDate, (date)=>setStartdate(date))}
+                    {Platform.OS == 'web' && renderDatePicker(startDate, (date)=>{setStartdate(date)})}
                   </View>
                   <View style={{marginRight:0}}>
                     <Text style={{marginBottom:10}}>{'Drop Off Time'}</Text>
