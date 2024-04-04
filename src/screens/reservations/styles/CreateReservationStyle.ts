@@ -20,6 +20,7 @@ export const createReservationStyle = StyleSheet.create({
     flexDirection: 'row',
     flexWrap:'wrap',
     marginVertical: 8,
+    gap:8,
     // paddingVertical: 8,
   },
   timeContainer: {
@@ -54,7 +55,7 @@ export const createReservationStyle = StyleSheet.create({
     // height: 37,
   },
   dateInput:{
-    padding:10,
+    padding:8,
     fontSize:14,
     width:328,
     borderWidth:1, 

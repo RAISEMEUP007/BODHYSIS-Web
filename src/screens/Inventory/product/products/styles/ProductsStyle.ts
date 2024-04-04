@@ -43,6 +43,13 @@ export const productsStyle = StyleSheet.create({
     paddingHorizontal: TextSmallSize,
     margin: 5,
   },
+  bulkbutton: {
+    backgroundColor: '#17A2B8',
+    borderRadius: 4,
+    paddingVertical: TextSmallSize/2,
+    paddingHorizontal: TextSmallSize,
+    margin: 5,
+  },
   toolbarLabel: {
     fontSize: TextdefaultSize,
     margin: 5,
@@ -117,12 +124,6 @@ export const productsStyle = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
     paddingLeft: 14,
-  },
-  categoryCell: {
-    width: 250,
-    paddingHorizontal: 6,
-    paddingVertical: 6,
-    justifyContent: "center",
   },
   focusedCell: {
     borderWidth: 1,
