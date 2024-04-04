@@ -46,7 +46,7 @@ const EquipmentsTable =  ({ items, onEdit, onDelete, width, isExtra, extraWith }
               <Text>{(index + 1)}</Text>
             </View>
             <View style={[styles.cell, {flex:1}]}>
-              <Text>{item.line + " " + item.size}</Text>
+              <Text>{item.display_name}</Text>
             </View>
             <View style={[styles.cell, { width: 100, paddingRight: 6, alignItems: 'flex-end' }]}>
               <Text>{item.quantity ? item.quantity : '0'}</Text>
@@ -99,7 +99,7 @@ const EquipmentsTable =  ({ items, onEdit, onDelete, width, isExtra, extraWith }
       <View style={[styles.tableContainer, {width:width || 740}]}>
         <View style={[styles.tableHeader, { paddingRight: 738 - contentWidth }]}>
           <Text style={[styles.columnHeader, { width: 60 }]}>{'No'}</Text>
-          <Text style={[styles.columnHeader, { flex:1 }]}>{'Product Line'}</Text>
+          <Text style={[styles.columnHeader, { flex:1 }]}>{'Product Family'}</Text>
           <Text style={[styles.columnHeader, { width: 100 }]}>{'Quantity'}</Text>
           <Text style={[styles.columnHeader, { width: 100 }]}>{'Price'}</Text>
           {isExtra && (

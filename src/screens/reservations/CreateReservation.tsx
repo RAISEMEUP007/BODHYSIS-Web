@@ -272,7 +272,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     );
   }, [customerId, brandId, startDate, endDate, selectedPriceTable, equipmentData]);
 
-  const addReservationItem = (productLine, quantity, extras) => {
+  const addReservationItem = (productFamily, quantity, extras) => {
     const arraysAreEqual = (arr1, arr2) => {
       if (arr1.length !== arr2.length) {
         return false;
@@ -288,15 +288,15 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     };
 
     const existingProduct = equipmentData.find((item) => {
-      return item.line_id === productLine.id && arraysAreEqual(item.extras, extras);
+      return item.family_id === productFamily.id && arraysAreEqual(item.extras, extras);
     });
 
     if (existingProduct) {
       showConfirm(
-        `${productLine.line} ${productLine.size} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
+        `${productFamily.display_name} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
         () => {
           const updatedEquipmentData = equipmentData.map((item) => {
-            if (item.line_id === productLine.id && arraysAreEqual(item.extras, extras)) {
+            if (item.family_id === productFamily.id && arraysAreEqual(item.extras, extras)) {
               return { ...item, quantity: item.quantity + quantity, extras };
             }
             return item;
@@ -307,22 +307,28 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
         }
       );
     } else {
-      const equipment = { ...productLine, line_id: productLine.id, quantity, extras };
+      const equipment = { 
+        ...productFamily,
+        family_id: productFamily.id,
+        quantity,
+        extras,
+        price_group_id: productFamily?.lines[0]?.price_group_id ?? 0, 
+      };
       setEquipmentData((prevEquipmentData) => [...prevEquipmentData, equipment]);
       setItemOperations((prev) => prev + 1);
     }
   };
 
-  const updateReservationItem = (oldLine, productLine, quantity, extras) => {
-    const existingProduct = equipmentData.find((item) => item.id === productLine.id);
+  const updateReservationItem = (oldLine, productFamily, quantity, extras) => {
+    const existingProduct = equipmentData.find((item) => item.id === productFamily.id);
 
-    if (oldLine.id != productLine.id && existingProduct) {
+    if (oldLine.id != productFamily.id && existingProduct) {
       showAlert(
         'warning',
-        `${productLine.line} ${productLine.size} is already in the reservation items.`
+        `${productFamily.line} ${productFamily.size} is already in the reservation items.`
       );
     } else {
-      const newEquipment = { ...productLine, line_id: productLine.id, quantity, extras };
+      const newEquipment = { ...productFamily, family_id: productFamily.id, quantity, extras };
       const replaceIndex = editingIndex;
       setEquipmentData((prevEquipmentData) => {
         return prevEquipmentData.map((item, index) => {
@@ -409,21 +415,22 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       items: equipmentData,
     };
 
-    verifyQauntity(payload, (jsonRes, status) => {
-      switch (status) {
-        case 200:
-          submitReservation();
-          break;
-        case 400:
-          openReviewQuantityCustomerModal(jsonRes.quantities);
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
-      }
-      setIsLoading(false);
-    });
+    // verifyQauntity(payload, (jsonRes, status) => {
+    //   switch (status) {
+    //     case 200:
+    //       submitReservation();
+    //       break;
+    //     case 400:
+    //       openReviewQuantityCustomerModal(jsonRes.quantities);
+    //       break;
+    //     default:
+    //       if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+    //       else showAlert('error', msgStr('unknownError'));
+    //       break;
+    //   }
+    //   setIsLoading(false);
+    // });
+    submitReservation();
   };
 
   const submitReservation = () => {
@@ -665,9 +672,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                     <Text style={{marginBottom:10}}>{'Pick Up Time'}</Text>
                     {Platform.OS == 'web' && renderDatePicker(startDate, (date)=>setStartdate(date))}
                   </View>
-                </View>
-
-                <View style={[styles.reservationRow, { zIndex: 10 }]}>
                   <View style={{ marginRight: 0 }}>
                     <Text style={{ marginBottom: 10 }}>{'Drop Off Time'}</Text>
                     {Platform.OS == 'web' &&
@@ -681,6 +685,9 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                     )}
                   </View>
                 </View>
+
+                {/* <View style={[styles.reservationRow, { zIndex: 10 }]}>
+                </View> */}
                 {/* <View style={[styles.reservationRow, {marginTop:16}]}>
                   <Text style={{marginRight:20, fontSize:14}}>{'Price Table:'}</Text>
                   <Text style={{marginRight:20, fontSize:15, color:(selectedPriceTable ? '#ff4d4d': '#999')}}>{selectedPriceTable ? selectedPriceTable.table_name : 'No available table'}</Text>
@@ -749,14 +756,14 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
           isModalVisible={isAddReservationItemModalVisible}
           closeModal={closeAddReservationItemModal}
           item={editingItem}
-          onAdded={(productLine, quantity, extras) => {
-            if (productLine) {
-              addReservationItem(productLine, quantity, extras);
+          onAdded={(productFamily, quantity, extras) => {
+            if (productFamily) {
+              addReservationItem(productFamily, quantity, extras);
             }
           }}
-          onUpdated={(oldLine, productLine, quantity, extras) => {
-            if (productLine) {
-              updateReservationItem(oldLine, productLine, quantity, extras);
+          onUpdated={(oldLine, productFamily, quantity, extras) => {
+            if (productFamily) {
+              updateReservationItem(oldLine, productFamily, quantity, extras);
             }
             editReservationItem(null, null);
           }}
