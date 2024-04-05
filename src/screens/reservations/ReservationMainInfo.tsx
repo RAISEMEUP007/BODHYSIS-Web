@@ -46,9 +46,9 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
       const _startDate = new Date(details.start_date).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit',})
       const _endDate = new Date(details.end_date).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', })
 
-      const billableDays = Math.ceil((details.end_date.getTime() - details.start_date.getTime()) / (1000 * 60 * 60 * 24));
+      const billableDays = Math.ceil((new Date(details.end_date).getTime() - new Date(details.start_date).getTime()) / (1000 * 60 * 60 * 24));
 
-      const totalHours = (details.end_date.getTime() - details.start_date.getTime()) / (1000 * 60 * 60);
+      const totalHours = (new Date(details.end_date).getTime() - new Date(details.start_date).getTime()) / (1000 * 60 * 60);
       const days = Math.floor(totalHours / 24);
       const hours = Math.floor(totalHours % 24);
       const durationText = hours > 0 ? `${days} days and ${hours} hours` : `${days} days`;

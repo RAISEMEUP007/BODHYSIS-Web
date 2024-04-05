@@ -85,35 +85,22 @@ const ReservationsList = ({ openReservationScreen }) => {
         rows.push(
           <View key={index} style={styles.tableRow}>
             <View style={[styles.cell]}>
-              <Text>{item.full_name}</Text>
+              <Text>{item.order_number}</Text>
             </View>
             <View style={[styles.cell]}>
               <Text>{item.brand}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.start_location}</Text>
+              <Text>{item.full_name}</Text>
             </View>
             <View style={[styles.cell]}>
               <Text>{item.end_location}</Text>
             </View>
-            <View style={[styles.cell, {width:100}]}>
-              <Text>{item.start_date ? new Date(item.start_date).toLocaleString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-              }) : ''}
-              </Text>
-            </View>
-            <View style={[styles.cell, {width:100}]}>
-              <Text>{item.end_date ? new Date(item.end_date).toLocaleString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-              }) : ''}
-              </Text>
+            <View style={[styles.cell]}>
+              <Text>{item.start_location}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.discount_code}</Text>
+              <Text>{item?.quantity??''}</Text>
             </View>
             <View style={[styles.cell]}>
               <Text>{convertStageToString(item.stage)}</Text>
@@ -160,15 +147,16 @@ const ReservationsList = ({ openReservationScreen }) => {
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader]}>{'Customer Name'}</Text>
+              <Text style={[styles.columnHeader]}>{'Order #'}</Text>
               <Text style={[styles.columnHeader]}>{'Brand'}</Text>
-              <Text style={[styles.columnHeader]}>{'Start Location'}</Text>
-              <Text style={[styles.columnHeader]}>{'End Location'}</Text>
-              <Text style={[styles.columnHeader, {width:100}]}>{'Start Date'}</Text>
-              <Text style={[styles.columnHeader, {width:100}]}>{'End Date'}</Text>
-              <Text style={[styles.columnHeader]}>{'Promo Code'}</Text>
+              <Text style={[styles.columnHeader]}>{'Customer'}</Text>
+              <Text style={[styles.columnHeader]}>{'To'}</Text>
+              <Text style={[styles.columnHeader]}>{'From'}</Text>
+              {/* <Text style={[styles.columnHeader, {width:100}]}>{'Start Date'}</Text>
+              <Text style={[styles.columnHeader, {width:100}]}>{'End Date'}</Text> */}
+              <Text style={[styles.columnHeader]}>{'Qty of bikes'}</Text>
               <Text style={[styles.columnHeader]}>{'Stage'}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{'Proceed'}</Text>
+              {/* <Text style={[styles.columnHeader, styles.IconCell]}>{'Proceed'}</Text> */}
               {/* <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text> */}
             </View>
             <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
