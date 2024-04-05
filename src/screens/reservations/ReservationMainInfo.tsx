@@ -36,7 +36,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
     referrer: '',
     group: '',
     startLocationId: '',
-    endLocationId: ''
+    endLocationId: '',
+    deliveryAddress: ''
   });
 
   const [discountCodes, setDiscountCodes] = useState([]);
@@ -63,7 +64,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         referrer: details.referrer || '',
         group: details.group || '',
         startLocationId: details.start_location_id || '',
-        endLocationId: details.end_location_id || ''
+        endLocationId: details.end_location_id || '',
+        deliveryAddress: details?.delivery_address?.address1??''
       });
     }
   }, [details]);
@@ -303,7 +305,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         />
       </View>
       <View style={styles.reservationRow}>
-        <CommonSelectDropdown
+        {/* <CommonSelectDropdown
           containerStyle={{
             marginRight: 30,
           }}
@@ -317,8 +319,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           title={'Start Location'}
           titleStyle={{marginBottom:6, color:"#555555", fontSize:14}}
           defaultValue={defaultStartLocation}
-        />
-        <CommonSelectDropdown
+        /> */}
+        {/* <CommonSelectDropdown
           containerStyle={{
             // marginRight: 40,
           }}
@@ -332,6 +334,15 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           title={'End Location'}
           titleStyle={{marginBottom:6, color:"#555555", fontSize:14}}
           defaultValue={defaultEndLocation}
+        /> */}
+        <LabeledTextInput
+          label='Delivery Address'
+          width={300}
+          placeholder='Delivery Address'
+          placeholderTextColor="#ccc"
+          inputStyle={{marginVertical:6}}
+          value={inputValues.deliveryAddress}
+          onChangeText={value => handleInputChange('group', value)}
         />
       </View>
     </View>

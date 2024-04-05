@@ -21,7 +21,7 @@ import {
   useRequestPriceGroupsQuery,
   useRequestPriceLogicDataQuery,
 } from '../../redux/slices/baseApiSlice';
-import { getCustomersData } from '../../api/Customer';
+import { getCustomersData, getDeliveryAddressesData } from '../../api/Customer';
 import { createReservation, verifyQauntity } from '../../api/Reservation';
 import { getHeaderData, getPriceDataByGroup, getPriceGroupValue } from '../../api/Price';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
@@ -80,6 +80,9 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   const [isAddReservationItemModalVisible, setAddReservationItemModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState();
   const [editingIndex, setEditingIndex] = useState();
+
+  const [customerAddresses, setCustomerAddresses] = useState([]);
+  const [customerAddressId, selectCustomerAddressId] = useState();
 
   const openAddReservationItemModal = () => {
     editReservationItem(null, null);
@@ -180,6 +183,45 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       if (status == 200) setTaxRate(jsonRes.sales_tax);
     });
   }, [brandId]);
+
+  useEffect(()=>{
+    if(customerId){
+      getDeliveryAddressesData(customerId, (jsonRes)=>{
+        if(jsonRes && jsonRes.length){
+          setCustomerAddresses(jsonRes);
+          jsonRes.map((item, index) => {
+            if(item.is_used == 1){
+              selectCustomerAddressId(item.id);
+            }
+          });
+          selectCustomerAddressId(null);
+        }else {
+          setCustomerAddresses([]);
+          selectCustomerAddressId(null);
+        }
+      })
+    }else{
+      setCustomerAddresses([]);
+      selectCustomerAddressId(null);
+    }
+  }, [customerId])
+console.log(customerAddressId);
+
+  const customerAddressDropdownData = useMemo(() => {
+    if (!customerAddresses?.length) {
+      return [];
+    }
+
+    const result: DropdownData<BrandType> = customerAddresses.map((item, index) => {
+      return {
+        value: item,
+        displayLabel: item.address1 + ' ' + item.city + ' ' + item.state,
+        index,
+      };
+    });
+    return result;
+  }, [customerAddresses]);
+
 
   const subTotal = useMemo(() => {
     if (equipmentData.length > 0) {
@@ -447,6 +489,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       tax_amount: taxAmount,
       total_price: subTotal + taxAmount,
       price_table_id: selectedPriceTable.id,
+      delivery_address_id: customerAddressId,
       stage: 1,
     };
 
@@ -514,8 +557,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       </View>
     );
   };
-  console.log(startDate);
-  console.log(endDate);
+  
   const renderInitial = () => {
     return (
       <BasicLayout
@@ -609,8 +651,8 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                     onPressWhileDisabled={() => {
                       if (!customerId) showAlert('warning', 'Please select a customer.');
                       else if (!brandId) showAlert('warning', 'Please select a brand.');
-                      else if (!startDate) showAlert('warning', 'Please select Pick Up Time.');
-                      else if (!endDate) showAlert('warning', 'Please select Drop off Time.');
+                      else if (!startDate) showAlert('warning', 'Please select Pick Up.');
+                      else if (!endDate) showAlert('warning', 'Please select Drop off.');
                       else if (!selectedPriceTable)
                         showAlert('warning', 'No available Price table. Can not set price.');
                       else if (!equipmentData.length) showAlert('warning', 'Please add an item.');
@@ -655,6 +697,21 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                   <CommonSelectDropdown
                     containerStyle={
                       {
+                        marginRight: 40,
+                      }
+                    }
+                    width={350}
+                    onItemSelected={(item) => {
+                      selectCustomerAddressId(item.value.id);
+                    }}
+                    data={customerAddressDropdownData}
+                    placeholder="Select An Address"
+                    title={'Delivery Address'}
+                    defaultValue={customerAddressId}
+                  />
+                  <CommonSelectDropdown
+                    containerStyle={
+                      {
                         // marginRight: 40,
                       }
                     }
@@ -669,11 +726,11 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                 </View>
                 <View style={[styles.reservationRow, {zIndex:10}]}>
                   <View style={{marginRight:40}}>
-                    <Text style={{marginBottom:10}}>{'Pick Up Time'}</Text>
+                    <Text style={{marginBottom:10}}>{'Pick Up'}</Text>
                     {Platform.OS == 'web' && renderDatePicker(startDate, (date)=>setStartdate(date))}
                   </View>
                   <View style={{ marginRight: 0 }}>
-                    <Text style={{ marginBottom: 10 }}>{'Drop Off Time'}</Text>
+                    <Text style={{ marginBottom: 10 }}>{'Drop Off'}</Text>
                     {Platform.OS == 'web' &&
                       renderEndDatePicker(endDate, (date) => setEnddate(date), startDate)}
                     {Platform.OS != 'web' && (

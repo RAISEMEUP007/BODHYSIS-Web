@@ -57,7 +57,7 @@ export const createReservationStyle = StyleSheet.create({
   dateInput:{
     padding:8,
     fontSize:14,
-    width:328,
+    width:333,
     borderWidth:1, 
     borderColor:'#808080',
   },

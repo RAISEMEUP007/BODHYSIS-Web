@@ -84,7 +84,7 @@ const ReservationsList = ({ openReservationScreen }) => {
       tableData.map((item, index) => {
         rows.push(
           <View key={index} style={styles.tableRow}>
-            <View style={[styles.cell]}>
+            <View style={[styles.cell, {width: 90}]}>
               <Text>{item.order_number}</Text>
             </View>
             <View style={[styles.cell]}>
@@ -93,8 +93,8 @@ const ReservationsList = ({ openReservationScreen }) => {
             <View style={[styles.cell]}>
               <Text>{item.full_name}</Text>
             </View>
-            <View style={[styles.cell]}>
-              <Text>{item.end_location}</Text>
+            <View style={[styles.cell, {width: 250}]}>
+              <Text>{item.delivery_address}</Text>
             </View>
             <View style={[styles.cell]}>
               <Text>{item.start_location}</Text>
@@ -147,10 +147,10 @@ const ReservationsList = ({ openReservationScreen }) => {
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader]}>{'Order #'}</Text>
+              <Text style={[styles.columnHeader, {width:90}]}>{'Order #'}</Text>
               <Text style={[styles.columnHeader]}>{'Brand'}</Text>
               <Text style={[styles.columnHeader]}>{'Customer'}</Text>
-              <Text style={[styles.columnHeader]}>{'To'}</Text>
+              <Text style={[styles.columnHeader, {width:250}]}>{'To'}</Text>
               <Text style={[styles.columnHeader]}>{'From'}</Text>
               {/* <Text style={[styles.columnHeader, {width:100}]}>{'Start Date'}</Text>
               <Text style={[styles.columnHeader, {width:100}]}>{'End Date'}</Text> */}
