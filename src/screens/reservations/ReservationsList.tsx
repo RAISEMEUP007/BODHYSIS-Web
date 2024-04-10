@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { InputHTMLAttributes, forwardRef, useEffect, useState } from 'react';
 import {
   ScrollView,
   View,
   Text,
   TouchableHighlight,
   TouchableOpacity,
-  Dimensions
+  TextInput,
+  Dimensions,
+  Platform
 } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { Picker } from '@react-native-picker/picker';
 
 import { getReservationsData } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
@@ -18,6 +23,14 @@ import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 
 import { reservationListsStyle } from './styles/ReservationListStyle';
 
+if (Platform.OS === 'web') {
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = 'react-datepicker/dist/react-datepicker.css';
+  document.head.appendChild(link);
+}
+
 const ReservationsList = ({ navigation, openReservationScreen }) => {
   const screenHeight = Dimensions.get('window').height;
 
@@ -27,9 +40,39 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
   const [tableData, setTableData] = useState([]);
   const [updateReservationListTrigger, setUpdateReservationListTrigger] = useState(true);
 
+  const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
+  const today = new Date().toISOString().substr(0, 10);
+  const [ searchOptions, setSearchOptions ] = useState({
+    start_date : twoWeeksAgo.toISOString().substr(0, 10),
+    end_date : today,
+    customer : '',
+    brand: '',
+    order_number: '',
+    stage: null,
+  });
+
+  const stage = [
+    'draft',
+    'provisional',
+    'confirmed',
+    'checked out',
+    'checked in',
+  ];
+
+  const changeSearchOptions = (key, val) => {
+    setSearchOptions(prevOptions => ({
+      ...prevOptions,
+      [key]: val
+    }));
+  }
+
   useEffect(() => {
     if (updateReservationListTrigger == true) getTable();
   }, [updateReservationListTrigger]);
+
+  useEffect(() => {
+    getTable();
+  }, [searchOptions]);
 
   // const removeReservationList = (id) => {
   //   showConfirm(msgStr('deleteConfirmStr'), () => {
@@ -48,8 +91,40 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
   //   });
   // };
 
+  const CustomInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
+    ({ value, onChange, onClick }, ref) => (
+      <input
+        onClick={onClick}
+        onChange={onChange}
+        ref={ref}
+        style={styles.dateInput}
+        value={value}
+      ></input>
+    )
+  );
+
+  const renderDatePicker = (selectedDate, onChangeHandler) => {
+    const sDate = new Date(selectedDate);
+    return (
+      <View style={{zIndex:10}}>
+        <DatePicker
+          selected={sDate}
+          onChange={(date) => onChangeHandler(date)}
+          customInput={<CustomInput />}
+          peekNextMonth
+          showMonthDropdown
+          showYearDropdown
+          // dropdownMode="select"
+          // timeInputLabel="Time:"
+          dateFormat="yyyy-MM-dd"
+          // showTimeSelect
+        />
+      </View>
+    );
+  };
+
   const getTable = () => {
-    getReservationsData((jsonRes, status, error) => {
+    getReservationsData({searchOptions:searchOptions}, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           setUpdateReservationListTrigger(false);
@@ -139,6 +214,63 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     >
       <ScrollView horizontal={true}>
         <View style={styles.container}>
+          <View style={[styles.toolbar, {zIndex:100, marginBottom:15}]}>
+            <Text style={styles.searchLabel}>From</Text>
+            {Platform.OS == 'web' && renderDatePicker(searchOptions.start_date, (date)=>changeSearchOptions('start_date', date.toISOString().substr(0, 10)))}
+            <Text style={styles.searchLabel}>To</Text>
+            {Platform.OS == 'web' && renderDatePicker(searchOptions.end_date, (date)=>changeSearchOptions('end_date', date.toISOString().substr(0, 10)))}
+          </View>
+          <View style={styles.toolbar}>
+            <View style={styles.searchBox}>
+              <Text style={styles.searchLabel}>Customer</Text>
+              <TextInput
+                style={styles.searchInput}
+                placeholder=""
+                value={searchOptions.customer}
+                onChangeText={(val)=>changeSearchOptions('customer', val)}
+              />
+            </View>
+            <View style={styles.searchBox}>
+              <Text style={styles.searchLabel}>Brand</Text>
+              <TextInput
+                style={styles.searchInput}
+                placeholder=""
+                value={searchOptions.brand}
+                onChangeText={(val)=>changeSearchOptions('brand', val)}
+              />
+            </View>
+            <View style={styles.searchBox}>
+              <Text style={styles.searchLabel}>Order number</Text>
+              <TextInput
+                style={styles.searchInput}
+                placeholder=""
+                value={searchOptions.order_number}
+                onChangeText={(val)=>changeSearchOptions('order_number', val)}
+              />
+            </View>
+            <View style={styles.searchBox}>
+              <Text style={styles.searchLabel}>Stage</Text>
+              {/* <TextInput
+                style={styles.searchInput}
+                placeholder=""
+                value={searchOptions.stage || ''}
+                onChangeText={(val)=>changeSearchOptions('stage', val)}
+              /> */}
+              <Picker
+                style={[styles.searchInput]}
+                selectedValue={searchOptions.stage}
+                onValueChange={val=>changeSearchOptions('stage', val)}
+              >
+                <Picker.Item label={''} value={null} />
+                {stage.length > 0 &&
+                  stage.map((stageStr, index) => {
+                    return (
+                      <Picker.Item key={index} label={stageStr} value={index} />
+                    );
+                  })}
+              </Picker>
+            </View>
+          </View>
           <View style={styles.toolbar}>
             <TouchableHighlight style={styles.button} onPress={()=>{
               openReservationScreen('Create Reservations');

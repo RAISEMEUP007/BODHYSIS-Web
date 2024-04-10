@@ -8,8 +8,8 @@ export const createReservation = (payload, cb=(jR, s, e)=>{}) => {
   postAPICall('reservations/createreservation', payload, cb);
 };
 
-export const getReservationsData = (cb=(jR, s, e)=>{}) => {
-  getAPICall('reservations/getreservationsdata/', cb);
+export const getReservationsData = (searchOptions, cb=(jR, s, e)=>{}) => {
+  postAPICall('reservations/getreservationsdata/',searchOptions, cb);
 }
 
 export const getReservationDetail = async (id, cb=(jR, s, e)=>{}) => {
