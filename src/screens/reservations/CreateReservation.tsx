@@ -21,7 +21,7 @@ import {
   useRequestPriceGroupsQuery,
   useRequestPriceLogicDataQuery,
 } from '../../redux/slices/baseApiSlice';
-import { getCustomersData } from '../../api/Customer';
+import { getCustomersData, getDeliveryAddressesData } from '../../api/Customer';
 import { createReservation, verifyQauntity } from '../../api/Reservation';
 import { getHeaderData, getPriceDataByGroup, getPriceGroupValue } from '../../api/Price';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
@@ -69,7 +69,8 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   );
   const [brandId, selectBrandId] = useState<number | null>();
   const [taxRate, setTaxRate] = useState<number>(0);
-  const [startDate, setStartdate] = useState<Date>(new Date());
+  const [locationId, selectLocationId] = useState<number | null>();
+  const [startDate, setStartdate] = useState<Date>(()=>{ const date = new Date(); date.setHours(0, 0, 0, 0); return date;});
   const [endDate, setEnddate] = useState<Date>();
   const [headerData, setHeaderData] = useState([]);
   const [equipmentData, setEquipmentData] = useState<Array<any>>([]);
@@ -79,6 +80,9 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   const [isAddReservationItemModalVisible, setAddReservationItemModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState();
   const [editingIndex, setEditingIndex] = useState();
+
+  const [customerAddresses, setCustomerAddresses] = useState([]);
+  const [customerAddressId, selectCustomerAddressId] = useState();
 
   const openAddReservationItemModal = () => {
     editReservationItem(null, null);
@@ -180,6 +184,45 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     });
   }, [brandId]);
 
+  useEffect(()=>{
+    if(customerId){
+      getDeliveryAddressesData(customerId, (jsonRes)=>{
+        if(jsonRes && jsonRes.length){
+          setCustomerAddresses(jsonRes);
+          jsonRes.map((item, index) => {
+            if(item.is_used == 1){
+              selectCustomerAddressId(item.id);
+            }
+          });
+          selectCustomerAddressId(null);
+        }else {
+          setCustomerAddresses([]);
+          selectCustomerAddressId(null);
+        }
+      })
+    }else{
+      setCustomerAddresses([]);
+      selectCustomerAddressId(null);
+    }
+  }, [customerId])
+console.log(customerAddressId);
+
+  const customerAddressDropdownData = useMemo(() => {
+    if (!customerAddresses?.length) {
+      return [];
+    }
+
+    const result: DropdownData<BrandType> = customerAddresses.map((item, index) => {
+      return {
+        value: item,
+        displayLabel: item.address1 + ' ' + item.city + ' ' + item.state,
+        index,
+      };
+    });
+    return result;
+  }, [customerAddresses]);
+
+
   const subTotal = useMemo(() => {
     if (equipmentData.length > 0) {
       const subtotal = equipmentData.reduce((total, item) => total + item.price, 0);
@@ -271,7 +314,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     );
   }, [customerId, brandId, startDate, endDate, selectedPriceTable, equipmentData]);
 
-  const addReservationItem = (productLine, quantity, extras) => {
+  const addReservationItem = (productFamily, quantity, extras) => {
     const arraysAreEqual = (arr1, arr2) => {
       if (arr1.length !== arr2.length) {
         return false;
@@ -287,15 +330,15 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     };
 
     const existingProduct = equipmentData.find((item) => {
-      return item.line_id === productLine.id && arraysAreEqual(item.extras, extras);
+      return item.family_id === productFamily.id && arraysAreEqual(item.extras, extras);
     });
 
     if (existingProduct) {
       showConfirm(
-        `${productLine.line} ${productLine.size} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
+        `${productFamily.display_name} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
         () => {
           const updatedEquipmentData = equipmentData.map((item) => {
-            if (item.line_id === productLine.id && arraysAreEqual(item.extras, extras)) {
+            if (item.family_id === productFamily.id && arraysAreEqual(item.extras, extras)) {
               return { ...item, quantity: item.quantity + quantity, extras };
             }
             return item;
@@ -306,22 +349,28 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
         }
       );
     } else {
-      const equipment = { ...productLine, line_id: productLine.id, quantity, extras };
+      const equipment = { 
+        ...productFamily,
+        family_id: productFamily.id,
+        quantity,
+        extras,
+        price_group_id: productFamily?.lines[0]?.price_group_id ?? 0, 
+      };
       setEquipmentData((prevEquipmentData) => [...prevEquipmentData, equipment]);
       setItemOperations((prev) => prev + 1);
     }
   };
 
-  const updateReservationItem = (oldLine, productLine, quantity, extras) => {
-    const existingProduct = equipmentData.find((item) => item.id === productLine.id);
+  const updateReservationItem = (oldLine, productFamily, quantity, extras) => {
+    const existingProduct = equipmentData.find((item) => item.id === productFamily.id);
 
-    if (oldLine.id != productLine.id && existingProduct) {
+    if (oldLine.id != productFamily.id && existingProduct) {
       showAlert(
         'warning',
-        `${productLine.line} ${productLine.size} is already in the reservation items.`
+        `${productFamily.line} ${productFamily.size} is already in the reservation items.`
       );
     } else {
-      const newEquipment = { ...productLine, line_id: productLine.id, quantity, extras };
+      const newEquipment = { ...productFamily, family_id: productFamily.id, quantity, extras };
       const replaceIndex = editingIndex;
       setEquipmentData((prevEquipmentData) => {
         return prevEquipmentData.map((item, index) => {
@@ -408,21 +457,22 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       items: equipmentData,
     };
 
-    verifyQauntity(payload, (jsonRes, status) => {
-      switch (status) {
-        case 200:
-          submitReservation();
-          break;
-        case 400:
-          openReviewQuantityCustomerModal(jsonRes.quantities);
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
-      }
-      setIsLoading(false);
-    });
+    // verifyQauntity(payload, (jsonRes, status) => {
+    //   switch (status) {
+    //     case 200:
+    //       submitReservation();
+    //       break;
+    //     case 400:
+    //       openReviewQuantityCustomerModal(jsonRes.quantities);
+    //       break;
+    //     default:
+    //       if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+    //       else showAlert('error', msgStr('unknownError'));
+    //       break;
+    //   }
+    //   setIsLoading(false);
+    // });
+    submitReservation();
   };
 
   const submitReservation = () => {
@@ -439,6 +489,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       tax_amount: taxAmount,
       total_price: subTotal + taxAmount,
       price_table_id: selectedPriceTable.id,
+      delivery_address_id: customerAddressId,
       stage: 1,
     };
 
@@ -483,9 +534,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
           showMonthDropdown
           showYearDropdown
           dropdownMode="select"
-          timeInputLabel="Time:"
-          dateFormat="MM/dd/yyyy hh:mm aa"
-          showTimeSelect
+          dateFormat="MM/dd/yyyy"
         />
       </View>
     );
@@ -503,14 +552,12 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
           showMonthDropdown
           showYearDropdown
           dropdownMode="select"
-          timeInputLabel="Time:"
-          dateFormat="MM/dd/yyyy hh:mm aa"
-          showTimeSelect
+          dateFormat="MM/dd/yyyy"
         />
       </View>
     );
   };
-
+  
   const renderInitial = () => {
     return (
       <BasicLayout
@@ -604,8 +651,8 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                     onPressWhileDisabled={() => {
                       if (!customerId) showAlert('warning', 'Please select a customer.');
                       else if (!brandId) showAlert('warning', 'Please select a brand.');
-                      else if (!startDate) showAlert('warning', 'Please select Pick Up Time.');
-                      else if (!endDate) showAlert('warning', 'Please select Drop off Time.');
+                      else if (!startDate) showAlert('warning', 'Please select Pick Up.');
+                      else if (!endDate) showAlert('warning', 'Please select Drop off.');
                       else if (!selectedPriceTable)
                         showAlert('warning', 'No available Price table. Can not set price.');
                       else if (!equipmentData.length) showAlert('warning', 'Please add an item.');
@@ -650,6 +697,21 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                   <CommonSelectDropdown
                     containerStyle={
                       {
+                        marginRight: 40,
+                      }
+                    }
+                    width={350}
+                    onItemSelected={(item) => {
+                      selectCustomerAddressId(item.value.id);
+                    }}
+                    data={customerAddressDropdownData}
+                    placeholder="Select An Address"
+                    title={'Delivery Address'}
+                    defaultValue={customerAddressId}
+                  />
+                  <CommonSelectDropdown
+                    containerStyle={
+                      {
                         // marginRight: 40,
                       }
                     }
@@ -661,17 +723,14 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                     placeholder="Select A Brand"
                     title={'Brands'}
                   />
-
-                  <View >
-                    <Text style={{ marginBottom: 10 }}>{'Pick Up Time'}</Text>
-                    {Platform.OS == 'web' &&
-                      renderDatePicker(startDate, (date) => setStartdate(date))}
-                  </View>
                 </View>
-
-                <View style={[styles.reservationRow, { zIndex: 10 }]}>
+                <View style={[styles.reservationRow, {zIndex:10}]}>
+                  <View style={{marginRight:40}}>
+                    <Text style={{marginBottom:10}}>{'Pick Up'}</Text>
+                    {Platform.OS == 'web' && renderDatePicker(startDate, (date)=>setStartdate(date))}
+                  </View>
                   <View style={{ marginRight: 0 }}>
-                    <Text style={{ marginBottom: 10 }}>{'Drop Off Time'}</Text>
+                    <Text style={{ marginBottom: 10 }}>{'Drop Off'}</Text>
                     {Platform.OS == 'web' &&
                       renderEndDatePicker(endDate, (date) => setEnddate(date), startDate)}
                     {Platform.OS != 'web' && (
@@ -683,6 +742,9 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                     )}
                   </View>
                 </View>
+
+                {/* <View style={[styles.reservationRow, { zIndex: 10 }]}>
+                </View> */}
                 {/* <View style={[styles.reservationRow, {marginTop:16}]}>
                   <Text style={{marginRight:20, fontSize:14}}>{'Price Table:'}</Text>
                   <Text style={{marginRight:20, fontSize:15, color:(selectedPriceTable ? '#ff4d4d': '#999')}}>{selectedPriceTable ? selectedPriceTable.table_name : 'No available table'}</Text>
@@ -751,14 +813,14 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
           isModalVisible={isAddReservationItemModalVisible}
           closeModal={closeAddReservationItemModal}
           item={editingItem}
-          onAdded={(productLine, quantity, extras) => {
-            if (productLine) {
-              addReservationItem(productLine, quantity, extras);
+          onAdded={(productFamily, quantity, extras) => {
+            if (productFamily) {
+              addReservationItem(productFamily, quantity, extras);
             }
           }}
-          onUpdated={(oldLine, productLine, quantity, extras) => {
-            if (productLine) {
-              updateReservationItem(oldLine, productLine, quantity, extras);
+          onUpdated={(oldLine, productFamily, quantity, extras) => {
+            if (productFamily) {
+              updateReservationItem(oldLine, productFamily, quantity, extras);
             }
             editReservationItem(null, null);
           }}

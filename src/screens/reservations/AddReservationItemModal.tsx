@@ -9,19 +9,19 @@ import {
   Pressable
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import CheckBox from 'expo-checkbox';
 
+import { getExtrasData } from '../../api/Settings';
+import { getProductCategoriesData, getProductFamiliesDataByDisplayName } from '../../api/Product';
 import BasicModalContainer from '../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../common/components/basicmodal/ModalBody';
 import ModalFooter from '../../common/components/basicmodal/ModalFooter';
 import { msgStr } from '../../common/constants/Message';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
-import { addReservationItemModalstyles } from './styles/addReservationItemModalStyle';
-
-import { useRequestProductLinesQuery } from '../../redux/slices/baseApiSlice';
 import NumericInput from '../../common/components/formcomponents/NumericInput';
-import { getExtrasData } from '../../api/Settings';
-import CheckBox from 'expo-checkbox';
+
+import { addReservationItemModalstyles } from './styles/addReservationItemModalStyle';
 
 interface AddReservationItemModalProps {
   isModalVisible: boolean;
@@ -49,12 +49,15 @@ const AddReservationItemModal = ({
   const [ValidMessage2, setValidMessage2] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [QuantityTxt, setQuantityTxt] = useState('');
-  const [selectedProductLine, selectProductLine] = useState();
+  const [selectedProductFamily, selectProductFamily] = useState();
   const [selectedProductId, setSelectedProductId] = useState(0);
   const [extras, setExtras] = useState([]);
   const [selectedExtras, setSelectedExtras] = useState([]);
 
-  const { data: productLinesData } = useRequestProductLinesQuery({}, { refetchOnFocus: true, });
+  const [productCategoriesData, setProductCategoriesData] = useState([]);
+  const [productFamiliesData, setProductFamiliesData] = useState([]);
+  const [filteredFamilies, setFilteredFamilies] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(0);
 
   const selectExtras = (item) => {
     if (selectedExtras.includes(item)) {
@@ -63,7 +66,6 @@ const AddReservationItemModal = ({
       setSelectedExtras([...selectedExtras, item]);
     }
   };
-
   
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -82,6 +84,13 @@ const AddReservationItemModal = ({
   }, [closeModal]);
 
   useEffect(()=>{
+    getProductCategoriesData((jsonRes)=>{
+      setProductCategoriesData(jsonRes);
+      setSelectedCategoryId(jsonRes[0].id);
+    });
+    getProductFamiliesDataByDisplayName(0, (jsonRes) => {
+      setProductFamiliesData(jsonRes);
+    })
     getExtrasData((jsonRes, status, error) => {
       switch (status) {
         case 200:
@@ -99,20 +108,22 @@ const AddReservationItemModal = ({
   }, []);
 
   useEffect(()=>{
-    if(productLinesData && productLinesData.length>0){
+    if(productFamiliesData && productFamiliesData.length>0){
       if(item){
-        const lineId = item.line_id;
-        const selectedItem = productLinesData.find(item => item.id === lineId);
-        selectProductLine(selectedItem);
-        setSelectedProductId(lineId);
+        const familyId = item.family_id;
+        const selectedItem = productFamiliesData.find(item => item.id === familyId);
+        setSelectedCategoryId(selectedItem.category_id);
+        selectProductFamily(selectedItem);
+        setSelectedProductId(familyId);
       }else{
-        selectProductLine(productLinesData[0]);
-        setSelectedProductId(productLinesData[0].id);
+        setSelectedCategoryId(productFamiliesData[0].category_id);
+        selectProductFamily(productFamiliesData[0]);
+        setSelectedProductId(productFamiliesData[0].id);
       }
     }
-  }, [productLinesData, isModalVisible])
+  }, [productFamiliesData, isModalVisible])
 
-  // console.log(selectedProductLine);
+  // console.log(selectedProductFamily);
   useEffect(() => {
     if(isModalVisible == true){
       setQuantityTxt(item?item.quantity:'');
@@ -132,17 +143,22 @@ const AddReservationItemModal = ({
     }
   }, [item, isModalVisible])
 
+  useEffect(()=>{
+    const filteredFamilies = productFamiliesData.filter(item=>item.category_id == selectedCategoryId);
+    setFilteredFamilies(filteredFamilies);
+  }, [productFamiliesData, productCategoriesData, selectedCategoryId])
+
   const AddButtonHandler = () => {
     if (selectedProductId == 0) {
-      setValidMessage('Please select a product line');
+      setValidMessage('Please select a product family');
       return;
     }
     if (!QuantityTxt.trim()) {
       setValidMessage2(msgStr('emptyField'));
       return;
     }else if(!isNaN(parseInt(QuantityTxt)) && parseInt(QuantityTxt)>0){
-      if(mode == 'add' && onAdded) onAdded(selectedProductLine, parseInt(QuantityTxt), selectedExtras);
-      else if(mode == 'update' && onUpdated) onUpdated(item, selectedProductLine, parseInt(QuantityTxt), selectedExtras);
+      if(mode == 'add' && onAdded) onAdded(selectedProductFamily, parseInt(QuantityTxt), selectedExtras);
+      else if(mode == 'update' && onUpdated) onUpdated(item, selectedProductFamily, parseInt(QuantityTxt), selectedExtras);
       closeModalhandler();
     }
   };
@@ -168,7 +184,7 @@ const AddReservationItemModal = ({
     // }
     setValidMessage2('');
   };
-
+  
   return isModalVisible ? (
     <View style={{ position: 'absolute', width: '100%', height: '100%' }}>
       <BasicModalContainer>
@@ -179,18 +195,32 @@ const AddReservationItemModal = ({
           }}
         />
         <ModalBody style={{ zIndex: 10 }}>
-          <Text style={styles.label}>Product Line</Text>
+          <Text style={styles.label}>Category</Text>
+          <Picker
+            style={styles.select}
+            selectedValue={selectedCategoryId}
+            onValueChange={(itemValue, itemIndex) => {
+              setSelectedCategoryId(itemValue);
+            }}
+          >
+            {productCategoriesData.length > 0 &&
+              productCategoriesData.map((item, index) => {
+                return <Picker.Item key={index} label={item.category} value={item.id}/>;
+              })
+            }
+          </Picker>
+          <Text style={styles.label}>Family</Text>
           <Picker
             style={styles.select}
             selectedValue={selectedProductId}
             onValueChange={(itemValue, itemIndex) => {
-              selectProductLine(productLinesData[itemIndex]);
-              setSelectedProductId(productLinesData[itemIndex].id);
+              selectProductFamily(filteredFamilies[itemIndex]);
+              setSelectedProductId(filteredFamilies[itemIndex].id);
             }}
           >
-            {productLinesData.length > 0 &&
-              productLinesData.map((item, index) => {
-                return <Picker.Item key={index} label={item.line + " " + item.size} value={item.id} />;
+            {filteredFamilies.length > 0 &&
+              filteredFamilies.map((item, index) => {
+                return <Picker.Item key={index} label={item.display_name} value={item.id} />;
               })
             }
           </Picker>

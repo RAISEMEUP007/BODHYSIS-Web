@@ -27,6 +27,11 @@ export const getProductFamiliesData = async (categoryId, cb=(jR, s, e)=>{}) => {
   return await getAPICall('product/getproductfamiliesdata/'+categoryId, cb);
 }
 
+export const getProductFamiliesDataByDisplayName = async (categoryId, cb=(jR, s, e)=>{}) => {
+  if(!categoryId) categoryId = 0;
+  return await getAPICall('product/getproductfamiliesdatabydiplayname/'+categoryId, cb);
+}
+
 export const createProductFamily = (payload, cb=(jR, s, e)=>{}) => {
   basePostAPICall('product/createproductfamily', {}, payload, cb);
 };

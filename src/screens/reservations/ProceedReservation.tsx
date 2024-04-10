@@ -75,7 +75,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     setEditingIndex(index);
   };
 
-  const addReservationItem = async (productLine, quantity, extras) => {
+  const addReservationItem = async (productFamily, quantity, extras) => {
     const arraysAreEqual = (arr1, arr2) => {
       if (arr1.length !== arr2.length) {
         return false;
@@ -91,15 +91,15 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     };
     
     const existingProduct = equipmentData.find(item => {
-      return item.line_id === productLine.id && arraysAreEqual(item.extras, extras);
+      return item.family_id === productFamily.id && arraysAreEqual(item.extras, extras);
     });
 
     if (existingProduct) {
       showConfirm(
-        `${productLine.line} ${productLine.size} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
+        `${productFamily.display_name} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
         async ()=>{
         const updatedEquipmentData = equipmentData.map(item => {
-          if (item.line_id === productLine.id && arraysAreEqual(item.extras, extras)) {
+          if (item.family_id === productFamily.id && arraysAreEqual(item.extras, extras)) {
             return { ...item, quantity: item.quantity + quantity, extras:extras };
           }
           return item;
@@ -112,11 +112,11 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       });
     } else {
       const newItem = {
-        ...productLine,
+        ...productFamily,
         id: parseInt(uuidv4(), 16),
         reservation_id: reservationInfo.id,
-        line_id: productLine.id,
-        price_group_id: productLine.price_group_id,
+        family_id: productFamily.id,
+        price_group_id: productFamily.price_group_id,
         quantity: quantity,
         extras: extras,
       }
@@ -128,18 +128,18 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     }
   }
 
-  const updateReservationItem = async (oldLine, newLine, quantity, extras) => {
-    const existingProduct = equipmentData.find(item => item.line_id === newLine.id);
+  const updateReservationItem = async (oldFamily, newFamily, quantity, extras) => {
+    const existingProduct = equipmentData.find(item => item.family_id === newFamily.id);
 
-    if (oldLine.line_id != newLine.id && existingProduct) {
-      showAlert('warning', `${newLine.line} ${newLine.size} is already in the reservation items.`);
+    if (oldFamily.family_id != newFamily.id && existingProduct) {
+      showAlert('warning', `${newFamily.display_name} is already in the reservation items.`);
     }else {
       const newItem = {
-        ...newLine,
-        id: oldLine.id,
-        reservation_id: oldLine.reservation_id,
-        line_id: newLine.id,
-        price_group_id: newLine.price_group_id,
+        ...newFamily,
+        id: oldFamily.id,
+        reservation_id: oldFamily.reservation_id,
+        family_id: newFamily.id,
+        price_group_id: newFamily.price_group_id,
         quantity: quantity,
         extras: extras,
       }
@@ -326,12 +326,14 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     const pricedEquipmentData = await Promise.all(equipmentData.map(async (item) => {
       const payload = {
         tableId,
-        groupId: item.price_group_id,
+        groupId: item.price_group_id || 0,
       }
+      console.log(payload);
       const response = await getPriceDataByGroup(payload);
       const rows = await response.json();
 
       const reversedHeaderData = headerData.slice().reverse();
+      console.log(rows);
       const updatedReversedHeaderData = reversedHeaderData.map((item) => {
         const value = rows.find((row) => row.point_id === item.id)?.value || 0;
         const pricePMS = value/item.milliseconds;
@@ -509,14 +511,14 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         isModalVisible={isAddReservationItemModalVisible}
         closeModal={closeAddReservationItemModal}
         item={editingItem}
-        onAdded={(productLine, quantity, extras)=>{
-          if (productLine) {
-            addReservationItem(productLine, quantity, extras);
+        onAdded={(productFamily, quantity, extras)=>{
+          if (productFamily) {
+            addReservationItem(productFamily, quantity, extras);
           }
         }}
-        onUpdated={(oldLine, newLine, quantity, extras)=>{
-          if (newLine) {
-            updateReservationItem(oldLine, newLine, quantity, extras);
+        onUpdated={(oldFamily, newFamily, quantity, extras)=>{
+          if (newFamily) {
+            updateReservationItem(oldFamily, newFamily, quantity, extras);
           }
           editReservationItem(null, null);
         }}

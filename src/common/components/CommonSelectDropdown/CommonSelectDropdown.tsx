@@ -20,6 +20,7 @@ interface Props<T> {
   onItemSelected?: (item: DropdownItem<T>) => void;
   containerStyle?: ViewStyle;
   width?: number;
+  height?: number;
   title?: string;
   titleStyle?: object;
   textAlign?: 'left' | 'center' | 'right' | 'auto';
@@ -32,6 +33,7 @@ export const CommonSelectDropdown = ({
   containerStyle,
   onItemSelected,
   width = 130,
+  height,
   title,
   titleStyle,
   textAlign = 'left',
@@ -72,7 +74,7 @@ export const CommonSelectDropdown = ({
           search={true}
           defaultButtonText={selectedItem?selectedItem.displayLabel : placeholder}
           // buttonStyle={{width:'100%', padding: 8, height:'auto', borderWidth:1, borderColor:'#808080', backgroundColor:(selectedItem?'#f4ffff':'white')}}
-          buttonStyle={{width:'100%', padding: 8, height:'auto', borderWidth:1, borderColor:'#808080', backgroundColor:'white'}}
+          buttonStyle={{width:'100%', padding: 8, height:height||'auto', borderWidth:1, borderColor:'#808080', backgroundColor:'white'}}
           buttonTextStyle={{fontSize:14, textAlign: textAlign, color:(selectedItem?'#002133':'#bfbfbf')}}
           renderDropdownIcon={()=>{
             return <FontAwesome5 name="chevron-down" color="black" />

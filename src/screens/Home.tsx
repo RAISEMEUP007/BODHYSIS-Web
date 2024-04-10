@@ -78,7 +78,7 @@ const MainDrawer = () => {
   return (
     <>
       <Drawer.Navigator
-        initialRouteName="Settings"
+        initialRouteName="Reservation"
         drawerContent={(props) => <DrawerContent {...props} />}
       >
         <Drawer.Screen
