@@ -18,7 +18,7 @@ import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 
 import { orderListsStyle } from './styles/OrderListStyle';
 
-const OrdersList = ({ openOrderScreen }) => {
+const OrdersList = ({ navigation, openOrderScreen }) => {
   const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
@@ -122,6 +122,7 @@ const OrdersList = ({ openOrderScreen }) => {
 
   return (
     <BasicLayout
+      navigation={navigation}
       screenName={'Order List'}
     >
       <ScrollView horizontal={true}>

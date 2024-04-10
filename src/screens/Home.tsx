@@ -13,7 +13,8 @@ import { logout } from '../api/Auth';
 import Orders from './orders/Orders';
 import Scheduler from './scheduler/Scheduler';
 
-const MainDrawer = () => {
+const MainDrawer = ({ navigation }) => {
+
   const { isLargeScreen } = useScreenSize();
 
   const Drawer = createDrawerNavigator();
@@ -80,6 +81,9 @@ const MainDrawer = () => {
       <Drawer.Navigator
         initialRouteName="Reservation"
         drawerContent={(props) => <DrawerContent {...props} />}
+        screenOptions={{
+          drawerType: Platform.OS == 'web' && isLargeScreen ? 'permanent' : 'front',
+        }}
       >
         <Drawer.Screen
           name="Dashboard"
@@ -200,7 +204,7 @@ const Home = ({ navigation }) => {
     });
 
     return unsubscribe();
-  }, [navigation]); // Ensure that navigation is listed as a dependency
+  }, [navigation]);
 
   return <MainDrawer key={refreshKey} navigation={navigation} />;
 };

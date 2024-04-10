@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 
 interface Props {
+  navigation?: any;
   goHome?: () => void;
   goBack?: () => void;
   screenName: string;
@@ -13,6 +13,7 @@ interface Props {
 }
 
 const BasicLayout = ({
+  navigation,
   goHome,
   goBack,
   screenName,
@@ -37,16 +38,36 @@ const BasicLayout = ({
     }
   }, [goBack]);
 
-  const navigation = useNavigation()
+  useEffect(() => {
+    const handleBrowserBack = () => {
+      if (goBack) {
+        goBack();
+      }
+      else {
+        // navigation.navigate('Customer');
+        window.history.go(1);
+      }
+    };
+  
+    if(!goBack){
+      window.history.pushState(null, null, window.location.href);
+    }
+  
+    window.onpopstate = handleBrowserBack;
+
+    return () => {
+      window.onpopstate = null;
+    };
+  
+  }, [goBack]);
+
   return (
     <View style={{ ...styles.container, ...containerStyle }}>
       <View style={styles.header}>
         {navigation && navigation.toggleDrawer && (
           <TouchableOpacity
             style={[styles.Icon, { marginRight: 8 }]}
-            onPress={()=>navigation.toggleDrawer({
-              side: 'left'
-            })}
+            onPress={() => navigation.toggleDrawer()}
           >
             <FontAwesome5 name="bars" size={20} color="#000" />
           </TouchableOpacity>
