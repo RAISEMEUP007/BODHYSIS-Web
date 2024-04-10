@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ImageBackground, View, Image, Text, TouchableOpacity, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
 
 import { login, signup } from '../api/Auth';
 import { msgStr } from '../common/constants/Message';
@@ -9,8 +8,7 @@ import { useAlertModal } from '../common/hooks/UseAlertModal';
 
 import { authStyles } from './styles/AuthStyles';
 
-const AuthScreen = () => {
-  const navigation = useNavigation();
+const AuthScreen = ({navigation}) => {
   const { showAlert } = useAlertModal();
 
   const [email, setEmail] = useState('');
@@ -79,7 +77,7 @@ const AuthScreen = () => {
             showAlert('error', msgStr('serverError'));
             break;
           default:
-            if (res.message) showAlert('error', res.message);
+            if (jsonRes.message) showAlert('error', jsonRes.message);
             else showAlert('error', msgStr('unknownError'));
             break;
         }
@@ -131,7 +129,7 @@ const AuthScreen = () => {
   return (
     <ImageBackground source={require('../assets/gradient-back.jpeg')} style={styles.image}>
       <View style={styles.card}>
-        <Image style={styles.icon} source={require('../assets/icon.png')}></Image>
+        <Image source={require('../assets/icon.png')}></Image>
         <Text style={styles.heading}>{isLogin ? 'Login' : 'Signup'}</Text>
         <View style={styles.form}>
           <View style={styles.inputs}>

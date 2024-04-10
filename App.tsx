@@ -12,6 +12,7 @@ import { ConfirmModal } from './src/common/components/confirmmodal/ConfirmModals
 import { store } from './src/redux/store';
 import { Provider } from 'react-redux';
 import { setNavigator } from './src/common/utils/NavigationUtils';
+import { appLinking } from './src/common/constants/AppLinking';
 
 const Stack = createStackNavigator();
 
@@ -33,6 +34,7 @@ const GlobalModals = () => {
 };
 
 export default function App() {
+
   const [initialRoute, setInitalRoute] = useState('Home');
   const [loading, setLoading] = useState(true);
 
@@ -62,23 +64,15 @@ export default function App() {
   return (
     <Providers>
       <Provider store={store}>
-        <NavigationContainer ref={(ref) => setNavigator(ref)}>
+        <NavigationContainer linking={appLinking} ref={(ref) => setNavigator(ref)}>
           <Stack.Navigator
             initialRouteName={initialRoute}
             screenOptions={{ presentation: 'modal' }}
           >
             <Stack.Screen name="Auth" component={AuthScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-            <Stack.Screen
-              name="RecoverPass"
-              component={RecoverPass}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="changePass"
-              component={ChangePass}
-              options={{ headerShown: false }}
-            />
+            <Stack.Screen name="RecoverPass" component={RecoverPass} options={{ headerShown: false }} />
+            <Stack.Screen name="changePass" component={ChangePass} options={{ headerShown: false }} />
           </Stack.Navigator>
           <StatusBar style="auto" />
         </NavigationContainer>

@@ -18,7 +18,7 @@ import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 
 import { reservationListsStyle } from './styles/ReservationListStyle';
 
-const ReservationsList = ({ openReservationScreen }) => {
+const ReservationsList = ({ navigation, openReservationScreen }) => {
   const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
@@ -134,6 +134,7 @@ const ReservationsList = ({ openReservationScreen }) => {
 
   return (
     <BasicLayout
+      navigation={navigation}
       screenName={'Reservation List'}
     >
       <ScrollView horizontal={true}>

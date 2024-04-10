@@ -34,6 +34,7 @@ const Reservations = ({ navigation, initialData }: Props) => {
       case 'Reservations List':
         return (
           <ReservationsList
+            navigation={navigation}
             openReservationScreen={handleItemClick}
           />
         );

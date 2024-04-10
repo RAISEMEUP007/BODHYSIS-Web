@@ -35,6 +35,7 @@ const Orders = ({ navigation, initialData }: Props) => {
       case 'Orders List':
         return (
           <OrdersList
+            navigation={navigation}
             openOrderScreen={handleItemClick}
           />
         );

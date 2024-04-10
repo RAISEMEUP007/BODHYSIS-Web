@@ -19,8 +19,13 @@ import Colorcombinations from './colorcombinations/Colorcombinations';
 import Extras from './Extras/Extras';
 import { Templates } from './templates/Templates';
 
-const Settings = ({navigation, initalItem }) => {
-    const [selectedItem, setSelectedItem] = useState(initalItem);
+interface Props {
+    navigation: any;
+    initialItem?: string;
+}
+
+const Settings = ({navigation, initialItem }:Props) => {
+    const [selectedItem, setSelectedItem] = useState<string>(initialItem);
     
     const handleItemClick = (itemName) => {
         setSelectedItem(itemName);
