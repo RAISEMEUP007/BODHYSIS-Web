@@ -12,10 +12,14 @@ import Reservations from './reservations/Reservations';
 import { logout } from '../api/Auth';
 import Orders from './orders/Orders';
 import Scheduler from './scheduler/Scheduler';
+import { useHambugerMenuHistory } from '../common/hooks/useHambugerMenuHistory';
 
 const MainDrawer = ({ navigation }) => {
 
+  const initialRouteName = 'Reservation';
+
   const { isLargeScreen } = useScreenSize();
+  const { addMenuHistory } = useHambugerMenuHistory();
 
   const Drawer = createDrawerNavigator();
 
@@ -46,6 +50,10 @@ const MainDrawer = ({ navigation }) => {
   const DeliveryOrderScreen = ({ navigation }) => {
     return <Orders navigation={navigation} />;
   };
+
+  useEffect(()=>{
+    addMenuHistory(initialRouteName);
+  }, []);
 
   const DrawerContent = (props) => {
     const { navigation } = props;
@@ -79,7 +87,7 @@ const MainDrawer = ({ navigation }) => {
   return (
     <>
       <Drawer.Navigator
-        initialRouteName="Reservation"
+        initialRouteName={initialRouteName}
         drawerContent={(props) => <DrawerContent {...props} />}
         screenOptions={{
           drawerType: Platform.OS == 'web' && isLargeScreen ? 'permanent' : 'front',
@@ -90,8 +98,7 @@ const MainDrawer = ({ navigation }) => {
           component={DashboardScreen}
           listeners={{
             drawerItemPress: (e) => {
-              e.preventDefault();
-              navigation.navigate('Dashboard');
+              addMenuHistory('Dashboard');
             },
           }}
           options={{
@@ -105,8 +112,7 @@ const MainDrawer = ({ navigation }) => {
           component={ReservationScreen}
           listeners={{
             drawerItemPress: (e) => {
-              e.preventDefault();
-              navigation.navigate('Reservation');
+              addMenuHistory('Reservation');
             },
           }}
           options={{
@@ -120,8 +126,7 @@ const MainDrawer = ({ navigation }) => {
           component={DeliveryOrderScreen}
           listeners={{
             drawerItemPress: (e) => {
-              e.preventDefault();
-              navigation.navigate('Delivery Order');
+              addMenuHistory('Delivery Order');
             },
           }}
           options={{
@@ -135,8 +140,7 @@ const MainDrawer = ({ navigation }) => {
           component={InventoryScreen}
           listeners={{
             drawerItemPress: (e) => {
-              e.preventDefault();
-              navigation.navigate('Inventory');
+              addMenuHistory('Inventory');
             },
           }}
           options={{
@@ -150,8 +154,7 @@ const MainDrawer = ({ navigation }) => {
           component={CustomerScreen}
           listeners={{
             drawerItemPress: (e) => {
-              e.preventDefault();
-              navigation.navigate('Customer');
+              addMenuHistory('Customer');
             },
           }}
           options={{
@@ -165,8 +168,7 @@ const MainDrawer = ({ navigation }) => {
           component={SchedulerScreen}
           listeners={{
             drawerItemPress: (e) => {
-              e.preventDefault();
-              navigation.navigate('Scheduler');
+              addMenuHistory('Scheduler');
             },
           }}
           options={{
@@ -180,8 +182,7 @@ const MainDrawer = ({ navigation }) => {
           component={SettingsScreen}
           listeners={{
             drawerItemPress: (e) => {
-              e.preventDefault();
-              navigation.navigate('Settings');
+              addMenuHistory('Settings');
             },
           }}
           options={{

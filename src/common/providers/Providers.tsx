@@ -10,6 +10,7 @@ import { ConfirmModalProvider } from './confirmmodal/Provider';
 import { BasicModalProvider } from './basicmodal/Provider';
 import { ScreenSizesProvider } from './screensizes/Provider';
 import { AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
+import { HambugerMenuHisotryProvider } from './hambugermenuhistory/Provider';
 
 const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
 
@@ -28,7 +29,11 @@ export const Providers = ({ children }) => (
         <PaperProvider>
           <AlertModalProvider>
             <ConfirmModalProvider>
-              <BasicModalProvider>{children}</BasicModalProvider>
+              <BasicModalProvider>
+                <HambugerMenuHisotryProvider>
+                  {children}
+                </HambugerMenuHisotryProvider>
+              </BasicModalProvider>
             </ConfirmModalProvider>
           </AlertModalProvider>
         </PaperProvider>

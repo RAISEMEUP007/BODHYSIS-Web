@@ -39,26 +39,27 @@ const BasicLayout = ({
   }, [goBack]);
 
   useEffect(() => {
-    const handleBrowserBack = () => {
-      if (goBack) {
-        goBack();
+    if(Platform.OS === 'web'){
+      const handleBrowserBack = () => {
+        if (goBack) {
+          goBack();
+        }
+        else {
+          // navigation.navigate('Customer');
+          window.history.go(1);
+        }
+      };
+    
+      if(!goBack){
+        window.history.pushState(null, null, window.location.href);
       }
-      else {
-        // navigation.navigate('Customer');
-        window.history.go(1);
-      }
-    };
+    
+      window.onpopstate = handleBrowserBack;
   
-    if(!goBack){
-      window.history.pushState(null, null, window.location.href);
+      return () => {
+        window.onpopstate = null;
+      };
     }
-  
-    window.onpopstate = handleBrowserBack;
-
-    return () => {
-      window.onpopstate = null;
-    };
-  
   }, [goBack]);
 
   return (
