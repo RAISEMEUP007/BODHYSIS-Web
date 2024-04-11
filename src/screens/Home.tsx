@@ -12,7 +12,7 @@ import Reservations from './reservations/Reservations';
 import { logout } from '../api/Auth';
 import Orders from './orders/Orders';
 import Scheduler from './scheduler/Scheduler';
-import { useHambugerMenuHistory } from '../common/hooks/useHambugerMenuHistory';
+import { useHambugerMenuHistory } from '../common/hooks/UseHambugerMenuHistory';
 
 const MainDrawer = ({ navigation }) => {
 
