@@ -163,16 +163,18 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
     const discountInfo = discountCodes.find((item) => item.id === newValues.discountCode);
     const discountAmount = discountInfo.type == 1 ? (Math.round(details.subtotal * discountInfo.amount) / 100) : discountInfo.amount;
 
-    const payload = {
+    const payload:any = {
       id: details.id,
-      start_date : newValues.startDate,
-      end_date : newValues.endDate,
+      // start_date : newValues.startDate,
+      // end_date : newValues.endDate,
       promo_code: newValues.discountCode,
-      start_location_id : newValues.startLocationId,
-      end_location_id : newValues.endLocationId,
       discount_amount: discountAmount,
       total_price: details.subtotal + details.tax_amount - discountAmount,
     }
+
+    if(newValues.startLocationId) payload.start_location_id = newValues.startLocationId
+    if(newValues.endLocationId) payload.end_location_id = newValues.endLocationId
+    if(newValues.deliveryAddress) payload.delivery_address = newValues.deliveryAddress
 
     updateReservation(payload, (jsonRes, status) => {
       switch (status) {

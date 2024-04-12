@@ -41,10 +41,10 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
   const [updateReservationListTrigger, setUpdateReservationListTrigger] = useState(true);
 
   const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
-  const today = new Date().toISOString().substr(0, 10);
+  const tomorrow = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10);
   const [ searchOptions, setSearchOptions ] = useState({
     start_date : twoWeeksAgo.toISOString().substr(0, 10),
-    end_date : today,
+    end_date : tomorrow,
     customer : '',
     brand: '',
     order_number: '',
@@ -289,7 +289,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
               <Text style={[styles.columnHeader, {width:100}]}>{'End Date'}</Text> */}
               <Text style={[styles.columnHeader]}>{'Qty of bikes'}</Text>
               <Text style={[styles.columnHeader]}>{'Stage'}</Text>
-              {/* <Text style={[styles.columnHeader, styles.IconCell]}>{'Proceed'}</Text> */}
+              <Text style={[styles.columnHeader, styles.IconCell]}>{'Proceed'}</Text>
               {/* <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text> */}
             </View>
             <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
