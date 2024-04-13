@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Platform } from 'react-native';
+import { View, Image, Platform, Linking, ScrollView } from 'react-native';
 import { createDrawerNavigator, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -22,6 +22,35 @@ const MainDrawer = ({ navigation }) => {
   const { addMenuHistory } = useHambugerMenuHistory();
 
   const Drawer = createDrawerNavigator();
+
+  useEffect(() => {
+    const handleDeepLinking = async () => {
+      try {
+        const url = await Linking.getInitialURL();
+        if (url) {
+          const route = url.replace(/.*?:\/\//g, '');
+          if (route.toLowerCase().includes('dashboard')) {
+            navigation.navigate('Dashboard');
+          }else if (route.toLowerCase().includes('reservation')) {
+            navigation.navigate('Reservation');
+          }else if (route.toLowerCase().includes('delivery')) {
+            navigation.navigate('Delivery Order');
+          }else if (route.toLowerCase().includes('inventory')) {
+            navigation.navigate('Inventory');
+          }else if (route.toLowerCase().includes('customer')) {
+            navigation.navigate('Customer');
+          }else if (route.toLowerCase().includes('scheduler')) {
+            navigation.navigate('Scheduler');
+          }else if (route.toLowerCase().includes('settings')) {
+            navigation.navigate('Settings');
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching initial URL: ', error);
+      }
+    };
+    handleDeepLinking();
+  }, []);
 
   const DashboardScreen = ({ navigation }) => {
     return <Dashboard />;
@@ -59,7 +88,7 @@ const MainDrawer = ({ navigation }) => {
     const { navigation } = props;
 
     return (
-      <>
+      <ScrollView>
         <DrawerItem
           label="#"
           onPress={() => navigation.navigate('Home')}
@@ -80,7 +109,7 @@ const MainDrawer = ({ navigation }) => {
             navigation.navigate('Auth');
           }}
         />
-      </>
+      </ScrollView>
     );
   };
 

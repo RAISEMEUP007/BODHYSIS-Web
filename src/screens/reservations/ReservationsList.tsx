@@ -226,7 +226,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
               <TextInput
                 style={styles.searchInput}
                 placeholder=""
-                value={searchOptions.customer}
+                defaultValue={searchOptions.customer}
                 onChangeText={(val)=>changeSearchOptions('customer', val)}
               />
             </View>
@@ -235,7 +235,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
               <TextInput
                 style={styles.searchInput}
                 placeholder=""
-                value={searchOptions.brand}
+                defaultValue={searchOptions.brand}
                 onChangeText={(val)=>changeSearchOptions('brand', val)}
               />
             </View>
@@ -244,7 +244,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
               <TextInput
                 style={styles.searchInput}
                 placeholder=""
-                value={searchOptions.order_number}
+                defaultValue={searchOptions.order_number}
                 onChangeText={(val)=>changeSearchOptions('order_number', val)}
               />
             </View>
