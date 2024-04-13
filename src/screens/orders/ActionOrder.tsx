@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, ScrollView, TouchableOpacity, Text, TouchableHighlight, Platform } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Text, StyleSheet, TouchableHighlight, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { v4 as uuidv4 } from 'uuid';
+import { Picker } from '@react-native-picker/picker';
+import { Dropdown } from 'react-native-element-dropdown';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
@@ -12,7 +15,6 @@ import { actionOrderStyle } from './styles/ActionOrderStyle';
 import LabeledTextInput from '../../common/components/input/LabeledTextInput';
 import { getReservationDetail, updateReservation } from '../../api/Reservation';
 import { getColorcombinationsData } from '../../api/Settings';
-import { Picker } from '@react-native-picker/picker';
 
 interface Props {
   openOrderScreen: (itemName: string, data?: any ) => void;
@@ -164,20 +166,25 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
           </View>
           <View style={{flexDirection:'row', marginVertical:4}}>
             <View style={{width:300, marginRight:30}}>
-              <Text style={styles.label}>Category</Text>
-              <Picker
-                style={styles.select}
-                selectedValue={orderInfo?.color_id??''}
-                onValueChange={(itemValue, itemIndex) => UpdateOrderInfo('color_id', itemValue)}
-              >
-                <Picker.Item label={''} value={''}/>
-                {colors.length > 0 &&
-                  colors.map((color, index) => {
-                    return (
-                      <Picker.Item key={index} label={color.color} value={color.id} />
-                    );
-                  })}
-              </Picker>
+              <Text style={styles.label}>Color</Text>
+                <Dropdown
+                  style={[styles.select, { backgroundColor: orderInfo?.color?.color??'defaultColor' }]}
+                  placeholderStyle={{color:'#ccc'}}
+                  data={colors}
+                  maxHeight={300}
+                  labelField="color"
+                  valueField="id"
+                  placeholder="Select color"
+                  value={orderInfo?.color?.id??null}
+                  renderItem={item=>(
+                    <View style={{backgroundColor:item.color}}>
+                      <Text>{item.color}</Text>
+                    </View>
+                  )}
+                  onChange={item => {
+                    UpdateOrderInfo('color_id', item.id);
+                  }}
+                />
             </View>
             <LabeledTextInput
               label='Combination'

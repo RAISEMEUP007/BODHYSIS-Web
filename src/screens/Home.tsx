@@ -16,7 +16,7 @@ import { useHambugerMenuHistory } from '../common/hooks/UseHambugerMenuHistory';
 
 const MainDrawer = ({ navigation }) => {
 
-  const initialRouteName = 'Inventory';
+  const initialRouteName = 'Delivery Order';
 
   const { isLargeScreen } = useScreenSize();
   const { addMenuHistory } = useHambugerMenuHistory();
