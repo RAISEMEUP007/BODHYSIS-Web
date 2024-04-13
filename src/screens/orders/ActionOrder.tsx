@@ -172,12 +172,13 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
                   placeholderStyle={{color:'#ccc'}}
                   data={colors}
                   maxHeight={300}
-                  labelField="color"
+                  labelField="color_key"
                   valueField="id"
                   placeholder="Select color"
                   value={orderInfo?.color?.id??null}
                   renderItem={item=>(
-                    <View style={{backgroundColor:item.color}}>
+                    <View style={{backgroundColor:item.color, flexDirection:'row', justifyContent:'space-between', paddingVertical:8, paddingHorizontal:12}}>
+                      <Text>{item.color_key}</Text>
                       <Text>{item.color}</Text>
                     </View>
                   )}
