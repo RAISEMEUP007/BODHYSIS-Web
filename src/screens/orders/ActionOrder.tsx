@@ -27,14 +27,14 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
   const { showConfirm } = useConfirmModal();
 
   const [orderInfo, setOrderInfo] = useState<any>({});
-  const [colors, setColors] = useState([]);
+  const [colors, setColors] = useState([{id:null, color_key:'Off color', combination:'', color:' '}]);
 
   useEffect(()=>{
     getReservationDetail(initialData.orderId, (jsonRes)=>{
       setOrderInfo(jsonRes);
     });
     getColorcombinationsData((jsonRes)=>{
-      setColors(jsonRes);
+      setColors([{id:null, color_key:'Off color', combination:'', color:' '}, ...jsonRes]);
     });
   }, []);
 
