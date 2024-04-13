@@ -5,7 +5,6 @@ import {
   Text,
   TouchableHighlight,
   TouchableOpacity,
-  Dimensions,
   TextInput,
   Pressable,
 } from 'react-native';
@@ -36,7 +35,6 @@ import BulkUpdateStatus from './BulkUpdateStatus';
 
 const Products = ({ navigation, openInventory, data }) => {
   const initialMount = useRef(true);
-  const screenHeight = Dimensions.get('window').height;
   const StatusObj = {
     0: 'Ready',
     1: 'Ordered',
@@ -93,7 +91,6 @@ const Products = ({ navigation, openInventory, data }) => {
   const [searchCategory, setSearchCategory] = useState(0);
   const [searchFamily, setSearchFamily] = useState(0);
   const [searchProductLine, setSearchProductLine] = useState(0);
-  const [searchProduct, setSearchProduct] = useState('');
   const [searchBarcode, setSearchBarcode] = useState('');
   const [searchSize, setSearchSize] = useState('');
   const [searchLocation, setSearchLocation] = useState(0);
@@ -363,6 +360,17 @@ const Products = ({ navigation, openInventory, data }) => {
     });
   }
 
+  const blukDelete = () => {
+    if(!checkedItemIds || !Array.isArray(checkedItemIds) || checkedItemIds.length == 0){
+      showAlert('warning', 'Please select products');
+      return;
+    }
+    deleteProduct(checkedItemIds, (jsonRes)=>{
+      showAlert('success', jsonRes.message);
+      setUpdateProductsTrigger(true);
+    })
+  }
+
   const updateCheckedAll = (value) => {
     const updatedCheckedItemIds = value ? filteredAndSortedData.map((item) => item.id) : [];
     setCheckedItemIds(updatedCheckedItemIds);
@@ -568,6 +576,9 @@ const Products = ({ navigation, openInventory, data }) => {
             <TouchableHighlight style={styles.bulkbutton} onPress={blukUPdateStatus}>
               <Text style={styles.buttonText}>Update Status</Text>
             </TouchableHighlight>
+            <TouchableHighlight style={styles.bulkbutton} onPress={blukDelete}>
+              <Text style={styles.buttonText}>Delete</Text>
+            </TouchableHighlight>
           </View>
           <View style={styles.tableContainer}>
             <View style={styles.tableHeader}>
@@ -633,9 +644,11 @@ const Products = ({ navigation, openInventory, data }) => {
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
             </View>
-            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 350 }}>
-              {renderTableData()}
-            </ScrollView>
+            <View style={{flex:1}}>
+              <ScrollView>
+                {renderTableData()}
+              </ScrollView>
+            </View>
             {isLoading && (
               <View style={styles.overlay}>
                 <ActivityIndicator size="small" color="#006fe6" />

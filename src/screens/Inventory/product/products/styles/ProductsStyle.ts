@@ -4,13 +4,17 @@ import { TextdefaultSize } from '../../../../../common/constants/Fonts';
 
 export const productsStyle = StyleSheet.create({
   container: {
+    flexDirection: 'column',
     flex: 1,
     alignItems: 'flex-start',
     padding: 16,
     paddingTop: 32,
+    paddingBottom:0,
   },
 
   tableContainer: {
+    flex:1,
+    flexDirection:'column',
     marginBottom: 16,
     marginTop: 10,
     overflow: 'hidden',
