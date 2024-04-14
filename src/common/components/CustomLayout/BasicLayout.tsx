@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Platform, Linking } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 interface Props {
@@ -40,12 +40,12 @@ const BasicLayout = ({
 
   useEffect(() => {
     if(Platform.OS === 'web'){
-      const handleBrowserBack = () => {
+      const handleBrowserBack = (event) => {
+        event.preventDefault();
         if (goBack) {
           goBack();
         }
         else {
-          // navigation.navigate('Customer');
           window.history.go(1);
         }
       };

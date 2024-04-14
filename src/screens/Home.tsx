@@ -13,10 +13,11 @@ import { logout } from '../api/Auth';
 import Orders from './orders/Orders';
 import Scheduler from './scheduler/Scheduler';
 import { useHambugerMenuHistory } from '../common/hooks/UseHambugerMenuHistory';
+import { appLinking } from '../common/constants/AppLinking';
 
 const MainDrawer = ({ navigation }) => {
 
-  const initialRouteName = 'Delivery Order';
+  const initialRouteName = '';
 
   const { isLargeScreen } = useScreenSize();
   const { addMenuHistory } = useHambugerMenuHistory();
