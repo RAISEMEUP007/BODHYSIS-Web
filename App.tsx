@@ -13,7 +13,16 @@ import { store } from './src/redux/store';
 import { Provider } from 'react-redux';
 import { setNavigator } from './src/common/utils/NavigationUtils';
 import { appLinking } from './src/common/constants/AppLinking';
+import * as Sentry from "@sentry/react-native";
 
+Sentry.init({
+  dsn: "https://74c443f3f6484697ac090e1f7e19fea1@o180316.ingest.us.sentry.io/1468413",
+
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  // We recommend adjusting this value in production
+  tracesSampleRate: 1.0,
+});
 const Stack = createStackNavigator();
 
 const LoadingIndicator = () => {
