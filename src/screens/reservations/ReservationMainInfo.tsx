@@ -285,8 +285,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           onChangeText={value => handleInputChange('customPrice', value)}
         />
       </View>
-      <View style={styles.reservationRow}>
-        <LabeledTextInput
+      {/* <View style={styles.reservationRow}> */}
+        {/* <LabeledTextInput
           label='Referrer'
           width={300}
           containerStyle={{marginRight:30}}
@@ -295,8 +295,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           inputStyle={{marginVertical:6}}
           value={inputValues.referrer}
           onChangeText={value => handleInputChange('referrer', value)}
-        />
-        <LabeledTextInput
+        /> */}
+        {/* <LabeledTextInput
           label='Group'
           width={300}
           placeholder='Group'
@@ -304,8 +304,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           inputStyle={{marginVertical:6}}
           value={inputValues.group}
           onChangeText={value => handleInputChange('group', value)}
-        />
-      </View>
+        /> */}
+      {/* </View> */}
       <View style={styles.reservationRow}>
         {/* <CommonSelectDropdown
           containerStyle={{

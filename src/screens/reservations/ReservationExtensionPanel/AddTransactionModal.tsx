@@ -89,7 +89,7 @@ const AddTransactionModal = ({
   }, [closeModal]);
 
   useEffect(() => {
-    setPaymentMethod('Lightspeed');
+    setPaymentMethod('Stripe');
     setAmountTxt('');
     if(paymentsList && paymentsList.length > 0) setPaymentId(paymentsList[0].id);
     setNote('');

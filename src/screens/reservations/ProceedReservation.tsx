@@ -449,9 +449,9 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               <TouchableOpacity style={styles.outLineButton}>
                 <Text style={styles.outlineBtnText}>Email</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.outLineButton, {borderColor: '#4379FF'}]} onPress={openAddCardModal}>
+              {/* <TouchableOpacity style={[styles.outLineButton, {borderColor: '#4379FF'}]} onPress={openAddCardModal}>
                 <Text style={[styles.outlineBtnText, {color:'#4379FF'}]}>Stripe</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
                   <FontAwesome5 name={'bookmark'} size={18} color="#DC3545" style={{marginRight:10, marginTop:1}}/>
