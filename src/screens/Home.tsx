@@ -4,7 +4,7 @@ import { createDrawerNavigator, DrawerItemList, DrawerItem } from '@react-naviga
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useScreenSize } from '../common/hooks/UseScreenDimention';
-import Dashboard from './Dashboard';
+import Dashboard from './dashboard/Dashboard';
 import Inventory from './Inventory/Inventory';
 import Settings from './settings/Settings';
 import Customers from './customer/customers/Customers';
