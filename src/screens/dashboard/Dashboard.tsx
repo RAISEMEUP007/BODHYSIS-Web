@@ -381,17 +381,16 @@ const Dashboard = ({ navigation }) => {
           </View>
         </View>
         <View>
-          <Map
-            // google={this.props.google}
+          {/* <Map
+            google={google}
             zoom={10}
-            // style={mapStyles}
             initialCenter={{
               lat: 32.2163,
               lng: -80.7526
             }}
           >
             <Marker position={{ lat: 32.2163, lng: -80.7526 }} />
-          </Map>
+          </Map> */}
         </View>
       </ScrollView>
     </BasicLayout>
