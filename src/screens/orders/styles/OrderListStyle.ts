@@ -38,7 +38,7 @@ export const orderListsStyle = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#2e96e1',
     borderRadius: 4,
     paddingVertical: TextSmallSize / 2,
     paddingHorizontal: TextSmallSize,

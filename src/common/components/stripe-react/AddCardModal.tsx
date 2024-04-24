@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     minWidth: 300,
   },
   addButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#2e96e1',
     color: 'white',
     padding: 10,
     textAlign: 'center',

@@ -78,7 +78,7 @@ export const createReservationStyle = StyleSheet.create({
     borderRadius: 3,
     borderWidth: 0,
     borderColor: '#6c757d',
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2e96e1',
   },
   addItemButton: {
     paddingVertical: 8,
@@ -87,7 +87,7 @@ export const createReservationStyle = StyleSheet.create({
     borderRadius: 3,
     borderWidth: 0,
     borderColor: '#6c757d',
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2e96e1',
   },
   overlay: {
     backgroundColor: 'rgba(255, 255, 255, 0.3)',

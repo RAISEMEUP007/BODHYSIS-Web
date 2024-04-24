@@ -29,7 +29,7 @@ const AlertModals = () => {
     default:
       ({ modalText = 'Default', modalBtnText = 'OK' } = useAlertModal());
       modalBackgroundColor = '#f8f9fa';
-      modalBtnColor = '#007bff';
+      modalBtnColor = '#2e96e1';
   }
 
   return (
