@@ -228,12 +228,12 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
       <View style={[styles.reservationRow, {zIndex:10}]}>
         <View>
           <Text style={{marginBottom:6, color:"#555555"}}>{'Brand'}</Text>
-          <Text style={styles.text} selectable={true}>{inputValues.startDate || ' '}</Text>
+          <Text style={styles.text} selectable={true}>{' '}</Text>
         </View>
-        <View>
+        {/* <View>
           <Text style={{marginBottom:6, color:"#555555"}}>{'Season'}</Text>
           <Text style={styles.text} selectable={true}>{inputValues.endDate || ' '}</Text>
-        </View>
+        </View> */}
       </View>
       <View style={[styles.reservationRow, {zIndex:10}]}>
         <View>
