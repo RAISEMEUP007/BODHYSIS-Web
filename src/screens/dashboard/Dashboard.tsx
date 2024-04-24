@@ -527,7 +527,7 @@ const Dashboard = ({ navigation }) => {
               </View>
             </View>
             <View style={{height:'100%'}}>
-              {Platform.OS == 'web' && <img style={{height:'100%', boxSizing:'border-box', padding:'50px 50px 30px 0',}} src={require('./HiltonHeadIsland.png')}/>}
+              {Platform.OS == 'web' && <img style={{height:'100%', boxSizing:'border-box', padding:'40px 50px 30px 0',}} src={require('./HiltonHeadIsland.png')}/>}
             </View>
         </View>
       </ScrollView>

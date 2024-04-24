@@ -7,9 +7,10 @@ export const DashboardStyle = StyleSheet.create({
     flex: 1,
     flexDirection:'column',
     alignItems: 'flex-start',
-    padding: 16,
     height:'100%',
-    paddingTop: 32,
+    padding: 38,
+    paddingTop: 28,
+    paddingBottom: 16,
   },
 
   tableContainer: {

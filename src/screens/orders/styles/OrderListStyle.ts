@@ -8,6 +8,7 @@ export const orderListsStyle = StyleSheet.create({
     alignItems: 'flex-start',
     padding: 38,
     paddingTop: 28,
+    paddingBottom: 16,
   },
 
   tableContainer: {
