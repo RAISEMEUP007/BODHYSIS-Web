@@ -189,15 +189,6 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
                 <FontAwesome5 size={TextMediumSize} name="arrow-right" color="black" />
               </TouchableOpacity>
             </View>
-            {/* <View style={[styles.IconCell]}>
-              <TouchableOpacity
-                onPress={() => {
-                  
-                }}
-              >
-                <FontAwesome5 size={TextMediumSize} name="times" color="black" />
-              </TouchableOpacity>
-            </View> */}
           </View>
         );
       });
