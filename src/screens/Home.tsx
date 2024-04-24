@@ -17,7 +17,7 @@ import { appLinking } from '../common/constants/AppLinking';
 
 const MainDrawer = ({ navigation }) => {
 
-  const initialRouteName = '';
+  const initialRouteName = 'Dashboard';
 
   const { isLargeScreen } = useScreenSize();
   const { addMenuHistory } = useHambugerMenuHistory();
@@ -54,7 +54,7 @@ const MainDrawer = ({ navigation }) => {
   }, []);
 
   const DashboardScreen = ({ navigation }) => {
-    return <Dashboard />;
+    return <Dashboard navigation={navigation} />;
   };
 
   const ReservationScreen = ({ navigation, route }) => {
@@ -121,6 +121,7 @@ const MainDrawer = ({ navigation }) => {
         drawerContent={(props) => <DrawerContent {...props} />}
         screenOptions={{
           drawerType: Platform.OS == 'web' && isLargeScreen ? 'permanent' : 'front',
+          drawerStyle: { backgroundColor: '#f1f3fc', },
         }}
       >
         <Drawer.Screen

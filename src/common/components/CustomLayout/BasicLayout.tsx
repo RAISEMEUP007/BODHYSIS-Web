@@ -95,10 +95,18 @@ const styles = StyleSheet.create({
     height: '100%',
     paddingTop: 0,
     justifyContent: 'center',
+    backgroundColor: 'white',
   },
   header: {
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#f2f2f2',
+    shadowColor:'#ccc',
+    shadowOffset: {
+      width:0,
+      height:4,
+    },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
     flexDirection: 'row',
   },
   Icon: {
