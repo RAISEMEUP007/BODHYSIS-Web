@@ -6,8 +6,8 @@ export const exclusionStyle = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
-    padding: 16,
-    paddingTop: 32,
+    padding: 38,
+    paddingTop: 28,
   },
   tableContainer: {
     marginBottom: 16,

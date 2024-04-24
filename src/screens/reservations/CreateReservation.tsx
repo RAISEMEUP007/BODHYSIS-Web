@@ -205,7 +205,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       selectCustomerAddressId(null);
     }
   }, [customerId])
-console.log(customerAddressId);
 
   const customerAddressDropdownData = useMemo(() => {
     if (!customerAddresses?.length) {
@@ -568,7 +567,7 @@ console.log(customerAddressId);
         }}
         backKeyboard={false}
         containerStyle={{
-          backgroundColor:'#f7f7f7'
+          backgroundColor:'#f7f7f7',
         }}
       >
         <ScrollView contentContainerStyle={{ alignItems: 'center' }}>

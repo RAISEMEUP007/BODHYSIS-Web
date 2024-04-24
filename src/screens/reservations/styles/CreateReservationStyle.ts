@@ -4,15 +4,19 @@ import { Colors } from '../../../common/constants/Colors';
 
 export const createReservationStyle = StyleSheet.create({
   outterContainer: {
-    // width: '60%',
-    // minWidth: 500,
     marginVertical: 30,
     paddingVertical: 40,
     paddingHorizontal: 60,
     backgroundColor: 'white',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor:'#999'
+    borderColor:'#b3b3b3',
+    shadowColor:'#999',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 8,
   },
   container: {
     flex: 1,

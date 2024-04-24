@@ -328,12 +328,10 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         tableId,
         groupId: item.price_group_id || 0,
       }
-      console.log(payload);
       const response = await getPriceDataByGroup(payload);
       const rows = await response.json();
 
       const reversedHeaderData = headerData.slice().reverse();
-      console.log(rows);
       const updatedReversedHeaderData = reversedHeaderData.map((item) => {
         const value = rows.find((row) => row.point_id === item.id)?.value || 0;
         const pricePMS = value/item.milliseconds;
@@ -406,6 +404,9 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         openReservationScreen('Reservations List');
       }} 
       screenName={'Proceed Reservation'} 
+      containerStyle={{
+        backgroundColor:'#f7f7f7',
+      }}
     >
       <ScrollView 
         contentContainerStyle={styles.topContainer}

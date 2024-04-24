@@ -6,8 +6,8 @@ export const reservationListsStyle = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
-    padding: 16,
-    paddingTop: 32,
+    padding: 38,
+    paddingTop: 28,
   },
 
   tableContainer: {
@@ -193,7 +193,7 @@ export const reservationListsStyle = StyleSheet.create({
     borderColor: '#999',
     borderRadius: 5,
     fontSize: TextSmallSize,
-    width: 200,
+    width: 180,
   },
   dateInput:{
     borderTopWidth:0,

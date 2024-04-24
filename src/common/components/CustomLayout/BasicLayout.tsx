@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
       width: -1,
       height: 3,
     },
-    // shadowOpacity: 0.4,
     shadowRadius: 10,
     flexDirection: 'row',
   },
