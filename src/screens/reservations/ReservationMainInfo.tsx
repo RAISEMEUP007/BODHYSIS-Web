@@ -25,6 +25,7 @@ if (Platform.OS === 'web') {
 
 const ReservationMainInfo = ({ details, setUpdateCount }) => {
   const { showAlert } = useAlertModal();
+  // console.log(details);
 
   const [inputValues, setInputValues] = useState({
     startDate: '',
@@ -224,6 +225,16 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
 
   return (
     <View>
+      <View style={[styles.reservationRow, {zIndex:10}]}>
+        <View>
+          <Text style={{marginBottom:6, color:"#555555"}}>{'Brand'}</Text>
+          <Text style={styles.text} selectable={true}>{inputValues.startDate || ' '}</Text>
+        </View>
+        <View>
+          <Text style={{marginBottom:6, color:"#555555"}}>{'Season'}</Text>
+          <Text style={styles.text} selectable={true}>{inputValues.endDate || ' '}</Text>
+        </View>
+      </View>
       <View style={[styles.reservationRow, {zIndex:10}]}>
         <View>
           <Text style={{marginBottom:6, color:"#555555"}}>{'Start date'}</Text>
