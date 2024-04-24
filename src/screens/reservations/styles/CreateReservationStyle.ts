@@ -11,6 +11,8 @@ export const createReservationStyle = StyleSheet.create({
     paddingHorizontal: 60,
     backgroundColor: 'white',
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor:'#999'
   },
   container: {
     flex: 1,

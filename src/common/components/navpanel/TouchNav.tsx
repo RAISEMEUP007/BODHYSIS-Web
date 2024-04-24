@@ -23,6 +23,12 @@ const styles = StyleSheet.create({
         marginTop: "2.5%",
         marginHorizontal: "4%",
         marginBottom: 5,
+        shadowColor:'#b3b3b3',
+        shadowOffset: {
+          width: 2,
+          height: 2,
+        },
+        shadowRadius: 6,
     },
 });
 

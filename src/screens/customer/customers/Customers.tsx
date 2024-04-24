@@ -138,10 +138,10 @@ const Customers = ({ navigation }) => {
               <Text>{item.mobile_phone}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.country.country}</Text>
+              <Text>{item?.country?.country??''}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.home_location_tbl.location}</Text>
+              <Text>{item?.home_location_tbl?.location}</Text>
             </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity

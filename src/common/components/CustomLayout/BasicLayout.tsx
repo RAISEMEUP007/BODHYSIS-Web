@@ -100,13 +100,13 @@ const styles = StyleSheet.create({
   header: {
     padding: 20,
     backgroundColor: '#f2f2f2',
-    shadowColor:'#ccc',
+    shadowColor:'#b3b3b3',
     shadowOffset: {
-      width:0,
-      height:4,
+      width: -1,
+      height: 3,
     },
-    shadowOpacity: 0.4,
-    shadowRadius: 4,
+    // shadowOpacity: 0.4,
+    shadowRadius: 10,
     flexDirection: 'row',
   },
   Icon: {

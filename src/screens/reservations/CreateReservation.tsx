@@ -567,6 +567,9 @@ console.log(customerAddressId);
           openReservationScreen('Reservations List');
         }}
         backKeyboard={false}
+        containerStyle={{
+          backgroundColor:'#f7f7f7'
+        }}
       >
         <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
           <View style={styles.outterContainer}>
