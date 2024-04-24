@@ -94,6 +94,6 @@ export const actionOrderStyle = StyleSheet.create({
     borderRadius: 3,
     borderWidth: 0,
     borderColor: '#6c757d',
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2e96e1',
   },
 });

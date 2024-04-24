@@ -25,6 +25,7 @@ if (Platform.OS === 'web') {
 
 const ReservationMainInfo = ({ details, setUpdateCount }) => {
   const { showAlert } = useAlertModal();
+  // console.log(details);
 
   const [inputValues, setInputValues] = useState({
     startDate: '',
@@ -226,6 +227,16 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
     <View>
       <View style={[styles.reservationRow, {zIndex:10}]}>
         <View>
+          <Text style={{marginBottom:6, color:"#555555"}}>{'Brand'}</Text>
+          <Text style={styles.text} selectable={true}>{' '}</Text>
+        </View>
+        {/* <View>
+          <Text style={{marginBottom:6, color:"#555555"}}>{'Season'}</Text>
+          <Text style={styles.text} selectable={true}>{inputValues.endDate || ' '}</Text>
+        </View> */}
+      </View>
+      <View style={[styles.reservationRow, {zIndex:10}]}>
+        <View>
           <Text style={{marginBottom:6, color:"#555555"}}>{'Start date'}</Text>
           {/* {Platform.OS == 'web' && renderDatePicker(inputValues.startDate, (date)=>{handleInputChange('startDate', date)})} */}
           <Text style={styles.text} selectable={true}>{inputValues.startDate || ' '}</Text>
@@ -285,8 +296,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           onChangeText={value => handleInputChange('customPrice', value)}
         />
       </View>
-      <View style={styles.reservationRow}>
-        <LabeledTextInput
+      {/* <View style={styles.reservationRow}> */}
+        {/* <LabeledTextInput
           label='Referrer'
           width={300}
           containerStyle={{marginRight:30}}
@@ -295,8 +306,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           inputStyle={{marginVertical:6}}
           value={inputValues.referrer}
           onChangeText={value => handleInputChange('referrer', value)}
-        />
-        <LabeledTextInput
+        /> */}
+        {/* <LabeledTextInput
           label='Group'
           width={300}
           placeholder='Group'
@@ -304,8 +315,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           inputStyle={{marginVertical:6}}
           value={inputValues.group}
           onChangeText={value => handleInputChange('group', value)}
-        />
-      </View>
+        /> */}
+      {/* </View> */}
       <View style={styles.reservationRow}>
         {/* <CommonSelectDropdown
           containerStyle={{

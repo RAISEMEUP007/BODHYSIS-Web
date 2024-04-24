@@ -141,7 +141,7 @@ const DeliveryAddress = ({ isModalVisible, customerId, closeModal }) => {
                 <FontAwesome5
                   name={item.is_used ? 'dot-circle' : 'circle'}
                   size={15}
-                  color={item.is_used ? '#007bff' : '#6c757d'}
+                  color={item.is_used ? '#2e96e1' : '#6c757d'}
                 />
               </TouchableWithoutFeedback>
             </View>

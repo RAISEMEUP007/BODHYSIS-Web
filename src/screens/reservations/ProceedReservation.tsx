@@ -328,12 +328,10 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         tableId,
         groupId: item.price_group_id || 0,
       }
-      console.log(payload);
       const response = await getPriceDataByGroup(payload);
       const rows = await response.json();
 
       const reversedHeaderData = headerData.slice().reverse();
-      console.log(rows);
       const updatedReversedHeaderData = reversedHeaderData.map((item) => {
         const value = rows.find((row) => row.point_id === item.id)?.value || 0;
         const pricePMS = value/item.milliseconds;
@@ -406,6 +404,9 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         openReservationScreen('Reservations List');
       }} 
       screenName={'Proceed Reservation'} 
+      containerStyle={{
+        backgroundColor:'#f7f7f7',
+      }}
     >
       <ScrollView 
         contentContainerStyle={styles.topContainer}
@@ -449,9 +450,9 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               <TouchableOpacity style={styles.outLineButton}>
                 <Text style={styles.outlineBtnText}>Email</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.outLineButton, {borderColor: '#4379FF'}]} onPress={openAddCardModal}>
+              {/* <TouchableOpacity style={[styles.outLineButton, {borderColor: '#4379FF'}]} onPress={openAddCardModal}>
                 <Text style={[styles.outlineBtnText, {color:'#4379FF'}]}>Stripe</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
                   <FontAwesome5 name={'bookmark'} size={18} color="#DC3545" style={{marginRight:10, marginTop:1}}/>

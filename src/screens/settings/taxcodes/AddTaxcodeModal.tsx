@@ -156,7 +156,7 @@ const AddTaxcodeModal = ({
           <View style={{flexDirection: 'row', marginTop:8}}>
             <Text style={[styles.label, {marginRight:20}]}>Suspended</Text>
             <Switch
-              trackColor={{ false: '#6c757d', true: '#007bff' }}
+              trackColor={{ false: '#6c757d', true: '#2e96e1' }}
               thumbColor={isSuspended ? '#ffc107' : '#f8f9fa'}
               ios_backgroundColor="#343a40"
               onValueChange={setIsSuspended}

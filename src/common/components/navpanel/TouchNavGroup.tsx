@@ -10,7 +10,7 @@ const TouchNavGroup = ({ sectionTitle, items, handleItemClick }) => {
       <View style={styles.containerRow}>
         {items.map((item, index) => (
           <TouchNav key={index} 
-            title={item.title} icon={item.icon} activeOpacity={0.7}
+            title={item.title} icon={item.icon}
             handlePress={() => handleItemClick(item.title)}>
           </TouchNav>
         ))}

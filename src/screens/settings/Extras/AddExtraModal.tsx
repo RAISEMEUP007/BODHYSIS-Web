@@ -333,7 +333,7 @@ const AddExtraModal = ({
               <Text style={[styles.label, {color:'#000000', marginTop:8}]}>Online</Text>
               <View style={{flexDirection: 'row', marginTop:8}}>
                 <Switch
-                  trackColor={{ false: '#6c757d', true: '#007bff' }}
+                  trackColor={{ false: '#6c757d', true: '#2e96e1' }}
                   thumbColor={formValues.is_visible_online ? '#ffc107' : '#f8f9fa'}
                   ios_backgroundColor="#343a40"
                   onValueChange={(val)=>changeFormValue('is_visible_online', val)}
@@ -343,7 +343,7 @@ const AddExtraModal = ({
               </View>
               <View style={{flexDirection: 'row', marginTop:8}}>
                 <Switch
-                  trackColor={{ false: '#6c757d', true: '#007bff' }}
+                  trackColor={{ false: '#6c757d', true: '#2e96e1' }}
                   thumbColor={formValues.is_default_selected ? '#ffc107' : '#f8f9fa'}
                   ios_backgroundColor="#343a40"
                   onValueChange={(val)=>changeFormValue('is_default_selected', val)}
@@ -353,7 +353,7 @@ const AddExtraModal = ({
               </View>
               <View style={{flexDirection: 'row', marginTop:8}}>
                 <Switch
-                  trackColor={{ false: '#6c757d', true: '#007bff' }}
+                  trackColor={{ false: '#6c757d', true: '#2e96e1' }}
                   thumbColor={formValues.is_online_mandatory ? '#ffc107' : '#f8f9fa'}
                   ios_backgroundColor="#343a40"
                   onValueChange={(val)=>changeFormValue('is_online_mandatory', val)}
@@ -364,7 +364,7 @@ const AddExtraModal = ({
               <Text style={[styles.label, {color:'#000000', marginTop:16}]}>Other</Text>
               <View style={{flexDirection: 'row', marginTop:8}}>
                 <Switch
-                  trackColor={{ false: '#6c757d', true: '#007bff' }}
+                  trackColor={{ false: '#6c757d', true: '#2e96e1' }}
                   thumbColor={formValues.is_apply_tax ? '#ffc107' : '#f8f9fa'}
                   ios_backgroundColor="#343a40"
                   onValueChange={(val)=>changeFormValue('is_apply_tax', val)}
@@ -374,7 +374,7 @@ const AddExtraModal = ({
               </View>
               <View style={{flexDirection: 'row', marginTop:8, marginBottom:6}}>
                 <Switch
-                  trackColor={{ false: '#6c757d', true: '#007bff' }}
+                  trackColor={{ false: '#6c757d', true: '#2e96e1' }}
                   thumbColor={formValues.is_apply_discounts ? '#ffc107' : '#f8f9fa'}
                   ios_backgroundColor="#343a40"
                   onValueChange={(val)=>changeFormValue('is_apply_discounts', val)}

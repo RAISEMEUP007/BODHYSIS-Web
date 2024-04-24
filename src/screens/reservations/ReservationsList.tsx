@@ -141,6 +141,15 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     });
   };
 
+  const formatDateInline = (dateString) => {
+    const date = new Date(dateString);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const year = date.getFullYear();
+    
+    return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
+  }
+
   const renderTableData = () => {
     const convertStageToString = (stage) => {
       switch (stage) {
@@ -168,11 +177,11 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
             <View style={[styles.cell]}>
               <Text>{item.full_name}</Text>
             </View>
-            <View style={[styles.cell, {width: 250}]}>
-              <Text>{item.delivery_address}</Text>
+            <View style={[styles.cell]}>
+              <Text>{item.end_date ? formatDateInline(item.end_date):''}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.start_location}</Text>
+              <Text>{item.start_date ? formatDateInline(item.start_date):''}</Text>
             </View>
             <View style={[styles.cell]}>
               <Text>{item?.quantity??''}</Text>
@@ -189,15 +198,6 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
                 <FontAwesome5 size={TextMediumSize} name="arrow-right" color="black" />
               </TouchableOpacity>
             </View>
-            {/* <View style={[styles.IconCell]}>
-              <TouchableOpacity
-                onPress={() => {
-                  
-                }}
-              >
-                <FontAwesome5 size={TextMediumSize} name="times" color="black" />
-              </TouchableOpacity>
-            </View> */}
           </View>
         );
       });
@@ -226,7 +226,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
               <TextInput
                 style={styles.searchInput}
                 placeholder=""
-                value={searchOptions.customer}
+                defaultValue={searchOptions.customer}
                 onChangeText={(val)=>changeSearchOptions('customer', val)}
               />
             </View>
@@ -235,7 +235,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
               <TextInput
                 style={styles.searchInput}
                 placeholder=""
-                value={searchOptions.brand}
+                defaultValue={searchOptions.brand}
                 onChangeText={(val)=>changeSearchOptions('brand', val)}
               />
             </View>
@@ -244,7 +244,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
               <TextInput
                 style={styles.searchInput}
                 placeholder=""
-                value={searchOptions.order_number}
+                defaultValue={searchOptions.order_number}
                 onChangeText={(val)=>changeSearchOptions('order_number', val)}
               />
             </View>
@@ -283,7 +283,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
               <Text style={[styles.columnHeader, {width:90}]}>{'Order #'}</Text>
               <Text style={[styles.columnHeader]}>{'Brand'}</Text>
               <Text style={[styles.columnHeader]}>{'Customer'}</Text>
-              <Text style={[styles.columnHeader, {width:250}]}>{'To'}</Text>
+              <Text style={[styles.columnHeader]}>{'To'}</Text>
               <Text style={[styles.columnHeader]}>{'From'}</Text>
               {/* <Text style={[styles.columnHeader, {width:100}]}>{'Start Date'}</Text>
               <Text style={[styles.columnHeader, {width:100}]}>{'End Date'}</Text> */}

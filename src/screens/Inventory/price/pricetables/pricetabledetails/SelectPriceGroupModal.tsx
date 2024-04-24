@@ -109,7 +109,7 @@ const SelectPriceGroupModal = ({ isModalVisible, tableId, setUpdatePointTrigger,
             </View>
             <View style={[styles.IconCell]}>
               <Switch
-                trackColor={{ false: '#6c757d', true: '#007bff' }}
+                trackColor={{ false: '#6c757d', true: '#2e96e1' }}
                 thumbColor={item.is_active ? '#ffc107' : '#f8f9fa'}
                 ios_backgroundColor="#343a40"
                 onValueChange={(value)=>{switchGroup(item.id, value)}}

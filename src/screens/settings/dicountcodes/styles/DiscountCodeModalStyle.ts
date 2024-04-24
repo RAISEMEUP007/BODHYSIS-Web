@@ -36,7 +36,7 @@ export const discountCodeModalstyles = StyleSheet.create({
     borderColor: '#6c757d',
   },
   addButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#2e96e1',
     color: 'white',
     padding: 10,
     textAlign: 'center',
