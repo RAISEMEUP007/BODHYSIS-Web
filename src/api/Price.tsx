@@ -91,6 +91,10 @@ export const getBrandsData = (cb=(jR, s, e)=>{}) => {
   getAPICall('price/getbrandsdata', cb);
 }
 
+export const getBrandDetail = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('price/getbranddetail', payload, cb);
+}
+
 export const saveBrandCell = (id, column, value, cb=(jR, s, e)=>{}) => {
   const payload = {id, column, value};
   postAPICall('price/savebrandcell', payload, cb);

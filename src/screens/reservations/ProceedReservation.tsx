@@ -18,6 +18,7 @@ import AddReservationItemModal from './AddReservationItemModal';
 import AddCardModal from '../../common/components/stripe-react/AddCardModal';
 import { getHeaderData, getPriceDataByGroup } from '../../api/Price';
 import { getDiscountCodesData } from '../../api/Settings';
+import { API_URL } from '../../common/constants/AppConstants';
 
 interface Props {
   openReservationScreen: (itemName: string, data?: any ) => void;
@@ -54,6 +55,14 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   };
   const closeAddCardModal = () => {
     setAddCardModalVisible(false);
+  };
+
+  const [isPDFPrintModalVisible, setPDFPrintModalVisible] = useState(false);
+  const openPDFPrintModal = () => {
+    setPDFPrintModalVisible(true);
+  };
+  const closePDFPrintModal = () => {
+    setPDFPrintModalVisible(false);
   };
 
   const [equipmentData, setEquipmentData] = useState<Array<any>>([]);
@@ -398,6 +407,10 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     }
   }
 
+  const printReservation = async () => {
+    location.href = API_URL + "/reservations/exportpdf"
+  }
+
   return (
     <BasicLayout
       goBack={()=>{
@@ -444,7 +457,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               </TouchableOpacity>
             </View>
             <View style={{flexDirection:'row', alignItems:'center'}}>
-              <TouchableOpacity style={styles.outLineButton}>
+              <TouchableOpacity style={styles.outLineButton} onPress={printReservation}>
                 <Text style={styles.outlineBtnText}>Print</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.outLineButton}>
