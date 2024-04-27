@@ -161,14 +161,14 @@ const AddDeliveryAddressModal = ({
             onChangeText={setStreetName}
             placeholderTextColor="#ccc"
           />
-          <Text style={styles.label}>Area</Text>
+          {/* <Text style={styles.label}>Area</Text>
           <TextInput
             style={styles.input}
             placeholder="Area"
             value={Area}
             onChangeText={setArea}
             placeholderTextColor="#ccc"
-          />
+          /> */}
           <Text style={styles.label}>Plantation</Text>
           <TextInput
             style={styles.input}
