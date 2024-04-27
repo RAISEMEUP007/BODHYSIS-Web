@@ -43,7 +43,7 @@ const TransactionList = ({reservationId, openAddTransactionModal, openRefundModa
       });
     }
   }, [reservationId, openAddTransactionModal]);
-  
+console.log(transactionData);
   const renderItems = () => {
     return transactionData.map((transaction) => (
       <View key={transaction.id} style={styles.transactionItem}>
@@ -58,7 +58,7 @@ const TransactionList = ({reservationId, openAddTransactionModal, openRefundModa
         <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
           <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
             <Text>{transaction.method}</Text>
-            {transaction.method && transaction.method.toLowerCase() == 'stripe' && (
+            {transaction.method && transaction.method.toLowerCase() == 'stripe' && transaction.refunded < transaction.amount && (
               <TouchableOpacity 
                 style={{
                   alignItems: 'center',
@@ -73,6 +73,9 @@ const TransactionList = ({reservationId, openAddTransactionModal, openRefundModa
                 onPress={()=>{
                   const refundDetails = {
                     id: transaction.id,
+                    reservation_id: reservationInfo.id,
+                    reservation_paid: reservationInfo.paid,
+                    old_refunded: transaction.refunded | 0,
                     amount: transaction.amount,
                     payment_intent: transaction.payment_intent
                   }
@@ -86,7 +89,12 @@ const TransactionList = ({reservationId, openAddTransactionModal, openRefundModa
               </TouchableOpacity>
             )}
           </View>
-          <Text>{"$" + transaction.amount}</Text>
+          <View style={{flexDirection:'row'}}>
+            <Text>{"$" + transaction.amount}</Text>
+            {transaction.refunded && (
+              <Text>{` (refunded: $${transaction.refunded})`}</Text>
+            )}
+          </View>
         </View>
       </View>
     ));

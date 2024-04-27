@@ -63,7 +63,7 @@ const RefundStripeModal = ({
     }
     refundStripe(payload, (jsonRes, status)=>{
       switch (status) {
-        case 201:
+        case 200:
           showAlert('success', 'Refunded successfully');
           closeModal();
           break;
