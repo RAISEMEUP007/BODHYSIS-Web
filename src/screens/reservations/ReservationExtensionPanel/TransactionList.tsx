@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { getReservationDetail, getTransactionsData } from '../../../api/Reservation';
 
 interface Props {
   reservationId: number;
   openAddTransactionModal: ()=>void;
+  openRefundModal: (refundDetails)=>void;
 }
 
-const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
+const TransactionList = ({reservationId, openAddTransactionModal, openRefundModal}:Props) => {
   const [reservationInfo, setReservationInfo] = useState<any>({});
   const [transactionData, setTransactionData] = useState([]);
 
@@ -54,8 +55,37 @@ const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
             day: '2-digit',
           })}</Text>
         </View>
-        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-          <Text>{transaction.method}</Text>
+        <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+          <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
+            <Text>{transaction.method}</Text>
+            {transaction.method && transaction.method.toLowerCase() == 'stripe' && (
+              <TouchableOpacity 
+                style={{
+                  alignItems: 'center',
+                  justifyContent:'center',
+                  paddingVertical: 3,
+                  paddingHorizontal: 12,
+                  borderRadius: 5,
+                  borderWidth: 2,
+                  borderColor: '#6c757d',
+                  marginLeft: 13,
+                }}
+                onPress={()=>{
+                  const refundDetails = {
+                    id: transaction.id,
+                    amount: transaction.amount,
+                    payment_intent: transaction.payment_intent
+                  }
+                  openRefundModal(refundDetails)
+                }}
+              >
+                <View style={{flexDirection:'row', alignItems:'center'}}>
+                  <FontAwesome5 name={'redo'} size={14} style={{marginRight:10, marginTop:1}}/>
+                  <Text style={[styles.outlineBtnText]}>{"refund"}</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          </View>
           <Text>{"$" + transaction.amount}</Text>
         </View>
       </View>

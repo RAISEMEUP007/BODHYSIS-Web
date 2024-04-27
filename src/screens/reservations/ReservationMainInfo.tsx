@@ -26,7 +26,6 @@ if (Platform.OS === 'web') {
 
 const ReservationMainInfo = ({ details, setUpdateCount }) => {
   const { showAlert } = useAlertModal();
-  // console.log(details);
 
   const [inputValues, setInputValues] = useState({
     startDate: '',
@@ -74,7 +73,6 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
   }, [details]);
 
   useEffect(()=>{
-    console.log(details);
     if(details && details.brand_id){
       getBrandDetail({id:details.brand_id}, (jsonRes, status)=>{
         if(status == 200) setBrandDetail(jsonRes);
