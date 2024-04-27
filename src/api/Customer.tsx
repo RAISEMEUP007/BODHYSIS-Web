@@ -39,3 +39,7 @@ export const deleteDeliveryAddressByCId = (customerId, cb=(jR, s, e)=>{}) => {
   const payload = { customerId };
   postAPICall('customer/deletedeliveryaddressbycid', payload, cb);
 }
+
+export const getUsedDeliveryAddress = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('customer/getuseddeliveryaddress/', payload, cb);
+}

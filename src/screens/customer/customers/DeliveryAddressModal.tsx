@@ -130,7 +130,7 @@ const DeliveryAddress = ({ isModalVisible, customerId, closeModal }) => {
         rows.push(
           <View key={index} style={styles.tableRow}>
             <View style={[styles.cell, { width: 300 }]}>
-              <Text>{item.address1}</Text>
+              <Text>{item.all_addresses && `${item.all_addresses.number} ${item.all_addresses.street} ${item.all_addresses.plantation} ${item.all_addresses.property_name}`}</Text>
             </View>
             <View style={[styles.IconCell]}>
               <TouchableWithoutFeedback
