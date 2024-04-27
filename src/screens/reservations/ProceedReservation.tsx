@@ -423,7 +423,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   }
 
   const printReservation = async () => {
-    location.href = API_URL + "/reservations/exportpdf"
+    location.href = API_URL + "/reservations/exportpdf/"+reservationInfo.id
   }
 
   return (
