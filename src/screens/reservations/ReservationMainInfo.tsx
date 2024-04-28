@@ -14,6 +14,7 @@ import { getDiscountCodesData } from '../../api/Settings';
 import { updateReservation } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
+import { getBrandDetail } from '../../api/Price';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -25,7 +26,6 @@ if (Platform.OS === 'web') {
 
 const ReservationMainInfo = ({ details, setUpdateCount }) => {
   const { showAlert } = useAlertModal();
-  // console.log(details);
 
   const [inputValues, setInputValues] = useState({
     startDate: '',
@@ -42,6 +42,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
   });
 
   const [discountCodes, setDiscountCodes] = useState([]);
+  const [brandDetail, setBrandDetail] = useState<any>({});
 
   useEffect(() => {
     if(details){
@@ -70,6 +71,15 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
       });
     }
   }, [details]);
+
+  useEffect(()=>{
+    if(details && details.brand_id){
+      getBrandDetail({id:details.brand_id}, (jsonRes, status)=>{
+        if(status == 200) setBrandDetail(jsonRes);
+        else setBrandDetail({});
+      });
+    } else setBrandDetail({});
+  }, [details])
 
   useEffect(() => {
     if (inputValues.startDate && inputValues.endDate) {
@@ -226,9 +236,9 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
   return (
     <View>
       <View style={[styles.reservationRow, {zIndex:10}]}>
-        <View>
+        <View style={{flex:1, padding:1}}>
           <Text style={{marginBottom:6, color:"#555555"}}>{'Brand'}</Text>
-          <Text style={styles.text} selectable={true}>{' '}</Text>
+          <Text style={[styles.text, {width:630}]} selectable={true}>{brandDetail?.brand??' '}</Text>
         </View>
         {/* <View>
           <Text style={{marginBottom:6, color:"#555555"}}>{'Season'}</Text>
@@ -350,7 +360,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         /> */}
         <LabeledTextInput
           label='Delivery Address'
-          width={300}
+          width={630}
           placeholder='Delivery Address'
           placeholderTextColor="#ccc"
           inputStyle={{marginVertical:6}}

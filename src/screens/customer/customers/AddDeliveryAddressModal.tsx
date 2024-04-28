@@ -35,11 +35,11 @@ const AddDeliveryAddressModal = ({
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const [Address1, setAddress1] = useState('');
-  const [Address2, setAddress2] = useState('');
-  const [CityTxt, setCityTxt] = useState('');
-  const [StateTxt, setStateTxt] = useState('');
-  const [PostalCodeTxt, setPostalCodeTxt] = useState('');
+  const [Number, setNumber] = useState('');
+  const [StreetName, setStreetName] = useState('');
+  const [Plantation, setPlantation] = useState('');
+  const [Area, setArea] = useState('');
+  const [PropertyName, setPropertyName] = useState('');
   const [Country, setCountry] = useState(0);
 
   const [Countries, setCountries] = useState([]);
@@ -73,17 +73,17 @@ const AddDeliveryAddressModal = ({
       });
 
       if (DeliveryAddress) {
-        setAddress1(DeliveryAddress.address1);
-        setAddress2(DeliveryAddress.address2);
-        setCityTxt(DeliveryAddress.city);
-        setStateTxt(DeliveryAddress.state);
-        setPostalCodeTxt(DeliveryAddress.PostalCode);
+        setNumber(DeliveryAddress.Number);
+        setStreetName(DeliveryAddress.StreetName);
+        setPlantation(DeliveryAddress.city);
+        setArea(DeliveryAddress.state);
+        setPropertyName(DeliveryAddress.PostalCode);
       } else {
-        setAddress1('');
-        setAddress2('');
-        setCityTxt('');
-        setStateTxt('');
-        setPostalCodeTxt('');
+        setNumber('');
+        setStreetName('');
+        setPlantation('');
+        setArea('');
+        setPropertyName('');
       }
     }
   }, [isModalVisible]);
@@ -91,13 +91,13 @@ const AddDeliveryAddressModal = ({
   const AddFirstNameButtonHandler = () => {
     setIsLoading(true);
 
-    const payload = {
-      address1: Address1,
-      address2: Address2,
-      city: CityTxt,
-      state: StateTxt,
-      postal_code: PostalCodeTxt,
-      country_id: Country,
+    const payload:any = {
+      number: Number,
+      street: StreetName,
+      plantation: Plantation,
+      area: Area,
+      property_name: PropertyName,
+      // country_id: Country,
       customer_id: customerId,
     };
 
@@ -145,53 +145,53 @@ const AddDeliveryAddressModal = ({
       <BasicModalContainer>
         <ModalHeader label={'DeliveryAddress'} closeModal={closeModal} />
         <ModalBody>
-          <Text style={styles.label}>Address line one</Text>
+          <Text style={styles.label}>Number</Text>
           <TextInput
             style={styles.input}
-            placeholder="Address line one"
-            value={Address1}
-            onChangeText={setAddress1}
+            placeholder="Number"
+            value={Number}
+            onChangeText={setNumber}
             placeholderTextColor="#ccc"
           />
-          <Text style={styles.label}>Address line two</Text>
+          <Text style={styles.label}>Street name</Text>
           <TextInput
             style={styles.input}
-            placeholder="Address line two"
-            value={Address2}
-            onChangeText={setAddress2}
+            placeholder="Street Name"
+            value={StreetName}
+            onChangeText={setStreetName}
             placeholderTextColor="#ccc"
           />
-          <Text style={styles.label}>City</Text>
+          {/* <Text style={styles.label}>Area</Text>
           <TextInput
             style={styles.input}
-            placeholder="City"
-            value={CityTxt}
-            onChangeText={setCityTxt}
+            placeholder="Area"
+            value={Area}
+            onChangeText={setArea}
             placeholderTextColor="#ccc"
-          />
-          <Text style={styles.label}>State</Text>
+          /> */}
+          <Text style={styles.label}>Plantation</Text>
           <TextInput
             style={styles.input}
-            placeholder="State"
-            value={StateTxt}
-            onChangeText={setStateTxt}
+            placeholder="Plantation"
+            value={Plantation}
+            onChangeText={setPlantation}
             placeholderTextColor="#ccc"
           />
-          <Text style={styles.label}>Postal code</Text>
+          <Text style={styles.label}>Property name</Text>
           <TextInput
             style={styles.input}
-            placeholder="Postal code"
-            value={PostalCodeTxt}
-            onChangeText={setPostalCodeTxt}
+            placeholder="Property name"
+            value={PropertyName}
+            onChangeText={setPropertyName}
             placeholderTextColor="#ccc"
           />
-          <Text style={styles.label}>Country</Text>
+          {/* <Text style={styles.label}>Country</Text>
           <Picker style={styles.select} selectedValue={Country} onValueChange={setCountry}>
             {Countries.length > 0 &&
               Countries.map((country, index) => {
                 return <Picker.Item key={index} label={country.country} value={country.id} />;
               })}
-          </Picker>
+          </Picker> */}
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={AddFirstNameButtonHandler}>

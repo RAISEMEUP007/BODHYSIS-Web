@@ -18,6 +18,8 @@ import AddReservationItemModal from './AddReservationItemModal';
 import AddCardModal from '../../common/components/stripe-react/AddCardModal';
 import { getHeaderData, getPriceDataByGroup } from '../../api/Price';
 import { getDiscountCodesData } from '../../api/Settings';
+import { API_URL } from '../../common/constants/AppConstants';
+import RefundStripeModal from './ReservationExtensionPanel/RefundStripeModal';
 
 interface Props {
   openReservationScreen: (itemName: string, data?: any ) => void;
@@ -38,6 +40,20 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   const [headerData, setHeaderData] = useState([]);
   const [discountCodes, setDiscountCodes] = useState([]);
   const [nextStageProcessingStatus, setNextStageProcessingStatus] = useState<boolean>(false);
+  const [isRefundStripeModalVisible, setRefundStripeModalVisible] = useState(false);
+  const [refundDetails, setRefundDetails] = useState<any>({
+    id: null,
+    amount: null,
+    payment_intent: null
+  });
+
+  const openRefundModal = (refundDetails) => {
+    setRefundDetails(refundDetails)
+    setRefundStripeModalVisible(true);
+  };
+  const closeRefundModal = () => {
+    setRefundStripeModalVisible(false);
+  };
 
   const openAddTransactionModal = (nextStageProcessingStatus) => {
     setNextStageProcessingStatus(nextStageProcessingStatus);
@@ -54,6 +70,14 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   };
   const closeAddCardModal = () => {
     setAddCardModalVisible(false);
+  };
+
+  const [isPDFPrintModalVisible, setPDFPrintModalVisible] = useState(false);
+  const openPDFPrintModal = () => {
+    setPDFPrintModalVisible(true);
+  };
+  const closePDFPrintModal = () => {
+    setPDFPrintModalVisible(false);
   };
 
   const [equipmentData, setEquipmentData] = useState<Array<any>>([]);
@@ -398,6 +422,10 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     }
   }
 
+  const printReservation = async () => {
+    location.href = API_URL + "/reservations/exportpdf/"+reservationInfo.id
+  }
+
   return (
     <BasicLayout
       goBack={()=>{
@@ -421,7 +449,11 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               setContentWidth(width);
             }}>
             <ReservationMainInfo details={reservationInfo} setUpdateCount={setUpdateCount}/>
-            <ReservationExtensionPanel reservationId={reservationInfo?.id??null} openAddTransactionModal={()=>openAddTransactionModal(false)}/>
+            <ReservationExtensionPanel 
+              reservationId={reservationInfo?.id??null} 
+              openAddTransactionModal={()=>openAddTransactionModal(false)}
+              openRefundModal={openRefundModal}
+            />
           </View>
           <View style={{flexDirection:'row', justifyContent:'space-between', marginVertical:18}}>
             <View style={{flexDirection:'row', alignItems:'center'}}>
@@ -444,7 +476,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               </TouchableOpacity>
             </View>
             <View style={{flexDirection:'row', alignItems:'center'}}>
-              <TouchableOpacity style={styles.outLineButton}>
+              <TouchableOpacity style={styles.outLineButton} onPress={printReservation}>
                 <Text style={styles.outlineBtnText}>Print</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.outLineButton}>
@@ -524,6 +556,11 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
           editReservationItem(null, null);
         }}
         isExtra={true}
+      />
+      <RefundStripeModal
+        isModalVisible={isRefundStripeModalVisible}
+        closeModal={closeRefundModal}
+        refundDetails={refundDetails}
       />
       {Platform.OS === 'web' && (
         <AddCardModal

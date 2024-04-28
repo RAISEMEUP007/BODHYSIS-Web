@@ -14,6 +14,7 @@ import Orders from './orders/Orders';
 import Scheduler from './scheduler/Scheduler';
 import { useHambugerMenuHistory } from '../common/hooks/UseHambugerMenuHistory';
 import { appLinking } from '../common/constants/AppLinking';
+import Marketing from './marketing/Marketing';
 
 const MainDrawer = ({ navigation }) => {
 
@@ -75,6 +76,10 @@ const MainDrawer = ({ navigation }) => {
 
   const SettingsScreen = ({ navigation }) => {
     return <Settings navigation={navigation} />;
+  };
+
+  const MarketingScreen = ({ navigation }) => {
+    return <Marketing navigation={navigation} />;
   };
 
   const DeliveryOrderScreen = ({ navigation }) => {
@@ -204,6 +209,20 @@ const MainDrawer = ({ navigation }) => {
           }}
           options={{
             drawerLabel: 'Scheduler',
+            unmountOnBlur: true,
+            headerShown: false,
+          }}
+        />
+        <Drawer.Screen
+          name="Marketing"
+          component={MarketingScreen}
+          listeners={{
+            drawerItemPress: (e) => {
+              addMenuHistory('Marketing');
+            },
+          }}
+          options={{
+            drawerLabel: 'Marketing',
             unmountOnBlur: true,
             headerShown: false,
           }}

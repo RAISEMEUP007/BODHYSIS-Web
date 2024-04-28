@@ -14,7 +14,7 @@ import CheckBox from 'expo-checkbox';
 import { v4 as uuidv4 } from 'uuid';
 
 import { getLocationsData, getCountriesData, getLanguagesData } from '../../../api/Settings';
-import { createCustomer, deleteDeliveryAddressByCId, updateCustomer } from '../../../api/Customer';
+import { createCustomer, deleteDeliveryAddressByCId, getUsedDeliveryAddress, updateCustomer } from '../../../api/Customer';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
@@ -29,12 +29,22 @@ import DeliveryAddress from './DeliveryAddressModal';
 const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, closeModal }) => {
   const isUpdate = Customer ? true : false;
   const customerId = useRef<any>();
+  const [deliveryAddress, setDeliveryAddress] = useState<any>({});
 
   useEffect(() => {
     if (Customer) customerId.current = Customer.id;
     else {
       customerId.current = parseInt(uuidv4(), 16);
     }
+  }, [Customer]);
+
+  useEffect(() => {
+    if(Customer && Customer.id){
+      getUsedDeliveryAddress({customer_id:Customer.id}, (jsonRes, status)=>{
+        if(status == 200) setDeliveryAddress(jsonRes)
+        else setDeliveryAddress({});
+      })
+    }else setDeliveryAddress({});
   }, [Customer]);
 
   const { showAlert } = useAlertModal();
@@ -170,9 +180,9 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
       country_id: Country,
       language_id: Language,
       home_location: HomeLocation,
-      delivery_street_number: DeliveryStreetNumberTxt,
-      delivery_street_property_name: DeliveryStreetPropertyNameTxt,
-      delivery_area_plantation: DeliveryAreaPlantationTxt,
+      // delivery_street_number: DeliveryStreetNumberTxt,
+      // delivery_street_property_name: DeliveryStreetPropertyNameTxt,
+      // delivery_area_plantation: DeliveryAreaPlantationTxt,
       marketing_opt_in: isOptedIn,
     };
 
@@ -359,29 +369,11 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
                   })}
               </Picker>
               <Text style={styles.label}>Delivery Street Number</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Delivery Street Number"
-                value={DeliveryStreetNumberTxt}
-                onChangeText={setDeliveryStreetNumberTxt}
-                placeholderTextColor="#ccc"
-              />
+              <Text style={styles.input}>{deliveryAddress?.all_addresses?.number??` `}</Text>
               <Text style={styles.label}>Delivery Street/ PropertyName</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Delivery Street/ PropertyName"
-                value={DeliveryStreetPropertyNameTxt}
-                onChangeText={setDeliveryStreetPropertyNameTxt}
-                placeholderTextColor="#ccc"
-              />
+              <Text style={styles.input}>{deliveryAddress?.all_addresses?.street??` `}</Text>
               <Text style={styles.label}>Delivery Area/Plantation</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Delivery Area/Plantation"
-                value={DeliveryAreaPlantationTxt}
-                onChangeText={setDeliveryAreaPlantationTxt}
-                placeholderTextColor="#ccc"
-              />
+              <Text style={styles.input}>{deliveryAddress?.all_addresses?.plantation??` `}</Text>
               <Pressable
                 style={{ flexDirection: 'row', marginTop: 10, alignItems: 'center' }}
                 onPress={() => {

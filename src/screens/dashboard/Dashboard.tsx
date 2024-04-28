@@ -16,9 +16,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { RadioButton } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
-// import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
-// import MapView, { Marker } from 'react-native-maps';
-import MapView from "@teovilla/react-native-web-maps";
 
 import { getReservationsData } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
