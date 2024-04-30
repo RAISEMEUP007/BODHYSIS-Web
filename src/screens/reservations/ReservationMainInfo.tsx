@@ -67,11 +67,12 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         group: details.group || '',
         startLocationId: details.start_location_id || '',
         endLocationId: details.end_location_id || '',
-        deliveryAddress: details?.delivery_address?.address1??''
+        deliveryAddress: (details?.all_addresses?.number??'') + ' ' + (details?.all_addresses?.street??'') + ' ' + (details?.all_addresses?.plantation??'') + ' ' + (details?.all_addresses?.property_name??'')
       });
     }
   }, [details]);
 
+  console.log(inputValues);
   useEffect(()=>{
     if(details && details.brand_id){
       getBrandDetail({id:details.brand_id}, (jsonRes, status)=>{
