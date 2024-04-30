@@ -8,6 +8,7 @@ import {
   TextInput,
   Platform,
 } from 'react-native';
+
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../../common/constants/Colors';
@@ -38,6 +39,7 @@ import EquipmentsTable from './EquipmentsTable';
 import AddReservationItemModal from './AddReservationItemModal';
 import { createReservationStyle } from './styles/CreateReservationStyle';
 import { getStoreDetail } from '../../api/Settings';
+import { getDiscountCodesData } from '../../api/Settings';
 import QuantitiesDetailsModal from './QuantitiesDetailsModal';
 
 if (Platform.OS === 'web') {
@@ -83,6 +85,9 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
 
   const [customerAddresses, setCustomerAddresses] = useState([]);
   const [customerAddressId, selectCustomerAddressId] = useState();
+
+  const [discountCodes, setDiscountCodes] = useState([]);
+  const [selectedDiscountCode, selectDiscountCode] = useState<any>(null);
 
   const openAddReservationItemModal = () => {
     editReservationItem(null, null);
@@ -205,6 +210,32 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       selectCustomerAddressId(null);
     }
   }, [customerId])
+
+  useEffect(()=>{
+    getDiscountCodesData((jsonRes, status, error) => {
+      switch (status) {
+        case 200:
+          setDiscountCodes(jsonRes);
+          break;
+      }
+    });
+  }, [])
+
+  
+  const discountCodesDropdownData = useMemo(() => {
+    if (!discountCodes?.length) {
+      return [];
+    }
+
+    const result: Array<any> = discountCodes.map((item, index) => {
+      return {
+        value: item,
+        displayLabel: item.code,
+        index,
+      };
+    });
+    return result;
+  }, [discountCodes]);
 
   const customerAddressDropdownData = useMemo(() => {
     if (!customerAddresses?.length) {
@@ -474,10 +505,19 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     submitReservation();
   };
 
+  console.log(selectedDiscountCode);
   const submitReservation = () => {
     setIsLoading(true);
 
-    const payload = {
+    let discountAmount;
+    if(selectedDiscountCode){
+      // discountInfo = discountCodes.find((item) => item.id === reservationInfo.promo_code);
+      discountAmount = selectedDiscountCode.type == 1 ? (Math.round(subTotal * selectedDiscountCode.amount) / 100) : selectedDiscountCode.amount;
+    }else {
+      discountAmount = 0;
+    }
+
+    const payload:any = {
       customer_id: customerId,
       brand_id: brandId,
       start_date: startDate,
@@ -486,11 +526,13 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       subtotal: subTotal,
       tax_rate: taxRate,
       tax_amount: taxAmount,
-      total_price: subTotal + taxAmount,
+      total_price: subTotal + taxAmount - discountAmount,
       price_table_id: selectedPriceTable.id,
       delivery_address_id: customerAddressId,
       stage: 1,
     };
+
+    if(selectedDiscountCode) payload.promo_code = selectedDiscountCode.id;
 
     const handleResponse = (jsonRes, status) => {
       switch (status) {
@@ -710,6 +752,22 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                     placeholder="Select An Address"
                     title={'Delivery Address'}
                     defaultValue={customerAddressId}
+                  />
+                </View>
+                <View style={styles.reservationRow}>
+                  <CommonSelectDropdown
+                    containerStyle={{
+                      marginRight: 40,
+                      marginTop: 5,
+                    }}
+                    width={350}
+                    onItemSelected={(item) => {
+                      selectDiscountCode(item.value);
+                    }}
+                    data={discountCodesDropdownData}
+                    placeholder="Select A Code"
+                    title={'Discount code'}
+                    titleStyle={{marginBottom:6, color:"#555555", fontSize:14}}
                   />
                   <CommonSelectDropdown
                     containerStyle={
