@@ -243,9 +243,10 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     }
 
     const result: DropdownData<BrandType> = customerAddresses.map((item, index) => {
+      console.log(item.all_addresses);
       return {
         value: item,
-        displayLabel: item.address1 + ' ' + item.city + ' ' + item.state,
+        displayLabel: (item?.all_addresses?.number??'') + ' ' + (item?.all_addresses?.street??'') + ' ' + (item?.all_addresses?.plantation??'') + ' ' + (item?.all_addresses?.property_name??''),
         index,
       };
     });
@@ -528,7 +529,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       tax_amount: taxAmount,
       total_price: subTotal + taxAmount - discountAmount,
       price_table_id: selectedPriceTable.id,
-      delivery_address_id: customerAddressId,
+      address_id: customerAddressId,
       stage: 1,
     };
 
@@ -746,7 +747,8 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                     }
                     width={350}
                     onItemSelected={(item) => {
-                      selectCustomerAddressId(item.value.id);
+                      console.log(item);
+                      selectCustomerAddressId(item.value.address_id);
                     }}
                     data={customerAddressDropdownData}
                     placeholder="Select An Address"

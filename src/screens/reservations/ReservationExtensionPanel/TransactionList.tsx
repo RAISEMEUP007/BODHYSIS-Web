@@ -43,7 +43,7 @@ const TransactionList = ({reservationId, openAddTransactionModal, openRefundModa
       });
     }
   }, [reservationId, openAddTransactionModal]);
-console.log(transactionData);
+
   const renderItems = () => {
     return transactionData.map((transaction) => (
       <View key={transaction.id} style={styles.transactionItem}>
