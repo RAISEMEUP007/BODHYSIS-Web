@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRightWidth: 1,
     borderRightColor: '#ccc',
+    whiteSapce: 'noWrap',
   },
 });
 

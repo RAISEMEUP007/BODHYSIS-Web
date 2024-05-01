@@ -18,7 +18,7 @@ import Taxcodes from './taxcodes/Taxcodes';
 import Colorcombinations from './colorcombinations/Colorcombinations';
 import Extras from './Extras/Extras';
 import { Templates } from './templates/Templates';
-import ProductCompatability from './ProductCompatability/ProductCompatability';
+import ProductCompatibility from './productcompatibility/ProductCompatibility';
 
 interface Props {
     navigation: any;
@@ -59,7 +59,7 @@ const Settings = ({navigation, initialItem }:Props) => {
             case 'Templates':
                 return <Templates navigation={navigation} openInventory={handleItemClick}/>;
             case 'Product Compatability':
-                return <ProductCompatability navigation={navigation} openInventory={handleItemClick}/>;
+                return <ProductCompatibility navigation={navigation} openInventory={handleItemClick}/>;
             default:
                 return (
                     <View style={{ marginTop: 20, paddingHorizontal: 10, paddingVertical:2, height: 28, justifyContent: 'center', flexDirection: 'row',}}>
