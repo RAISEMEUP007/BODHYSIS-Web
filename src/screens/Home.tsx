@@ -18,7 +18,7 @@ import Marketing from './marketing/Marketing';
 
 const MainDrawer = ({ navigation }) => {
 
-  const initialRouteName = 'Dashboard';
+  const initialRouteName = 'Settings';
 
   const { isLargeScreen } = useScreenSize();
   const { addMenuHistory } = useHambugerMenuHistory();

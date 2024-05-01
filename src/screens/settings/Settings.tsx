@@ -18,6 +18,7 @@ import Taxcodes from './taxcodes/Taxcodes';
 import Colorcombinations from './colorcombinations/Colorcombinations';
 import Extras from './Extras/Extras';
 import { Templates } from './templates/Templates';
+import ProductCompatability from './ProductCompatability/ProductCompatability';
 
 interface Props {
     navigation: any;
@@ -25,7 +26,7 @@ interface Props {
 }
 
 const Settings = ({navigation, initialItem }:Props) => {
-    const [selectedItem, setSelectedItem] = useState<string>(initialItem);
+    const [selectedItem, setSelectedItem] = useState<string>(initialItem || 'Product Compatability');
     
     const handleItemClick = (itemName) => {
         setSelectedItem(itemName);
@@ -57,6 +58,8 @@ const Settings = ({navigation, initialItem }:Props) => {
                 return <Extras navigation={navigation} openInventory={handleItemClick}/>;
             case 'Templates':
                 return <Templates navigation={navigation} openInventory={handleItemClick}/>;
+            case 'Product Compatability':
+                return <ProductCompatability navigation={navigation} openInventory={handleItemClick}/>;
             default:
                 return (
                     <View style={{ marginTop: 20, paddingHorizontal: 10, paddingVertical:2, height: 28, justifyContent: 'center', flexDirection: 'row',}}>
@@ -89,6 +92,7 @@ const Settings = ({navigation, initialItem }:Props) => {
                         { title: "Color Combinations", icon: 'palette' },
                         { title: "Extras", icon: 'plus-circle' },
                         { title: "Templates", icon: 'mail-bulk' },
+                        { title: "Product Compatability", icon: 'project-diagram' },
                     ]} handleItemClick={handleItemClick} />
                 </View>
             </ScrollView>
