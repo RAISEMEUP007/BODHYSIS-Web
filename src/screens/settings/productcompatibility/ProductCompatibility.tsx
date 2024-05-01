@@ -49,7 +49,7 @@ const ProductCompatibility = ({ navigation, openInventory }) => {
 
   const updateValue = (index, index2, value) => {
     const payload = {
-      family_id: tableData[index].id,
+      display_name: tableData[index].display_name,
       extra_id: extraData[index2].id,
       is_connected: value,
     }
@@ -93,7 +93,7 @@ const ProductCompatibility = ({ navigation, openInventory }) => {
           <BOHTR key={index}>
             <BOHTD
               width={widths[0]}
-            >{item.family}</BOHTD>
+            >{item.display_name}</BOHTD>
             {item.compatibilities && item.compatibilities.map((tddata, index2)=>(
               <BOHTDCheckbox
                 key={index2}
