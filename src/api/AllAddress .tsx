@@ -1,7 +1,7 @@
 import { basePostAPICall, getAPICall, postAPICall } from './BaseAPI';
 
-export const getAddressesData = async (cb = (jR, s, e)=>{}) => {
-  return await getAPICall('alladdresses/getaddressesdata/', cb);
+export const getAddressesData = async (payload, cb = (jR, s, e)=>{}) => {
+  return await postAPICall('alladdresses/getaddressesdata/', payload,  cb);
 }
 
 export const updateAddress = (payload, cb=(jR, s, e)=>{}) => {

@@ -5,7 +5,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { getAddressesData, deleteAddress } from '../../../api/AllAddress ';
 import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
-import { BOHButton, BOHToolbar } from '../../../common/components/bohtoolbar';
+import { BOHButton, BOHSearchBox, BOHToolbar } from '../../../common/components/bohtoolbar';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
@@ -14,28 +14,17 @@ import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
 import AddLocationModal from './AddLocationModal';
 
 const LocationManager = ({ navigation, openMarketingMenu }) => {
-  const screenHeight = Dimensions.get('window').height;
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
   
   const [tableData, setTableData] = useState([]);
   const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(true);
-  const InitialWidths = [76, 61, 90, 120, 113, 47, 46];
-  const [widths, setWidths] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const InitialWidths = [76, 170, 170, 170, 113, 47, 46];
+  // const [widths, setWidths] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [searchKey, setSearchKey] = useState('');
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
-
-  const updateWidth = (index, width) => {
-    setWidths(prev => {
-      if (!prev[index] || prev[index] < width) {
-        const newWidths = [...prev];
-        newWidths[index] = width;
-        return newWidths;
-      }
-      return prev;
-    });
-  };
 
   const openAddLocationModal = () => {
     setAddModalVisible(true);
@@ -71,8 +60,13 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
     });
   };
 
+  useEffect(()=>{
+    setUpdateLocationsTrigger(true);
+  }, [searchKey])
+
   const getTable = () => {
-    getAddressesData((jsonRes, status, error) => {
+    const payload={searchKey}
+    getAddressesData(payload, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           setUpdateLocationsTrigger(false);
@@ -89,16 +83,16 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
     });
   };
 
-  const handleLayoutUpdate = (index, cellWidth) => {
-    setWidths(prev => {
-      if (prev[index] < cellWidth) {
-        const newWidths = [...prev];
-        newWidths[index] = cellWidth;
-        return newWidths;
-      }
-      return prev;
-    });
-  };
+  // const handleLayoutUpdate = (index, cellWidth) => {
+  //   setWidths(prev => {
+  //     if (prev[index] < cellWidth) {
+  //       const newWidths = [...prev];
+  //       newWidths[index] = cellWidth;
+  //       return newWidths;
+  //     }
+  //     return prev;
+  //   });
+  // };
 
   const renderTableData = () => {
     const rows = [];
@@ -107,25 +101,12 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
         rows.push(
           <BOHTR key={index}>
             <BOHTD
-              onLayout={(event)=> handleLayoutUpdate(0, event.nativeEvent.layout.width)}
-              width={InitialWidths[0]}
-            >{item.number}</BOHTD>
-            <BOHTD 
-              onLayout={(event)=> handleLayoutUpdate(1, event.nativeEvent.layout.width)}
-              width={widths[1]}
-            >{item.street}</BOHTD>
-            <BOHTD 
-              onLayout={(event)=> handleLayoutUpdate(2, event.nativeEvent.layout.width)}
-              width={widths[2]}
-            >{item.plantation}</BOHTD>
-            <BOHTD 
-              onLayout={(event)=> handleLayoutUpdate(3, event.nativeEvent.layout.width)}
-              width={widths[3]}
-            >{item.property_name}</BOHTD>
-            <BOHTD 
-              onLayout={(event)=> handleLayoutUpdate(4, event.nativeEvent.layout.width)}
-              width={InitialWidths[4]}
-            >{item.property_type}</BOHTD>
+            //  onLayout={(event)=> handleLayoutUpdate(0, event.nativeEvent.layout.width)}
+             width={InitialWidths[0]}>{item.number}</BOHTD>
+            <BOHTD width={InitialWidths[1]}>{item.street}</BOHTD>
+            <BOHTD width={InitialWidths[2]}>{item.plantation}</BOHTD>
+            <BOHTD width={InitialWidths[3]}>{item.property_name}</BOHTD>
+            <BOHTD width={InitialWidths[4]}>{item.property_type}</BOHTD>
             <BOHTDIconBox
               width={InitialWidths[5]}
             >
@@ -169,19 +150,22 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
         <BOHToolbar>
           <BOHButton
             label="Add"
-            onPress={openAddLocationModal}
-          />
+            onPress={openAddLocationModal}/>
+          <BOHSearchBox
+            label="Search"
+            value={searchKey}
+            onChangeText={setSearchKey}/>
         </BOHToolbar>
         <BOHTable>
           <BOHTHead>
             <BOHTR>
-              <BOHTH width={widths[0]}>{'Number'}</BOHTH>
-              <BOHTH width={widths[1]}>{'Street'}</BOHTH>
-              <BOHTH width={widths[2]}>{'Plantation'}</BOHTH>
-              <BOHTH width={widths[3]}>{'Property name'}</BOHTH>
-              <BOHTH width={widths[4]}>{'Property type'}</BOHTH>
-              <BOHTH width={widths[5]}>{'Edit'}</BOHTH>
-              <BOHTH width={widths[6]}>{'DEL'}</BOHTH>
+              <BOHTH width={InitialWidths[0]}>{'Number'}</BOHTH>
+              <BOHTH width={InitialWidths[1]}>{'Street'}</BOHTH>
+              <BOHTH width={InitialWidths[2]}>{'Plantation'}</BOHTH>
+              <BOHTH width={InitialWidths[3]}>{'Property name'}</BOHTH>
+              <BOHTH width={InitialWidths[4]}>{'Property type'}</BOHTH>
+              <BOHTH width={InitialWidths[5]}>{'Edit'}</BOHTH>
+              <BOHTH width={InitialWidths[6]}>{'DEL'}</BOHTH>
             </BOHTR>
           </BOHTHead>
           <BOHTBody>
