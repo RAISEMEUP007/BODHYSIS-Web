@@ -1,29 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions } from 'react-native';
+import { TouchableOpacity, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { getAddressesData, deleteAddress } from '../../../api/AllAddress ';
-import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
+import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
-import { CommonContainer } from '../../../common/components/CustomLayout';
+import { BOHButton, BOHToolbar } from '../../../common/components/bohtoolbar';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
 
 import AddLocationModal from './AddLocationModal';
-import { BOHButton, BOHToolbar } from '../../../common/components/bohtoolbar';
 
 const LocationManager = ({ navigation, openMarketingMenu }) => {
   const screenHeight = Dimensions.get('window').height;
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
-
+  
   const [tableData, setTableData] = useState([]);
   const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(true);
+  const InitialWidths = [76, 61, 90, 120, 113, 47, 46];
+  const [widths, setWidths] = useState([0, 0, 0, 0, 0, 0, 0]);
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
+
+  const updateWidth = (index, width) => {
+    setWidths(prev => {
+      if (!prev[index] || prev[index] < width) {
+        const newWidths = [...prev];
+        newWidths[index] = width;
+        return newWidths;
+      }
+      return prev;
+    });
+  };
 
   const openAddLocationModal = () => {
     setAddModalVisible(true);
@@ -77,18 +89,46 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
     });
   };
 
+  const handleLayoutUpdate = (index, cellWidth) => {
+    setWidths(prev => {
+      if (prev[index] < cellWidth) {
+        const newWidths = [...prev];
+        newWidths[index] = cellWidth;
+        return newWidths;
+      }
+      return prev;
+    });
+  };
+
   const renderTableData = () => {
     const rows = [];
     if (tableData.length > 0) {
       tableData.map((item, index) => {
         rows.push(
           <BOHTR key={index}>
-            <BOHTD>{item.number}</BOHTD>
-            <BOHTD>{item.street}</BOHTD>
-            <BOHTD>{item.plantation}</BOHTD>
-            <BOHTD>{item.property_name}</BOHTD>
-            <BOHTD>{item.property_type}</BOHTD>
-            <BOHTDIconBox>
+            <BOHTD
+              onLayout={(event)=> handleLayoutUpdate(0, event.nativeEvent.layout.width)}
+              width={InitialWidths[0]}
+            >{item.number}</BOHTD>
+            <BOHTD 
+              onLayout={(event)=> handleLayoutUpdate(1, event.nativeEvent.layout.width)}
+              width={widths[1]}
+            >{item.street}</BOHTD>
+            <BOHTD 
+              onLayout={(event)=> handleLayoutUpdate(2, event.nativeEvent.layout.width)}
+              width={widths[2]}
+            >{item.plantation}</BOHTD>
+            <BOHTD 
+              onLayout={(event)=> handleLayoutUpdate(3, event.nativeEvent.layout.width)}
+              width={widths[3]}
+            >{item.property_name}</BOHTD>
+            <BOHTD 
+              onLayout={(event)=> handleLayoutUpdate(4, event.nativeEvent.layout.width)}
+              width={InitialWidths[4]}
+            >{item.property_type}</BOHTD>
+            <BOHTDIconBox
+              width={InitialWidths[5]}
+            >
               <TouchableOpacity
                 onPress={() => {
                   editLocation(item);
@@ -97,7 +137,9 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
             </BOHTDIconBox>
-            <BOHTDIconBox>
+            <BOHTDIconBox
+              width={InitialWidths[6]}
+            >
               <TouchableOpacity
                 onPress={() => {
                   removeLocation(item.id);
@@ -133,13 +175,13 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
         <BOHTable>
           <BOHTHead>
             <BOHTR>
-              <BOHTH>{'Number'}</BOHTH>
-              <BOHTH>{'Street'}</BOHTH>
-              <BOHTH>{'Plantation'}</BOHTH>
-              <BOHTH>{'Property name'}</BOHTH>
-              <BOHTH>{'Property type'}</BOHTH>
-              <BOHTH>{'Edit'}</BOHTH>
-              <BOHTH>{'DEL'}</BOHTH>
+              <BOHTH width={widths[0]}>{'Number'}</BOHTH>
+              <BOHTH width={widths[1]}>{'Street'}</BOHTH>
+              <BOHTH width={widths[2]}>{'Plantation'}</BOHTH>
+              <BOHTH width={widths[3]}>{'Property name'}</BOHTH>
+              <BOHTH width={widths[4]}>{'Property type'}</BOHTH>
+              <BOHTH width={widths[5]}>{'Edit'}</BOHTH>
+              <BOHTH width={widths[6]}>{'DEL'}</BOHTH>
             </BOHTR>
           </BOHTHead>
           <BOHTBody>
