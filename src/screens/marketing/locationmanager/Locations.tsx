@@ -3,14 +3,16 @@ import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimension
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { getAddressesData, deleteAddress } from '../../../api/AllAddress ';
+import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
+import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
+import { CommonContainer } from '../../../common/components/CustomLayout';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
-import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
-import { LocationsStyle } from './styles/LocationsStyle';
 import AddLocationModal from './AddLocationModal';
+import { BOHButton, BOHToolbar } from '../../../common/components/bohtoolbar';
 
 const LocationManager = ({ navigation, openMarketingMenu }) => {
   const screenHeight = Dimensions.get('window').height;
@@ -80,23 +82,13 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
     if (tableData.length > 0) {
       tableData.map((item, index) => {
         rows.push(
-          <View key={index} style={styles.tableRow}>
-            <View style={[styles.cell, {width:78}]}>
-              <Text>{item.number}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.street}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.plantation}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.property_name}</Text>
-            </View>
-            <View style={[styles.cell, {width:120}]}>
-              <Text>{item.property_type}</Text>
-            </View>
-            <View style={[styles.IconCell]}>
+          <BOHTR key={index}>
+            <BOHTD>{item.number}</BOHTD>
+            <BOHTD>{item.street}</BOHTD>
+            <BOHTD>{item.plantation}</BOHTD>
+            <BOHTD>{item.property_name}</BOHTD>
+            <BOHTD>{item.property_type}</BOHTD>
+            <BOHTDIconBox>
               <TouchableOpacity
                 onPress={() => {
                   editLocation(item);
@@ -104,8 +96,8 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
-            </View>
-            <View style={[styles.IconCell]}>
+            </BOHTDIconBox>
+            <BOHTDIconBox>
               <TouchableOpacity
                 onPress={() => {
                   removeLocation(item.id);
@@ -113,8 +105,8 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
               >
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />
               </TouchableOpacity>
-            </View>
-          </View>
+            </BOHTDIconBox>
+          </BOHTR>
         );
       });
     } else {
@@ -131,26 +123,29 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
       }}
       screenName={'Location Manager'}
     >
-      <View style={styles.container}>
-        <View style={styles.toolbar}>
-          <TouchableHighlight style={styles.button} onPress={openAddLocationModal}>
-            <Text style={styles.buttonText}>Add</Text>
-          </TouchableHighlight>
-        </View>
-        <View style={styles.tableContainer}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.columnHeader, {width:78}]}>{'Number'}</Text>
-            <Text style={[styles.columnHeader]}>{'Street'}</Text>
-            <Text style={[styles.columnHeader]}>{'Plantation'}</Text>
-            <Text style={[styles.columnHeader]}>{'Property name'}</Text>
-            <Text style={[styles.columnHeader, {width:120}]}>{'Property type'}</Text>
-            <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
-            <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
-          </View>
-          <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
+      <CommonContainer>
+        <BOHToolbar>
+          <BOHButton
+            label="Add"
+            onPress={openAddLocationModal}
+          />
+        </BOHToolbar>
+        <BOHTable>
+          <BOHTHead>
+            <BOHTR>
+              <BOHTH>{'Number'}</BOHTH>
+              <BOHTH>{'Street'}</BOHTH>
+              <BOHTH>{'Plantation'}</BOHTH>
+              <BOHTH>{'Property name'}</BOHTH>
+              <BOHTH>{'Property type'}</BOHTH>
+              <BOHTH>{'Edit'}</BOHTH>
+              <BOHTH>{'DEL'}</BOHTH>
+            </BOHTR>
+          </BOHTHead>
+          <BOHTBody>
             {renderTableData()}
-          </ScrollView>
-        </View>
+          </BOHTBody>
+        </BOHTable>
 
         <AddLocationModal
           isModalVisible={isAddModalVisible}
@@ -158,11 +153,9 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
           setUpdateLocationsTrigger={setUpdateLocationsTrigger}
           closeModal={closeAddLocationModal}
         />
-      </View>
+      </CommonContainer>
     </BasicLayout>
   );
 };
-
-const styles = LocationsStyle;
 
 export default LocationManager;
