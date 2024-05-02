@@ -506,7 +506,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     submitReservation();
   };
 
-  console.log(selectedDiscountCode);
   const submitReservation = () => {
     setIsLoading(true);
 
