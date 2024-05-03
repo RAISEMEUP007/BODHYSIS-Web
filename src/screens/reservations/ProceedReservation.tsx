@@ -100,6 +100,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   };
 
   const addReservationItem = async (productFamily, quantity, extras) => {
+    console.log(productFamily);
     const arraysAreEqual = (arr1, arr2) => {
       if (arr1.length !== arr2.length) {
         return false;
@@ -129,8 +130,8 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
           return item;
         });
 
-        const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, updatedEquipmentData);
-        saveReservationItems(cacluatedPricedData, ()=>{
+        const caclcuatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, updatedEquipmentData);
+        saveReservationItems(caclcuatedPricedData, ()=>{
           setUpdateCount(prev => prev + 1);
         })
       });
@@ -140,18 +141,19 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         id: parseInt(uuidv4(), 16),
         reservation_id: reservationInfo.id,
         family_id: productFamily.id,
-        price_group_id: productFamily.price_group_id,
+        price_group_id: productFamily?.lines[0]?.price_group_id ?? 0,
         quantity: quantity,
         extras: extras,
       }
       const newData = [...equipmentData, newItem];
-      const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
-      saveReservationItems(cacluatedPricedData, ()=>{
+      const caclcuatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
+      console.log(caclcuatedPricedData);
+      saveReservationItems(caclcuatedPricedData, ()=>{
         setUpdateCount(prev => prev + 1);
       })
     }
   }
-
+console.log(equipmentData);
   const updateReservationItem = async (oldFamily, newFamily, quantity, extras) => {
     const existingProduct = equipmentData.find(item => item.family_id === newFamily.id);
 
@@ -176,8 +178,8 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         return item;
       });
     
-      const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
-      saveReservationItems(cacluatedPricedData, (jsonRes)=>{
+      const caclcuatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
+      saveReservationItems(caclcuatedPricedData, (jsonRes)=>{
         setUpdateCount(prev => prev + 1);
       })
     }
@@ -347,6 +349,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   // };
 
   const calculatePricedEquipmentData = async (tableId, equipmentData) => {
+    console.log(equipmentData);
     const pricedEquipmentData = await Promise.all(equipmentData.map(async (item) => {
       const payload = {
         tableId,
@@ -356,7 +359,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       const rows = await response.json();
 
       const reversedHeaderData = headerData.slice().reverse();
-      const updatedReversedHeaderData = reversedHeaderData.map((item) => {
+      const updatedReversedHeaderData = headerData.map((item) => {
         const value = rows.find((row) => row.point_id === item.id)?.value || 0;
         const pricePMS = value/item.milliseconds;
         const pricePH = value / (item.milliseconds / (1000 * 60 * 60));
@@ -367,10 +370,11 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       const diff = new Date(reservationInfo.end_date).getTime() - new Date(reservationInfo.start_date).getTime();
 
       const basedonPoint  = updatedReversedHeaderData.find((item) => {
-        if(item.value>0 && item.milliseconds <= diff){
+        if(item.value>0 && item.milliseconds >= diff){
           return item;
         }
       });
+      console.log(basedonPoint);
 
       let price = 0;
       if(basedonPoint){

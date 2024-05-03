@@ -71,7 +71,6 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
     }
   }, [details]);
 
-  console.log(inputValues);
   useEffect(()=>{
     if(details && details.brand_id){
       getBrandDetail({id:details.brand_id}, (jsonRes, status)=>{

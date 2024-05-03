@@ -441,7 +441,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
         const rows = await response.json();
 
         const reversedHeaderData = headerData.slice().reverse();
-        const updatedReversedHeaderData = reversedHeaderData.map((item) => {
+        const updatedReversedHeaderData = headerData.map((item) => {
           const value = rows.find((row) => row.point_id === item.id)?.value || 0;
           const pricePMS = value / item.milliseconds;
           const pricePH = value / (item.milliseconds / (1000 * 60 * 60));
@@ -452,7 +452,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
         const diff = endDate.getTime() - startDate.getTime();
 
         const basedonPoint = updatedReversedHeaderData.find((item) => {
-          if (item.value > 0 && item.milliseconds <= diff) {
+          if (item.value > 0 && item.milliseconds >= diff) {
             return item;
           }
         });
