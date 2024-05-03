@@ -20,10 +20,10 @@ const LabeledTextInput = ({
 }: Props & TextInputProps) => {
 
   return (
-    <View style={[containerStyle]}>
+    <View style={[containerStyle, {width}]}>
       <Text style={[styles.label, labelStyle]}>{label}</Text>
       <TextInput
-        style={[styles.input, {width:width?width:'auto'}, inputStyle]}
+        style={[styles.input, {width:'!00%'}, inputStyle]}
         placeholderTextColor="#ccc"
         {...otherTextInputProps}
       />

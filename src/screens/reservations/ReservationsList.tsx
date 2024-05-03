@@ -258,7 +258,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
               /> */}
               <Picker
                 style={[styles.searchInput]}
-                selectedValue={searchOptions.stage}
+                selectedValue={searchOptions.stage || ''}
                 onValueChange={val=>changeSearchOptions('stage', val)}
               >
                 <Picker.Item label={''} value={null} />

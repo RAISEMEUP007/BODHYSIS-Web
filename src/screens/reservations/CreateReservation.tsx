@@ -430,6 +430,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   }, [selectedPriceTable, startDate, endDate, headerData, itemOperations]);
 
   const calculatePricedEquipmentData = async (tableId) => {
+    console.log(equipmentData);
     const pricedEquipmentData = await Promise.all(
       equipmentData.map(async (item) => {
         const payload = {
@@ -595,7 +596,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       </View>
     );
   };
-  
+console.log(selectedPriceTable);
   const renderInitial = () => {
     return (
       <BasicLayout
@@ -621,7 +622,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
               >
                 <View
                   style={{
-                    width: 300,
+                    width: 280,
                     marginTop: 53,
                     marginRight: 50,
                     marginBottom: 15,
@@ -662,10 +663,14 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                     <Text
                       style={{
                         marginLeft: 20,
-                        color: selectedPriceTable && selectedPriceTable.start_date ? 'black' : '#999',
+                        color: selectedPriceTable && startDate ? 'black' : '#999',
                       }}
                     >
-                      {selectedPriceTable?.start_date ?? 'undefined'}
+                      {startDate?startDate.toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                      }):'undefined'}
                     </Text>
                   </View>
                   <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
@@ -673,10 +678,14 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                     <Text
                       style={{
                         marginLeft: 20,
-                        color: selectedPriceTable && selectedPriceTable.start_date ? 'black' : '#999',
+                        color: selectedPriceTable && endDate ? 'black' : '#999',
                       }}
                     >
-                      {selectedPriceTable?.end_date ?? 'undefined'}
+                      {endDate?endDate.toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                      }):'undefined'}
                     </Text>
                   </View>
                 </View>
