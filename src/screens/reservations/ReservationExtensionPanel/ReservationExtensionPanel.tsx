@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     paddingHorizontal:30,
     paddingTop:6,
     paddingBottom:12,
-    marginLeft:16,
+    // minWidth: 550,
     marginBottom: 10,
   },
   tabBar: {

@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, TextInputProps } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TextInputProps, DimensionValue } from 'react-native';
 import { TextSmallSize } from '../../constants/Fonts';
 
 interface Props {
   label: string;
-  width?: number;
+  width?: DimensionValue;
   containerStyle?: object;
   labelStyle?: object;
   inputStyle?: object;

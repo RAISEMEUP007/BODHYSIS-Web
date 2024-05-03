@@ -6,8 +6,8 @@ export const reservationMainInfoStyle = StyleSheet.create({
   reservationRow: {
     flexDirection: 'row',
     flexWrap:'wrap',
-    marginVertical: 10,
-    // paddingVertical: 8,
+    marginVertical: 6,
+    // paddingVertical: 4,
   },
   input:{
     boxSizing: 'border-box',
@@ -24,10 +24,8 @@ export const reservationMainInfoStyle = StyleSheet.create({
     padding:8,
     paddingVertical:10,
     fontSize:14,
-    width:300,
+    width:200,
     borderWidth:1, 
     borderColor:'#808080',
-    // height: 37,
-    marginRight: 30,
   },
 });

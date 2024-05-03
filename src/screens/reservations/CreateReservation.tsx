@@ -27,11 +27,9 @@ import { createReservation, verifyQauntity } from '../../api/Reservation';
 import { getHeaderData, getPriceDataByGroup, getPriceGroupValue } from '../../api/Price';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
-import { DropdownData } from '../../common/components/CommonDropdown/CommonDropdown';
 import { BrandType } from '../../types/BrandType';
 import { CustomerType } from '../../types/CustomerTypes';
-import { LocationType } from '../../types/LocationType';
-import { CommonSelectDropdown } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
+import { CommonSelectDropdown, DropdownData } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
 import AddCustomerModal from '../customer/customers/AddCustomerModal';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { msgStr } from '../../common/constants/Message';
@@ -220,7 +218,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       }
     });
   }, [])
-
   
   const discountCodesDropdownData = useMemo(() => {
     if (!discountCodes?.length) {
@@ -612,258 +609,253 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
           backgroundColor:'#f7f7f7',
         }}
       >
-        <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
-          <View style={styles.outterContainer}>
-            <View
-              style={{ flexDirection: 'row', zIndex: 10 }}
-              onLayout={(event) => {
-                const { width } = event.nativeEvent.layout;
-                setContentWidth(width);
-              }}
-            >
+        <div style={{overflow:'auto', padding:'0 30px'}}>
+          <div style={{width:'fit-content', margin:'auto'}}>
+            <View style={styles.outterContainer}>
               <View
-                style={{
-                  width: 400,
-                  marginTop: 53,
-                  marginRight: 50,
-                  marginBottom: 15,
-                  borderWidth: 1,
-                  borderColor: '#808080',
+                style={{ flexDirection: 'row', zIndex: 10 }}
+                onLayout={(event) => {
+                  const { width } = event.nativeEvent.layout;
+                  // setContentWidth(width);
                 }}
               >
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    marginVertical: 8,
-                    marginHorizontal: 16,
-                    marginTop: 18,
-                  }}
-                >
-                  Based off price logic
-                </Text>
-                <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
-                  <Text>{'Brand:'}</Text>
-                  <Text style={{ marginLeft: 20, color: selectedPriceLogic ? 'black' : '#999' }}>
-                    {selectedPriceLogic?.brand?.brand ?? 'Not selected'}
-                  </Text>
-                </View>
-                <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
-                  <Text>{'Season:'}</Text>
-                  <Text style={{ marginLeft: 20, color: selectedPriceLogic ? 'black' : '#999' }}>
-                    {selectedPriceLogic?.season?.season ?? 'Not selected'}
-                  </Text>
-                </View>
-                <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
-                  <Text>{'Price Table:'}</Text>
-                  <Text style={{ marginLeft: 20, color: selectedPriceTable ? '#ff4d4d' : '#999' }}>
-                    {selectedPriceTable ? selectedPriceTable.table_name : 'No available'}
-                  </Text>
-                </View>
-                <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
-                  <Text>{'Start date:'}</Text>
-                  <Text
-                    style={{
-                      marginLeft: 20,
-                      color: selectedPriceTable && selectedPriceTable.start_date ? 'black' : '#999',
-                    }}
-                  >
-                    {selectedPriceTable?.start_date ?? 'undefined'}
-                  </Text>
-                </View>
-                <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
-                  <Text>{'End date:'}</Text>
-                  <Text
-                    style={{
-                      marginLeft: 20,
-                      color: selectedPriceTable && selectedPriceTable.start_date ? 'black' : '#999',
-                    }}
-                  >
-                    {selectedPriceTable?.end_date ?? 'undefined'}
-                  </Text>
-                </View>
-              </View>
-              <View>
                 <View
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'flex-end',
-                    justifyContent: 'flex-end',
+                    width: 300,
+                    marginTop: 53,
+                    marginRight: 50,
+                    marginBottom: 15,
+                    borderWidth: 1,
+                    borderColor: '#808080',
                   }}
                 >
-                  <CommonButton
-                    width={177}
-                    onPressWhileDisabled={() => {
-                      if (!customerId) showAlert('warning', 'Please select a customer.');
-                      else if (!brandId) showAlert('warning', 'Please select a brand.');
-                      else if (!startDate) showAlert('warning', 'Please select Pick Up.');
-                      else if (!endDate) showAlert('warning', 'Please select Drop off.');
-                      else if (!selectedPriceTable)
-                        showAlert('warning', 'No available Price table. Can not set price.');
-                      else if (!equipmentData.length) showAlert('warning', 'Please add an item.');
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      marginVertical: 8,
+                      marginHorizontal: 16,
+                      marginTop: 18,
                     }}
-                    onPress={() => {
-                      CreateReservationHandler();
+                  >
+                    Based off price logic
+                  </Text>
+                  <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
+                    <Text>{'Brand:'}</Text>
+                    <Text style={{ marginLeft: 20, color: selectedPriceLogic ? 'black' : '#999' }}>
+                      {selectedPriceLogic?.brand?.brand ?? 'Not selected'}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
+                    <Text>{'Season:'}</Text>
+                    <Text style={{ marginLeft: 20, color: selectedPriceLogic ? 'black' : '#999' }}>
+                      {selectedPriceLogic?.season?.season ?? 'Not selected'}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
+                    <Text>{'Price Table:'}</Text>
+                    <Text style={{ marginLeft: 20, color: selectedPriceTable ? '#ff4d4d' : '#999' }}>
+                      {selectedPriceTable ? selectedPriceTable.table_name : 'No available'}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
+                    <Text>{'Start date:'}</Text>
+                    <Text
+                      style={{
+                        marginLeft: 20,
+                        color: selectedPriceTable && selectedPriceTable.start_date ? 'black' : '#999',
+                      }}
+                    >
+                      {selectedPriceTable?.start_date ?? 'undefined'}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
+                    <Text>{'End date:'}</Text>
+                    <Text
+                      style={{
+                        marginLeft: 20,
+                        color: selectedPriceTable && selectedPriceTable.start_date ? 'black' : '#999',
+                      }}
+                    >
+                      {selectedPriceTable?.end_date ?? 'undefined'}
+                    </Text>
+                  </View>
+                </View>
+                <View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'flex-end',
+                      justifyContent: 'flex-end',
                     }}
-                    label={'Create Reservation'}
-                    disabledConfig={{ backgroundColor: Colors.Neutrals.DARK, disabled: !valid }}
-                    backgroundColor={Colors.Secondary.GREEN}
-                    type={'rounded'}
-                    textColor={Colors.Neutrals.WHITE}
-                    containerStyle={
-                      {
-                        // marginRight: 20,
+                  >
+                    <CommonButton
+                      width={177}
+                      onPressWhileDisabled={() => {
+                        if (!customerId) showAlert('warning', 'Please select a customer.');
+                        else if (!brandId) showAlert('warning', 'Please select a brand.');
+                        else if (!startDate) showAlert('warning', 'Please select Pick Up.');
+                        else if (!endDate) showAlert('warning', 'Please select Drop off.');
+                        else if (!selectedPriceTable)
+                          showAlert('warning', 'No available Price table. Can not set price.');
+                        else if (!equipmentData.length) showAlert('warning', 'Please add an item.');
+                      }}
+                      onPress={() => {
+                        CreateReservationHandler();
+                      }}
+                      label={'Create Reservation'}
+                      disabledConfig={{ backgroundColor: Colors.Neutrals.DARK, disabled: !valid }}
+                      backgroundColor={Colors.Secondary.GREEN}
+                      type={'rounded'}
+                      textColor={Colors.Neutrals.WHITE}
+                      containerStyle={
+                        {
+                          // marginRight: 20,
+                        }
                       }
-                    }
-                  />
-                </View>
-                <View style={styles.reservationRow}>
-                  <TouchableHighlight style={styles.button} onPress={openAddCustomerModal}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                      <FontAwesome5 name="plus" size={14} color="white" style={{ marginTop: 3 }} />
-                      <Text style={styles.buttonText}>Add Customer</Text>
-                    </View>
-                  </TouchableHighlight>
-                  <CommonSelectDropdown
-                    containerStyle={{
-                      marginRight: 40,
-                    }}
-                    width={350}
-                    onItemSelected={(item) => {
-                      selectCustomerId(item.value.id);
-                    }}
-                    data={customersDropdownData}
-                    placeholder="Select A Customer"
-                    title={'Customers'}
-                    defaultValue={defaultCustomer}
-                  />
-                </View>
-                <View style={styles.reservationRow}>
-                  <CommonSelectDropdown
-                    containerStyle={
-                      {
+                    />
+                  </View>
+                  <View style={styles.reservationRow}>
+                    <TouchableHighlight style={styles.button} onPress={openAddCustomerModal}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <FontAwesome5 name="plus" size={14} color="white" style={{ marginTop: 3 }} />
+                        <Text style={styles.buttonText}>Add Customer</Text>
+                      </View>
+                    </TouchableHighlight>
+                    <CommonSelectDropdown
+                      containerStyle={{
                         marginRight: 40,
-                      }
-                    }
-                    width={350}
-                    onItemSelected={(item) => {
-                      console.log(item);
-                      selectCustomerAddressId(item.value.address_id);
-                    }}
-                    data={customerAddressDropdownData}
-                    placeholder="Select An Address"
-                    title={'Delivery Address'}
-                    defaultValue={customerAddressId}
-                  />
-                </View>
-                <View style={styles.reservationRow}>
-                  <CommonSelectDropdown
-                    containerStyle={{
-                      marginRight: 40,
-                      marginTop: 5,
-                    }}
-                    width={350}
-                    onItemSelected={(item) => {
-                      selectDiscountCode(item.value);
-                    }}
-                    data={discountCodesDropdownData}
-                    placeholder="Select A Code"
-                    title={'Discount code'}
-                    titleStyle={{marginBottom:6, color:"#555555", fontSize:14}}
-                  />
-                  <CommonSelectDropdown
-                    containerStyle={
-                      {
-                        // marginRight: 40,
-                      }
-                    }
-                    width={350}
-                    onItemSelected={(item) => {
-                      selectBrandId(item.value.id);
-                    }}
-                    data={brandsDropdownData}
-                    placeholder="Select A Brand"
-                    title={'Brands'}
-                  />
-                </View>
-                <View style={[styles.reservationRow, {zIndex:10}]}>
-                  <View style={{marginRight:40}}>
-                    <Text style={{marginBottom:10}}>{'Pick Up'}</Text>
-                    {Platform.OS == 'web' && renderDatePicker(startDate, (date)=>setStartdate(date))}
+                      }}
+                      width={250}
+                      onItemSelected={(item) => {
+                        selectCustomerId(item.value.id);
+                      }}
+                      data={customersDropdownData}
+                      placeholder="Select A Customer"
+                      title={'Customers'}
+                      defaultValue={defaultCustomer}
+                    />
                   </View>
-                  <View style={{ marginRight: 0 }}>
-                    <Text style={{ marginBottom: 10 }}>{'Drop Off'}</Text>
-                    {Platform.OS == 'web' &&
-                      renderEndDatePicker(endDate, (date) => setEnddate(date), startDate)}
-                    {Platform.OS != 'web' && (
-                      <TextInput
-                        editable={false}
-                        style={styles.input}
-                        value={endDate ? endDate.toDateString() : ''}
-                      ></TextInput>
-                    )}
+                  <View style={styles.reservationRow}>
+                    <CommonSelectDropdown
+                      containerStyle={
+                        {
+                          marginRight: 40,
+                        }
+                      }
+                      width={"100%"}
+                      onItemSelected={(item) => {
+                        console.log(item);
+                        selectCustomerAddressId(item.value.address_id);
+                      }}
+                      data={customerAddressDropdownData}
+                      placeholder="Select An Address"
+                      title={'Delivery Address'}
+                      defaultValue={customerAddressId}
+                    />
                   </View>
-                </View>
-
-                {/* <View style={[styles.reservationRow, { zIndex: 10 }]}>
-                </View> */}
-                {/* <View style={[styles.reservationRow, {marginTop:16}]}>
-                  <Text style={{marginRight:20, fontSize:14}}>{'Price Table:'}</Text>
-                  <Text style={{marginRight:20, fontSize:15, color:(selectedPriceTable ? '#ff4d4d': '#999')}}>{selectedPriceTable ? selectedPriceTable.table_name : 'No available table'}</Text>
-                </View> */}
-                <View style={[styles.reservationRow, { width: 740 }]}>
-                  <Slots
-                    onSelect={(item) => {
-                      setEnddate(new Date(new Date(startDate).getTime() + item.milliseconds));
-                    }}
-                    items={headerData}
-                  />
+                  <View style={styles.reservationRow}>
+                    <CommonSelectDropdown
+                      containerStyle={{
+                        marginRight: 40,
+                        marginTop: 5,
+                      }}
+                      width={250}
+                      onItemSelected={(item) => {
+                        selectDiscountCode(item.value);
+                      }}
+                      data={discountCodesDropdownData}
+                      placeholder="Select A Code"
+                      title={'Discount code'}
+                      titleStyle={{marginBottom:6, color:"#555555", fontSize:14}}
+                    />
+                    <CommonSelectDropdown
+                      containerStyle={
+                        {
+                          // marginRight: 40,
+                        }
+                      }
+                      width={250}
+                      onItemSelected={(item) => {
+                        selectBrandId(item.value.id);
+                      }}
+                      data={brandsDropdownData}
+                      placeholder="Select A Brand"
+                      title={'Brands'}
+                    />
+                  </View>
+                  <View style={[styles.reservationRow, {zIndex:10}]}>
+                    <View style={{marginRight:40}}>
+                      <Text style={{marginBottom:10}}>{'Pick Up'}</Text>
+                      {Platform.OS == 'web' && renderDatePicker(startDate, (date)=>setStartdate(date))}
+                    </View>
+                    <View style={{ marginRight: 0 }}>
+                      <Text style={{ marginBottom: 10 }}>{'Drop Off'}</Text>
+                      {Platform.OS == 'web' &&
+                        renderEndDatePicker(endDate, (date) => setEnddate(date), startDate)}
+                      {Platform.OS != 'web' && (
+                        <TextInput
+                          editable={false}
+                          style={styles.input}
+                          value={endDate ? endDate.toDateString() : ''}
+                        ></TextInput>
+                      )}
+                    </View>
+                  </View>
+                  <View style={[styles.reservationRow, { width: 550 }]}>
+                    <Slots
+                      onSelect={(item) => {
+                        setEnddate(new Date(new Date(startDate).getTime() + item.milliseconds));
+                      }}
+                      items={headerData}
+                    />
+                  </View>
                 </View>
               </View>
-            </View>
-            <View
-              style={[
-                styles.reservationRow,
-                { marginTop: 10, alignItems: 'flex-end', justifyContent: 'space-between' },
-              ]}
-            >
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={{ marginRight: 8 }}>Subtotal</Text>
-                <Text style={{ marginRight: 24 }}>
-                  {subTotal.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
-                </Text>
-                <Text style={{ marginRight: 8 }}>Tax</Text>
-                <Text>
-                  {taxAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
-                </Text>
-              </View>
-              <TouchableHighlight
-                style={[styles.addItemButton]}
-                onPress={openAddReservationItemModal}
+              <View
+                style={[
+                  styles.reservationRow,
+                  { marginTop: 10, alignItems: 'flex-end', justifyContent: 'space-between' },
+                ]}
               >
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <FontAwesome5 name="plus" size={14} color="white" style={{ marginTop: 3 }} />
-                  <Text style={styles.buttonText}>Add Items</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{ marginRight: 8 }}>Subtotal</Text>
+                  <Text style={{ marginRight: 24 }}>
+                    {subTotal.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                  </Text>
+                  <Text style={{ marginRight: 8 }}>Tax</Text>
+                  <Text>
+                    {taxAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                  </Text>
                 </View>
-              </TouchableHighlight>
+                <TouchableHighlight
+                  style={[styles.addItemButton]}
+                  onPress={openAddReservationItemModal}
+                >
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <FontAwesome5 name="plus" size={14} color="white" style={{ marginTop: 3 }} />
+                    <Text style={styles.buttonText}>Add Items</Text>
+                  </View>
+                </TouchableHighlight>
+              </View>
+              <EquipmentsTable
+                items={equipmentData}
+                width={"100%"}
+                onEdit={(item, index) => {
+                  editReservationItem(item, index);
+                }}
+                onDelete={(item, index) => {
+                  const updatedEquipmentData = [
+                    ...equipmentData.slice(0, index),
+                    ...equipmentData.slice(index + 1),
+                  ];
+                  setEquipmentData(updatedEquipmentData);
+                }}
+                isExtra={true}
+                extraWith={200}
+              />
             </View>
-            <EquipmentsTable
-              items={equipmentData}
-              width={contentWidth}
-              onEdit={(item, index) => {
-                editReservationItem(item, index);
-              }}
-              onDelete={(item, index) => {
-                const updatedEquipmentData = [
-                  ...equipmentData.slice(0, index),
-                  ...equipmentData.slice(index + 1),
-                ];
-                setEquipmentData(updatedEquipmentData);
-              }}
-              isExtra={true}
-              extraWith={300}
-            />
-          </View>
-        </ScrollView>
+          </div>
+        </div>
         <AddCustomerModal
           isModalVisible={isAddModalVisible}
           Customer={selectedCustomer}
