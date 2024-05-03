@@ -245,7 +245,7 @@ const AddReservationItemModal = ({
               <View style={{flexDirection:'row', marginTop:8, flexWrap:'wrap'}}>
                 {extras.map((item, index)=>{
                   return (
-                    <Pressable key={index} style={{ flexDirection: 'row', alignItems: 'center', marginRight: 12, marginBottom:8 }} onPress={() => selectExtras(item)}>
+                    <Pressable key={index} style={{ flexDirection: 'row', alignItems: 'center', marginRight: 16, marginBottom:8 }} onPress={() => selectExtras(item)}>
                       <CheckBox value={selectedExtras.includes(item)} style={{ marginRight: 6 }} />
                       <Text style={[styles.label, { color: '#333' }]}>{item.name}</Text>
                     </Pressable>
