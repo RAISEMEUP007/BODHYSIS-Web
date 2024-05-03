@@ -2,19 +2,20 @@ import React, { ReactNode } from 'react';
 import { Text, StyleSheet, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
 import { TextSmallSize, TextdefaultSize } from '../../constants/Fonts';
 
-interface BOHSearchBoxProps extends TextInputProps {
+interface BOHTlbrSearchBoxProps extends TextInputProps {
   label?: string;
   boxStyle?: ViewStyle;
   labelStyle?: TextStyle;
+  width?: number;
 }
 
-const BOHSearchBox: React.FC<BOHSearchBoxProps> = ({ label, boxStyle, labelStyle, style, ...rest }) => {
+const BOHTlbrSearchBox: React.FC<BOHTlbrSearchBoxProps> = ({ label, boxStyle, labelStyle, width, style, ...rest }) => {
   return (
     <View style={[styles.searchBox, boxStyle]}>
-      <Text style={[styles.searchLabel, labelStyle]}>{label}</Text>
+      {label && <Text style={[styles.searchLabel, labelStyle]}>{label}</Text>}
       <TextInput
         {...rest}
-        style={[styles.searchInput, style]}
+        style={[styles.searchInput, width && {width:width}, style]}
       />
     </View>
   );
@@ -24,10 +25,11 @@ const styles = StyleSheet.create({
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     marginLeft: 25,
   },
   searchLabel: {
-    marginHorizontal: 10,
+    marginRight: 10,
     fontSize: TextdefaultSize,
   },
   searchInput: {
@@ -39,8 +41,7 @@ const styles = StyleSheet.create({
     borderColor: '#999',
     borderRadius: 5,
     fontSize: TextSmallSize,
-    width: 250,
   },
 });
 
-export default BOHSearchBox;
+export default BOHTlbrSearchBox;

@@ -6,12 +6,15 @@ import { BasicLayout, CommonContainer } from '../../../../common/components/Cust
 import { BOHTable, BOHTHead, BOHTBody, BOHTR, BOHTH, BOHTD } from '../../../../common/components/bohtable';
 import { msgStr } from '../../../../common/constants/Message';
 import BOHTDInput from '../../../../common/components/bohtable/BOHTDInput';
+import { BOHButton, BOHTlbrSearchPicker, BOHToolbar } from '../../../../common/components/bohtoolbar';
 
 const DisplayGroupManager = ({ navigation, openInventory }) => {
 
   const { showAlert } = useAlertModal();
 
   const [tableData, setTableData] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [searchCategory, setSearchCategory] = useState('');
   const widths = [200, 240, 100];
 
   const getTable = () => {
@@ -19,6 +22,8 @@ const DisplayGroupManager = ({ navigation, openInventory }) => {
       switch (status) {
         case 200:
           setTableData(jsonRes);
+          const categories = [...new Set(jsonRes.map(item => item.category))];
+          setCategories(categories);
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -66,20 +71,22 @@ const DisplayGroupManager = ({ navigation, openInventory }) => {
     const rows = [];
     if (tableData.length > 0) {
       tableData.map((item, index) => {
-        rows.push(
-          <BOHTR key={index}>
-            <BOHTD width={widths[0]}>{item.category}</BOHTD>
-            <BOHTD width={widths[1]}>{item.display_name}</BOHTD>
-            <BOHTDInput 
-              width={widths[2]}
-              keyboardType="numeric"
-              value={item.order_index || ''}
-              onChangeText={(newVal) => {
-                updateValue(index, item.display_name, newVal, item.order_index);
-              }}
-            />
-          </BOHTR>
-        );
+        if (searchCategory === '' || item.category === searchCategory) {
+          rows.push(
+            <BOHTR key={index}>
+              <BOHTD width={widths[0]}>{item.category}</BOHTD>
+              <BOHTD width={widths[1]}>{item.display_name}</BOHTD>
+              <BOHTDInput 
+                width={widths[2]}
+                keyboardType="numeric"
+                value={item.order_index || ''}
+                onChangeText={(newVal) => {
+                  updateValue(index, item.display_name, newVal, item.order_index);
+                }}
+              />
+            </BOHTR>
+          );
+        }
       });
     }
     return <>{rows}</>;
@@ -94,11 +101,19 @@ const DisplayGroupManager = ({ navigation, openInventory }) => {
       screenName={'Display Group Manager'}
     >
       <CommonContainer>
+        <BOHToolbar>
+          <BOHTlbrSearchPicker
+            items={[{label:'', value:''}, ...categories.map(item=>({'label':item, 'value':item}))]}
+            label="Category"
+            boxStyle={{marginLeft:0}}
+            selectedValue={searchCategory}
+            onValueChange={(value)=>{setSearchCategory(value as string)}}/>
+        </BOHToolbar>
         <BOHTable>
           <BOHTHead>
             <BOHTR>
               <BOHTH width={widths[0]}>{"Product Category"}</BOHTH>
-              <BOHTH width={widths[1]}>{"Product Family"}</BOHTH>
+              <BOHTH width={widths[1]}>{"Product Family (Display Name)"}</BOHTH>
               <BOHTH width={widths[2]}>{"Order #"}</BOHTH>
             </BOHTR>
           </BOHTHead>

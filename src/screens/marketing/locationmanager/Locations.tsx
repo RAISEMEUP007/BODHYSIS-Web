@@ -5,7 +5,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { getAddressesData, deleteAddress } from '../../../api/AllAddress ';
 import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
-import { BOHButton, BOHSearchBox, BOHToolbar } from '../../../common/components/bohtoolbar';
+import { BOHButton, BOHTlbrSearchInput, BOHToolbar } from '../../../common/components/bohtoolbar';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
@@ -151,7 +151,7 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
           <BOHButton
             label="Add"
             onPress={openAddLocationModal}/>
-          <BOHSearchBox
+          <BOHTlbrSearchInput
             label="Search"
             value={searchKey}
             onChangeText={setSearchKey}/>
