@@ -98,9 +98,9 @@ const Customers = ({ navigation }) => {
               return value.toLowerCase().includes(searchKey.trim().toLowerCase());
             }
             return false;
-          }) ||
-          item.country.country.toLowerCase().includes(searchKey.trim().toLowerCase()) ||
-          item.home_location_tbl.location.toLowerCase().includes(searchKey.trim().toLowerCase())
+          }) 
+          // || item.country.country.toLowerCase().includes(searchKey.trim().toLowerCase()) 
+          // || item.home_location_tbl.location.toLowerCase().includes(searchKey.trim().toLowerCase())
         );
       });
     }

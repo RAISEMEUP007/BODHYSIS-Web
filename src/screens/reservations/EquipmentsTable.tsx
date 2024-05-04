@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {  ScrollView,  View,  Text,  TouchableOpacity } from 'react-native';
+import {  ScrollView,  View,  Text,  TouchableOpacity, DimensionValue } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Tooltip } from 'react-native-paper';
 
@@ -13,7 +13,7 @@ interface Props {
   items: any;
   onEdit?: (item, index) => void;
   onDelete?: (item, index) => void;
-  width?: number;
+  width?: DimensionValue;
   isExtra? : boolean;
   extraWith? : number;
 }
@@ -97,11 +97,11 @@ const EquipmentsTable =  ({ items, onEdit, onDelete, width, isExtra, extraWith }
   return (
     <View style={styles.container}>
       <View style={[styles.tableContainer, {width:width || 740}]}>
-        <View style={[styles.tableHeader, { paddingRight: 738 - contentWidth }]}>
-          <Text style={[styles.columnHeader, { width: 60 }]}>{'No'}</Text>
+        <View style={[styles.tableHeader]}>
+          <Text style={[styles.columnHeader, { width: 50 }]}>{'No'}</Text>
           <Text style={[styles.columnHeader, { flex:1 }]}>{'Product Family'}</Text>
-          <Text style={[styles.columnHeader, { width: 100 }]}>{'Quantity'}</Text>
-          <Text style={[styles.columnHeader, { width: 100 }]}>{'Price'}</Text>
+          <Text style={[styles.columnHeader, { width: 90 }]}>{'Quantity'}</Text>
+          <Text style={[styles.columnHeader, { width: 75 }]}>{'Price'}</Text>
           {isExtra && (
             <Text style={[styles.columnHeader, { width: extraWith || 400 }]}>{'Extras'}</Text>
           )}
@@ -109,10 +109,7 @@ const EquipmentsTable =  ({ items, onEdit, onDelete, width, isExtra, extraWith }
           <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
         </View>
         <ScrollView
-          onContentSizeChange={(width, height) => {
-            setContentWidth(width);
-          }}
-          style={{ height:300}}>
+          style={{ height:200}}>
           {renderTableData()}
         </ScrollView>
       </View>

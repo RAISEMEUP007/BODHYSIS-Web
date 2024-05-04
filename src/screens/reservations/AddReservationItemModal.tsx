@@ -240,19 +240,19 @@ const AddReservationItemModal = ({
           />
           {ValidMessage2.trim() != '' && <Text style={styles.message}>{ValidMessage2}</Text>}
           {isExtra && (
-            <>
+            <View style={{width:500}}>
               <Text style={[styles.label, {color:'#000000'}]}>Extras</Text>
-              <View style={{flexDirection:'row', marginTop:8}}>
+              <View style={{flexDirection:'row', marginTop:8, flexWrap:'wrap'}}>
                 {extras.map((item, index)=>{
                   return (
-                    <Pressable key={index} style={{ flexDirection: 'row', alignItems: 'center', marginRight: 12 }} onPress={() => selectExtras(item)}>
+                    <Pressable key={index} style={{ flexDirection: 'row', alignItems: 'center', marginRight: 16, marginBottom:8 }} onPress={() => selectExtras(item)}>
                       <CheckBox value={selectedExtras.includes(item)} style={{ marginRight: 6 }} />
                       <Text style={[styles.label, { color: '#333' }]}>{item.name}</Text>
                     </Pressable>
                   );
                 })}
               </View>
-            </>
+            </View>
           )}
         </ModalBody>
         <ModalFooter>

@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, TextInputProps } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TextInputProps, DimensionValue } from 'react-native';
 import { TextSmallSize } from '../../constants/Fonts';
 
 interface Props {
   label: string;
-  width?: number;
+  width?: DimensionValue;
   containerStyle?: object;
   labelStyle?: object;
   inputStyle?: object;
@@ -20,10 +20,10 @@ const LabeledTextInput = ({
 }: Props & TextInputProps) => {
 
   return (
-    <View style={[containerStyle]}>
+    <View style={[containerStyle, {width}]}>
       <Text style={[styles.label, labelStyle]}>{label}</Text>
       <TextInput
-        style={[styles.input, {width:width?width:'auto'}, inputStyle]}
+        style={[styles.input, {width:'!00%'}, inputStyle]}
         placeholderTextColor="#ccc"
         {...otherTextInputProps}
       />

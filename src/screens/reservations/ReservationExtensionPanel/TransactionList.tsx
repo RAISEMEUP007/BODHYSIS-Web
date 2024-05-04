@@ -102,8 +102,8 @@ const TransactionList = ({reservationId, openAddTransactionModal, openRefundModa
   
   return (
     <View style={styles.container}>
-      <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:6, marginBottom:12}}>
-        <View style={{flexDirection:'row'}}>
+      <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:6, flexWrap:'wrap-reverse'}}>
+        <View style={{flexDirection:'row', marginBottom:12}}>
           <Text style={{fontSize:16, marginRight:8}}>Total</Text>
           <Text style={{fontSize:16, marginRight:60}}>
             {parseFloat(reservationInfo.total_price).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 2,
     borderColor: '#6c757d',
-    marginLeft: 13,
+    marginBottom:12,
   },
   outlineBtnText: {
     fontSize: 14,

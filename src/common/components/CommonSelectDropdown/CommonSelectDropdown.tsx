@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, StyleSheet, Text, Pressable, ViewStyle } from 'react-native';
+import { View, StyleSheet, Text, Pressable, ViewStyle, DimensionValue } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown'
 import { Colors } from '../../constants/Colors';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -19,7 +19,7 @@ interface Props<T> {
   placeholder?: string;
   onItemSelected?: (item: DropdownItem<T>) => void;
   containerStyle?: ViewStyle;
-  width?: number;
+  width?: DimensionValue;
   height?: number;
   title?: string;
   titleStyle?: object;

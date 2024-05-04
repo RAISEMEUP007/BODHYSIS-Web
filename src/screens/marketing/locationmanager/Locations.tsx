@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions } from 'react-native';
+import { TouchableOpacity, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { getAddressesData, deleteAddress } from '../../../api/AllAddress ';
+import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
+import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
+import { BOHButton, BOHTlbrSearchInput, BOHToolbar } from '../../../common/components/bohtoolbar';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
-import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
-import { LocationsStyle } from './styles/LocationsStyle';
 import AddLocationModal from './AddLocationModal';
 
 const LocationManager = ({ navigation, openMarketingMenu }) => {
-  const screenHeight = Dimensions.get('window').height;
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
-
+  
   const [tableData, setTableData] = useState([]);
   const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(true);
+  const InitialWidths = [76, 170, 170, 170, 113, 47, 46];
+  // const [widths, setWidths] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [searchKey, setSearchKey] = useState('');
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -57,8 +60,13 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
     });
   };
 
+  useEffect(()=>{
+    setUpdateLocationsTrigger(true);
+  }, [searchKey])
+
   const getTable = () => {
-    getAddressesData((jsonRes, status, error) => {
+    const payload={searchKey}
+    getAddressesData(payload, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           setUpdateLocationsTrigger(false);
@@ -75,28 +83,33 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
     });
   };
 
+  // const handleLayoutUpdate = (index, cellWidth) => {
+  //   setWidths(prev => {
+  //     if (prev[index] < cellWidth) {
+  //       const newWidths = [...prev];
+  //       newWidths[index] = cellWidth;
+  //       return newWidths;
+  //     }
+  //     return prev;
+  //   });
+  // };
+
   const renderTableData = () => {
     const rows = [];
     if (tableData.length > 0) {
       tableData.map((item, index) => {
         rows.push(
-          <View key={index} style={styles.tableRow}>
-            <View style={[styles.cell, {width:78}]}>
-              <Text>{item.number}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.street}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.plantation}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.property_name}</Text>
-            </View>
-            <View style={[styles.cell, {width:120}]}>
-              <Text>{item.property_type}</Text>
-            </View>
-            <View style={[styles.IconCell]}>
+          <BOHTR key={index}>
+            <BOHTD
+            //  onLayout={(event)=> handleLayoutUpdate(0, event.nativeEvent.layout.width)}
+             width={InitialWidths[0]}>{item.number}</BOHTD>
+            <BOHTD width={InitialWidths[1]}>{item.street}</BOHTD>
+            <BOHTD width={InitialWidths[2]}>{item.plantation}</BOHTD>
+            <BOHTD width={InitialWidths[3]}>{item.property_name}</BOHTD>
+            <BOHTD width={InitialWidths[4]}>{item.property_type}</BOHTD>
+            <BOHTDIconBox
+              width={InitialWidths[5]}
+            >
               <TouchableOpacity
                 onPress={() => {
                   editLocation(item);
@@ -104,8 +117,10 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
-            </View>
-            <View style={[styles.IconCell]}>
+            </BOHTDIconBox>
+            <BOHTDIconBox
+              width={InitialWidths[6]}
+            >
               <TouchableOpacity
                 onPress={() => {
                   removeLocation(item.id);
@@ -113,8 +128,8 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
               >
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />
               </TouchableOpacity>
-            </View>
-          </View>
+            </BOHTDIconBox>
+          </BOHTR>
         );
       });
     } else {
@@ -131,26 +146,32 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
       }}
       screenName={'Location Manager'}
     >
-      <View style={styles.container}>
-        <View style={styles.toolbar}>
-          <TouchableHighlight style={styles.button} onPress={openAddLocationModal}>
-            <Text style={styles.buttonText}>Add</Text>
-          </TouchableHighlight>
-        </View>
-        <View style={styles.tableContainer}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.columnHeader, {width:78}]}>{'Number'}</Text>
-            <Text style={[styles.columnHeader]}>{'Street'}</Text>
-            <Text style={[styles.columnHeader]}>{'Plantation'}</Text>
-            <Text style={[styles.columnHeader]}>{'Property name'}</Text>
-            <Text style={[styles.columnHeader, {width:120}]}>{'Property type'}</Text>
-            <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
-            <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
-          </View>
-          <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
+      <CommonContainer>
+        <BOHToolbar>
+          <BOHButton
+            label="Add"
+            onPress={openAddLocationModal}/>
+          <BOHTlbrSearchInput
+            label="Search"
+            value={searchKey}
+            onChangeText={setSearchKey}/>
+        </BOHToolbar>
+        <BOHTable>
+          <BOHTHead>
+            <BOHTR>
+              <BOHTH width={InitialWidths[0]}>{'Number'}</BOHTH>
+              <BOHTH width={InitialWidths[1]}>{'Street'}</BOHTH>
+              <BOHTH width={InitialWidths[2]}>{'Plantation'}</BOHTH>
+              <BOHTH width={InitialWidths[3]}>{'Property name'}</BOHTH>
+              <BOHTH width={InitialWidths[4]}>{'Property type'}</BOHTH>
+              <BOHTH width={InitialWidths[5]}>{'Edit'}</BOHTH>
+              <BOHTH width={InitialWidths[6]}>{'DEL'}</BOHTH>
+            </BOHTR>
+          </BOHTHead>
+          <BOHTBody>
             {renderTableData()}
-          </ScrollView>
-        </View>
+          </BOHTBody>
+        </BOHTable>
 
         <AddLocationModal
           isModalVisible={isAddModalVisible}
@@ -158,11 +179,9 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
           setUpdateLocationsTrigger={setUpdateLocationsTrigger}
           closeModal={closeAddLocationModal}
         />
-      </View>
+      </CommonContainer>
     </BasicLayout>
   );
 };
-
-const styles = LocationsStyle;
 
 export default LocationManager;

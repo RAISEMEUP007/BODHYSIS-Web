@@ -258,7 +258,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
               /> */}
               <Picker
                 style={[styles.searchInput]}
-                selectedValue={searchOptions.stage}
+                selectedValue={searchOptions.stage || ''}
                 onValueChange={val=>changeSearchOptions('stage', val)}
               >
                 <Picker.Item label={''} value={null} />
@@ -292,7 +292,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Proceed'}</Text>
               {/* <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text> */}
             </View>
-            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
+            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 320 }}>
               {renderTableData()}
             </ScrollView>
           </View>

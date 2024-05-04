@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
-
 import { getProductCompatibilitiesData, updateCompatibility } from '../../../api/Settings';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-
-import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
-import { BOHTable, BOHTHead, BOHTBody, BOHTR, BOHTH, BOHTD } from '../../../common/components/bohtable';
 import { getExtrasData } from '../../../api/Settings';
+import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
+import { BOHTable, BOHTHead, BOHTBody, BOHTR, BOHTH, BOHTD, BOHTDCheckbox } from '../../../common/components/bohtable';
 import { msgStr } from '../../../common/constants/Message';
-import BOHTDCheckbox from '../../../common/components/bohtable/BOHTDCheckbox';
 
 const ProductCompatibility = ({ navigation, openInventory }) => {
 
@@ -115,7 +112,7 @@ const ProductCompatibility = ({ navigation, openInventory }) => {
       goBack={() => {
         openInventory(null);
       }}
-      screenName={'ProductCompatibility'}
+      screenName={'Product Compatibility'}
     >
       <CommonContainer>
         <BOHTable>

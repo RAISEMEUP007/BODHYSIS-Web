@@ -14,6 +14,7 @@ import ProductFamilies from './product/productfamilies/ProductFamilies';
 import ProductLines from './product/productlines/ProductLines';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import PriceGroupLists from './price/pricegrouplist/PriceGroupList';
+import DisplayGroupManager from './product/displaygroupmanager/DisplayGroupManager';
 
 const Inventory = ({ navigation, initalItem = null }) => {
   const [selectedItem, setSelectedItem] = useState(initalItem);
@@ -34,6 +35,8 @@ const Inventory = ({ navigation, initalItem = null }) => {
         return <ProductFamilies navigation={navigation} openInventory={handleItemClick} />;
       case 'Product Lines':
         return <ProductLines navigation={navigation} openInventory={handleItemClick} />;
+      case 'Display Group Manager':
+        return <DisplayGroupManager navigation={navigation} openInventory={handleItemClick} />;
       case 'Price Tables':
         return <PriceTables navigation={navigation} openInventory={handleItemClick} />;
       case 'Price Logic':
@@ -79,6 +82,7 @@ const Inventory = ({ navigation, initalItem = null }) => {
               { title: 'Product Categories', icon: 'check' },
               { title: 'Product Families', icon: 'check' },
               { title: 'Product Lines', icon: 'check' },
+              { title: 'Display Group Manager', icon: 'check' },
               { title: 'Search', icon: 'search' },
             ]}
             handleItemClick={handleItemClick}

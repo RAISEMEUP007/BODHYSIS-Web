@@ -26,7 +26,7 @@ interface Props {
 }
 
 const Settings = ({navigation, initialItem }:Props) => {
-    const [selectedItem, setSelectedItem] = useState<string>(initialItem || 'Product Compatability');
+    const [selectedItem, setSelectedItem] = useState<string>(initialItem);
     
     const handleItemClick = (itemName) => {
         setSelectedItem(itemName);

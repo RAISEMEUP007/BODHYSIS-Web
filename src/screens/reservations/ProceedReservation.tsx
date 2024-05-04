@@ -100,6 +100,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   };
 
   const addReservationItem = async (productFamily, quantity, extras) => {
+    console.log(productFamily);
     const arraysAreEqual = (arr1, arr2) => {
       if (arr1.length !== arr2.length) {
         return false;
@@ -129,8 +130,8 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
           return item;
         });
 
-        const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, updatedEquipmentData);
-        saveReservationItems(cacluatedPricedData, ()=>{
+        const caclcuatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, updatedEquipmentData);
+        saveReservationItems(caclcuatedPricedData, ()=>{
           setUpdateCount(prev => prev + 1);
         })
       });
@@ -140,18 +141,19 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         id: parseInt(uuidv4(), 16),
         reservation_id: reservationInfo.id,
         family_id: productFamily.id,
-        price_group_id: productFamily.price_group_id,
+        price_group_id: productFamily?.lines[0]?.price_group_id ?? 0,
         quantity: quantity,
         extras: extras,
       }
       const newData = [...equipmentData, newItem];
-      const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
-      saveReservationItems(cacluatedPricedData, ()=>{
+      const caclcuatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
+      console.log(caclcuatedPricedData);
+      saveReservationItems(caclcuatedPricedData, ()=>{
         setUpdateCount(prev => prev + 1);
       })
     }
   }
-
+console.log(equipmentData);
   const updateReservationItem = async (oldFamily, newFamily, quantity, extras) => {
     const existingProduct = equipmentData.find(item => item.family_id === newFamily.id);
 
@@ -176,8 +178,8 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         return item;
       });
     
-      const cacluatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
-      saveReservationItems(cacluatedPricedData, (jsonRes)=>{
+      const caclcuatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
+      saveReservationItems(caclcuatedPricedData, (jsonRes)=>{
         setUpdateCount(prev => prev + 1);
       })
     }
@@ -347,6 +349,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   // };
 
   const calculatePricedEquipmentData = async (tableId, equipmentData) => {
+    console.log(equipmentData);
     const pricedEquipmentData = await Promise.all(equipmentData.map(async (item) => {
       const payload = {
         tableId,
@@ -356,7 +359,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       const rows = await response.json();
 
       const reversedHeaderData = headerData.slice().reverse();
-      const updatedReversedHeaderData = reversedHeaderData.map((item) => {
+      const updatedReversedHeaderData = headerData.map((item) => {
         const value = rows.find((row) => row.point_id === item.id)?.value || 0;
         const pricePMS = value/item.milliseconds;
         const pricePH = value / (item.milliseconds / (1000 * 60 * 60));
@@ -367,10 +370,11 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       const diff = new Date(reservationInfo.end_date).getTime() - new Date(reservationInfo.start_date).getTime();
 
       const basedonPoint  = updatedReversedHeaderData.find((item) => {
-        if(item.value>0 && item.milliseconds <= diff){
+        if(item.value>0 && item.milliseconds >= diff){
           return item;
         }
       });
+      console.log(basedonPoint);
 
       let price = 0;
       if(basedonPoint){
@@ -436,95 +440,94 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         backgroundColor:'#f7f7f7',
       }}
     >
-      <ScrollView 
-        contentContainerStyle={styles.topContainer}
-        onContentSizeChange={(width, height) => {
-          // setContentWidth(width);
-        }}>
-        <View style={styles.container}>
-          <View
-          style={{flexDirection:'row'}}
-            onLayout={(event)=>{
-              const { width } = event.nativeEvent.layout;
-              setContentWidth(width);
-            }}>
-            <ReservationMainInfo details={reservationInfo} setUpdateCount={setUpdateCount}/>
-            <ReservationExtensionPanel 
-              reservationId={reservationInfo?.id??null} 
-              openAddTransactionModal={()=>openAddTransactionModal(false)}
-              openRefundModal={openRefundModal}
-            />
-          </View>
-          <View style={{flexDirection:'row', justifyContent:'space-between', marginVertical:18}}>
-            <View style={{flexDirection:'row', alignItems:'center'}}>
-              <View style={[styles.stageText, {backgroundColor:convertStageToBgColor(reservationInfo?.stage??null)}]}>
-                <View style={[styles.circle, {left:10}]}></View>
-                <View style={[styles.circle, {right:10}]}></View>
-                <Text style={{color:'white', fontWeight:'bold', fontSize:15, fontFamily:'monospace'}}>{convertStageToString(reservationInfo?.stage??null)}</Text>
-              </View>
-              <TouchableOpacity 
-                disabled={(reservationInfo && reservationInfo.stage>3)?true:false}
-                style={[
-                  styles.nextStageButton,
-                  (reservationInfo && reservationInfo.stage > 3) && { backgroundColor: '#ccc' }
-                ]}
-                onPress={confirmNextStage}>
-                <View style={{flexDirection:'row', alignItems:'center'}}>
-                  <Text style={styles.buttonText}>Next stage</Text>
-                  <FontAwesome5 name="angle-right" size={18} color="white" style={{marginLeft:10}}/>
-                </View>
-              </TouchableOpacity>
+      <div style={{overflow:'auto', padding:'0 30px'}}>
+        <div style={{width:'fit-content', margin:'auto'}}>
+          <View style={styles.container}>
+            <View
+            style={{flexDirection:'row'}}
+              onLayout={(event)=>{
+                const { width } = event.nativeEvent.layout;
+                setContentWidth(width);
+              }}>
+              <ReservationMainInfo details={reservationInfo} setUpdateCount={setUpdateCount}/>
+              <ReservationExtensionPanel 
+                reservationId={reservationInfo?.id??null} 
+                openAddTransactionModal={()=>openAddTransactionModal(false)}
+                openRefundModal={openRefundModal}
+              />
             </View>
-            <View style={{flexDirection:'row', alignItems:'center'}}>
-              <TouchableOpacity style={styles.outLineButton} onPress={printReservation}>
-                <Text style={styles.outlineBtnText}>Print</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.outLineButton}>
-                <Text style={styles.outlineBtnText}>Email</Text>
-              </TouchableOpacity>
-              {/* <TouchableOpacity style={[styles.outLineButton, {borderColor: '#4379FF'}]} onPress={openAddCardModal}>
-                <Text style={[styles.outlineBtnText, {color:'#4379FF'}]}>Stripe</Text>
-              </TouchableOpacity> */}
-              <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]}>
-                <View style={{flexDirection:'row', alignItems:'center'}}>
-                  <FontAwesome5 name={'bookmark'} size={18} color="#DC3545" style={{marginRight:10, marginTop:1}}/>
-                  <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]} onPress={()=>openAddTransactionModal(false)}>
-                <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add transaction</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.outLineButton}>
-                <Text style={styles.outlineBtnText}>More</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={[styles.reservationRow, {justifyContent:'flex-end'}]}>
-            <TouchableHighlight 
-              disabled={(reservationInfo && reservationInfo.stage>1 && true)} 
-              style={[styles.addItemButton, (reservationInfo && reservationInfo.stage>1 && {backgroundColor:'#ccc'})]} 
-              onPress={openAddReservationItemModal}>
+            <View style={{flexDirection:'row', justifyContent:'space-between', marginVertical:18}}>
               <View style={{flexDirection:'row', alignItems:'center'}}>
-                <FontAwesome5 name="plus" size={14} color="white" style={{marginTop:3}}/>
-                <Text style={styles.buttonText}>Add Items</Text>
+                <View style={[styles.stageText, {backgroundColor:convertStageToBgColor(reservationInfo?.stage??null)}]}>
+                  <View style={[styles.circle, {left:10}]}></View>
+                  <View style={[styles.circle, {right:10}]}></View>
+                  <Text style={{color:'white', fontWeight:'bold', fontSize:15, fontFamily:'monospace'}}>{convertStageToString(reservationInfo?.stage??null)}</Text>
+                </View>
+                <TouchableOpacity 
+                  disabled={(reservationInfo && reservationInfo.stage>3)?true:false}
+                  style={[
+                    styles.nextStageButton,
+                    (reservationInfo && reservationInfo.stage > 3) && { backgroundColor: '#ccc' }
+                  ]}
+                  onPress={confirmNextStage}>
+                  <View style={{flexDirection:'row', alignItems:'center'}}>
+                    <Text style={styles.buttonText}>Next stage</Text>
+                    <FontAwesome5 name="angle-right" size={18} color="white" style={{marginLeft:10}}/>
+                  </View>
+                </TouchableOpacity>
               </View>
-            </TouchableHighlight>
+              <View style={{flexDirection:'row', alignItems:'center'}}>
+                <TouchableOpacity style={styles.outLineButton} onPress={printReservation}>
+                  <Text style={styles.outlineBtnText}>Print</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.outLineButton}>
+                  <Text style={styles.outlineBtnText}>Email</Text>
+                </TouchableOpacity>
+                {/* <TouchableOpacity style={[styles.outLineButton, {borderColor: '#4379FF'}]} onPress={openAddCardModal}>
+                  <Text style={[styles.outlineBtnText, {color:'#4379FF'}]}>Stripe</Text>
+                </TouchableOpacity> */}
+                <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]}>
+                  <View style={{flexDirection:'row', alignItems:'center'}}>
+                    <FontAwesome5 name={'bookmark'} size={18} color="#DC3545" style={{marginRight:10, marginTop:1}}/>
+                    <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]} onPress={()=>openAddTransactionModal(false)}>
+                  <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add transaction</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.outLineButton}>
+                  <Text style={styles.outlineBtnText}>More</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={[styles.reservationRow, {justifyContent:'flex-end'}]}>
+              <TouchableHighlight 
+                disabled={(reservationInfo && reservationInfo.stage>1 && true)} 
+                style={[styles.addItemButton, (reservationInfo && reservationInfo.stage>1 && {backgroundColor:'#ccc'})]} 
+                onPress={openAddReservationItemModal}>
+                <View style={{flexDirection:'row', alignItems:'center'}}>
+                  <FontAwesome5 name="plus" size={14} color="white" style={{marginTop:3}}/>
+                  <Text style={styles.buttonText}>Add Items</Text>
+                </View>
+              </TouchableHighlight>
+            </View>
+            <View>
+              <EquipmentsTable
+                items={equipmentData}
+                width={"100%"}
+                onEdit={(item, index)=>{
+                  editReservationItem(item, index);
+                }}
+                onDelete={(item, index)=>{
+                  removeReservationItem(item, index);
+                }}
+                isExtra={true}
+                extraWith={300}
+              />
+            </View>
           </View>
-          <View>
-            <EquipmentsTable
-              items={equipmentData}
-              width={contentWidth}
-              onEdit={(item, index)=>{
-                editReservationItem(item, index);
-              }}
-              onDelete={(item, index)=>{
-                removeReservationItem(item, index);
-              }}
-              isExtra={true}
-            />
-          </View>
-        </View>
-      </ScrollView>
+        </div>
+      </div>
       <AddTransactionModal
         isModalVisible={isAddTransactionModalVisible}
         nextStageProcessingStatus={nextStageProcessingStatus}
