@@ -459,11 +459,11 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
 
         let price = 0;
         if (basedonPoint) {
-          if (Math.floor(diff / (1000 * 60 * 60 * 24)) == 0)
-            price = basedonPoint.pricePH * Math.floor(diff / (1000 * 60 * 60));
-          else price = basedonPoint.pricePD * Math.floor(diff / (1000 * 60 * 60 * 24));
+          // if (Math.floor(diff / (1000 * 60 * 60 * 24)) == 0)
+          //   price = basedonPoint.pricePH * Math.floor(diff / (1000 * 60 * 60));
+          // else price = basedonPoint.pricePD * Math.floor(diff / (1000 * 60 * 60 * 24));
 
-          price = (Math.round(price * 100) / 100) * item.quantity;
+          price = (Math.round(basedonPoint.price * 100) / 100) * item.quantity;
         }
 
         //calcualte extras price
