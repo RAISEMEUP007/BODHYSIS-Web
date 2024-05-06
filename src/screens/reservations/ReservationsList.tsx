@@ -166,7 +166,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     if (tableData.length > 0) {
       tableData.map((item, index) => {
         rows.push(
-          <BOHTR>
+          <BOHTR key={index}>
             <BOHTD width={90}>{item.order_number}</BOHTD>
             <BOHTD width={160}>{item.brand}</BOHTD>
             <BOHTD width={160}>{item.full_name}</BOHTD>
