@@ -181,6 +181,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     return result;
   }, [brandsData]);
 
+  console.log(priceLogicData);
   useEffect(() => {
     getStoreDetail(brandId, (jsonRes, status) => {
       if (status == 200) setTaxRate(jsonRes.sales_tax);
@@ -259,10 +260,13 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   }, [equipmentData]);
 
   const taxAmount = useMemo(() => {
-    return Math.round(taxRate * subTotal) / 100;
+    const txR = taxRate || 0;
+    return Math.round(txR * subTotal) / 100;
   }, [taxRate, subTotal]);
 
   const getPriceTableByBrandAndDate = (brandId, date) => {
+    console.log(brandId);
+    console.log(date);
     if (!priceLogicData || !priceLogicData.length) return null;
     let selectedPriceLogic = priceLogicData.find(
       (group) =>
@@ -451,6 +455,10 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
 
         const diff = endDate.getTime() - startDate.getTime();
 
+        console.log(endDate);
+        console.log(startDate);
+        console.log(diff);
+        console.log(updatedReversedHeaderData);
         const basedonPoint = updatedReversedHeaderData.find((item) => {
           if (item.value > 0 && item.milliseconds >= diff) {
             return item;
@@ -463,8 +471,10 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
           //   price = basedonPoint.pricePH * Math.floor(diff / (1000 * 60 * 60));
           // else price = basedonPoint.pricePD * Math.floor(diff / (1000 * 60 * 60 * 24));
 
-          price = (Math.round(basedonPoint.price * 100) / 100) * item.quantity;
+          price = (Math.round(basedonPoint.value * 100) / 100) * item.quantity;
         }
+
+        console.log(basedonPoint);
 
         //calcualte extras price
         if (item.extras && item.extras.length > 0) {
