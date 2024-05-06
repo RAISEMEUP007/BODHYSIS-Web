@@ -6,7 +6,6 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   TextInput,
-  Dimensions,
   Platform
 } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -35,7 +34,6 @@ if (Platform.OS === 'web') {
 }
 
 const ReservationsList = ({ navigation, openReservationScreen }) => {
-  const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
