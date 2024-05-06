@@ -22,6 +22,9 @@ import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 
 import { reservationListsStyle } from './styles/ReservationListStyle';
+import { CommonContainer } from '../../common/components/CustomLayout';
+import { BOHButton, BOHToolbar } from '../../common/components/bohtoolbar';
+import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -167,29 +170,15 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     if (tableData.length > 0) {
       tableData.map((item, index) => {
         rows.push(
-          <View key={index} style={styles.tableRow}>
-            <View style={[styles.cell, {width: 90}]}>
-              <Text>{item.order_number}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.brand}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.full_name}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.end_date ? formatDateInline(item.end_date):''}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.start_date ? formatDateInline(item.start_date):''}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item?.quantity??''}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{convertStageToString(item.stage)}</Text>
-            </View>
-            <View style={[styles.IconCell]}>
+          <BOHTR>
+            <BOHTD width={90}>{item.order_number}</BOHTD>
+            <BOHTD width={160}>{item.brand}</BOHTD>
+            <BOHTD width={160}>{item.full_name}</BOHTD>
+            <BOHTD width={100}>{item.end_date ? formatDateInline(item.end_date):''}</BOHTD>
+            <BOHTD width={100}>{item.start_date ? formatDateInline(item.start_date):''}</BOHTD>
+            <BOHTD width={110}>{item?.quantity??''}</BOHTD>
+            <BOHTD width={90}>{convertStageToString(item.stage)}</BOHTD>
+            <BOHTDIconBox width={80}>
               <TouchableOpacity
                 onPress={() => {
                   openReservationScreen('Proceed Reservation', {reservationId:item.id})
@@ -197,8 +186,8 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
               >
                 <FontAwesome5 size={TextMediumSize} name="arrow-right" color="black" />
               </TouchableOpacity>
-            </View>
-          </View>
+            </BOHTDIconBox>
+          </BOHTR>
         );
       });
     } else {
@@ -213,14 +202,14 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
       screenName={'Reservation List'}
     >
       <ScrollView horizontal={true}>
-        <View style={styles.container}>
-          <View style={[styles.toolbar, {zIndex:100, marginBottom:15}]}>
+        <CommonContainer>
+          <BOHToolbar>
             <Text style={styles.searchLabel}>From</Text>
             {Platform.OS == 'web' && renderDatePicker(searchOptions.start_date, (date)=>changeSearchOptions('start_date', date.toISOString().substr(0, 10)))}
             <Text style={styles.searchLabel}>To</Text>
             {Platform.OS == 'web' && renderDatePicker(searchOptions.end_date, (date)=>changeSearchOptions('end_date', date.toISOString().substr(0, 10)))}
-          </View>
-          <View style={styles.toolbar}>
+          </BOHToolbar>
+          <BOHToolbar>
             <View style={styles.searchBox}>
               <Text style={styles.searchLabel}>Customer</Text>
               <TextInput
@@ -270,33 +259,37 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
                   })}
               </Picker>
             </View>
-          </View>
-          <View style={styles.toolbar}>
-            <TouchableHighlight style={styles.button} onPress={()=>{
+          </BOHToolbar>
+          <BOHToolbar>
+            {/* <TouchableHighlight style={styles.button} onPress={()=>{
               openReservationScreen('Create Reservations');
             }}>
               <Text style={styles.buttonText}>Create</Text>
-            </TouchableHighlight>
-          </View>
-          <View style={styles.tableContainer}>
-            <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader, {width:90}]}>{'Order #'}</Text>
-              <Text style={[styles.columnHeader]}>{'Brand'}</Text>
-              <Text style={[styles.columnHeader]}>{'Customer'}</Text>
-              <Text style={[styles.columnHeader]}>{'To'}</Text>
-              <Text style={[styles.columnHeader]}>{'From'}</Text>
-              {/* <Text style={[styles.columnHeader, {width:100}]}>{'Start Date'}</Text>
-              <Text style={[styles.columnHeader, {width:100}]}>{'End Date'}</Text> */}
-              <Text style={[styles.columnHeader]}>{'Qty of bikes'}</Text>
-              <Text style={[styles.columnHeader]}>{'Stage'}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{'Proceed'}</Text>
-              {/* <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text> */}
-            </View>
-            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 320 }}>
+            </TouchableHighlight> */}
+            <BOHButton
+              label="Create"
+              onPress={()=>{
+                openReservationScreen('Create Reservations');
+              }}/>
+          </BOHToolbar>
+          <BOHTable>
+            <BOHTHead>
+              <BOHTR>
+                <BOHTH width={90}>{'Order #'}</BOHTH>
+                <BOHTH width={160}>{'Brand'}</BOHTH>
+                <BOHTH width={160}>{'Customer'}</BOHTH>
+                <BOHTH width={100}>{'To'}</BOHTH>
+                <BOHTH width={100}>{'From'}</BOHTH>
+                <BOHTH width={110}>{'Qty of bikes'}</BOHTH>
+                <BOHTH width={90}>{'Stage'}</BOHTH>
+                <BOHTH width={80}>{'Proceed'}</BOHTH>
+              </BOHTR>
+            </BOHTHead>
+            <BOHTBody>
               {renderTableData()}
-            </ScrollView>
-          </View>
-        </View>
+            </BOHTBody>
+          </BOHTable>
+        </CommonContainer>
       </ScrollView>
     </BasicLayout>
   );
