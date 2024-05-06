@@ -381,7 +381,7 @@ console.log(equipmentData);
         // if(Math.floor(diff/(1000 * 60 * 60 *24)) == 0) price = basedonPoint.pricePH * Math.floor(diff/(1000 * 60 * 60));
         // else price = basedonPoint.pricePD * Math.floor(diff/(1000 * 60 * 60 * 24));
 
-        price = Math.round(basedonPoint.price*100)/100 * item.quantity;
+        price = Math.round(basedonPoint.value*100)/100 * item.quantity;
       }
 
       //calcualte extras price
