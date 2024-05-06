@@ -176,11 +176,10 @@ export const reservationListsStyle = StyleSheet.create({
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
     marginRight: 30,
   },
   searchLabel: {
-    marginHorizontal: 10,
+    marginRight: 10,
     fontSize: TextdefaultSize,
     // width:80,
     // textAlign:'right',
@@ -194,7 +193,7 @@ export const reservationListsStyle = StyleSheet.create({
     borderColor: '#999',
     borderRadius: 5,
     fontSize: TextSmallSize,
-    width: 180,
+    width: 127,
   },
   dateInput:{
     borderTopWidth:0,
