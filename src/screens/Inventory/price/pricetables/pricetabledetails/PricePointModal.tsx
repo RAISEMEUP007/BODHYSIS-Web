@@ -26,7 +26,7 @@ const PricePointModal = ({ isModalVisible, tableId, setUpdatePointTrigger, close
   const [isLoading, setIsLoading] = useState(false);
 
   const [duration, setDuration] = useState('');
-  const [selectedOption, setSelectedOption] = useState('Hour(s)');
+  const [selectedOption, setSelectedOption] = useState('1');
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -99,9 +99,9 @@ const PricePointModal = ({ isModalVisible, tableId, setUpdatePointTrigger, close
             style={styles.select}
             onValueChange={(itemValue, itemIndex) => setSelectedOption(itemValue)}
           >
-            <Picker.Item label="Hours(s)" value="Hours(s)" />
-            <Picker.Item label="Day(s)" value="Day(s)" />
-            <Picker.Item label="Week(s)" value="Week(s)" />
+            <Picker.Item label="Hours(s)" value={1} />
+            <Picker.Item label="Day(s)" value={2} />
+            <Picker.Item label="Week(s)" value={3} />
           </Picker>
         </ModalBody>
         <ModalFooter>
