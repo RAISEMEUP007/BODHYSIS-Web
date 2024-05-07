@@ -62,25 +62,19 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
             <View style={[styles.cell]}>
               <Text>{item.brand}</Text>
             </View>
-            <View style={[styles.cell]}>
+            <View style={[styles.cell, {width:90}]}>
               <Text>{item.start_date ? new Date(item.start_date).toLocaleString('en-US', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true,
               }) : ''}
               </Text>
             </View>
-            <View style={[styles.cell]}>
+            <View style={[styles.cell, {width:90}]}>
               <Text>{item.end_date ? new Date(item.end_date).toLocaleString('en-US', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true,
               }) : ''}
               </Text>
             </View>
@@ -131,8 +125,8 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
             <View style={styles.tableHeader}>
               <Text style={[styles.columnHeader]}>{'Customer Name'}</Text>
               <Text style={[styles.columnHeader]}>{'Brand'}</Text>
-              <Text style={[styles.columnHeader]}>{'Start Date'}</Text>
-              <Text style={[styles.columnHeader]}>{'End Date'}</Text>
+              <Text style={[styles.columnHeader, {width:90}]}>{'Start Date'}</Text>
+              <Text style={[styles.columnHeader, {width:90}]}>{'End Date'}</Text>
               <Text style={[styles.columnHeader]}>{'Start Location'}</Text>
               <Text style={[styles.columnHeader]}>{'End Location'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Locked'}</Text>

@@ -16,6 +16,7 @@ import LabeledTextInput from '../../common/components/input/LabeledTextInput';
 import { msgStr } from '../../common/constants/Message';
 
 import { actionOrderStyle } from './styles/ActionOrderStyle';
+import { printReservation } from '../../common/utils/Print';
 
 interface Props {
   openOrderScreen: (itemName: string, data?: any ) => void;
@@ -196,6 +197,12 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
       <div style={{overflow:'auto', padding:'0 30px'}}>
         <div style={{width:'fit-content', margin:'auto'}}>
         <View style={styles.container}>
+          <BOHToolbar style={{justifyContent:'flex-end', alignItems:'center',}}>
+            <BOHButton
+              label='Print'
+              onPress={()=>printReservation(orderInfo.id)}
+            />
+          </BOHToolbar>
           <View style={{flexDirection:'row', marginVertical:4}}>
             <LabeledTextInput
               label='Start date'
@@ -207,10 +214,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true,
-              }) : ''}
+              }) + ' 8:00 AM' : ''}
               // onChangeText={value => handleInputChange('billableDays', value)}
               editable={false}
             />
@@ -223,10 +227,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true,
-              }) : ''}
+              }) + ' 8:30 AM' : ''}
               // onChangeText={value => handleInputChange('billableDays', value)}
               editable={false}
             />

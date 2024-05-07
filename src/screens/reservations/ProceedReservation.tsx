@@ -3,23 +3,24 @@ import { View, ScrollView, TouchableOpacity, Text, TouchableHighlight, Platform 
 import { FontAwesome5 } from '@expo/vector-icons';
 import { v4 as uuidv4 } from 'uuid';
 
-import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
+import { deleteReservationItem, getReservationDetail, updateReservation } from '../../api/Reservation';
+import { getHeaderData, getPriceDataByGroup } from '../../api/Price';
+import { getDiscountCodesData } from '../../api/Settings';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
-import { deleteReservationItem, getReservationDetail, updateReservation } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
+import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
+import { printReservation } from '../../common/utils/Print';
+import AddCardModal from '../../common/components/stripe-react/AddCardModal';
 
-import { proceedReservationStyle } from './styles/ProceedReservationStyle';
 import ReservationMainInfo from './ReservationMainInfo';
 import { ReservationExtensionPanel } from './ReservationExtensionPanel/ReservationExtensionPanel';
 import EquipmentsTable from './EquipmentsTable';
 import AddTransactionModal from './ReservationExtensionPanel/AddTransactionModal';
 import AddReservationItemModal from './AddReservationItemModal';
-import AddCardModal from '../../common/components/stripe-react/AddCardModal';
-import { getHeaderData, getPriceDataByGroup } from '../../api/Price';
-import { getDiscountCodesData } from '../../api/Settings';
-import { API_URL } from '../../common/constants/AppConstants';
 import RefundStripeModal from './ReservationExtensionPanel/RefundStripeModal';
+
+import { proceedReservationStyle } from './styles/ProceedReservationStyle';
 
 interface Props {
   openReservationScreen: (itemName: string, data?: any ) => void;
@@ -435,10 +436,6 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     }
   }
 
-  const printReservation = async () => {
-    location.href = API_URL + "/reservations/exportpdf/"+reservationInfo.id
-  }
-
   return (
     <BasicLayout
       goBack={()=>{
@@ -486,7 +483,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
                 </TouchableOpacity>
               </View>
               <View style={{flexDirection:'row', alignItems:'center'}}>
-                <TouchableOpacity style={styles.outLineButton} onPress={printReservation}>
+                <TouchableOpacity style={styles.outLineButton} onPress={()=>printReservation(reservationInfo.id)}>
                   <Text style={styles.outlineBtnText}>Print</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.outLineButton}>
