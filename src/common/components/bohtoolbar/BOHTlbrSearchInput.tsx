@@ -2,14 +2,14 @@ import React, { ReactNode } from 'react';
 import { Text, StyleSheet, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
 import { TextSmallSize, TextdefaultSize } from '../../constants/Fonts';
 
-interface BOHTlbrSearchBoxProps extends TextInputProps {
+interface BOHTlbrSearchInputProps extends TextInputProps {
   label?: string;
   boxStyle?: ViewStyle;
   labelStyle?: TextStyle;
   width?: number;
 }
 
-const BOHTlbrSearchBox: React.FC<BOHTlbrSearchBoxProps> = ({ label, boxStyle, labelStyle, width, style, ...rest }) => {
+const BOHTlbrSearchInput: React.FC<BOHTlbrSearchInputProps> = ({ label, boxStyle, labelStyle, width, style, ...rest }) => {
   return (
     <View style={[styles.searchBox, boxStyle]}>
       {label && <Text style={[styles.searchLabel, labelStyle]}>{label}</Text>}
@@ -44,4 +44,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BOHTlbrSearchBox;
+export default BOHTlbrSearchInput;

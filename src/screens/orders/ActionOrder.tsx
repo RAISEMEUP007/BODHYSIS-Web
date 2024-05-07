@@ -372,6 +372,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
                 }}
                 defaultValue={barcode}
                 onChangeText={SetBarcode}
+                onSubmitEditing={scanBarcodeHandle} 
               />
               <BOHButton 
                 style={{alignSelf:'center'}}

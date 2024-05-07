@@ -202,7 +202,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
           <BOHToolbar style={{zIndex:100}}>
             <Text style={styles.searchLabel}>From</Text>
             {Platform.OS == 'web' && renderDatePicker(searchOptions.start_date, (date)=>changeSearchOptions('start_date', date.toISOString().substr(0, 10)))}
-            <Text style={styles.searchLabel}>To</Text>
+            <Text style={[styles.searchLabel, {marginHorizontal:8}]}>To</Text>
             {Platform.OS == 'web' && renderDatePicker(searchOptions.end_date, (date)=>changeSearchOptions('end_date', date.toISOString().substr(0, 10)))}
           </BOHToolbar>
           <BOHToolbar style={{width: '100%', justifyContent:'space-between'}}>
