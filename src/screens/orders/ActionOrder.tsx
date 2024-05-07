@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Picker } from '@react-native-picker/picker';
 import { Dropdown } from 'react-native-element-dropdown';
 
-import { getReservationDetail, scanBarcode, updateReservation } from '../../api/Reservation';
+import { checkedInBarcode, getReservationDetail, scanBarcode, updateReservation } from '../../api/Reservation';
 import { getColorcombinationsData } from '../../api/Settings';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
@@ -103,35 +103,66 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
       barcode: barCode,
       reservation_id: orderInfo.id,
     }
-
-    scanBarcode(payload, (jsonRes, status)=>{
-      switch (status) {
-        case 200:
-          const updatedId = jsonRes.item_id;
-          const barcode = jsonRes.barcode;
-          setOrderInfo(prev=>{
-            return {
-              ...prev,
-              items: prev.items.map(item => {
-                if (item.id === updatedId) {
-                  return {
-                    ...item,
-                    barcode: barcode,
-                    status: 3
-                  };
-                } else {
-                  return item;
-                }
-              })
-            };
-          })
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
-      }
-    });
+    
+    if(orderInfo.stage == 2){
+      scanBarcode(payload, (jsonRes, status)=>{
+        switch (status) {
+          case 200:
+            const updatedId = jsonRes.item_id;
+            const barcode = jsonRes.barcode;
+            setOrderInfo(prev=>{
+              return {
+                ...prev,
+                items: prev.items.map(item => {
+                  if (item.id === updatedId) {
+                    return {
+                      ...item,
+                      barcode: barcode,
+                      status: 3
+                    };
+                  } else {
+                    return item;
+                  }
+                })
+              };
+            })
+            break;
+          default:
+            if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+            else showAlert('error', msgStr('unknownError'));
+            break;
+        }
+      });
+    }else if(orderInfo.stage == 3){
+      checkedInBarcode(payload, (jsonRes, status)=>{
+        switch (status) {
+          case 200:
+            const updatedId = jsonRes.item_id;
+            const barcode = jsonRes.barcode;
+            setOrderInfo(prev=>{
+              return {
+                ...prev,
+                items: prev.items.map(item => {
+                  if (item.id === updatedId) {
+                    return {
+                      ...item,
+                      barcode: barcode,
+                      status: 4
+                    };
+                  } else {
+                    return item;
+                  }
+                })
+              };
+            })
+            break;
+          default:
+            if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+            else showAlert('error', msgStr('unknownError'));
+            break;
+        }
+      });
+    }
   }
 
   const processNextStage = () => {
@@ -325,9 +356,10 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               label='Next'
               onPress={processNextStage}
             />
-            <Text style={{fontWeight:'bold', fontSize:16}}>{orderInfo.stage == 3 && "Checked Out!"}</Text>
+            <Text style={{fontWeight:'bold', fontSize:16}}>{orderInfo.stage == 3 && "Checked Out!" || orderInfo.stage == 4 && "Checked In!"}</Text>
             <View style={{flexDirection:'row'}}>
               <TextInput 
+                editable={orderInfo.stage == 2 || orderInfo.stage == 3 ? true : false}
                 style={{ 
                   height: 40,
                   borderColor: 'gray',
@@ -342,6 +374,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               />
               <BOHButton 
                 style={{alignSelf:'center'}}
+                disabled={(orderInfo.stage == 2 || orderInfo.stage == 3) && nextDisable ? false : true}
                 label='Scan'
                 onPress={scanBarcodeHandle}
               />
