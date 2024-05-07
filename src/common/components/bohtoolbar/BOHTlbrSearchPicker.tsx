@@ -4,7 +4,7 @@ import { TextSmallSize, TextdefaultSize } from '../../constants/Fonts';
 import { Picker, PickerProps } from '@react-native-picker/picker';
 import { ItemValue } from '@react-native-picker/picker/typings/Picker';
 
-interface BOHTlbrSearchBoxProps extends PickerProps {
+interface BOHTlbrSearchPickerProps extends PickerProps {
   items: Array<{ label: string; value: ItemValue }>;
   label?: string;
   boxStyle?: ViewStyle;
@@ -12,7 +12,7 @@ interface BOHTlbrSearchBoxProps extends PickerProps {
   width?: number;
 }
 
-const BOHTlbrSearchBox: React.FC<BOHTlbrSearchBoxProps> = ({ items, label, boxStyle, labelStyle, width, style, ...rest }) => {
+const BOHTlbrSearchPicker: React.FC<BOHTlbrSearchPickerProps> = ({ items, label, boxStyle, labelStyle, width, style, ...rest }) => {
   return (
     <View style={[styles.searchBox, boxStyle]}>
       {label && <Text style={[styles.searchLabel, labelStyle]}>{label}</Text>}
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     backgroundColor: 'white',
-    paddingVertical: 4,
+    paddingVertical: 5,
     paddingHorizontal: 6,
     borderWidth: 1,
     borderColor: '#999',
@@ -51,4 +51,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BOHTlbrSearchBox;
+export default BOHTlbrSearchPicker;

@@ -24,8 +24,8 @@ const styles = StyleSheet.create({
   defaultTheme: {
     backgroundColor: '#2e96e1',
     borderRadius: 4,
-    paddingVertical: 8,
-    paddingHorizontal: TextSmallSize,
+    paddingVertical: 7,
+    paddingHorizontal: 14,
   },
   defaultThemeText: {
     fontSize: TextSmallSize,

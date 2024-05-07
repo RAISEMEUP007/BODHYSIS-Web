@@ -3,12 +3,9 @@ import {
   ScrollView,
   View,
   Text,
-  TouchableHighlight,
   TouchableOpacity,
   TextInput,
-  Dimensions,
   Platform,
-  Image,
   Pressable
 } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -25,8 +22,6 @@ import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 
 import { DashboardStyle } from './styles/DashboardStyle';
-import { BASE_URL } from '../../common/constants/AppConstants';
-// import imagePath from './HiltonHeadIsland.png';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -37,7 +32,6 @@ if (Platform.OS === 'web') {
 }
 
 const Dashboard = ({ navigation }) => {
-  const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();

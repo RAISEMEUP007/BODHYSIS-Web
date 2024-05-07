@@ -267,7 +267,7 @@ const AddTransactionModal = ({
                   setPaymentId(itemValue);
                 }}
               >
-                {paymentsList.length > 0 &&
+                {(paymentsList && paymentsList.length > 0) &&
                   paymentsList.map((paymentItem, index) => {
                     return (
                       <Picker.Item key={index} label={`${paymentItem.brand}${"\u00A0".repeat(Math.max(0, 12 - paymentItem.brand.length) * 2)}\u00A0\u00A0\u00A0\u00A0****${paymentItem.last4}\u00A0\u00A0\u00A0\u00A0Exp: ${paymentItem.expiration}`} value={paymentItem.id}/>
