@@ -199,165 +199,165 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     >
       <ScrollView horizontal={true}>
         <CommonContainer>
-        <BOHToolbar style={{zIndex:100}}>
-          <Text style={{marginRight:8, fontSize:TextdefaultSize}}>From</Text>
-          {Platform.OS == 'web' && 
-            renderBOHTlbDatePicker(searchOptions.start_date, (date) => {
-              const year = date.getFullYear();
-              const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-              changeSearchOptions('start_date', formattedDate);
-          })}
-          <Text style={{marginHorizontal:8, fontSize:TextdefaultSize}}>To</Text>
-          {Platform.OS == 'web' && 
-            renderBOHTlbDatePicker(searchOptions.end_date, (date) => {
-              const year = date.getFullYear();
-              const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-              changeSearchOptions('end_date', formattedDate);
-          })}
-          <BOHTlbRadio
-            label='Today'
-            onPress={()=>{setPeriodRange('Today')}}
-            RadioButtonProps={{
-              value: '1',
-              status: periodRange == 'Today'? 'checked': 'unchecked',
-            }}
-          />
-          <BOHTlbRadio
-            label='Tomorrow'
-            onPress={()=>{setPeriodRange('Tomorrow')}}
-            RadioButtonProps={{
-              value: '1',
-              status: periodRange == 'Tomorrow'? 'checked': 'unchecked',
-            }}
-          />
-          <BOHTlbRadio
-            label='Yesterday'
-            onPress={()=>{setPeriodRange('Yesterday')}}
-            RadioButtonProps={{
-              value: '1',
-              status: periodRange == 'Yesterday'? 'checked': 'unchecked',
-            }}
-          />
-          <BOHTlbRadio
-            label='Today+Tomorrow'
-            onPress={()=>{setPeriodRange('Today+Tomorrow')}}
-            RadioButtonProps={{
-              value: '1',
-              status: periodRange == 'Today+Tomorrow'? 'checked': 'unchecked',
-            }}
-          />
-          <BOHTlbRadio
-            label='7 days'
-            onPress={()=>{setPeriodRange('7days')}}
-            RadioButtonProps={{
-              value: '1',
-              status: periodRange == '7days'? 'checked': 'unchecked',
-            }}
-          />
-        </BOHToolbar>
-        <BOHToolbar>
-          <BOHTlbRadio
-            label='Checked In'
-            style={{margin:0}}
-            onPress={()=>{
-              changeSearchOptions('stage', null);
-              changeSearchOptions('status_filter', 1)
-            }}
-            RadioButtonProps={{
-              value: '1',
-              status: searchOptions.status_filter == 1? 'checked': 'unchecked',
-              color: '#ff4d4d',
-            }}
-          />
-          <BOHTlbRadio
-            label='Checked Out'
-            onPress={()=>{
-              changeSearchOptions('stage', null);
-              changeSearchOptions('status_filter', 2)
-            }}
-            RadioButtonProps={{
-              value: '1',
-              status: searchOptions.status_filter == 2? 'checked': 'unchecked',
-              color: '#ff4d4d',
-            }}
-          />
-          {/* <BOHTlbRadio
-            label='Provisional'
-            onPress={()=>{
-              changeSearchOptions('stage', null);
-              changeSearchOptions('status_filter', 3)
-            }}
-            RadioButtonProps={{
-              value: '1',
-              status: searchOptions.status_filter == 3? 'checked': 'unchecked',
-              color: '#ff4d4d',
-            }}
-          /> */}
-          <BOHTlbRadio
-            label='Confirmed'
-            onPress={()=>{
-              changeSearchOptions('stage', null);
-              changeSearchOptions('status_filter', 4)
-            }}
-            RadioButtonProps={{
-              value: '1',
-              status: searchOptions.status_filter == 4? 'checked': 'unchecked',
-              color: '#ff4d4d',
-            }}
-          />
-          <BOHTlbRadio
-            label='All'
-            style={{opacity: searchOptions.status_filter?1:0,}}
-            onPress={()=>{
-              changeSearchOptions('stage', null);
-              changeSearchOptions('status_filter', null)
-            }}
-            RadioButtonProps={{
-              value: '1',
-              status: searchOptions.status_filter == null? 'checked': 'unchecked',
-              color: '#ff4d4d',
-            }}
-          />
-        </BOHToolbar>
-        <BOHToolbar style={{width: '100%', justifyContent:'space-between'}}>
-          <BOHTlbrSearchInput
-            boxStyle={{margin:0}}
-            label='Customer'
-            defaultValue={searchOptions.customer}
-            onChangeText={(val)=>changeSearchOptions('customer', val)}
-          />
-          <BOHTlbrSearchInput
-            boxStyle={{margin:0}}
-            label='Brand'
-            defaultValue={searchOptions.brand}
-            onChangeText={(val)=>changeSearchOptions('brand', val)}
-          />
-          <BOHTlbrSearchInput
-            boxStyle={{margin:0}}
-            label='Order number'
-            defaultValue={searchOptions.order_number}
-            onChangeText={(val)=>changeSearchOptions('order_number', val)}
-          />
-          <BOHTlbrSearchPicker
-            width={170}
-            boxStyle={{margin:0}}
-            enabled={searchOptions.status_filter?false:true}
-            label="Category"
-            items={[
-              {label: '', value: ''}, 
-              ...stage
-                .map((item, index) => {
-                  if (index === 2 || index === 3 || index === 4) {
-                    return {label: item, value: index};
-                  } else {
-                    return null;
-                  }
-                })
-                .filter(item => item !== null)
-            ]}
-            selectedValue={searchOptions.stage || ''}
-            onValueChange={val=>changeSearchOptions('stage', val)}/>
-        </BOHToolbar>
+          <BOHToolbar style={{zIndex:100}}>
+            <Text style={{marginRight:8, fontSize:TextdefaultSize}}>From</Text>
+            {Platform.OS == 'web' && 
+              renderBOHTlbDatePicker(searchOptions.start_date, (date) => {
+                const year = date.getFullYear();
+                const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+                changeSearchOptions('start_date', formattedDate);
+            })}
+            <Text style={{marginHorizontal:8, fontSize:TextdefaultSize}}>To</Text>
+            {Platform.OS == 'web' && 
+              renderBOHTlbDatePicker(searchOptions.end_date, (date) => {
+                const year = date.getFullYear();
+                const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+                changeSearchOptions('end_date', formattedDate);
+            })}
+            <BOHTlbRadio
+              label='Today'
+              onPress={()=>{setPeriodRange('Today')}}
+              RadioButtonProps={{
+                value: '1',
+                status: periodRange == 'Today'? 'checked': 'unchecked',
+              }}
+            />
+            <BOHTlbRadio
+              label='Tomorrow'
+              onPress={()=>{setPeriodRange('Tomorrow')}}
+              RadioButtonProps={{
+                value: '1',
+                status: periodRange == 'Tomorrow'? 'checked': 'unchecked',
+              }}
+            />
+            <BOHTlbRadio
+              label='Yesterday'
+              onPress={()=>{setPeriodRange('Yesterday')}}
+              RadioButtonProps={{
+                value: '1',
+                status: periodRange == 'Yesterday'? 'checked': 'unchecked',
+              }}
+            />
+            <BOHTlbRadio
+              label='Today+Tomorrow'
+              onPress={()=>{setPeriodRange('Today+Tomorrow')}}
+              RadioButtonProps={{
+                value: '1',
+                status: periodRange == 'Today+Tomorrow'? 'checked': 'unchecked',
+              }}
+            />
+            <BOHTlbRadio
+              label='7 days'
+              onPress={()=>{setPeriodRange('7days')}}
+              RadioButtonProps={{
+                value: '1',
+                status: periodRange == '7days'? 'checked': 'unchecked',
+              }}
+            />
+          </BOHToolbar>
+          <BOHToolbar>
+            <BOHTlbRadio
+              label='Checked In'
+              style={{margin:0}}
+              onPress={()=>{
+                changeSearchOptions('stage', null);
+                changeSearchOptions('status_filter', 1)
+              }}
+              RadioButtonProps={{
+                value: '1',
+                status: searchOptions.status_filter == 1? 'checked': 'unchecked',
+                color: '#ff4d4d',
+              }}
+            />
+            <BOHTlbRadio
+              label='Checked Out'
+              onPress={()=>{
+                changeSearchOptions('stage', null);
+                changeSearchOptions('status_filter', 2)
+              }}
+              RadioButtonProps={{
+                value: '1',
+                status: searchOptions.status_filter == 2? 'checked': 'unchecked',
+                color: '#ff4d4d',
+              }}
+            />
+            {/* <BOHTlbRadio
+              label='Provisional'
+              onPress={()=>{
+                changeSearchOptions('stage', null);
+                changeSearchOptions('status_filter', 3)
+              }}
+              RadioButtonProps={{
+                value: '1',
+                status: searchOptions.status_filter == 3? 'checked': 'unchecked',
+                color: '#ff4d4d',
+              }}
+            /> */}
+            <BOHTlbRadio
+              label='Confirmed'
+              onPress={()=>{
+                changeSearchOptions('stage', null);
+                changeSearchOptions('status_filter', 4)
+              }}
+              RadioButtonProps={{
+                value: '1',
+                status: searchOptions.status_filter == 4? 'checked': 'unchecked',
+                color: '#ff4d4d',
+              }}
+            />
+            <BOHTlbRadio
+              label='All'
+              style={{opacity: searchOptions.status_filter?1:0,}}
+              onPress={()=>{
+                changeSearchOptions('stage', null);
+                changeSearchOptions('status_filter', null)
+              }}
+              RadioButtonProps={{
+                value: '1',
+                status: searchOptions.status_filter == null? 'checked': 'unchecked',
+                color: '#ff4d4d',
+              }}
+            />
+          </BOHToolbar>
+          <BOHToolbar style={{width: '100%', justifyContent:'space-between'}}>
+            <BOHTlbrSearchInput
+              boxStyle={{margin:0}}
+              label='Customer'
+              defaultValue={searchOptions.customer}
+              onChangeText={(val)=>changeSearchOptions('customer', val)}
+            />
+            <BOHTlbrSearchInput
+              boxStyle={{margin:0}}
+              label='Brand'
+              defaultValue={searchOptions.brand}
+              onChangeText={(val)=>changeSearchOptions('brand', val)}
+            />
+            <BOHTlbrSearchInput
+              boxStyle={{margin:0}}
+              label='Order number'
+              defaultValue={searchOptions.order_number}
+              onChangeText={(val)=>changeSearchOptions('order_number', val)}
+            />
+            <BOHTlbrSearchPicker
+              width={170}
+              boxStyle={{margin:0}}
+              enabled={searchOptions.status_filter?false:true}
+              label="Category"
+              items={[
+                {label: '', value: ''}, 
+                ...stage
+                  .map((item, index) => {
+                    if (index === 2 || index === 3 || index === 4) {
+                      return {label: item, value: index};
+                    } else {
+                      return null;
+                    }
+                  })
+                  .filter(item => item !== null)
+              ]}
+              selectedValue={searchOptions.stage || ''}
+              onValueChange={val=>changeSearchOptions('stage', val)}/>
+          </BOHToolbar>
           <BOHTable>
             <BOHTHead>
               <BOHTR>

@@ -1,8 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, TextInput } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
-import { v4 as uuidv4 } from 'uuid';
-import { Picker } from '@react-native-picker/picker';
 import { Dropdown } from 'react-native-element-dropdown';
 
 import { checkedInBarcode, getReservationDetail, scanBarcode, updateReservation } from '../../api/Reservation';
@@ -14,9 +11,9 @@ import { BOHTBody, BOHTD, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/
 import { BOHButton, BOHToolbar } from '../../common/components/bohtoolbar';
 import LabeledTextInput from '../../common/components/input/LabeledTextInput';
 import { msgStr } from '../../common/constants/Message';
+import { printReservation } from '../../common/utils/Print';
 
 import { actionOrderStyle } from './styles/ActionOrderStyle';
-import { printReservation } from '../../common/utils/Print';
 
 interface Props {
   openOrderScreen: (itemName: string, data?: any ) => void;
@@ -33,6 +30,8 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
   const [barcode, SetBarcode] = useState('');
   const [nextDisable, setNextDisable] = useState(true);
 
+  const barcodeInputRef = useRef(null);
+
   useEffect(()=>{
     getReservationDetail(initialData.orderId, (jsonRes)=>{
       setOrderInfo(jsonRes);
@@ -40,6 +39,9 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
     getColorcombinationsData((jsonRes)=>{
       setColors([{id:null, color_key:'Off color', combination:'', color:' '}, ...jsonRes]);
     });
+    if (barcodeInputRef.current) {
+      barcodeInputRef.current.focus();
+    }
   }, []);
 
   useEffect(()=>{
@@ -360,6 +362,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
             <Text style={{fontWeight:'bold', fontSize:16}}>{orderInfo.stage == 3 && "Checked Out!" || orderInfo.stage == 4 && "Checked In!"}</Text>
             <View style={{flexDirection:'row'}}>
               <TextInput 
+                ref={barcodeInputRef}
                 editable={orderInfo.stage == 2 || orderInfo.stage == 3 ? true : false}
                 style={{ 
                   height: 40,
