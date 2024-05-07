@@ -2,9 +2,10 @@ import React from 'react';
 import { Text, StyleSheet, TextStyle, View, ViewStyle } from 'react-native';
 import { TextSmallSize, TextdefaultSize } from '../../constants/Fonts';
 import { Picker, PickerProps } from '@react-native-picker/picker';
+import { ItemValue } from '@react-native-picker/picker/typings/Picker';
 
 interface BOHTlbrSearchBoxProps extends PickerProps {
-  items: Array<{ label: string; value: string }>;
+  items: Array<{ label: string; value: ItemValue }>;
   label?: string;
   boxStyle?: ViewStyle;
   labelStyle?: TextStyle;

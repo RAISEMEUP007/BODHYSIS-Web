@@ -110,3 +110,7 @@ export const getDisplayGroupOrder = async (cb=(jR, s, e)=>{}) => {
 export const updateOrderIndex = async (payload, cb=(jR, s, e)=>{}) => {
   return await postAPICall('product/updateorderindex', payload, cb);
 }
+
+export const getProductDetailByBarcode = async (payload, cb=(jR, s, e)=>{}) => {
+  return await postAPICall('product/getproductdetailbybarcode/', payload, cb);
+}

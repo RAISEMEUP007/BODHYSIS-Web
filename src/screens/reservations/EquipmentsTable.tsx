@@ -42,20 +42,20 @@ const EquipmentsTable =  ({ items, onEdit, onDelete, width, isExtra, extraWith }
       tableData.map((item, index) => {
         rows.push(
           <View key={index} style={styles.tableRow}>
-            <View style={[styles.cell, {width:60, alignItems:'flex-end'}]}>
+            <View style={[styles.cell, {width:50, alignItems:'flex-end'}]}>
               <Text>{(index + 1)}</Text>
             </View>
             <View style={[styles.cell, {flex:1}]}>
               <Text>{item.display_name}</Text>
             </View>
-            <View style={[styles.cell, { width: 100, paddingRight: 6, alignItems: 'flex-end' }]}>
+            {/* <View style={[styles.cell, { width: 100, paddingRight: 6, alignItems: 'flex-end' }]}>
               <Text>{item.quantity ? item.quantity : '0'}</Text>
-            </View>
+            </View> */}
             <View style={[styles.cell, { width: 100, paddingRight: 6, alignItems: 'flex-end' }]}>
               <Text>{(item.price ? item.price : 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
             </View>
             {isExtra && (
-              <View style={[styles.cell, { width: extraWith || 400, flexDirection:'row', alignItems:'center', justifyContent:'flex-start', paddingVertical:2, paddingHorizontal:6}]}>
+              <View style={[styles.cell, { width: extraWith || 400, flexDirection:'row', flexWrap:'wrap', alignItems:'center', justifyContent:'flex-start', paddingVertical:2, paddingHorizontal:6}]}>
               {item && item.extras && item.extras.map((extra, index) => (
                 <Tooltip key={index} title={extra.name} enterTouchDelay={100} leaveTouchDelay={100}>
                   <View style={{borderWidth:1, borderColor:'#ccc', margin:4, paddingTop: 1, paddingBottom:4, paddingHorizontal:8, borderRadius:10, maxWidth:110, backgroundColor:'#6B3FA0'}}>
@@ -100,7 +100,7 @@ const EquipmentsTable =  ({ items, onEdit, onDelete, width, isExtra, extraWith }
         <View style={[styles.tableHeader]}>
           <Text style={[styles.columnHeader, { width: 50 }]}>{'No'}</Text>
           <Text style={[styles.columnHeader, { flex:1 }]}>{'Product Family'}</Text>
-          <Text style={[styles.columnHeader, { width: 90 }]}>{'Quantity'}</Text>
+          {/* <Text style={[styles.columnHeader, { width: 90 }]}>{'Quantity'}</Text> */}
           <Text style={[styles.columnHeader, { width: 75 }]}>{'Price'}</Text>
           {isExtra && (
             <Text style={[styles.columnHeader, { width: extraWith || 400 }]}>{'Extras'}</Text>
@@ -109,7 +109,7 @@ const EquipmentsTable =  ({ items, onEdit, onDelete, width, isExtra, extraWith }
           <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
         </View>
         <ScrollView
-          style={{ height:200}}>
+          style={{ minHeight:200}}>
           {renderTableData()}
         </ScrollView>
       </View>

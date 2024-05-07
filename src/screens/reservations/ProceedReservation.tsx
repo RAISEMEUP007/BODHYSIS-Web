@@ -3,23 +3,24 @@ import { View, ScrollView, TouchableOpacity, Text, TouchableHighlight, Platform 
 import { FontAwesome5 } from '@expo/vector-icons';
 import { v4 as uuidv4 } from 'uuid';
 
-import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
+import { deleteReservationItem, getReservationDetail, updateReservation } from '../../api/Reservation';
+import { getHeaderData, getPriceDataByGroup } from '../../api/Price';
+import { getDiscountCodesData } from '../../api/Settings';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
-import { deleteReservationItem, getReservationDetail, updateReservation } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
+import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
+import { printReservation } from '../../common/utils/Print';
+import AddCardModal from '../../common/components/stripe-react/AddCardModal';
 
-import { proceedReservationStyle } from './styles/ProceedReservationStyle';
 import ReservationMainInfo from './ReservationMainInfo';
 import { ReservationExtensionPanel } from './ReservationExtensionPanel/ReservationExtensionPanel';
 import EquipmentsTable from './EquipmentsTable';
 import AddTransactionModal from './ReservationExtensionPanel/AddTransactionModal';
 import AddReservationItemModal from './AddReservationItemModal';
-import AddCardModal from '../../common/components/stripe-react/AddCardModal';
-import { getHeaderData, getPriceDataByGroup } from '../../api/Price';
-import { getDiscountCodesData } from '../../api/Settings';
-import { API_URL } from '../../common/constants/AppConstants';
 import RefundStripeModal from './ReservationExtensionPanel/RefundStripeModal';
+
+import { proceedReservationStyle } from './styles/ProceedReservationStyle';
 
 interface Props {
   openReservationScreen: (itemName: string, data?: any ) => void;
@@ -116,57 +117,63 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     };
     
     const existingProduct = equipmentData.find(item => {
-      return item.family_id === productFamily.id && arraysAreEqual(item.extras, extras);
+      return item.display_name === productFamily.display_name && arraysAreEqual(item.extras, extras);
     });
 
-    if (existingProduct) {
-      showConfirm(
-        `${productFamily.display_name} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
-        async ()=>{
-        const updatedEquipmentData = equipmentData.map(item => {
-          if (item.family_id === productFamily.id && arraysAreEqual(item.extras, extras)) {
-            return { ...item, quantity: item.quantity + quantity, extras:extras };
-          }
-          return item;
-        });
+    // if (existingProduct) {
+    //   showConfirm(
+    //     `${productFamily.display_name} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
+    //     async ()=>{
+    //     const updatedEquipmentData = equipmentData.map(item => {
+    //       if (item.family_id === productFamily.id && arraysAreEqual(item.extras, extras)) {
+    //         return { ...item, quantity: item.quantity + quantity, extras:extras };
+    //       }
+    //       return item;
+    //     });
 
-        const caclcuatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, updatedEquipmentData);
-        saveReservationItems(caclcuatedPricedData, ()=>{
-          setUpdateCount(prev => prev + 1);
-        })
-      });
-    } else {
+    //     const caclcuatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, updatedEquipmentData);
+    //     saveReservationItems(caclcuatedPricedData, ()=>{
+    //       setUpdateCount(prev => prev + 1);
+    //     })
+    //   });
+    // } else {
       const newItem = {
         ...productFamily,
         id: parseInt(uuidv4(), 16),
         reservation_id: reservationInfo.id,
         family_id: productFamily.id,
         price_group_id: productFamily?.lines[0]?.price_group_id ?? 0,
-        quantity: quantity,
+        quantity: 1,
         extras: extras,
       }
-      const newData = [...equipmentData, newItem];
+
+      let newData = [...equipmentData];
+      if(quantity){
+        for(let i=0; i<quantity; i++){
+          newData.push(newItem);
+        }
+      }
       const caclcuatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
       console.log(caclcuatedPricedData);
       saveReservationItems(caclcuatedPricedData, ()=>{
         setUpdateCount(prev => prev + 1);
       })
     }
-  }
-console.log(equipmentData);
-  const updateReservationItem = async (oldFamily, newFamily, quantity, extras) => {
-    const existingProduct = equipmentData.find(item => item.family_id === newFamily.id);
+  // }
 
-    if (oldFamily.family_id != newFamily.id && existingProduct) {
-      showAlert('warning', `${newFamily.display_name} is already in the reservation items.`);
-    }else {
+  const updateReservationItem = async (oldFamily, newFamily, quantity, extras) => {
+    const existingProduct = equipmentData.find(item => item.display_name === newFamily.display_name);
+
+    // if (oldFamily.display_name != newFamily.display_name && existingProduct) {
+    //   showAlert('warning', `${newFamily.display_name} is already in the reservation items.`);
+    // }else {
       const newItem = {
         ...newFamily,
         id: oldFamily.id,
         reservation_id: oldFamily.reservation_id,
         family_id: newFamily.id,
-        price_group_id: newFamily.price_group_id,
-        quantity: quantity,
+        price_group_id: newFamily?.lines[0]?.price_group_id ?? 0,
+        quantity: 1,
         extras: extras,
       }
   
@@ -179,10 +186,11 @@ console.log(equipmentData);
       });
     
       const caclcuatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
+      console.log(caclcuatedPricedData);
       saveReservationItems(caclcuatedPricedData, (jsonRes)=>{
         setUpdateCount(prev => prev + 1);
       })
-    }
+    // }
   }
 
   const removeReservationItem = async (item, index) => {
@@ -384,6 +392,8 @@ console.log(equipmentData);
         price = Math.round(basedonPoint.value*100)/100 * item.quantity;
       }
 
+      console.log(price);
+
       //calcualte extras price
       if(item.extras && item.extras.length>0){
         let extrasPrice = item.extras.reduce((total, extra) => total + extra.fixed_price, 0);
@@ -424,10 +434,6 @@ console.log(equipmentData);
       case 4: case '4': return '#4CBA70';
       default:  return '#262E32';
     }
-  }
-
-  const printReservation = async () => {
-    location.href = API_URL + "/reservations/exportpdf/"+reservationInfo.id
   }
 
   return (
@@ -477,7 +483,7 @@ console.log(equipmentData);
                 </TouchableOpacity>
               </View>
               <View style={{flexDirection:'row', alignItems:'center'}}>
-                <TouchableOpacity style={styles.outLineButton} onPress={printReservation}>
+                <TouchableOpacity style={styles.outLineButton} onPress={()=>printReservation(reservationInfo.id)}>
                   <Text style={styles.outlineBtnText}>Print</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.outLineButton}>
@@ -522,7 +528,7 @@ console.log(equipmentData);
                   removeReservationItem(item, index);
                 }}
                 isExtra={true}
-                extraWith={300}
+                extraWith={350}
               />
             </View>
           </View>

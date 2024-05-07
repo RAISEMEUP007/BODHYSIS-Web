@@ -19,7 +19,7 @@ const BOHToolbar: React.FC<BOHToolbarProps> = ({ children, style, ...rest }) => 
 const styles = StyleSheet.create({
   defaultTheme: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 8,
   },

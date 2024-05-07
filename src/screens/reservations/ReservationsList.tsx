@@ -3,9 +3,7 @@ import {
   ScrollView,
   View,
   Text,
-  TouchableHighlight,
   TouchableOpacity,
-  TextInput,
   Platform
 } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -22,7 +20,7 @@ import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 
 import { reservationListsStyle } from './styles/ReservationListStyle';
 import { CommonContainer } from '../../common/components/CustomLayout';
-import { BOHButton, BOHToolbar } from '../../common/components/bohtoolbar';
+import { BOHButton, BOHTlbrSearchInput, BOHTlbrSearchPicker, BOHToolbar } from '../../common/components/bohtoolbar';
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
 
 if (Platform.OS === 'web') {
@@ -168,14 +166,14 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     if (tableData.length > 0) {
       tableData.map((item, index) => {
         rows.push(
-          <BOHTR>
+          <BOHTR key={index}>
             <BOHTD width={90}>{item.order_number}</BOHTD>
             <BOHTD width={160}>{item.brand}</BOHTD>
             <BOHTD width={160}>{item.full_name}</BOHTD>
             <BOHTD width={100}>{item.end_date ? formatDateInline(item.end_date):''}</BOHTD>
             <BOHTD width={100}>{item.start_date ? formatDateInline(item.start_date):''}</BOHTD>
             <BOHTD width={110}>{item?.quantity??''}</BOHTD>
-            <BOHTD width={90}>{convertStageToString(item.stage)}</BOHTD>
+            <BOHTD width={100}>{convertStageToString(item.stage)}</BOHTD>
             <BOHTDIconBox width={80}>
               <TouchableOpacity
                 onPress={() => {
@@ -201,62 +199,38 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     >
       <ScrollView horizontal={true}>
         <CommonContainer>
-          <BOHToolbar>
+          <BOHToolbar style={{zIndex:100}}>
             <Text style={styles.searchLabel}>From</Text>
             {Platform.OS == 'web' && renderDatePicker(searchOptions.start_date, (date)=>changeSearchOptions('start_date', date.toISOString().substr(0, 10)))}
             <Text style={styles.searchLabel}>To</Text>
             {Platform.OS == 'web' && renderDatePicker(searchOptions.end_date, (date)=>changeSearchOptions('end_date', date.toISOString().substr(0, 10)))}
           </BOHToolbar>
-          <BOHToolbar>
-            <View style={styles.searchBox}>
-              <Text style={styles.searchLabel}>Customer</Text>
-              <TextInput
-                style={styles.searchInput}
-                placeholder=""
-                defaultValue={searchOptions.customer}
-                onChangeText={(val)=>changeSearchOptions('customer', val)}
-              />
-            </View>
-            <View style={styles.searchBox}>
-              <Text style={styles.searchLabel}>Brand</Text>
-              <TextInput
-                style={styles.searchInput}
-                placeholder=""
-                defaultValue={searchOptions.brand}
-                onChangeText={(val)=>changeSearchOptions('brand', val)}
-              />
-            </View>
-            <View style={styles.searchBox}>
-              <Text style={styles.searchLabel}>Order number</Text>
-              <TextInput
-                style={styles.searchInput}
-                placeholder=""
-                defaultValue={searchOptions.order_number}
-                onChangeText={(val)=>changeSearchOptions('order_number', val)}
-              />
-            </View>
-            <View style={styles.searchBox}>
-              <Text style={styles.searchLabel}>Stage</Text>
-              {/* <TextInput
-                style={styles.searchInput}
-                placeholder=""
-                value={searchOptions.stage || ''}
-                onChangeText={(val)=>changeSearchOptions('stage', val)}
-              /> */}
-              <Picker
-                style={[styles.searchInput]}
-                selectedValue={searchOptions.stage || ''}
-                onValueChange={val=>changeSearchOptions('stage', val)}
-              >
-                <Picker.Item label={''} value={null} />
-                {stage.length > 0 &&
-                  stage.map((stageStr, index) => {
-                    return (
-                      <Picker.Item key={index} label={stageStr} value={index} />
-                    );
-                  })}
-              </Picker>
-            </View>
+          <BOHToolbar style={{width: '100%', justifyContent:'space-between'}}>
+            <BOHTlbrSearchInput
+              boxStyle={{margin:0}}
+              width={125}
+              label='Customer'
+              defaultValue={searchOptions.customer}
+              onChangeText={(val)=>changeSearchOptions('customer', val)}
+            />
+            <BOHTlbrSearchInput
+              width={125}
+              label='Brand'
+              defaultValue={searchOptions.brand}
+              onChangeText={(val)=>changeSearchOptions('brand', val)}
+            />
+            <BOHTlbrSearchInput
+              width={125}
+              label='Order number'
+              defaultValue={searchOptions.order_number}
+              onChangeText={(val)=>changeSearchOptions('order_number', val)}
+            />
+            <BOHTlbrSearchPicker
+              width={125}
+              items={[{label:'', value:''}, ...stage.map((item, index)=>({'label':item, 'value':index}))]}
+              label="Category"
+              selectedValue={searchOptions.stage || ''}
+              onValueChange={val=>changeSearchOptions('stage', val)}/>
           </BOHToolbar>
           <BOHToolbar>
             {/* <TouchableHighlight style={styles.button} onPress={()=>{
@@ -279,7 +253,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
                 <BOHTH width={100}>{'To'}</BOHTH>
                 <BOHTH width={100}>{'From'}</BOHTH>
                 <BOHTH width={110}>{'Qty of bikes'}</BOHTH>
-                <BOHTH width={90}>{'Stage'}</BOHTH>
+                <BOHTH width={100}>{'Stage'}</BOHTH>
                 <BOHTH width={80}>{'Proceed'}</BOHTH>
               </BOHTR>
             </BOHTHead>
