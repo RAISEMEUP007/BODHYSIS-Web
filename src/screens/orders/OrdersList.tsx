@@ -21,11 +21,11 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
 
   const [tableData, setTableData] = useState([]);
   const [updateOrderListTrigger, setUpdateOrderListTrigger] = useState(true);
+  const [barcode, SetBarcode] = useState('');
+  const [periodRange, setPeriodRange] = useState<any>('');
 
   const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
   const today = new Date().toISOString().substr(0, 10);
-
-  const [periodRange, setPeriodRange] = useState<any>('');
   
   const [ searchOptions, setSearchOptions ] = useState({
     start_date : twoWeeksAgo.toISOString().substr(0, 10),
@@ -376,10 +376,20 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
               ref={barcodeInputRef}
               boxStyle={{margin:0, marginRight:12}}
               style={{paddingVertical:5}}
-            />
+              defaultValue={barcode}
+              onChangeText={SetBarcode}
+              onSubmitEditing={()=>{
+                if(barcode.trim() && tableData.length > 0){
+                  openOrderScreen('Action Order', {orderId:tableData[0].id, barcode:barcode.trim()})
+                }
+              }}/>
             <BOHButton
               label='Scan'
-            />
+              onPress={()=>{
+                if(barcode.trim() && tableData.length > 0){
+                  openOrderScreen('Action Order', {orderId:tableData[0].id, barcode:barcode.trim()})
+                }
+              }}/>
           </BOHToolbar>
           <BOHTable>
             <BOHTHead>

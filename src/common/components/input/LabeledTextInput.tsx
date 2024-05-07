@@ -16,15 +16,20 @@ const LabeledTextInput = ({
   containerStyle,
   labelStyle,
   inputStyle,
+  editable,
   ...otherTextInputProps
 }: Props & TextInputProps) => {
+
+  // const inputContainerStyle = editable !== false ? styles.input : [styles.input, styles.inputDisable];
+  const inputContainerStyle = styles.input;
 
   return (
     <View style={[containerStyle, {width}]}>
       <Text style={[styles.label, labelStyle]}>{label}</Text>
       <TextInput
-        style={[styles.input, {width:'!00%'}, inputStyle]}
+        style={[inputContainerStyle, {width:'!00%'}, inputStyle]}
         placeholderTextColor="#ccc"
+        editable={editable}
         {...otherTextInputProps}
       />
     </View>
@@ -45,7 +50,8 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   inputDisable: {
-    borderColor: '#ddd',
+    // colro: ''
+    borderColor: '#bfbfbf',
   },
 });
 

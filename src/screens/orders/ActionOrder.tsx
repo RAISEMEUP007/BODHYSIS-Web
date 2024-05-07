@@ -27,23 +27,38 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
 
   const [orderInfo, setOrderInfo] = useState<any>({});
   const [colors, setColors] = useState([{id:null, color_key:'Off color', combination:'', color:' '}]);
-  const [barcode, SetBarcode] = useState('');
+  const [barcode, SetBarcode] = useState(initialData.barcode || '');
   const [nextDisable, setNextDisable] = useState(true);
+
+  const [inputValues, setInputValues] = useState({
+    email: '',
+    phone_number: '',
+    color_id: null,
+    note: '',
+  });
 
   const barcodeInputRef = useRef(null);
 
-  useEffect(()=>{
-    getReservationDetail(initialData.orderId, (jsonRes)=>{
-      setOrderInfo(jsonRes);
-    });
-    getColorcombinationsData((jsonRes)=>{
-      setColors([{id:null, color_key:'Off color', combination:'', color:' '}, ...jsonRes]);
-    });
+  useEffect(() => {
     if (barcodeInputRef.current) {
       barcodeInputRef.current.focus();
     }
-  }, []);
 
+    const fetchData = async () => {
+      await getReservationDetail(initialData.orderId, (jsonRes, status)=>{
+        if(status == 200){
+          setOrderInfo(jsonRes);
+          if(initialData.barcode && jsonRes) scanBarcodeHandle(initialData.barcode, jsonRes);
+        }else setOrderInfo({});
+      });
+      await getColorcombinationsData((jsonRes)=>{
+        setColors([{id:null, color_key:'Off color', combination:'', color:' '}, ...jsonRes]);
+      });
+    }
+  
+    fetchData();
+  }, []);
+  
   useEffect(()=>{
     if(orderInfo){
       let disable = false
@@ -59,10 +74,32 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
           });
         }else disable=true;
       }
-      // console.log(item.status);
       setNextDisable(disable)
+      setInputValues({
+        email: orderInfo?.email || orderInfo?.customer?.email || '',
+        phone_number: orderInfo?.phone_number || orderInfo?.customer?.phone_number || '',
+        color_id: orderInfo?.color?.id??null,
+        note: orderInfo?.note || '',
+      })
+    }else {
+      setInputValues({
+        email: '',
+        phone_number: '',
+        color_id: null,
+        note: '',
+      })
     }
   }, [orderInfo])
+
+  const UpdateDetails = () => {
+    const payload = {
+      id: orderInfo.id,
+      ...inputValues
+    }
+    updateReservation(payload, (jsonRes, status)=>{
+      if(status == 201) showAlert('success', 'Updated successfully');
+    });
+  }
 
   const UpdateOrderInfo = (key: string, value: any) => {
     const payload = {
@@ -93,9 +130,8 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
     }
     return <>{rows}</>;
   };
-// console.log(orderInfo);
-  const scanBarcodeHandle = () => {
-    console.log(barcode);
+
+  const scanBarcodeHandle = (barcode, orderInfo) => {
     const barCode = barcode.trim();
     if(!barCode) {
       showAlert('warning', 'There is no scanned barcode');
@@ -168,6 +204,14 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
     }
   }
 
+  const handleInputChange = (fieldName, value) => {
+    const newValues = {
+      ...inputValues,
+      [fieldName]: value
+    };
+    setInputValues(newValues);
+  }
+
   const processNextStage = () => {
     const payload = {
       id: orderInfo.id,
@@ -202,7 +246,12 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
           <BOHToolbar style={{justifyContent:'flex-end', alignItems:'center',}}>
             <BOHButton
               label='Print'
-              onPress={()=>printReservation(orderInfo.id)}
+              onPress={()=>printReservation(orderInfo.id, 1)}
+            />
+            <BOHButton
+              style={{marginLeft:20}}
+              label='Update'
+              onPress={()=>UpdateDetails()}
             />
           </BOHToolbar>
           <View style={{flexDirection:'row', marginVertical:4}}>
@@ -234,7 +283,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               editable={false}
             />
           </View>
-          <View style={{flexDirection:'row', marginVertical:4}}>
+          {/* <View style={{flexDirection:'row', marginVertical:4}}>
             <LabeledTextInput
               label='Start location'
               width={300}
@@ -254,7 +303,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               // onChangeText={value => handleInputChange('billableDays', value)}
               editable={false}
             />
-          </View>
+          </View> */}
           <View style={{flexDirection:'row', marginVertical:4}}>
             <LabeledTextInput
               label='Customer Name'
@@ -266,49 +315,48 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               // onChangeText={value => handleInputChange('billableDays', value)}
               editable={false}
             />
+          </View>
+          <View style={{flexDirection:'row', marginVertical:4}}>
             <LabeledTextInput
+              containerStyle={{marginRight:30}}
               label='Email'
               width={300}
               placeholder='Email'
               placeholderTextColor="#ccc"
-              value={orderInfo.customer?.email??''}
-              // onChangeText={value => handleInputChange('billableDays', value)}
-              editable={false}
+              value={inputValues.email}
+              onChangeText={value => handleInputChange('email', value)}
             />
-          </View>
-          <View style={{flexDirection:'row', marginVertical:4}}>
-            <LabeledTextInput
+            {/* <LabeledTextInput
               label='Mobile phone'
               width={300}
               containerStyle={{marginRight:30}}
               placeholder='Mobile phone'
               placeholderTextColor="#ccc"
-              value={orderInfo?.customer?.mobile_phone??''}
-              // onChangeText={value => handleInputChange('billableDays', value)}
+              value={orderInfo.phone_number || orderInfo?.customer?.mobile_phone || ''}
+              onChangeText={value => handleInputChange('billableDays', value)}
               editable={false}
-            />
+            /> */}
             <LabeledTextInput
-              label='Phone'
+              label='Phone Number'
               width={300}
-              placeholder='Phone'
+              placeholder='Phone Number'
               placeholderTextColor="#ccc"
-              value={orderInfo?.customer?.phone_number??''}
-              // onChangeText={value => handleInputChange('billableDays', value)}
-              editable={false}
+              value={inputValues.phone_number}
+              onChangeText={value => handleInputChange('phone_number', value)}
             />
           </View>
           <View style={{flexDirection:'row', marginVertical:4}}>
             <View style={{width:300, marginRight:30}}>
               <Text style={styles.label}>Color</Text>
                 <Dropdown
-                  style={[styles.select, { backgroundColor: orderInfo?.color?.color??'defaultColor' }]}
+                  style={[styles.select, { backgroundColor: colors.find(item=>(item.id == inputValues.color_id))?.color || ' ' }]}
                   placeholderStyle={{color:'#ccc'}}
                   data={colors}
                   maxHeight={300}
                   labelField="color_key"
                   valueField="id"
                   placeholder="Select color"
-                  value={orderInfo?.color?.id??null}
+                  value={inputValues.color_id}
                   renderItem={item=>(
                     <View style={{backgroundColor:item.color, flexDirection:'row', justifyContent:'space-between', paddingVertical:8, paddingHorizontal:12}}>
                       <Text>{item.color_key}</Text>
@@ -316,7 +364,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
                     </View>
                   )}
                   onChange={item => {
-                    UpdateOrderInfo('color_id', item.id);
+                    handleInputChange('color_id', item.id);
                   }}
                 />
             </View>
@@ -325,8 +373,8 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               width={300}
               placeholder='Combination'
               placeholderTextColor="#ccc"
-              value={orderInfo?.color?.combination.toString()??''}
-              // onChangeText={value => handleInputChange('billableDays', value)}
+              value={colors.find(item=>(item.id == inputValues.color_id))?.combination || ' ' }
+              onChangeText={value => handleInputChange('billableDays', value)}
               editable={false}
             />
           </View>
@@ -338,9 +386,8 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               placeholderTextColor="#ccc"
               multiline={true}
               inputStyle={{height:150}}
-              value={''}
-              // onChangeText={value => handleInputChange('billableDays', value)}
-              editable={false}
+              value={inputValues.note}
+              onChangeText={value => handleInputChange('note', value)}
             />
           </View>
           {/* <View style={{flexDirection:'row'}}>
@@ -375,13 +422,13 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
                 }}
                 defaultValue={barcode}
                 onChangeText={SetBarcode}
-                onSubmitEditing={scanBarcodeHandle} 
+                onSubmitEditing={()=>scanBarcodeHandle(barcode, orderInfo)} 
               />
               <BOHButton 
                 style={{alignSelf:'center'}}
                 disabled={(orderInfo.stage == 2 || orderInfo.stage == 3) && nextDisable ? false : true}
                 label='Scan'
-                onPress={scanBarcodeHandle}
+                onPress={()=>scanBarcodeHandle(barcode, orderInfo)}
               />
             </View>
           </BOHToolbar>
@@ -404,4 +451,4 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
   );
 };
 
-const styles = actionOrderStyle
+const styles = actionOrderStyle;
