@@ -28,6 +28,10 @@ export const createTransaction = (payload, cb=(jR, s, e)=>{}) => {
   postAPICall('reservation/createtransaction', payload, cb);
 };
 
-export const  getTransactionsData= (payload, cb=(jR, s, e)=>{}) => {
+export const  getTransactionsData = (payload, cb=(jR, s, e)=>{}) => {
   postAPICall('reservation/gettransactionsdata/', payload, cb);
+}
+
+export const scanBarcode = async (payload, cb=(jR, s, e)=>{}) => {
+  return await postAPICall('reservation/scanbarcode/', payload, cb);
 }

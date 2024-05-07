@@ -361,48 +361,61 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       return true;
     };
 
-    const existingProduct = equipmentData.find((item) => {
-      return item.family_id === productFamily.id && arraysAreEqual(item.extras, extras);
-    });
+    // const existingProduct = equipmentData.find((item) => {
+    //   return item.display_name === productFamily.display_name && arraysAreEqual(item.extras, extras);
+    // });
 
-    if (existingProduct) {
-      showConfirm(
-        `${productFamily.display_name} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
-        () => {
-          const updatedEquipmentData = equipmentData.map((item) => {
-            if (item.family_id === productFamily.id && arraysAreEqual(item.extras, extras)) {
-              return { ...item, quantity: item.quantity + quantity, extras };
-            }
-            return item;
-          });
+    // if (existingProduct) {
+    //   showConfirm(
+    //     `${productFamily.display_name} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
+    //     () => {
+    //       const updatedEquipmentData = equipmentData.map((item) => {
+    //         if (item.display_name === productFamily.display_name && arraysAreEqual(item.extras, extras)) {
+    //           return { ...item, quantity: item.quantity + quantity, extras };
+    //         }
+    //         return item;
+    //       });
 
-          setEquipmentData(updatedEquipmentData);
-          setItemOperations((prev) => prev + 1);
-        }
-      );
-    } else {
+    //       setEquipmentData(updatedEquipmentData);
+    //       setItemOperations((prev) => prev + 1);
+    //     }
+    //   );
+    // } else {
       const equipment = { 
         ...productFamily,
         family_id: productFamily.id,
-        quantity,
+        quantity:1,
         extras,
         price_group_id: productFamily?.lines[0]?.price_group_id ?? 0, 
       };
-      setEquipmentData((prevEquipmentData) => [...prevEquipmentData, equipment]);
+
+      let updatedEquipments = [...equipmentData];
+      if(quantity){
+        for(let i=0; i<quantity; i++){
+          updatedEquipments.push(equipment);
+        }
+      }
+      setEquipmentData(updatedEquipments);
       setItemOperations((prev) => prev + 1);
-    }
+    // }
   };
 
   const updateReservationItem = (oldLine, productFamily, quantity, extras) => {
     const existingProduct = equipmentData.find((item) => item.id === productFamily.id);
 
-    if (oldLine.id != productFamily.id && existingProduct) {
-      showAlert(
-        'warning',
-        `${productFamily.line} ${productFamily.size} is already in the reservation items.`
-      );
-    } else {
-      const newEquipment = { ...productFamily, family_id: productFamily.id, quantity, extras };
+    // if (oldLine.id != productFamily.id && existingProduct) {
+    //   showAlert(
+    //     'warning',
+    //     `${productFamily.line} ${productFamily.size} is already in the reservation items.`
+    //   );
+    // } else {
+      const newEquipment = { 
+        ...productFamily, 
+        family_id: productFamily.id, 
+        quantity:1, 
+        extras,
+        price_group_id: productFamily?.lines[0]?.price_group_id ?? 0, 
+      };
       const replaceIndex = editingIndex;
       setEquipmentData((prevEquipmentData) => {
         return prevEquipmentData.map((item, index) => {
@@ -413,10 +426,12 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
         });
       });
       setItemOperations((prev) => prev + 1);
-    }
+    // }
   };
 
   useEffect(() => {
+    console.log(startDate);
+    console.log(endDate);
     const calculatePricedData = async () => {
       if (equipmentData.length > 0) {
         if (headerData && selectedPriceTable && startDate && endDate) {
@@ -870,7 +885,7 @@ console.log(selectedPriceTable);
                   setEquipmentData(updatedEquipmentData);
                 }}
                 isExtra={true}
-                extraWith={200}
+                extraWith={300}
               />
             </View>
           </div>

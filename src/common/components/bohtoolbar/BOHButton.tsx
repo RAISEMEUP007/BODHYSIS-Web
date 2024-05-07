@@ -5,13 +5,15 @@ import { TextSmallSize } from '../../constants/Fonts';
 interface BOHButtonProps extends TouchableHighlightProps {
   label: string;
   labelStyle?: TextStyle;
+  disabled?: boolean; 
 }
 
-const BOHButton: React.FC<BOHButtonProps> = ({ label, labelStyle, style, ...rest }) => {
+const BOHButton: React.FC<BOHButtonProps> = ({ label, labelStyle, style, disabled, ...rest }) => {
   return (
     <TouchableHighlight
       {...rest}
-      style={[styles.defaultTheme, style]}
+      style={[styles.defaultTheme, style, disabled && styles.disabledTheme]}
+      disabled={disabled}
     >
       <Text style={[styles.defaultThemeText, labelStyle]}>{label}</Text>
     </TouchableHighlight>
@@ -29,6 +31,9 @@ const styles = StyleSheet.create({
     fontSize: TextSmallSize,
     color: 'white',
     textAlign: 'center',
+  },
+  disabledTheme: {
+    backgroundColor: 'gray',
   },
 });
 

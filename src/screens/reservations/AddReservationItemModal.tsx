@@ -27,8 +27,8 @@ interface AddReservationItemModalProps {
   isModalVisible: boolean;
   closeModal: () => void;
   item?: any;
-  onAdded?: (item, QuantityTxt, selectedExtras) => void;
-  onUpdated?: (oldItem, newItem, QuantityTxt, selectedExtras) => void;
+  onAdded?: (item, Quantity, selectedExtras) => void;
+  onUpdated?: (oldItem, newItem, Quantity, selectedExtras) => void;
   onClose?: () => void;
   isExtra?: boolean;
 }
@@ -48,7 +48,7 @@ const AddReservationItemModal = ({
   const [ValidMessage, setValidMessage] = useState('');
   const [ValidMessage2, setValidMessage2] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [QuantityTxt, setQuantityTxt] = useState('');
+  const [Quantity, setQuantity] = useState(1);
   const [selectedProductFamily, selectProductFamily] = useState();
   const [selectedProductId, setSelectedProductId] = useState(0);
   const [extras, setExtras] = useState([]);
@@ -126,9 +126,9 @@ const AddReservationItemModal = ({
   // console.log(selectedProductFamily);
   useEffect(() => {
     if(isModalVisible == true){
-      setQuantityTxt(item?item.quantity:'');
+      setQuantity(item?item.quantity:1);
     }else {
-      setQuantityTxt('');
+      setQuantity(1);
       closeModalhandler();
     }
   }, [isModalVisible])
@@ -153,12 +153,9 @@ const AddReservationItemModal = ({
       setValidMessage('Please select a product family');
       return;
     }
-    if (!QuantityTxt.trim()) {
-      setValidMessage2(msgStr('emptyField'));
-      return;
-    }else if(!isNaN(parseInt(QuantityTxt)) && parseInt(QuantityTxt)>0){
-      if(mode == 'add' && onAdded) onAdded(selectedProductFamily, parseInt(QuantityTxt), selectedExtras);
-      else if(mode == 'update' && onUpdated) onUpdated(item, selectedProductFamily, parseInt(QuantityTxt), selectedExtras);
+    if(Quantity>0){
+      if(mode == 'add' && onAdded) onAdded(selectedProductFamily, Quantity, selectedExtras);
+      else if(mode == 'update' && onUpdated) onUpdated(item, selectedProductFamily, Quantity, selectedExtras);
       closeModalhandler();
     }
   };
@@ -177,7 +174,7 @@ const AddReservationItemModal = ({
   };
 
   const checkInput2 = () => {
-    // if (!QuantityTxt.trim()) {
+    // if (!Quantity.trim()) {
     //   setValidMessage2(msgStr('emptyField'));
     // } else {
     //   setValidMessage2('');
@@ -225,19 +222,21 @@ const AddReservationItemModal = ({
             }
           </Picker>
           {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
-          <Text style={styles.label}>Quantity</Text>
-          <NumericInput
-            validMinNumber = {1}
-            style={styles.input}
-            placeholder="Quantity"
-            value={QuantityTxt}
-            onChangeText={(value)=>{
-              setValidMessage2('');
-              setQuantityTxt(value);
-            }}
-            placeholderTextColor="#ccc"
-            onBlur={checkInput2}
-          />
+          {mode == 'add' && <>
+            <Text style={styles.label}>Quantity</Text>
+            <NumericInput
+              validMinNumber = {1}
+              style={styles.input}
+              placeholder="Quantity"
+              value={Quantity}
+              onChangeText={(value)=>{
+                setValidMessage2('');
+                setQuantity(value);
+              }}
+              placeholderTextColor="#ccc"
+              onBlur={checkInput2}
+            />
+          </>}
           {ValidMessage2.trim() != '' && <Text style={styles.message}>{ValidMessage2}</Text>}
           {isExtra && (
             <View style={{width:500}}>

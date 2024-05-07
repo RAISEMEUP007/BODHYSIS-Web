@@ -173,7 +173,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
             <BOHTD width={100}>{item.end_date ? formatDateInline(item.end_date):''}</BOHTD>
             <BOHTD width={100}>{item.start_date ? formatDateInline(item.start_date):''}</BOHTD>
             <BOHTD width={110}>{item?.quantity??''}</BOHTD>
-            <BOHTD width={90}>{convertStageToString(item.stage)}</BOHTD>
+            <BOHTD width={100}>{convertStageToString(item.stage)}</BOHTD>
             <BOHTDIconBox width={80}>
               <TouchableOpacity
                 onPress={() => {
@@ -199,13 +199,13 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     >
       <ScrollView horizontal={true}>
         <CommonContainer>
-          <BOHToolbar>
+          <BOHToolbar style={{zIndex:100}}>
             <Text style={styles.searchLabel}>From</Text>
             {Platform.OS == 'web' && renderDatePicker(searchOptions.start_date, (date)=>changeSearchOptions('start_date', date.toISOString().substr(0, 10)))}
             <Text style={styles.searchLabel}>To</Text>
             {Platform.OS == 'web' && renderDatePicker(searchOptions.end_date, (date)=>changeSearchOptions('end_date', date.toISOString().substr(0, 10)))}
           </BOHToolbar>
-          <BOHToolbar style={{justifyContent:'space-between'}}>
+          <BOHToolbar style={{width: '100%', justifyContent:'space-between'}}>
             <BOHTlbrSearchInput
               boxStyle={{margin:0}}
               width={125}
@@ -253,7 +253,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
                 <BOHTH width={100}>{'To'}</BOHTH>
                 <BOHTH width={100}>{'From'}</BOHTH>
                 <BOHTH width={110}>{'Qty of bikes'}</BOHTH>
-                <BOHTH width={90}>{'Stage'}</BOHTH>
+                <BOHTH width={100}>{'Stage'}</BOHTH>
                 <BOHTH width={80}>{'Proceed'}</BOHTH>
               </BOHTR>
             </BOHTHead>
