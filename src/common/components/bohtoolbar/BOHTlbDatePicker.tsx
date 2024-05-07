@@ -2,21 +2,21 @@ import React, { InputHTMLAttributes, forwardRef } from 'react';
 import { View, StyleSheet } from 'react-native';
 import DatePicker from 'react-datepicker';
 
-const CustomInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
-  ({ value, onChange, onClick }, ref) => {
-    return (
-      <input
-        onClick={onClick}
-        onChange={(val)=>{onChange(val)}}
-        ref={ref}
-        style={styles.dateInput}
-        defaultValue={value}
-      ></input>
-    )
-  }
-);
-
 const renderBOHTlbDatePicker = (selectedDate, onChangeHandler) => {
+  const CustomInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
+    ({ value, onChange, onClick }, ref) => {
+      return (
+        <input
+          onClick={onClick}
+          onChange={(val)=>{onChange(val)}}
+          ref={ref}
+          style={styles.dateInput}
+          defaultValue={value}
+        ></input>
+      )
+    }
+  );
+
   const dateParts = selectedDate.split('-');
   const sDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
   return (
@@ -36,7 +36,6 @@ const renderBOHTlbDatePicker = (selectedDate, onChangeHandler) => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   dateInput:{

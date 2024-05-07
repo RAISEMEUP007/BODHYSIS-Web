@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { getOrdersData } from '../../api/Order';
+import { getReservationsData } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
@@ -117,8 +117,12 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     if (updateOrderListTrigger == true) getTable();
   }, [updateOrderListTrigger]);
 
+  useEffect(() => {
+    getTable();
+  }, [searchOptions]);
+
   const getTable = () => {
-    getOrdersData((jsonRes, status, error) => {
+    getReservationsData({searchOptions:searchOptions}, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           setUpdateOrderListTrigger(false);
@@ -135,7 +139,6 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     });
   };
 
-  
   const changeSearchOptions = (key, val) => {
     setSearchOptions(prevOptions => ({
       ...prevOptions,
@@ -188,6 +191,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     return <>{rows}</>;
   };
 
+  // console.log(searchOptions.start_date);
   return (
     <BasicLayout
       navigation={navigation}
@@ -277,7 +281,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
               color: '#ff4d4d',
             }}
           />
-          <BOHTlbRadio
+          {/* <BOHTlbRadio
             label='Provisional'
             onPress={()=>{
               changeSearchOptions('stage', null);
@@ -288,7 +292,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
               status: searchOptions.status_filter == 3? 'checked': 'unchecked',
               color: '#ff4d4d',
             }}
-          />
+          /> */}
           <BOHTlbRadio
             label='Confirmed'
             onPress={()=>{
@@ -337,8 +341,20 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
           <BOHTlbrSearchPicker
             width={170}
             boxStyle={{margin:0}}
+            enabled={searchOptions.status_filter?false:true}
             label="Category"
-            items={[{label:'', value:''}, ...stage.map((item, index)=>({'label':item, 'value':index}))]}
+            items={[
+              {label: '', value: ''}, 
+              ...stage
+                .map((item, index) => {
+                  if (index === 2 || index === 3 || index === 4) {
+                    return {label: item, value: index};
+                  } else {
+                    return null;
+                  }
+                })
+                .filter(item => item !== null)
+            ]}
             selectedValue={searchOptions.stage || ''}
             onValueChange={val=>changeSearchOptions('stage', val)}/>
         </BOHToolbar>
