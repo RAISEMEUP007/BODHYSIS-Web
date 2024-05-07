@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ScrollView, Text, TouchableOpacity, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -9,13 +9,15 @@ import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
 import { TextMediumSize, TextdefaultSize } from '../../common/constants/Fonts';
 import { BasicLayout, CommonContainer } from '../../common/components/CustomLayout';
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
-import { BOHTlbrSearchInput, BOHTlbrSearchPicker, BOHToolbar, BOHTlbRadio, renderBOHTlbDatePicker } from '../../common/components/bohtoolbar';
+import { BOHTlbrSearchInput, BOHTlbrSearchPicker, BOHToolbar, BOHTlbRadio, renderBOHTlbDatePicker, BOHButton } from '../../common/components/bohtoolbar';
 
 const OrdersList = ({ navigation, openOrderScreen }) => {
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
   const InitialWidths = [90, 160, 160, 100, 100, 120, 120, 100, 80, 80];
+
+  const barcodeInputRef = useRef(null);
 
   const [tableData, setTableData] = useState([]);
   const [updateOrderListTrigger, setUpdateOrderListTrigger] = useState(true);
@@ -42,6 +44,12 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     'checked out',
     'checked in',
   ];
+
+  useEffect(()=>{
+    if (barcodeInputRef.current) {
+      barcodeInputRef.current.focus();
+    }
+  })
 
   useEffect(() => {
     switch (periodRange.toLowerCase()) {
@@ -122,7 +130,13 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
   }, [searchOptions]);
 
   const getTable = () => {
-    getReservationsData({searchOptions:searchOptions}, (jsonRes, status, error) => {
+    const payload = {
+      searchOptions: {...searchOptions}
+    };
+    if(payload.searchOptions.stage === null && payload.searchOptions.status_filter === null) {
+      payload.searchOptions.stage = [2,3,4]
+    }
+    getReservationsData(payload, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           setUpdateOrderListTrigger(false);
@@ -191,7 +205,6 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     return <>{rows}</>;
   };
 
-  // console.log(searchOptions.start_date);
   return (
     <BasicLayout
       navigation={navigation}
@@ -357,6 +370,16 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
               ]}
               selectedValue={searchOptions.stage || ''}
               onValueChange={val=>changeSearchOptions('stage', val)}/>
+          </BOHToolbar>
+          <BOHToolbar>
+            <BOHTlbrSearchInput 
+              ref={barcodeInputRef}
+              boxStyle={{margin:0, marginRight:12}}
+              style={{paddingVertical:5}}
+            />
+            <BOHButton
+              label='Scan'
+            />
           </BOHToolbar>
           <BOHTable>
             <BOHTHead>
