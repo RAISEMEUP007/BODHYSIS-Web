@@ -19,6 +19,7 @@ import UpdateProductCategoryModal from './UpdateProductCategoryModal';
 import { CommonContainer } from '../../../../common/components/CustomLayout';
 import { BOHButton, BOHToolbar } from '../../../../common/components/bohtoolbar';
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTDImageBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../../../common/components/bohtable';
+import AssociatedBrandsModal from './AssociatedBrandsModal';
 
 const ProductCategories = ({ navigation, openInventory }) => {
 
@@ -32,7 +33,9 @@ const ProductCategories = ({ navigation, openInventory }) => {
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const InitialWidths = [220, 80, 90, 50, 50];
+  const [isBrandsModalVisible, setBrandsModalVisible] = useState(false);
+
+  const InitialWidths = [220, 80, 90, 50, 80, 50];
 
   const openAddProductCategoryModal = () => {
     setAddModalVisible(true);
@@ -40,6 +43,7 @@ const ProductCategories = ({ navigation, openInventory }) => {
   const closeAddProductCategoryModal = () => {
     setAddModalVisible(false);
   };
+
   const editProductCategory = (item) => {
     setSelectedCategory(item);
     setUpdateModalVisible(true);
@@ -47,19 +51,18 @@ const ProductCategories = ({ navigation, openInventory }) => {
   const closeUpdateProductCategoryModal = () => {
     setUpdateModalVisible(false);
   };
-
+  
+  const editAssociatedBrands = (item) => {
+    setSelectedCategory(item);
+    setBrandsModalVisible(true);
+  };
+  const closeBrandsCategoryModal = () => {
+    setBrandsModalVisible(false);
+  };
+  
   useEffect(() => {
     if (updateProductCategoryTrigger == true) getTable();
   }, [updateProductCategoryTrigger]);
-
-  const changeCellData = (index, key, newVal) => {
-    const updatedTableData = [...tableData];
-    updatedTableData[index] = {
-      ...updatedTableData[index],
-      [key]: newVal,
-    };
-    setTableData(updatedTableData);
-  };
 
   const removeProductCategory = (id) => {
     showConfirm(msgStr('deleteConfirmStr'), () => {
@@ -139,7 +142,16 @@ const ProductCategories = ({ navigation, openInventory }) => {
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
             </BOHTDIconBox>
-            <BOHTDIconBox width={InitialWidths[4]}>
+            {/* <BOHTDIconBox width={InitialWidths[4]}>
+              <TouchableOpacity
+                onPress={() => {
+                  editAssociatedBrands(item);
+                }}
+              >
+                <FontAwesome5 size={TextMediumSize} name="tags" color="black" />
+              </TouchableOpacity>
+            </BOHTDIconBox> */}
+            <BOHTDIconBox width={InitialWidths[5]}>
               <TouchableOpacity
                 onPress={() => {
                   removeProductCategory(item.id);
@@ -178,7 +190,8 @@ const ProductCategories = ({ navigation, openInventory }) => {
               <BOHTH width={InitialWidths[1]}>{'Quantity'}</BOHTH>
               <BOHTH width={InitialWidths[2]}>{'Image'}</BOHTH>
               <BOHTH width={InitialWidths[3]}>{'Edit'}</BOHTH>
-              <BOHTH width={InitialWidths[4]}>{'DEL'}</BOHTH>
+              {/* <BOHTH width={InitialWidths[4]}>{'Brands'}</BOHTH> */}
+              <BOHTH width={InitialWidths[5]}>{'DEL'}</BOHTH>
             </BOHTR>
           </BOHTHead>
           <BOHTBody>
@@ -191,6 +204,12 @@ const ProductCategories = ({ navigation, openInventory }) => {
           setUpdateProductCategoryTrigger={setUpdateProductCategoryTrigger}
           closeModal={closeAddProductCategoryModal}
         />
+        
+        {/* <AssociatedBrandsModal
+          isModalVisible={isBrandsModalVisible}
+          categoryId={selectedCategory?.id}
+          closeModal={closeBrandsCategoryModal}
+        /> */}
 
         {selectedCategory && (
           <UpdateProductCategoryModal

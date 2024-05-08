@@ -9,7 +9,11 @@ import {
   Platform,
   Image,
 } from 'react-native';
+import Checkbox from 'expo-checkbox';
+import { Picker } from 'react-native-web';
 
+import { getBrandsData } from '../../../../api/Price';
+import { getTagsData } from '../../../../api/Settings';
 import { updateProductCategory } from '../../../../api/Product';
 import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
@@ -17,11 +21,9 @@ import ModalBody from '../../../../common/components/basicmodal/ModalBody';
 import ModalFooter from '../../../../common/components/basicmodal/ModalFooter';
 import { msgStr } from '../../../../common/constants/Message';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
+import { API_URL } from '../../../../common/constants/AppConstants';
 
 import { productCategoryModalstyles } from './styles/ProductCategoryModalStyle';
-import { API_URL } from '../../../../common/constants/AppConstants';
-import { getTagsData } from '../../../../api/Settings';
-import { Picker } from 'react-native-web';
 
 const UpdateProductCategoryModal = ({
   isModalVisible,
@@ -39,7 +41,24 @@ const UpdateProductCategoryModal = ({
   const [Tags, setTags] = useState([]);
   const [selectedTag, selectTag] = useState<any>({});
 
+  const [brands, setBrands] = useState([]);
+  const [associatedBrandIds, setAssociatedBrandIds] = useState([]);
+
   const inputRef = useRef(null);
+
+  const handleBrandSelection = (brandId) => {
+    if (associatedBrandIds.includes(brandId)) {
+      setAssociatedBrandIds(associatedBrandIds.filter((id) => id !== brandId));
+    } else {
+      setAssociatedBrandIds([...associatedBrandIds, brandId]);
+    }
+  };
+
+  useEffect(()=>{
+    getBrandsData((jsonRes)=>{
+      setBrands(jsonRes);
+    });
+  }, []);
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -70,7 +89,9 @@ const UpdateProductCategoryModal = ({
           selectTag(jsonRes[0]);
         }
       });
-    }
+      if(item.brand_ids) setAssociatedBrandIds(JSON.parse(item.brand_ids));
+      else setAssociatedBrandIds([]); 
+    }else setAssociatedBrandIds([]);
   }, [isModalVisible]);
 
   const handleImageSelection = (event) => {
@@ -94,6 +115,7 @@ const UpdateProductCategoryModal = ({
     formData.append('category', _productCategory);
     formData.append('img', selectedImage);
     formData.append('description', 'dd');
+    formData.append('brand_ids', JSON.stringify(associatedBrandIds));
     if (selectedTag && selectedTag.id) formData.append('tag_id', selectedTag.id);
 
     updateProductCategory(formData, (jsonRes, status, error) => {
@@ -157,48 +179,61 @@ const UpdateProductCategoryModal = ({
       <BasicModalContainer>
         <ModalHeader label={'Product Category'} closeModal={closeModal} />
         <ModalBody>
-          <Text style={styles.label}>Category</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setProductCategory}
-            value={_productCategory}
-            placeholder="Product Category"
-            placeholderTextColor="#ccc"
-            onSubmitEditing={handleUpdateButtonClick}
-            onBlur={checkInput}
-          />
-          {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
-          <View style={styles.imagePicker}>
-            <TouchableOpacity style={styles.imageUpload} onPress={() => inputRef.current.click()}>
-              {imagePreviewUrl ? (
-                <Image source={{ uri: imagePreviewUrl }} style={styles.previewImage} />
-              ) : (
-                <View>
-                  <Text style={styles.boxText}>Click to choose an image</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-            <input
-              type="file"
-              ref={inputRef}
-              style={styles.fileInput}
-              onChange={handleImageSelection}
+        <View style={{flexDirection:'row'}}>
+          <View>
+            <Text style={styles.label}>Category</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={setProductCategory}
+              value={_productCategory}
+              placeholder="Product Category"
+              placeholderTextColor="#ccc"
+              onSubmitEditing={handleUpdateButtonClick}
+              onBlur={checkInput}
             />
+            {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
+            <View style={styles.imagePicker}>
+              <TouchableOpacity style={styles.imageUpload} onPress={() => inputRef.current.click()}>
+                {imagePreviewUrl ? (
+                  <Image source={{ uri: imagePreviewUrl }} style={styles.previewImage} />
+                ) : (
+                  <View>
+                    <Text style={styles.boxText}>Click to choose an image</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+              <input
+                type="file"
+                ref={inputRef}
+                style={styles.fileInput}
+                onChange={handleImageSelection}
+              />
+            </View>
+            <Text style={styles.label}>Tag</Text>
+            <Picker
+              style={styles.select}
+              selectedValue={selectedTag.id}
+              onValueChange={(itemValue, itemIndex) => {
+                selectTag(Tags[itemIndex]);
+              }}
+            >
+              {Tags &&
+                Tags.length > 0 &&
+                Tags.map((item, index) => {
+                  return <Picker.Item key={index} label={item.tag} value={item.id} />;
+                })}
+            </Picker>
           </View>
-          <Text style={styles.label}>Tag</Text>
-          <Picker
-            style={styles.select}
-            selectedValue={selectedTag.id}
-            onValueChange={(itemValue, itemIndex) => {
-              selectTag(Tags[itemIndex]);
-            }}
-          >
-            {Tags &&
-              Tags.length > 0 &&
-              Tags.map((item, index) => {
-                return <Picker.Item key={index} label={item.tag} value={item.id} />;
-              })}
-          </Picker>
+          <View style={{marginRight:20, marginLeft:40}}>
+            <Text style={{marginBottom:8, fontSize:20}}>{"Associated Brands"}</Text>
+            {brands.length>0 && brands.map((brand)=>(
+              <View key={brand.id} style={{flexDirection:'row', alignItems:'center', marginVertical:10, marginLeft:10}}>
+                <Checkbox value={associatedBrandIds.includes(brand.id)} onValueChange={() => handleBrandSelection(brand.id)} />
+                <Text style={{marginLeft:10}}>{brand.brand}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={handleUpdateButtonClick}>
