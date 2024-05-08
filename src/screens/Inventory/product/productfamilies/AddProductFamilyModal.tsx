@@ -14,14 +14,12 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import { Editor } from 'primereact/editor';
 import { actions, RichEditor, RichToolbar } from 'react-native-pell-rich-editor';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Checkbox from 'expo-checkbox';
 
 import {
   createProductFamily,
   updateProductFamily,
   getProductCategoriesData,
 } from '../../../../api/Product';
-import { getBrandsData } from '../../../../api/Price';
 import { getPriceGroupsData } from '../../../../api/Price';
 import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
@@ -58,9 +56,6 @@ const AddProductFamilyModal = ({
   const [selectedCategory, selectCategory] = useState<any>({});
   const [selectedPriceGroup, selectPriceGroup] = useState({});
 
-  const [brands, setBrands] = useState([]);
-  const [associatedBrandIds, setAssociatedBrandIds] = useState([]);
-
   const inputRef = useRef(null);
   const defaultInputRef = useRef(null);
 
@@ -68,20 +63,6 @@ const AddProductFamilyModal = ({
 
   const [descHTML, setDescHTML] = useState('');
   const [showDescError, setShowDescError] = useState(false);
-
-  const handleBrandSelection = (brandId) => {
-    if (associatedBrandIds.includes(brandId)) {
-      setAssociatedBrandIds(associatedBrandIds.filter((id) => id !== brandId));
-    } else {
-      setAssociatedBrandIds([...associatedBrandIds, brandId]);
-    }
-  };
-
-  useEffect(()=>{
-    getBrandsData((jsonRes)=>{
-      setBrands(jsonRes);
-    });
-  }, []);
 
   const richTextHandle = (descriptionText) => {
     if (descriptionText) {
@@ -124,7 +105,6 @@ const AddProductFamilyModal = ({
     if (isModalVisible) {
       defaultInputRef.current && defaultInputRef.current.focus();
     }
-    setAssociatedBrandIds([]);
   }, [isModalVisible]);
 
   useEffect(() => {
@@ -167,9 +147,7 @@ const AddProductFamilyModal = ({
           setCallInit(true);
         });
       });
-      if(family?.brand_ids) setAssociatedBrandIds(JSON.parse(family.brand_ids));
-      else setAssociatedBrandIds([]); 
-    }else setAssociatedBrandIds([]);
+    }
   }, [isModalVisible]);
 
   const loadProductCategoriesData = (callback) => {
@@ -254,7 +232,6 @@ const AddProductFamilyModal = ({
     if (selectedImage) formData.append('img', selectedImage);
     formData.append('summary', summaryTxt);
     formData.append('notes', notesTxt);
-    formData.append('brand_ids', JSON.stringify(associatedBrandIds));
     // formData.append('price_group_id', selectedPriceGroup.id);
 
     const handleResponse = (jsonRes, status) => {
@@ -396,7 +373,7 @@ const AddProductFamilyModal = ({
                   })}
               </Picker> */}
             </View>
-            <View style={{ paddingRight: 30, width: 700 }}>
+            <View style={{ paddingRight: 10, width: 660 }}>
               <Text style={styles.label}>Summary</Text>
               {/* <TextInput
                 style={[styles.input, styles.textarea]}
@@ -458,15 +435,6 @@ const AddProductFamilyModal = ({
                   }}
                 />
               )}
-            </View>
-            <View style={{marginRight:20}}>
-              <Text style={{marginBottom:8, fontSize:20}}>{"Associated Brands"}</Text>
-              {brands.length>0 && brands.map((brand)=>(
-                <View key={brand.id} style={{flexDirection:'row', alignItems:'center', marginVertical:10, marginLeft:10}}>
-                  <Checkbox value={associatedBrandIds.includes(brand.id)} onValueChange={() => handleBrandSelection(brand.id)} />
-                  <Text style={{marginLeft:10}}>{brand.brand}</Text>
-                </View>
-              ))}
             </View>
           </View>
         </ModalBody>

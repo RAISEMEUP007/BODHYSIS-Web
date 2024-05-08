@@ -52,13 +52,17 @@ const AddProductModal = ({ isModalVisible, Product, setUpdateProductsTrigger, cl
   const [selectedCategory, selectCategory] = useState<any>({});
   const [selectedFamily, selectFamily] = useState<any>({});
   const [selectedLine, selectLine] = useState<any>({});
+  // const [ProductTxt, setProductTxt] = useState('');
   const [SizeTxt, setSizeTxt] = useState('');
+  // const [DescriptionTxt, setDescriptionTxt] = useState('');
   const [ItemIdTxt, setItemIdTxt] = useState('');
   const [BarcodeTxt, setBarcodeTxt] = useState('');
   const [QuantityTxt, setQuantityTxt] = useState('');
+  // const [SerialNumber, setSerialNumber] = useState('');
   const [selectedHomeLocation, selectHomeLocation] = useState<any>({});
   const [selectedCurrentLocation, selectCurrentLocation] = useState<any>({});
   const [selectedStatus, selectStatus] = useState<any>({});
+  // const [PriceGroupTxt, setPriceGroupTxt] = useState('');
 
   useEffect(() => {
     if (Platform.OS === 'web') {
