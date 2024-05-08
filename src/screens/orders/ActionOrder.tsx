@@ -265,7 +265,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
-              }) + ' 8:00 AM' : ''}
+              }) : ''}
               // onChangeText={value => handleInputChange('billableDays', value)}
               editable={false}
             />
@@ -278,7 +278,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
-              }) + ' 8:30 AM' : ''}
+              }) : ''}
               // onChangeText={value => handleInputChange('billableDays', value)}
               editable={false}
             />
