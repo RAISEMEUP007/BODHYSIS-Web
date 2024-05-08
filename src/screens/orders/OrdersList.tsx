@@ -49,7 +49,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     if (barcodeInputRef.current) {
       barcodeInputRef.current.focus();
     }
-  })
+  }, [])
 
   useEffect(() => {
     switch (periodRange.toLowerCase()) {
@@ -94,31 +94,29 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
   }, [periodRange]);
 
   useEffect(() => {
-    // const setperiodRange = () => {
-      if (searchOptions.start_date && searchOptions.end_date) {
-        const startDate = new Date(searchOptions.start_date);
-        const endDate = new Date(searchOptions.end_date);
-    
-        if (startDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10) &&
-            endDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10)) {
-          if(periodRange != 'Today') setPeriodRange('Today');
-        } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
-                   endDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
-          if(periodRange != 'Tomorrow') setPeriodRange('Tomorrow');
-        } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
-                   endDate.toISOString().substr(0, 10) === new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
-          if(periodRange != 'Yesterday') setPeriodRange('Yesterday');
-        } else if (startDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10) &&
-                   endDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
-          if(periodRange != 'Today+Tomorrow') setPeriodRange('Today+Tomorrow');
-        } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
-                   endDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10)) {
-          if(periodRange != '7days') setPeriodRange('7days');
-        } else {
-          if(periodRange != 'custom') setPeriodRange('custom');
-        }
+    if (searchOptions.start_date && searchOptions.end_date) {
+      const startDate = new Date(searchOptions.start_date);
+      const endDate = new Date(searchOptions.end_date);
+  
+      if (startDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10) &&
+          endDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10)) {
+        if(periodRange != 'Today') setPeriodRange('Today');
+      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
+                  endDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+        if(periodRange != 'Tomorrow') setPeriodRange('Tomorrow');
+      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
+                  endDate.toISOString().substr(0, 10) === new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+        if(periodRange != 'Yesterday') setPeriodRange('Yesterday');
+      } else if (startDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10) &&
+                  endDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+        if(periodRange != 'Today+Tomorrow') setPeriodRange('Today+Tomorrow');
+      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
+                  endDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10)) {
+        if(periodRange != '7days') setPeriodRange('7days');
+      } else {
+        if(periodRange != 'custom') setPeriodRange('custom');
       }
-    // }
+    }
   }, [searchOptions.start_date, searchOptions.end_date]);
 
   useEffect(() => {
@@ -181,8 +179,8 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
             <BOHTD width={InitialWidths[0]}>{item.order_number}</BOHTD>
             <BOHTD width={InitialWidths[1]}>{item.brand}</BOHTD>
             <BOHTD width={InitialWidths[2]}>{item.full_name}</BOHTD>
-            <BOHTD width={InitialWidths[3]}>{item.end_date ? new Date(item.end_date).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit'}) : ''}</BOHTD>
-            <BOHTD width={InitialWidths[4]}>{item.start_date ? new Date(item.start_date).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit'}) : ''}</BOHTD>
+            <BOHTD width={InitialWidths[3]}>{item.start_date ? new Date(item.start_date).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit'}) : ''}</BOHTD>
+            <BOHTD width={InitialWidths[4]}>{item.end_date ? new Date(item.end_date).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit'}) : ''}</BOHTD>
             <BOHTD width={InitialWidths[5]}>{item.start_location}</BOHTD>
             <BOHTD width={InitialWidths[6]}>{item.end_location}</BOHTD>
             <BOHTD width={InitialWidths[7]}>{convertStageToString(item.stage)}</BOHTD>
@@ -212,14 +210,14 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     >
       <CommonContainer>
         <BOHToolbar style={{zIndex:100}}>
-          <Text style={{marginRight:8, fontSize:TextdefaultSize}}>From</Text>
+          <Text style={{marginRight:8, fontSize:TextdefaultSize}}>Start</Text>
           {Platform.OS == 'web' && 
             renderBOHTlbDatePicker(searchOptions.start_date, (date) => {
               const year = date.getFullYear();
               const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
               changeSearchOptions('start_date', formattedDate);
           })}
-          <Text style={{marginHorizontal:8, fontSize:TextdefaultSize}}>To</Text>
+          <Text style={{marginHorizontal:8, fontSize:TextdefaultSize}}>End</Text>
           {Platform.OS == 'web' && 
             renderBOHTlbDatePicker(searchOptions.end_date, (date) => {
               const year = date.getFullYear();
@@ -396,8 +394,8 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
               <BOHTH width={InitialWidths[0]}>{'Order #'}</BOHTH>
               <BOHTH width={InitialWidths[1]}>{'Brand'}</BOHTH>
               <BOHTH width={InitialWidths[2]}>{'Customer'}</BOHTH>
-              <BOHTH width={InitialWidths[3]}>{'To'}</BOHTH>
-              <BOHTH width={InitialWidths[4]}>{'From'}</BOHTH>
+              <BOHTH width={InitialWidths[4]}>{'Start'}</BOHTH>
+              <BOHTH width={InitialWidths[3]}>{'End'}</BOHTH>
               <BOHTH width={InitialWidths[5]}>{'Start Location'}</BOHTH>
               <BOHTH width={InitialWidths[6]}>{'End Location'}</BOHTH>
               <BOHTH width={InitialWidths[7]}>{'Stage'}</BOHTH>

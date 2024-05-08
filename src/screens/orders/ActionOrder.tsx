@@ -403,7 +403,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
           <BOHToolbar style={{justifyContent:'space-between', alignItems:'center',}}>
             <BOHButton 
               disabled={nextDisable}
-              label='Next'
+              label={orderInfo.stage == 2 && "Check Out" || orderInfo.stage == 3 && "Check In" || 'Next'}
               onPress={processNextStage}
             />
             <Text style={{fontWeight:'bold', fontSize:16}}>{orderInfo.stage == 3 && "Checked Out!" || orderInfo.stage == 4 && "Checked In!"}</Text>

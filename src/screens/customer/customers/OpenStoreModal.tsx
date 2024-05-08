@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Modal, View, ActivityIndicator, Text, Linking, Button, Pressable } from 'react-native';
+import { Modal, View, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { updateProductCategory } from '../../../api/Product';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
@@ -11,7 +11,6 @@ import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { customerModalstyles } from './styles/CustomerModalStyle';
 import { getTagsData } from '../../../api/Settings';
 import { getBrandsData } from '../../../api/Price';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OpenStoreModal = ({
   isModalVisible,

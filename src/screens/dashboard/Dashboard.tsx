@@ -1,25 +1,16 @@
-import React, { InputHTMLAttributes, forwardRef, useEffect, useState } from 'react';
-import {
-  ScrollView,
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Platform,
-  Pressable
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, View, Text, TouchableOpacity, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { RadioButton } from 'react-native-paper';
-import { Picker } from '@react-native-picker/picker';
 
 import { getReservationsData } from '../../api/Reservation';
+import { BasicLayout, CommonContainer } from '../../common/components/CustomLayout';
+import { BOHTable } from '../../common/components/bohtable';
+import { BOHTlbRadio, BOHTlbrSearchInput, BOHTlbrSearchPicker, BOHToolbar, renderBOHTlbDatePicker } from '../../common/components/bohtoolbar';
 import { msgStr } from '../../common/constants/Message';
-import { TextMediumSize } from '../../common/constants/Fonts';
+import { TextMediumSize, TextdefaultSize } from '../../common/constants/Fonts';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
-import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 
 import { DashboardStyle } from './styles/DashboardStyle';
 
@@ -43,7 +34,6 @@ const Dashboard = ({ navigation }) => {
   const today = new Date().toISOString().substr(0, 10);
 
   const [periodRange, setPeriodRange] = useState<any>('');
-  // const [statusFilter, changeSearchOptions]'statusFilter',  = useState<number | null>(null);
   const [ searchOptions, setSearchOptions ] = useState({
     start_date : twoWeeksAgo.toISOString().substr(0, 10),
     end_date : today,
@@ -97,31 +87,29 @@ const Dashboard = ({ navigation }) => {
   }, [periodRange]);
 
   useEffect(() => {
-    // const setperiodRange = () => {
-      if (searchOptions.start_date && searchOptions.end_date) {
-        const startDate = new Date(searchOptions.start_date);
-        const endDate = new Date(searchOptions.end_date);
-    
-        if (startDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10) &&
-            endDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10)) {
-          if(periodRange != 'Today') setPeriodRange('Today');
-        } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
-                   endDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
-          if(periodRange != 'Tomorrow') setPeriodRange('Tomorrow');
-        } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
-                   endDate.toISOString().substr(0, 10) === new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
-          if(periodRange != 'Yesterday') setPeriodRange('Yesterday');
-        } else if (startDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10) &&
-                   endDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
-          if(periodRange != 'Today+Tomorrow') setPeriodRange('Today+Tomorrow');
-        } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
-                   endDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10)) {
-          if(periodRange != '7days') setPeriodRange('7days');
-        } else {
-          if(periodRange != 'custom') setPeriodRange('custom');
-        }
+    if (searchOptions.start_date && searchOptions.end_date) {
+      const startDate = new Date(searchOptions.start_date);
+      const endDate = new Date(searchOptions.end_date);
+  
+      if (startDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10) &&
+          endDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10)) {
+        if(periodRange != 'Today') setPeriodRange('Today');
+      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
+                  endDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+        if(periodRange != 'Tomorrow') setPeriodRange('Tomorrow');
+      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
+                  endDate.toISOString().substr(0, 10) === new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+        if(periodRange != 'Yesterday') setPeriodRange('Yesterday');
+      } else if (startDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10) &&
+                  endDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+        if(periodRange != 'Today+Tomorrow') setPeriodRange('Today+Tomorrow');
+      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
+                  endDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10)) {
+        if(periodRange != '7days') setPeriodRange('7days');
+      } else {
+        if(periodRange != 'custom') setPeriodRange('custom');
       }
-    // }
+    }
   }, [searchOptions.start_date, searchOptions.end_date]);
 
   const stage = [
@@ -146,44 +134,6 @@ const Dashboard = ({ navigation }) => {
   useEffect(() => {
     getTable();
   }, [searchOptions]);
-
-  const CustomInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
-    ({ value, onChange, onClick }, ref) => {
-      return (
-        <input
-          onClick={onClick}
-          onChange={(val)=>{onChange(val)}}
-          ref={ref}
-          style={styles.dateInput}
-          defaultValue={value}
-        ></input>
-      )
-    }
-  );
-
-  const renderDatePicker = (selectedDate, onChangeHandler) => {
-    const dateParts = selectedDate.split('-');
-    const sDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-    return (
-      <View style={{zIndex:10}}>
-        <DatePicker
-          selected={sDate}
-          onChange={(date) => {
-            // setperiodRange('');
-            onChangeHandler(date)
-          }}
-          customInput={<CustomInput />}
-          peekNextMonth
-          showMonthDropdown
-          showYearDropdown
-          dropdownMode="select"
-          // timeInputLabel="Time:"
-          dateFormat="yyyy-MM-dd"
-          // showTimeSelect
-        />
-      </View>
-    );
-  };
 
   const getTable = () => {
     getReservationsData({searchOptions:searchOptions}, (jsonRes, status, error) => {
@@ -240,10 +190,10 @@ const Dashboard = ({ navigation }) => {
               <Text>{item.full_name}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.end_date ? formatDateInline(item.end_date):''}</Text>
+              <Text>{item.start_date ? formatDateInline(item.start_date):''}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.start_date ? formatDateInline(item.start_date):''}</Text>
+              <Text>{item.end_date ? formatDateInline(item.end_date):''}</Text>
             </View>
             <View style={[styles.cell, {alignItems:'flex-end'}]}>
               <Text>{item?.quantity??''}</Text>
@@ -274,254 +224,190 @@ const Dashboard = ({ navigation }) => {
       navigation={navigation}
       screenName={'Dashboard'}
     >
-      <ScrollView horizontal={true}>
-        <View style={{flexDirection:'row', alignItems:'flex-start', height:'100%'}}>
-            <View style={styles.container}>
-              <View style={[styles.toolbar, {zIndex:100, marginBottom:6}]}>
-                <Text style={styles.searchLabel}>From</Text>
-                {Platform.OS == 'web' && 
-                  renderDatePicker(searchOptions.start_date, (date) => {
-                    const year = date.getFullYear();
-                    const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-                    changeSearchOptions('start_date', formattedDate);
-                })}
-                <Text style={styles.searchLabel}>To</Text>
-                {Platform.OS == 'web' && 
-                  renderDatePicker(searchOptions.end_date, (date) => {
-                    const year = date.getFullYear();
-                    const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-                    changeSearchOptions('end_date', formattedDate);
-                })}
-                <Pressable 
-                  style={{flexDirection:'row', alignItems:'center', marginHorizontal:12}}
-                  onPress={()=>{setPeriodRange('Today')}}
-                >
-                  <RadioButton
-                    value={"1"}
-                    status={periodRange == 'Today'? 'checked': 'unchecked'}
-                    onPress={()=>{setPeriodRange('Today')}}
-                    color="#0099ff"
-                  />
-                  <Text>{"Today"}</Text>
-                </Pressable>
-                <Pressable 
-                  style={{flexDirection:'row', alignItems:'center', marginRight:12}}
-                  onPress={()=>{setPeriodRange('Tomorrow')}}
-                >
-                  <RadioButton
-                    value={"1"}
-                    status={periodRange == 'Tomorrow'? 'checked': 'unchecked'}
-                    onPress={()=>{setPeriodRange('Tomorrow')}}
-                    color="#0099ff"
-                  />
-                  <Text>{"Tomorrow"}</Text>
-                </Pressable>
-                <Pressable 
-                  style={{flexDirection:'row', alignItems:'center', marginRight:12}}
-                  onPress={()=>{setPeriodRange('Yesterday')}}
-                >
-                  <RadioButton
-                    value={"1"}
-                    status={periodRange == 'Yesterday'? 'checked': 'unchecked'}
-                    onPress={()=>{setPeriodRange('Yesterday')}}
-                    color="#0099ff"
-                  />
-                  <Text>{"Yesterday"}</Text>
-                </Pressable>
-                <Pressable 
-                  style={{flexDirection:'row', alignItems:'center', marginRight:12}}
-                  onPress={()=>{setPeriodRange('Today+Tomorrow')}}
-                >
-                  <RadioButton
-                    value={"1"}
-                    status={periodRange == 'Today+Tomorrow'? 'checked': 'unchecked'}
-                    onPress={()=>{setPeriodRange('Today+Tomorrow')}}
-                    color="#0099ff"
-                  />
-                  <Text>{"Today+Tomorrow"}</Text>
-                </Pressable>
-                <Pressable 
-                  style={{flexDirection:'row', alignItems:'center', marginRight:12}}
-                  onPress={()=>{setPeriodRange('7days')}}
-                >
-                  <RadioButton
-                    value={"1"}
-                    status={periodRange == '7days'? 'checked': 'unchecked'}
-                    onPress={()=>{setPeriodRange('7days')}}
-                    color="#0099ff"
-                  />
-                  <Text>{"7 days"}</Text>
-                </Pressable>
-              </View>
-              <View style={[styles.toolbar, {marginBottom:12}]}>
-                <Pressable 
-                  style={{flexDirection:'row', alignItems:'center', marginRight:12}}
-                  onPress={()=>{
-                    changeSearchOptions('stage', null);
-                    changeSearchOptions('status_filter', 1)
-                  }}
-                >
-                  <RadioButton
-                    value={"1"}
-                    status={searchOptions.status_filter == 1? 'checked': 'unchecked'}
-                    onPress={()=>{
-                      changeSearchOptions('stage', null);
-                      changeSearchOptions('status_filter', 1)
-                    }}
-                    color="#ff4d4d"
-                  />
-                  <Text>{"Missed PU"}</Text>
-                </Pressable>
-                <Pressable 
-                  style={{flexDirection:'row', alignItems:'center', marginRight:12}}
-                  onPress={()=>{
-                    changeSearchOptions('stage', null);
-                    changeSearchOptions('status_filter', 2)
-                  }}
-                >
-                  <RadioButton
-                    value={"1"}
-                    status={searchOptions.status_filter == 2? 'checked': 'unchecked'}
-                    onPress={()=>{
-                      changeSearchOptions('stage', null);
-                      changeSearchOptions('status_filter', 2)
-                    }}
-                    color="#ff4d4d"
-                  />
-                  <Text>{"Checked Out"}</Text>
-                </Pressable>
-                <Pressable 
-                  style={{flexDirection:'row', alignItems:'center', marginRight:12}}
-                  onPress={()=>{
-                    changeSearchOptions('stage', null);
-                    changeSearchOptions('status_filter', 3)
-                  }}
-                >
-                  <RadioButton
-                    value={"1"}
-                    status={searchOptions.status_filter == 3? 'checked': 'unchecked'}
-                    onPress={()=>{
-                      changeSearchOptions('stage', null);
-                      changeSearchOptions('status_filter', 3)
-                    }}
-                    color="#ff4d4d"
-                  />
-                  <Text>{"Provisional"}</Text>
-                </Pressable>
-                <Pressable 
-                  style={{flexDirection:'row', alignItems:'center', marginRight:12}}
-                  onPress={()=>{
-                    changeSearchOptions('stage', null);
-                    changeSearchOptions('status_filter', 4)
-                  }}
-                >
-                  <RadioButton
-                    value={"1"}
-                    status={searchOptions.status_filter == 4? 'checked': 'unchecked'}
-                    onPress={()=>{
-                      changeSearchOptions('stage', null);
-                      changeSearchOptions('status_filter', 4)
-                    }}
-                    color="#ff4d4d"
-                  />
-                  <Text>{"Confirmed"}</Text>
-                </Pressable>
-                {Platform.OS == 'web' && (
-                  <div 
-                    style={{
-                      display:'flex',
-                      flexDirection:'row',
-                      justifyContent:'center',
-                      alignItems:'center',
-                      opacity: searchOptions.status_filter?1:0,
-                      transition: 'opacity 0.3s ease-out',
-                      marginRight:12
-                    }}
-                    onClick={()=>{
-                      changeSearchOptions('stage', null);
-                      changeSearchOptions('status_filter', null)
-                    }}
-                  >
-                    <RadioButton
-                      value={"1"}
-                      status={searchOptions.status_filter == null? 'checked': 'unchecked'}
-                      onPress={()=>{
-                        changeSearchOptions('stage', null);
-                        changeSearchOptions('status_filter', null)
-                      }}
-                      color="#ff4d4d"
-                    />
-                    <Text>{"All"}</Text>
-                  </div>
-                )}
-              </View>
-              <View style={styles.toolbar}>
-                <View style={styles.searchBox}>
-                  <Text style={styles.searchLabel}>Customer</Text>
-                  <TextInput
-                    style={styles.searchInput}
-                    placeholder=""
-                    defaultValue={searchOptions.customer}
-                    onChangeText={(val)=>changeSearchOptions('customer', val)}
-                  />
-                </View>
-                <View style={styles.searchBox}>
-                  <Text style={styles.searchLabel}>Brand</Text>
-                  <TextInput
-                    style={styles.searchInput}
-                    placeholder=""
-                    defaultValue={searchOptions.brand}
-                    onChangeText={(val)=>changeSearchOptions('brand', val)}
-                  />
-                </View>
-                <View style={styles.searchBox}>
-                  <Text style={styles.searchLabel}>Order number</Text>
-                  <TextInput
-                    style={styles.searchInput}
-                    placeholder=""
-                    defaultValue={searchOptions.order_number}
-                    onChangeText={(val)=>changeSearchOptions('order_number', val)}
-                  />
-                </View>
-                <View style={styles.searchBox}>
-                  <Text style={styles.searchLabel}>Stage</Text>
-                  <Picker
-                    enabled={searchOptions.status_filter?false:true}
-                    style={[styles.searchInput]}
-                    selectedValue={searchOptions.stage !== null ? searchOptions.stage : ''}
-                    onValueChange={val=>changeSearchOptions('stage', val)}
-                  >
-                    <Picker.Item label={''} value={null} />
-                    {stage.length > 0 &&
-                      stage.map((stageStr, index) => {
-                        return (
-                          <Picker.Item key={index} label={stageStr} value={index} />
-                        );
-                      })}
-                  </Picker>
-                </View>
-              </View>
-              <View style={styles.tableContainer}>
-                <View style={styles.tableHeader}>
-                  <Text style={[styles.columnHeader, {width:90}]}>{'Order #'}</Text>
-                  <Text style={[styles.columnHeader, {width: 160}]}>{'Brand'}</Text>
-                  <Text style={[styles.columnHeader, {width: 160}]}>{'Customer'}</Text>
-                  <Text style={[styles.columnHeader]}>{'To'}</Text>
-                  <Text style={[styles.columnHeader]}>{'From'}</Text>
-                  <Text style={[styles.columnHeader]}>{'Qty of bikes'}</Text>
-                  <Text style={[styles.columnHeader]}>{'Stage'}</Text>
-                  <Text style={[styles.columnHeader, styles.IconCell]}>{'Proceed'}</Text>
-                </View>
-                <ScrollView style={{ flex: 1 }}>
-                  {renderTableData()}
-                </ScrollView>
-              </View>
+      <CommonContainer style={{flexDirection:'row'}}>
+        <View style={{alignItems:'flex-start', height:'100%'}}>
+          <BOHToolbar style={{zIndex:100}}>
+            <Text style={{marginRight:8, fontSize:TextdefaultSize}}>Start</Text>
+            {Platform.OS == 'web' && 
+              renderBOHTlbDatePicker(searchOptions.start_date, (date) => {
+                const year = date.getFullYear();
+                const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+                changeSearchOptions('start_date', formattedDate);
+            })}
+            <Text style={{marginHorizontal:8, fontSize:TextdefaultSize}}>End</Text>
+            {Platform.OS == 'web' && 
+              renderBOHTlbDatePicker(searchOptions.end_date, (date) => {
+                const year = date.getFullYear();
+                const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+                changeSearchOptions('end_date', formattedDate);
+            })}
+            <BOHTlbRadio
+              label='Today'
+              onPress={()=>{setPeriodRange('Today')}}
+              RadioButtonProps={{
+                value: '1',
+                status: periodRange == 'Today'? 'checked': 'unchecked',
+              }}
+            />
+            <BOHTlbRadio
+              label='Tomorrow'
+              onPress={()=>{setPeriodRange('Tomorrow')}}
+              RadioButtonProps={{
+                value: '1',
+                status: periodRange == 'Tomorrow'? 'checked': 'unchecked',
+              }}
+            />
+            <BOHTlbRadio
+              label='Yesterday'
+              onPress={()=>{setPeriodRange('Yesterday')}}
+              RadioButtonProps={{
+                value: '1',
+                status: periodRange == 'Yesterday'? 'checked': 'unchecked',
+              }}
+            />
+            <BOHTlbRadio
+              label='Today+Tomorrow'
+              onPress={()=>{setPeriodRange('Today+Tomorrow')}}
+              RadioButtonProps={{
+                value: '1',
+                status: periodRange == 'Today+Tomorrow'? 'checked': 'unchecked',
+              }}
+            />
+            <BOHTlbRadio
+              label='7 days'
+              onPress={()=>{setPeriodRange('7days')}}
+              RadioButtonProps={{
+                value: '1',
+                status: periodRange == '7days'? 'checked': 'unchecked',
+              }}
+            />
+          </BOHToolbar>
+          <BOHToolbar>
+            <BOHTlbRadio
+              label='Checked In'
+              style={{margin:0}}
+              onPress={()=>{
+                changeSearchOptions('stage', null);
+                changeSearchOptions('status_filter', 1)
+              }}
+              RadioButtonProps={{
+                value: '1',
+                status: searchOptions.status_filter == 1? 'checked': 'unchecked',
+                color: '#ff4d4d',
+              }}
+            />
+            <BOHTlbRadio
+              label='Checked Out'
+              onPress={()=>{
+                changeSearchOptions('stage', null);
+                changeSearchOptions('status_filter', 2)
+              }}
+              RadioButtonProps={{
+                value: '1',
+                status: searchOptions.status_filter == 2? 'checked': 'unchecked',
+                color: '#ff4d4d',
+              }}
+            />
+            <BOHTlbRadio
+              label='Provisional'
+              onPress={()=>{
+                changeSearchOptions('stage', null);
+                changeSearchOptions('status_filter', 3)
+              }}
+              RadioButtonProps={{
+                value: '1',
+                status: searchOptions.status_filter == 3? 'checked': 'unchecked',
+                color: '#ff4d4d',
+              }}
+            />
+            <BOHTlbRadio
+              label='Confirmed'
+              onPress={()=>{
+                changeSearchOptions('stage', null);
+                changeSearchOptions('status_filter', 4)
+              }}
+              RadioButtonProps={{
+                value: '1',
+                status: searchOptions.status_filter == 4? 'checked': 'unchecked',
+                color: '#ff4d4d',
+              }}
+            />
+            <BOHTlbRadio
+              label='All'
+              style={{opacity: searchOptions.status_filter?1:0,}}
+              onPress={()=>{
+                changeSearchOptions('stage', null);
+                changeSearchOptions('status_filter', null)
+              }}
+              RadioButtonProps={{
+                value: '1',
+                status: searchOptions.status_filter == null? 'checked': 'unchecked',
+                color: '#ff4d4d',
+              }}
+            />
+          </BOHToolbar>
+          <BOHToolbar style={{width: '100%', justifyContent:'space-between'}}>
+            <BOHTlbrSearchInput
+              boxStyle={{margin:0}}
+              width={125}
+              label='Customer'
+              defaultValue={searchOptions.customer}
+              onChangeText={(val)=>changeSearchOptions('customer', val)}
+            />
+            <BOHTlbrSearchInput
+              boxStyle={{margin:0}}
+              width={125}
+              label='Brand'
+              defaultValue={searchOptions.brand}
+              onChangeText={(val)=>changeSearchOptions('brand', val)}
+            />
+            <BOHTlbrSearchInput
+              boxStyle={{margin:0}}
+              width={125}
+              label='Order number'
+              defaultValue={searchOptions.order_number}
+              onChangeText={(val)=>changeSearchOptions('order_number', val)}
+            />
+            <BOHTlbrSearchPicker
+              width={125}
+              boxStyle={{margin:0}}
+              enabled={searchOptions.status_filter?false:true}
+              label="Category"
+              items={[
+                {label: '', value: ''}, 
+                ...stage
+                  .map((item, index) => {
+                    if (index === 2 || index === 3 || index === 4) {
+                      return {label: item, value: index};
+                    } else {
+                      return null;
+                    }
+                  })
+                  .filter(item => item !== null)
+              ]}
+              selectedValue={searchOptions.stage || ''}
+              onValueChange={val=>changeSearchOptions('stage', val)}/>
+          </BOHToolbar>
+          <BOHTable>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.columnHeader, {width:90}]}>{'Order #'}</Text>
+              <Text style={[styles.columnHeader, {width: 160}]}>{'Brand'}</Text>
+              <Text style={[styles.columnHeader, {width: 160}]}>{'Customer'}</Text>
+              <Text style={[styles.columnHeader]}>{'Start'}</Text>
+              <Text style={[styles.columnHeader]}>{'End'}</Text>
+              <Text style={[styles.columnHeader]}>{'Qty of bikes'}</Text>
+              <Text style={[styles.columnHeader]}>{'Stage'}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell]}>{'Proceed'}</Text>
             </View>
-            <View style={{height:'100%'}}>
-              {Platform.OS == 'web' && <img style={{height:'100%', boxSizing:'border-box', padding:'40px 50px 30px 0',}} src={require('./HiltonHeadIsland.png')}/>}
-            </View>
+            <ScrollView style={{ flex: 1 }}>
+              {renderTableData()}
+            </ScrollView>
+          </BOHTable>
         </View>
-      </ScrollView>
+        <View style={{height:'100%'}}>
+          {Platform.OS == 'web' && <img style={{height:'100%', boxSizing:'border-box', padding:10}} src={require('./HiltonHeadIsland.png')}/>}
+        </View>
+      </CommonContainer>
     </BasicLayout>
   );
 };
