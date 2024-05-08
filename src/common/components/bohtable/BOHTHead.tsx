@@ -18,8 +18,9 @@ const BOHTHead: React.FC<BOHTHeadProps> = ({ children, style, ...rest }) => {
 
 const styles = StyleSheet.create({
   defaultTheme: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    backgroundColor: '#f5f5f5',
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#ddd',
   },
 });
 

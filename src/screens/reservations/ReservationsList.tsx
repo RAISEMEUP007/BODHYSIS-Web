@@ -197,72 +197,70 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
       navigation={navigation}
       screenName={'Reservation List'}
     >
-      <ScrollView horizontal={true}>
-        <CommonContainer>
-          <BOHToolbar style={{zIndex:100}}>
-            <Text style={styles.searchLabel}>From</Text>
-            {Platform.OS == 'web' && renderDatePicker(searchOptions.start_date, (date)=>changeSearchOptions('start_date', date.toISOString().substr(0, 10)))}
-            <Text style={[styles.searchLabel, {marginHorizontal:8}]}>To</Text>
-            {Platform.OS == 'web' && renderDatePicker(searchOptions.end_date, (date)=>changeSearchOptions('end_date', date.toISOString().substr(0, 10)))}
-          </BOHToolbar>
-          <BOHToolbar style={{width: '100%', justifyContent:'space-between'}}>
-            <BOHTlbrSearchInput
-              boxStyle={{margin:0}}
-              width={125}
-              label='Customer'
-              defaultValue={searchOptions.customer}
-              onChangeText={(val)=>changeSearchOptions('customer', val)}
-            />
-            <BOHTlbrSearchInput
-              width={125}
-              label='Brand'
-              defaultValue={searchOptions.brand}
-              onChangeText={(val)=>changeSearchOptions('brand', val)}
-            />
-            <BOHTlbrSearchInput
-              width={125}
-              label='Order number'
-              defaultValue={searchOptions.order_number}
-              onChangeText={(val)=>changeSearchOptions('order_number', val)}
-            />
-            <BOHTlbrSearchPicker
-              width={125}
-              items={[{label:'', value:''}, ...stage.map((item, index)=>({'label':item, 'value':index}))]}
-              label="Category"
-              selectedValue={searchOptions.stage || ''}
-              onValueChange={val=>changeSearchOptions('stage', val)}/>
-          </BOHToolbar>
-          <BOHToolbar>
-            {/* <TouchableHighlight style={styles.button} onPress={()=>{
+      <CommonContainer>
+        <BOHToolbar style={{zIndex:100}}>
+          <Text style={styles.searchLabel}>From</Text>
+          {Platform.OS == 'web' && renderDatePicker(searchOptions.start_date, (date)=>changeSearchOptions('start_date', date.toISOString().substr(0, 10)))}
+          <Text style={[styles.searchLabel, {marginHorizontal:8}]}>To</Text>
+          {Platform.OS == 'web' && renderDatePicker(searchOptions.end_date, (date)=>changeSearchOptions('end_date', date.toISOString().substr(0, 10)))}
+        </BOHToolbar>
+        <BOHToolbar style={{width: '100%', justifyContent:'space-between'}}>
+          <BOHTlbrSearchInput
+            boxStyle={{margin:0}}
+            width={125}
+            label='Customer'
+            defaultValue={searchOptions.customer}
+            onChangeText={(val)=>changeSearchOptions('customer', val)}
+          />
+          <BOHTlbrSearchInput
+            width={125}
+            label='Brand'
+            defaultValue={searchOptions.brand}
+            onChangeText={(val)=>changeSearchOptions('brand', val)}
+          />
+          <BOHTlbrSearchInput
+            width={125}
+            label='Order number'
+            defaultValue={searchOptions.order_number}
+            onChangeText={(val)=>changeSearchOptions('order_number', val)}
+          />
+          <BOHTlbrSearchPicker
+            width={125}
+            items={[{label:'', value:''}, ...stage.map((item, index)=>({'label':item, 'value':index}))]}
+            label="Category"
+            selectedValue={searchOptions.stage || ''}
+            onValueChange={val=>changeSearchOptions('stage', val)}/>
+        </BOHToolbar>
+        <BOHToolbar>
+          {/* <TouchableHighlight style={styles.button} onPress={()=>{
+            openReservationScreen('Create Reservations');
+          }}>
+            <Text style={styles.buttonText}>Create</Text>
+          </TouchableHighlight> */}
+          <BOHButton
+            label="Create"
+            onPress={()=>{
               openReservationScreen('Create Reservations');
-            }}>
-              <Text style={styles.buttonText}>Create</Text>
-            </TouchableHighlight> */}
-            <BOHButton
-              label="Create"
-              onPress={()=>{
-                openReservationScreen('Create Reservations');
-              }}/>
-          </BOHToolbar>
-          <BOHTable>
-            <BOHTHead>
-              <BOHTR>
-                <BOHTH width={90}>{'Order #'}</BOHTH>
-                <BOHTH width={160}>{'Brand'}</BOHTH>
-                <BOHTH width={160}>{'Customer'}</BOHTH>
-                <BOHTH width={100}>{'To'}</BOHTH>
-                <BOHTH width={100}>{'From'}</BOHTH>
-                <BOHTH width={110}>{'Qty of bikes'}</BOHTH>
-                <BOHTH width={100}>{'Stage'}</BOHTH>
-                <BOHTH width={80}>{'Proceed'}</BOHTH>
-              </BOHTR>
-            </BOHTHead>
-            <BOHTBody>
-              {renderTableData()}
-            </BOHTBody>
-          </BOHTable>
-        </CommonContainer>
-      </ScrollView>
+            }}/>
+        </BOHToolbar>
+        <BOHTable>
+          <BOHTHead>
+            <BOHTR>
+              <BOHTH width={90}>{'Order #'}</BOHTH>
+              <BOHTH width={160}>{'Brand'}</BOHTH>
+              <BOHTH width={160}>{'Customer'}</BOHTH>
+              <BOHTH width={100}>{'To'}</BOHTH>
+              <BOHTH width={100}>{'From'}</BOHTH>
+              <BOHTH width={110}>{'Qty of bikes'}</BOHTH>
+              <BOHTH width={100}>{'Stage'}</BOHTH>
+              <BOHTH width={80}>{'Proceed'}</BOHTH>
+            </BOHTR>
+          </BOHTHead>
+          <BOHTBody>
+            {renderTableData()}
+          </BOHTBody>
+        </BOHTable>
+      </CommonContainer>
     </BasicLayout>
   );
 };

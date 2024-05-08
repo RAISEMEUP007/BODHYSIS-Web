@@ -6,3 +6,4 @@ export { default as BOHTH } from "./BOHTH";
 export { default as BOHTD } from "./BOHTD";
 export { default as BOHTDCheckbox } from "./BOHTDCheckbox";
 export { default as BOHTDIconBox } from "./BOHTDIconBox";
+export { default as BOHTDImageBox } from "./BOHTDImageBox";

@@ -19,6 +19,9 @@ const BOHTR: React.FC<BOHTRProps> = ({ children, style, ...rest }) => {
 const styles = StyleSheet.create({
   defaultTheme: {
     flexDirection:'row',
+    alignItems:'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
   },
 });
 

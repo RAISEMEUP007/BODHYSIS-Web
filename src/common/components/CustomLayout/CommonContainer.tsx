@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { View, StyleSheet, ViewProps } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 interface CommonContainerProps extends ViewProps {
   children?: ReactNode;
@@ -7,12 +8,14 @@ interface CommonContainerProps extends ViewProps {
 
 const CommonContainer: React.FC<CommonContainerProps> = ({ children, style, ...rest }) => {
   return (
-    <View
-      {...rest}
-      style={[styles.defaultTheme, style]}
-    >
-      {children}
-    </View>
+    <ScrollView horizontal={true}>
+      <View
+        {...rest}
+        style={[styles.defaultTheme, style]}
+      >
+          {children}
+      </View>
+    </ScrollView>
   );
 };
 

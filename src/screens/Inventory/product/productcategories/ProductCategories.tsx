@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ScrollView,
-  View,
-  Text,
-  TouchableHighlight,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-} from 'react-native';
+import { StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import {
@@ -22,12 +14,14 @@ import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
 import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout';
 
-import { productCategoriesStyle } from './styles/ProductCategoriesStyle';
 import AddProductCategoryModal from './AddProductCategoryModal';
 import UpdateProductCategoryModal from './UpdateProductCategoryModal';
+import { CommonContainer } from '../../../../common/components/CustomLayout';
+import { BOHButton, BOHToolbar } from '../../../../common/components/bohtoolbar';
+import { BOHTBody, BOHTD, BOHTDIconBox, BOHTDImageBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../../../common/components/bohtable';
+import AssociatedBrandsModal from './AssociatedBrandsModal';
 
 const ProductCategories = ({ navigation, openInventory }) => {
-  const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
@@ -39,12 +33,17 @@ const ProductCategories = ({ navigation, openInventory }) => {
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
+  const [isBrandsModalVisible, setBrandsModalVisible] = useState(false);
+
+  const InitialWidths = [220, 80, 90, 50, 80, 50];
+
   const openAddProductCategoryModal = () => {
     setAddModalVisible(true);
   };
   const closeAddProductCategoryModal = () => {
     setAddModalVisible(false);
   };
+
   const editProductCategory = (item) => {
     setSelectedCategory(item);
     setUpdateModalVisible(true);
@@ -52,19 +51,18 @@ const ProductCategories = ({ navigation, openInventory }) => {
   const closeUpdateProductCategoryModal = () => {
     setUpdateModalVisible(false);
   };
-
+  
+  const editAssociatedBrands = (item) => {
+    setSelectedCategory(item);
+    setBrandsModalVisible(true);
+  };
+  const closeBrandsCategoryModal = () => {
+    setBrandsModalVisible(false);
+  };
+  
   useEffect(() => {
     if (updateProductCategoryTrigger == true) getTable();
   }, [updateProductCategoryTrigger]);
-
-  const changeCellData = (index, key, newVal) => {
-    const updatedTableData = [...tableData];
-    updatedTableData[index] = {
-      ...updatedTableData[index],
-      [key]: newVal,
-    };
-    setTableData(updatedTableData);
-  };
 
   const removeProductCategory = (id) => {
     showConfirm(msgStr('deleteConfirmStr'), () => {
@@ -131,27 +129,11 @@ const ProductCategories = ({ navigation, openInventory }) => {
     if (tableData.length > 0) {
       tableData.map((item, index) => {
         rows.push(
-          <View key={index} style={styles.tableRow}>
-            <View style={styles.categoryCell}>
-              <Text style={styles.categoryCell}>{item.category}</Text>
-            </View>
-            <View style={[styles.cell, { width: 100, paddingRight: 6, alignItems: 'flex-end' }]}>
-              <Text>{item.quantity ? item.quantity : '0'}</Text>
-            </View>
-            <View style={[styles.imageCell]}>
-              {item.img_url ? (
-                <Image
-                  source={{ uri: API_URL + item.img_url }}
-                  style={styles.cellImage}
-                  onError={() => {
-                    changeCellData(index, 'img_url', null);
-                  }}
-                />
-              ) : (
-                <FontAwesome5 name="image" size={26} color="#666"></FontAwesome5>
-              )}
-            </View>
-            <View style={[styles.IconCell]}>
+          <BOHTR key={index}>
+            <BOHTD width={InitialWidths[0]}>{item.category}</BOHTD>
+            <BOHTD width={InitialWidths[1]} style={{textAlign:'right'}}>{item.quantity ? item.quantity : '0'}</BOHTD>
+            <BOHTDImageBox width={InitialWidths[2]} imgURL={ API_URL + item.img_url }/>
+            <BOHTDIconBox width={InitialWidths[3]}>
               <TouchableOpacity
                 onPress={() => {
                   editProductCategory(item);
@@ -159,8 +141,17 @@ const ProductCategories = ({ navigation, openInventory }) => {
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
-            </View>
-            <View style={[styles.IconCell]}>
+            </BOHTDIconBox>
+            {/* <BOHTDIconBox width={InitialWidths[4]}>
+              <TouchableOpacity
+                onPress={() => {
+                  editAssociatedBrands(item);
+                }}
+              >
+                <FontAwesome5 size={TextMediumSize} name="tags" color="black" />
+              </TouchableOpacity>
+            </BOHTDIconBox> */}
+            <BOHTDIconBox width={InitialWidths[5]}>
               <TouchableOpacity
                 onPress={() => {
                   removeProductCategory(item.id);
@@ -168,8 +159,8 @@ const ProductCategories = ({ navigation, openInventory }) => {
               >
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />
               </TouchableOpacity>
-            </View>
-          </View>
+            </BOHTDIconBox>
+          </BOHTR>
         );
       });
     } else {
@@ -186,46 +177,51 @@ const ProductCategories = ({ navigation, openInventory }) => {
       }}
       screenName={'Product Categories'}
     >
-      <ScrollView horizontal={true}>
-        <View style={styles.container}>
-          <View style={styles.toolbar}>
-            <TouchableHighlight style={styles.button} onPress={openAddProductCategoryModal}>
-              <Text style={styles.buttonText}>Add</Text>
-            </TouchableHighlight>
-          </View>
-          <View style={styles.tableContainer}>
-            <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader, styles.categoryCell]}>{'Category'}</Text>
-              <Text style={[styles.columnHeader, { width: 100 }]}>{'Quantity'}</Text>
-              <Text style={[styles.columnHeader, styles.imageCell]}>{'Image'}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
-            </View>
-            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
-              {renderTableData()}
-            </ScrollView>
-          </View>
+      <CommonContainer>
+        <BOHToolbar>
+          <BOHButton
+            label='Add'
+            onPress={openAddProductCategoryModal}/>
+        </BOHToolbar>
+        <BOHTable>
+          <BOHTHead>
+            <BOHTR>
+              <BOHTH width={InitialWidths[0]}>{'Category'}</BOHTH>
+              <BOHTH width={InitialWidths[1]}>{'Quantity'}</BOHTH>
+              <BOHTH width={InitialWidths[2]}>{'Image'}</BOHTH>
+              <BOHTH width={InitialWidths[3]}>{'Edit'}</BOHTH>
+              {/* <BOHTH width={InitialWidths[4]}>{'Brands'}</BOHTH> */}
+              <BOHTH width={InitialWidths[5]}>{'DEL'}</BOHTH>
+            </BOHTR>
+          </BOHTHead>
+          <BOHTBody>
+            {renderTableData()}
+          </BOHTBody>
+        </BOHTable>
 
-          <AddProductCategoryModal
-            isModalVisible={isAddModalVisible}
+        <AddProductCategoryModal
+          isModalVisible={isAddModalVisible}
+          setUpdateProductCategoryTrigger={setUpdateProductCategoryTrigger}
+          closeModal={closeAddProductCategoryModal}
+        />
+        
+        {/* <AssociatedBrandsModal
+          isModalVisible={isBrandsModalVisible}
+          categoryId={selectedCategory?.id}
+          closeModal={closeBrandsCategoryModal}
+        /> */}
+
+        {selectedCategory && (
+          <UpdateProductCategoryModal
+            isModalVisible={isUpdateModalVisible}
+            item={selectedCategory}
             setUpdateProductCategoryTrigger={setUpdateProductCategoryTrigger}
-            closeModal={closeAddProductCategoryModal}
+            closeModal={closeUpdateProductCategoryModal}
           />
-
-          {selectedCategory && (
-            <UpdateProductCategoryModal
-              isModalVisible={isUpdateModalVisible}
-              item={selectedCategory}
-              setUpdateProductCategoryTrigger={setUpdateProductCategoryTrigger}
-              closeModal={closeUpdateProductCategoryModal}
-            />
-          )}
-        </View>
-      </ScrollView>
+        )}
+      </CommonContainer>
     </BasicLayout>
   );
 };
-
-const styles = productCategoriesStyle;
 
 export default ProductCategories;

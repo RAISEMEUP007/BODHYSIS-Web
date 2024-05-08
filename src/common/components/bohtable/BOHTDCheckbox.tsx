@@ -24,8 +24,6 @@ const styles = StyleSheet.create({
   defaultTheme: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
   },
 });
 

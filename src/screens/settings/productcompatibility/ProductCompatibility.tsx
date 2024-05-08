@@ -12,7 +12,7 @@ const ProductCompatibility = ({ navigation, openInventory }) => {
 
   const [tableData, setTableData] = useState([]);
   const [extraData, setExtraData] = useState([]);
-  const [headerData, setHeaderData] = useState(['Product Family']);
+  const [headerData, setHeaderData] = useState(['Product Family (Display Name)']);
   const [widths, setWidths] = useState([]);
 
   const getTable = () => {
@@ -73,10 +73,10 @@ const ProductCompatibility = ({ navigation, openInventory }) => {
     getExtrasData((jsonRes, status)=>{
       if(status == 200){
         setExtraData(jsonRes);
-        setHeaderData(['Product Family', ...jsonRes.map(item=>item.name)]);
+        setHeaderData(['Product Family (Display Name)', ...jsonRes.map(item=>item.name)]);
       }else{
         setExtraData([]);
-        setHeaderData(['Product Family']);
+        setHeaderData(['Product Family (Display Name)']);
       }
     })
     getTable();
