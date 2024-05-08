@@ -21,8 +21,6 @@ const styles = StyleSheet.create({
   defaultTheme: {
     paddingHorizontal: 10,
     paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
   },
 });
 

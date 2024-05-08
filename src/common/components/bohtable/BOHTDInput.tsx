@@ -19,8 +19,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 9,
     margin:1,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
   },
 });
 

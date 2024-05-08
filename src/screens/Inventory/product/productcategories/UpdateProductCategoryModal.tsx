@@ -37,7 +37,7 @@ const UpdateProductCategoryModal = ({
 
   const [_productCategory, setProductCategory] = useState(item.category);
   const [Tags, setTags] = useState([]);
-  const [selectedTag, selectTag] = useState({});
+  const [selectedTag, selectTag] = useState<any>({});
 
   const inputRef = useRef(null);
 
@@ -157,6 +157,7 @@ const UpdateProductCategoryModal = ({
       <BasicModalContainer>
         <ModalHeader label={'Product Category'} closeModal={closeModal} />
         <ModalBody>
+          <Text style={styles.label}>Category</Text>
           <TextInput
             style={styles.input}
             onChangeText={setProductCategory}
@@ -172,7 +173,7 @@ const UpdateProductCategoryModal = ({
               {imagePreviewUrl ? (
                 <Image source={{ uri: imagePreviewUrl }} style={styles.previewImage} />
               ) : (
-                <View style={styles.imageBox}>
+                <View>
                   <Text style={styles.boxText}>Click to choose an image</Text>
                 </View>
               )}
@@ -184,6 +185,7 @@ const UpdateProductCategoryModal = ({
               onChange={handleImageSelection}
             />
           </View>
+          <Text style={styles.label}>Tag</Text>
           <Picker
             style={styles.select}
             selectedValue={selectedTag.id}
