@@ -2,12 +2,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
-import { checkedInBarcode, getReservationDetail, scanBarcode, updateReservation } from '../../api/Reservation';
+import { checkedInBarcode, getReservationDetail, scanBarcode, updateReservation, updateReservationItem } from '../../api/Reservation';
 import { getColorcombinationsData } from '../../api/Settings';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
-import { BOHTBody, BOHTD, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
+import { BOHTBody, BOHTD, BOHTDInput, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
 import { BOHButton, BOHToolbar } from '../../common/components/bohtoolbar';
 import LabeledTextInput from '../../common/components/input/LabeledTextInput';
 import { msgStr } from '../../common/constants/Message';
@@ -112,6 +112,22 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
     });
   };
 
+  const updateItem = (payload, index) => {
+    updateReservationItem(payload, (jsonRes, status)=>{
+      if(status == 200){
+        setOrderInfo(prevOrderInfo => {
+          const updatedItems = [...prevOrderInfo.items];
+          updatedItems[index] = {
+            ...updatedItems[index],
+            status: payload.status,
+            barcode: payload.barcode
+          };
+          return { ...prevOrderInfo, items: updatedItems };
+        });
+      }
+    });
+  }
+
   const renderTableData = () => {
     const rows = [];
     if (orderInfo.items && orderInfo.items.length > 0) {
@@ -120,7 +136,21 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
         rows.push(
           <BOHTR key={index}>
             <BOHTD style={{flex:1}}>{item.display_name}</BOHTD>
-            <BOHTD width={100}>{item.barcode}</BOHTD>
+            <BOHTDInput 
+              width={100} 
+              value={item.barcode || ''}
+              editable={(item.status == 2 || item.status == 3 )? true: false}
+              onChangeText={(value)=>{
+                const payload = {
+                  id: item.id,
+                  status: item.status >= 3 ? 4 : 3,
+                  barcode: value,
+                }
+                console.log(payload)
+                console.log(item.status)
+                updateItem(payload, index);
+              }}
+            />
             <BOHTD width={100}>{statusStr}</BOHTD>
           </BOHTR>
         );
@@ -209,7 +239,8 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
       ...inputValues,
       [fieldName]: value
     };
-    setInputValues(newValues);
+    // setInputValues(newValues);
+    UpdateOrderInfo(fieldName, value);
   }
 
   const processNextStage = () => {
@@ -248,11 +279,11 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               label='Print'
               onPress={()=>printReservation(orderInfo.id, 1)}
             />
-            <BOHButton
+            {/* <BOHButton
               style={{marginLeft:20}}
               label='Update'
               onPress={()=>UpdateDetails()}
-            />
+            /> */}
           </BOHToolbar>
           <View style={{flexDirection:'row', marginVertical:4}}>
             <LabeledTextInput

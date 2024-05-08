@@ -171,11 +171,21 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
       }
     }
 
+    const returnBgColor = (stage) => {
+      switch (stage) {
+        case 2: case '2': return '#BEE5EB';
+        case 3: case '3': return '#F5C6CB';
+        case 4: case '4': return '#C3E6CB';
+        default:  return '#fff';
+      }
+    }
+    
+
     const rows = [];
     if (tableData.length > 0) {
       tableData.map((item, index) => {
         rows.push(
-          <BOHTR key={index}>
+          <BOHTR key={index} style={{backgroundColor:returnBgColor(item.stage)}}>
             <BOHTD width={InitialWidths[0]}>{item.order_number}</BOHTD>
             <BOHTD width={InitialWidths[1]}>{item.brand}</BOHTD>
             <BOHTD width={InitialWidths[2]}>{item.full_name}</BOHTD>
