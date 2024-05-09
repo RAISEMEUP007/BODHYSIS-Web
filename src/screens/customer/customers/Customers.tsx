@@ -19,7 +19,7 @@ import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { customersStyle } from './styles/CustomersStyle';
 import AddCustomerModal from './AddCustomerModal';
-import Reservations from '../../reservations/Reservations';
+import OpenStoreModal from './OpenStoreModal';
 
 const Customers = ({ navigation }) => {
   const screenHeight = Dimensions.get('window').height;
@@ -31,6 +31,7 @@ const Customers = ({ navigation }) => {
   const [updateCustomerTrigger, setUpdateCustomerTrigger] = useState(true);
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
+  const [isOpenStoreModalVisible, setOpenStoreModalVisible] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [searchKey, setSearchKey] = useState('');
   
@@ -42,6 +43,15 @@ const Customers = ({ navigation }) => {
     setAddModalVisible(false);
     setSelectedCustomer(null);
   };
+
+  const openStoreModal = () => {
+    setOpenStoreModalVisible(true);
+  };
+  const closeStoreModal = () => {
+    setSelectedCustomer(null);
+    setOpenStoreModalVisible(false);
+  };
+
   const editCustomer = (index) => {
     setSelectedCustomer(tableData[index]);
     setAddModalVisible(true);
@@ -143,6 +153,16 @@ const Customers = ({ navigation }) => {
             <View style={[styles.cell]}>
               <Text>{item?.home_location_tbl?.location}</Text>
             </View>
+            <View style={[styles.IconCell, {width:100}]}>
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedCustomer(item);
+                  openStoreModal();
+                }}
+              >
+                <FontAwesome5 size={TextMediumSize} name="store" color="black" />
+              </TouchableOpacity>
+            </View>
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
@@ -208,6 +228,7 @@ const Customers = ({ navigation }) => {
               <Text style={[styles.columnHeader]}>{'Mobile number'}</Text>
               <Text style={[styles.columnHeader]}>{'Country'}</Text>
               <Text style={[styles.columnHeader]}>{'Location'}</Text>
+              <Text style={[styles.columnHeader, styles.IconCell, {width:100}]}>{'Login Store'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Reserve'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
@@ -224,6 +245,12 @@ const Customers = ({ navigation }) => {
         Customer={selectedCustomer}
         setUpdateCustomerTrigger={setUpdateCustomerTrigger}
         closeModal={closeAddCustomerModal}
+      />
+
+      <OpenStoreModal
+        isModalVisible={isOpenStoreModalVisible}
+        customer={selectedCustomer}
+        closeModal={closeStoreModal}
       />
     </BasicLayout>
   );

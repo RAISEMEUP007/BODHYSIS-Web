@@ -20,6 +20,10 @@ export const updateReservation = (payload, cb=(jR, s, e)=>{}) => {
   postAPICall('reservations/updatereservation', payload, cb);
 };
 
+export const updateReservationItem = (payload, cb=(jR, s, e)=>{}) => {
+  postAPICall('reservations/updatereservationitem', payload, cb);
+};
+
 export const deleteReservationItem = (payload, cb=(jR, s, e)=>{}) => {
   postAPICall('reservation/removereservationitem', payload, cb);
 };

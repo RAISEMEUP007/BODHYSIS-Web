@@ -1,27 +1,21 @@
-import React, { InputHTMLAttributes, forwardRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  ScrollView,
-  View,
   Text,
   TouchableOpacity,
   Platform
 } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Picker } from '@react-native-picker/picker';
 
 import { getReservationsData } from '../../api/Reservation';
+import { BasicLayout, CommonContainer } from '../../common/components/CustomLayout';
+import { BOHButton, BOHTlbRadio, BOHTlbrSearchInput, BOHTlbrSearchPicker, BOHToolbar, renderBOHTlbDatePicker } from '../../common/components/bohtoolbar';
+import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
 import { msgStr } from '../../common/constants/Message';
-import { TextMediumSize } from '../../common/constants/Fonts';
+import { TextMediumSize, TextdefaultSize } from '../../common/constants/Fonts';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
-import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 
-import { reservationListsStyle } from './styles/ReservationListStyle';
-import { CommonContainer } from '../../common/components/CustomLayout';
-import { BOHButton, BOHTlbrSearchInput, BOHTlbrSearchPicker, BOHToolbar } from '../../common/components/bohtoolbar';
-import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -38,16 +32,18 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
 
   const [tableData, setTableData] = useState([]);
   const [updateReservationListTrigger, setUpdateReservationListTrigger] = useState(true);
+  const [periodRange, setPeriodRange] = useState<any>('');
 
   const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
-  const tomorrow = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10);
+  const today = new Date().toISOString().substr(0, 10);
   const [ searchOptions, setSearchOptions ] = useState({
     start_date : twoWeeksAgo.toISOString().substr(0, 10),
-    end_date : tomorrow,
+    end_date : today,
     customer : '',
     brand: '',
     order_number: '',
     stage: null,
+    status_filter: null,
   });
 
   const stage = [
@@ -57,6 +53,74 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     'checked out',
     'checked in',
   ];
+
+  useEffect(() => {
+    switch (periodRange.toLowerCase()) {
+      case 'today':
+        setSearchOptions({
+          ...searchOptions,
+          start_date: new Date().toISOString().substr(0, 10),
+          end_date: new Date().toISOString().substr(0, 10),
+        });
+        break;
+      case 'tomorrow':
+        setSearchOptions({
+          ...searchOptions,
+          start_date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10),
+          end_date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10),
+        });
+        break;
+      case 'yesterday':
+        setSearchOptions({
+          ...searchOptions,
+          start_date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10),
+          end_date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10),
+        });
+        break;
+      case 'today+tomorrow':
+        setSearchOptions({
+          ...searchOptions,
+          start_date: new Date().toISOString().substr(0, 10),
+          end_date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10),
+        });
+        break;
+      case '7days':
+        setSearchOptions({
+          ...searchOptions,
+          start_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10),
+          end_date: new Date().toISOString().substr(0, 10),
+        });
+        break;
+      default:
+        break;
+    }
+  }, [periodRange]);
+
+  useEffect(() => {
+    if (searchOptions.start_date && searchOptions.end_date) {
+      const startDate = new Date(searchOptions.start_date);
+      const endDate = new Date(searchOptions.end_date);
+  
+      if (startDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10) &&
+          endDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10)) {
+        if(periodRange != 'Today') setPeriodRange('Today');
+      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
+                  endDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+        if(periodRange != 'Tomorrow') setPeriodRange('Tomorrow');
+      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
+                  endDate.toISOString().substr(0, 10) === new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+        if(periodRange != 'Yesterday') setPeriodRange('Yesterday');
+      } else if (startDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10) &&
+                  endDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+        if(periodRange != 'Today+Tomorrow') setPeriodRange('Today+Tomorrow');
+      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
+                  endDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10)) {
+        if(periodRange != '7days') setPeriodRange('7days');
+      } else {
+        if(periodRange != 'custom') setPeriodRange('custom');
+      }
+    }
+  }, [searchOptions.start_date, searchOptions.end_date]);
 
   const changeSearchOptions = (key, val) => {
     setSearchOptions(prevOptions => ({
@@ -72,55 +136,6 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
   useEffect(() => {
     getTable();
   }, [searchOptions]);
-
-  // const removeReservationList = (id) => {
-  //   showConfirm(msgStr('deleteConfirmStr'), () => {
-  //     deleteReservationList(id, (jsonRes, status, error) => {
-  //       switch (status) {
-  //         case 200:
-  //           setUpdateReservationListTrigger(true);
-  //           showAlert('success', jsonRes.message);
-  //           break;
-  //         default:
-  //           if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-  //           else showAlert('error', msgStr('unknownError'));
-  //           break;
-  //       }
-  //     });
-  //   });
-  // };
-
-  const CustomInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
-    ({ value, onChange, onClick }, ref) => (
-      <input
-        onClick={onClick}
-        onChange={onChange}
-        ref={ref}
-        style={styles.dateInput}
-        value={value}
-      ></input>
-    )
-  );
-
-  const renderDatePicker = (selectedDate, onChangeHandler) => {
-    const sDate = new Date(selectedDate);
-    return (
-      <View style={{zIndex:10}}>
-        <DatePicker
-          selected={sDate}
-          onChange={(date) => onChangeHandler(date)}
-          customInput={<CustomInput />}
-          peekNextMonth
-          showMonthDropdown
-          showYearDropdown
-          // dropdownMode="select"
-          // timeInputLabel="Time:"
-          dateFormat="yyyy-MM-dd"
-          // showTimeSelect
-        />
-      </View>
-    );
-  };
 
   const getTable = () => {
     getReservationsData({searchOptions:searchOptions}, (jsonRes, status, error) => {
@@ -170,8 +185,8 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
             <BOHTD width={90}>{item.order_number}</BOHTD>
             <BOHTD width={160}>{item.brand}</BOHTD>
             <BOHTD width={160}>{item.full_name}</BOHTD>
-            <BOHTD width={100}>{item.end_date ? formatDateInline(item.end_date):''}</BOHTD>
             <BOHTD width={100}>{item.start_date ? formatDateInline(item.start_date):''}</BOHTD>
+            <BOHTD width={100}>{item.end_date ? formatDateInline(item.end_date):''}</BOHTD>
             <BOHTD width={110}>{item?.quantity??''}</BOHTD>
             <BOHTD width={100}>{convertStageToString(item.stage)}</BOHTD>
             <BOHTDIconBox width={80}>
@@ -199,10 +214,124 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     >
       <CommonContainer>
         <BOHToolbar style={{zIndex:100}}>
-          <Text style={styles.searchLabel}>From</Text>
-          {Platform.OS == 'web' && renderDatePicker(searchOptions.start_date, (date)=>changeSearchOptions('start_date', date.toISOString().substr(0, 10)))}
-          <Text style={[styles.searchLabel, {marginHorizontal:8}]}>To</Text>
-          {Platform.OS == 'web' && renderDatePicker(searchOptions.end_date, (date)=>changeSearchOptions('end_date', date.toISOString().substr(0, 10)))}
+          <Text style={{marginRight:8, fontSize:TextdefaultSize}}>Start</Text>
+          {Platform.OS == 'web' && 
+            renderBOHTlbDatePicker(searchOptions.start_date, (date) => {
+              const year = date.getFullYear();
+              const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+              changeSearchOptions('start_date', formattedDate);
+          })}
+          <Text style={{marginHorizontal:8, fontSize:TextdefaultSize}}>End</Text>
+          {Platform.OS == 'web' && 
+            renderBOHTlbDatePicker(searchOptions.end_date, (date) => {
+              const year = date.getFullYear();
+              const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+              changeSearchOptions('end_date', formattedDate);
+          })}
+          <BOHTlbRadio
+            label='Today'
+            onPress={()=>{setPeriodRange('Today')}}
+            RadioButtonProps={{
+              value: '1',
+              status: periodRange == 'Today'? 'checked': 'unchecked',
+            }}
+          />
+          <BOHTlbRadio
+            label='Tomorrow'
+            onPress={()=>{setPeriodRange('Tomorrow')}}
+            RadioButtonProps={{
+              value: '1',
+              status: periodRange == 'Tomorrow'? 'checked': 'unchecked',
+            }}
+          />
+          <BOHTlbRadio
+            label='Yesterday'
+            onPress={()=>{setPeriodRange('Yesterday')}}
+            RadioButtonProps={{
+              value: '1',
+              status: periodRange == 'Yesterday'? 'checked': 'unchecked',
+            }}
+          />
+          <BOHTlbRadio
+            label='Today+Tomorrow'
+            onPress={()=>{setPeriodRange('Today+Tomorrow')}}
+            RadioButtonProps={{
+              value: '1',
+              status: periodRange == 'Today+Tomorrow'? 'checked': 'unchecked',
+            }}
+          />
+          <BOHTlbRadio
+            label='7 days'
+            onPress={()=>{setPeriodRange('7days')}}
+            RadioButtonProps={{
+              value: '1',
+              status: periodRange == '7days'? 'checked': 'unchecked',
+            }}
+          />
+        </BOHToolbar>
+        <BOHToolbar>
+          <BOHTlbRadio
+            label='Checked In'
+            style={{margin:0}}
+            onPress={()=>{
+              changeSearchOptions('stage', null);
+              changeSearchOptions('status_filter', 1)
+            }}
+            RadioButtonProps={{
+              value: '1',
+              status: searchOptions.status_filter == 1? 'checked': 'unchecked',
+              color: '#ff4d4d',
+            }}
+          />
+          <BOHTlbRadio
+            label='Checked Out'
+            onPress={()=>{
+              changeSearchOptions('stage', null);
+              changeSearchOptions('status_filter', 2)
+            }}
+            RadioButtonProps={{
+              value: '1',
+              status: searchOptions.status_filter == 2? 'checked': 'unchecked',
+              color: '#ff4d4d',
+            }}
+          />
+          <BOHTlbRadio
+            label='Provisional'
+            onPress={()=>{
+              changeSearchOptions('stage', null);
+              changeSearchOptions('status_filter', 3)
+            }}
+            RadioButtonProps={{
+              value: '1',
+              status: searchOptions.status_filter == 3? 'checked': 'unchecked',
+              color: '#ff4d4d',
+            }}
+          />
+          <BOHTlbRadio
+            label='Confirmed'
+            onPress={()=>{
+              changeSearchOptions('stage', null);
+              changeSearchOptions('status_filter', 4)
+            }}
+            RadioButtonProps={{
+              value: '1',
+              status: searchOptions.status_filter == 4? 'checked': 'unchecked',
+              color: '#ff4d4d',
+            }}
+          />
+          <BOHTlbRadio
+            label='All'
+            style={{opacity: searchOptions.status_filter?1:0,}}
+            onPress={()=>{
+              changeSearchOptions('stage', null);
+              changeSearchOptions('status_filter', null)
+            }}
+            RadioButtonProps={{
+              value: '1',
+              status: searchOptions.status_filter == null? 'checked': 'unchecked',
+              color: '#ff4d4d',
+            }}
+          />
         </BOHToolbar>
         <BOHToolbar style={{width: '100%', justifyContent:'space-between'}}>
           <BOHTlbrSearchInput
@@ -226,17 +355,13 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
           />
           <BOHTlbrSearchPicker
             width={125}
+            enabled={searchOptions.status_filter?false:true}
             items={[{label:'', value:''}, ...stage.map((item, index)=>({'label':item, 'value':index}))]}
             label="Category"
             selectedValue={searchOptions.stage || ''}
             onValueChange={val=>changeSearchOptions('stage', val)}/>
         </BOHToolbar>
         <BOHToolbar>
-          {/* <TouchableHighlight style={styles.button} onPress={()=>{
-            openReservationScreen('Create Reservations');
-          }}>
-            <Text style={styles.buttonText}>Create</Text>
-          </TouchableHighlight> */}
           <BOHButton
             label="Create"
             onPress={()=>{
@@ -249,8 +374,8 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
               <BOHTH width={90}>{'Order #'}</BOHTH>
               <BOHTH width={160}>{'Brand'}</BOHTH>
               <BOHTH width={160}>{'Customer'}</BOHTH>
-              <BOHTH width={100}>{'To'}</BOHTH>
               <BOHTH width={100}>{'From'}</BOHTH>
+              <BOHTH width={100}>{'To'}</BOHTH>
               <BOHTH width={110}>{'Qty of bikes'}</BOHTH>
               <BOHTH width={100}>{'Stage'}</BOHTH>
               <BOHTH width={80}>{'Proceed'}</BOHTH>
@@ -264,7 +389,5 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     </BasicLayout>
   );
 };
-
-const styles = reservationListsStyle;
 
 export default ReservationsList;
