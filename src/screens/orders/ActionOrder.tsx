@@ -264,6 +264,19 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
     })
   }
 
+  const printPDF = () => {
+    showConfirm(
+      'Do you want to include Terms and Conditions?', 
+      () => {
+        printReservation(orderInfo.id, 1, true);
+      },
+      () => {
+        printReservation(orderInfo.id, 1, false);
+      },
+      'No'
+    );
+  }
+
   return (
     <BasicLayout
       goBack={()=>{
@@ -277,7 +290,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
           <BOHToolbar style={{justifyContent:'flex-end', alignItems:'center',}}>
             <BOHButton
               label='Print'
-              onPress={()=>printReservation(orderInfo.id, 1)}
+              onPress={printPDF}
             />
             {/* <BOHButton
               style={{marginLeft:20}}
