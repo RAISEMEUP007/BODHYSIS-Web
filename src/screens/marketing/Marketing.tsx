@@ -5,6 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import LocationManager from './locationmanager/Locations';
+import Forecasting from './forecasting/Forecasting';
 
 interface Props {
     navigation: any;
@@ -22,6 +23,8 @@ const Marketing = ({navigation, initialItem }:Props) => {
         switch (selectedItem) {
             case 'Locations':
                 return <LocationManager navigation={navigation} openMarketingMenu={handleItemClick}/>;
+            case 'Forecasting':
+                return <Forecasting navigation={navigation} openMarketingMenu={handleItemClick}/>;
             default:
                 return (
                     <View style={{ marginTop: 20, paddingHorizontal: 10, paddingVertical:2, height: 28, justifyContent: 'center', flexDirection: 'row',}}>
@@ -43,6 +46,7 @@ const Marketing = ({navigation, initialItem }:Props) => {
                 <View style={styles.container}>
                     <TouchNavGroup sectionTitle="Marketing" items={[
                         { title: "Locations", icon: 'map-marker-alt' },
+                        { title: "Forecasting", icon: 'th' },
                     ]} handleItemClick={handleItemClick} />
                 </View>
             </ScrollView>

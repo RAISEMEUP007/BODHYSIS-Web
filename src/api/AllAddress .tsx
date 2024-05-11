@@ -4,6 +4,10 @@ export const getAddressesData = async (payload, cb = (jR, s, e)=>{}) => {
   return await postAPICall('alladdresses/getaddressesdata/', payload,  cb);
 }
 
+export const getForecastingData = async (cb = (jR, s, e)=>{}) => {
+  return await getAPICall('forecasting/getsummary/', cb);
+}
+
 export const updateAddress = (payload, cb=(jR, s, e)=>{}) => {
   postAPICall('alladdresses/updateaddress', payload, cb);
 };
