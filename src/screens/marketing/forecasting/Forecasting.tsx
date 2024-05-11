@@ -16,7 +16,7 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
   
   const [tableData, setTableData] = useState([]);
   const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(true);
-  const InitialWidths = [200, 90, 90, 90, 160, 120, 100, 80];
+  const InitialWidths = [200, 90, 90, 80, 160, 160, 100, 80];
   const [searchKey, setSearchKey] = useState('');
   const [weeksArray, setweeksArray] = useState([]);
 
@@ -105,7 +105,7 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
                     paddingHorizontal: 0,
                     // paddingLeft:0,
                     // paddingRight:4,
-                    textAlign:'right',
+                    textAlign:'center',
                     height: '100%',
                   }}>
                   {subItem?.booked_guests??" "}
