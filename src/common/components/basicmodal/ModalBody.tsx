@@ -21,7 +21,7 @@ const ModalBody = ({ children, style = {} }: ModalBodyProps) => {
 const styles = StyleSheet.create({
   modalBody: {
     flex:1,
-    paddingHorizontal:8
+    paddingHorizontal:12
   },
 });
 
