@@ -85,6 +85,8 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
   const [Currency, setCurrency] = useState(0);
   const [Dateformat, setDateformat] = useState(0);
   const [Timeformat, setTimeformat] = useState(0);
+  const [PickupTime, setPickupTime] = useState('');
+  const [DropOffTime, setDropOffTime] = useState('');
   const [WeekStart, setWeekStart] = useState(0);
 
   const [StoreWavier, setStoreWavier] = useState('');
@@ -194,6 +196,8 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
         if (jsonRes.document_id) setDocumentId(jsonRes.document_id);
         if (jsonRes.is_document) setIsDocument(jsonRes.is_document);
         if (jsonRes.taxcode_id) selectTaxCode(jsonRes.taxcode_id);
+        if (jsonRes.pickup_time) setPickupTime(jsonRes.pickup_time);
+        if (jsonRes.dropoff_time) setDropOffTime(jsonRes.dropoff_time);
       }
     });
   };
@@ -243,6 +247,8 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
     formData.append('document_id', documentId.toString());
     formData.append('is_document', isDocument.toString());
     formData.append('taxcode_id', selectedTaxCode.toString());
+    formData.append('pickup_time', PickupTime.toString());
+    formData.append('dropoff_time', DropOffTime.toString());
 
     const handleResponse = (jsonRes, status) => {
       switch (status) {
@@ -605,6 +611,28 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
                 </Picker>
               </View>
               <View style={[styles.inputContainer, { flex: 1 }]}></View>
+            </View>
+            <View style={styles.inputRow}>
+              <View style={[styles.inputContainer, { flex: 1 }]}>
+                <Text style={styles.label}>Pickup Time</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Pickup Time"
+                  value={PickupTime}
+                  onChangeText={setPickupTime}
+                  placeholderTextColor="#ccc"
+                />
+              </View>
+              <View style={[styles.inputContainer, { flex: 1 }]}>
+                <Text style={styles.label}>Drop off Time</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Drop off Time"
+                  value={DropOffTime}
+                  onChangeText={setDropOffTime}
+                  placeholderTextColor="#ccc"
+                />
+              </View>
             </View>
           </View>
           <Text style={styles.label}>Sales tax</Text>
