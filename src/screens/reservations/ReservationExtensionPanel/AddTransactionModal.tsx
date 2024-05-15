@@ -11,6 +11,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { createTransaction } from '../../../api/Reservation';
+import { getPaymentsList } from '../../../api/Stripe';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
@@ -19,9 +20,9 @@ import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import NumericInput from '../../../common/components/formcomponents/NumericInput';
 import LabeledTextInput from '../../../common/components/input/LabeledTextInput';
-import { addTransactionModaltyles } from './styles/AddTransactionModalStyle';
-import { getPaymentsList } from '../../../api/Stripe';
 import { API_URL } from '../../../common/constants/AppConstants';
+
+import { addTransactionModaltyles } from './styles/AddTransactionModalStyle';
 
 interface AddTransactionModalProps {
   isModalVisible: boolean;
@@ -41,7 +42,6 @@ type Payment = {
   brand: string;
   last4: string;
   expiration: string;
-  // Add other properties as per your data structure
 };
 
 const AddTransactionModal = ({
@@ -89,7 +89,7 @@ const AddTransactionModal = ({
   }, [closeModal]);
 
   useEffect(() => {
-    setPaymentMethod('Lightspeed');
+    setPaymentMethod('Stripe');
     setAmountTxt('');
     if(paymentsList && paymentsList.length > 0) setPaymentId(paymentsList[0].id);
     setNote('');
@@ -123,6 +123,7 @@ const AddTransactionModal = ({
 
   const addTransaction = async () =>{
 
+    let paymentIntent = "";
     if(paymentMethod == 'Stripe'){
       const response = await addStripeTrans();
       console.log(response);
@@ -132,9 +133,13 @@ const AddTransactionModal = ({
         showAlert('error', "Error while making pyament on Stripe");
         return;
       }
+      // console.log(response.json());
+      const details = await response.json();
+      paymentIntent = details.id;
     }
 
     const payload = {
+      payment_intent : paymentIntent,
       reservation_id : reservationInfo.id,
       method: paymentMethod,
       amount: AmountTxt,
@@ -161,7 +166,6 @@ const AddTransactionModal = ({
   }
 
   const addStripeTrans = async () => {
-    console.log(paymentId);
     const payload = {
       amount: parseFloat(AmountTxt) * 100,
       currency: 'usd',
@@ -263,7 +267,7 @@ const AddTransactionModal = ({
                   setPaymentId(itemValue);
                 }}
               >
-                {paymentsList.length > 0 &&
+                {(paymentsList && paymentsList.length > 0) &&
                   paymentsList.map((paymentItem, index) => {
                     return (
                       <Picker.Item key={index} label={`${paymentItem.brand}${"\u00A0".repeat(Math.max(0, 12 - paymentItem.brand.length) * 2)}\u00A0\u00A0\u00A0\u00A0****${paymentItem.last4}\u00A0\u00A0\u00A0\u00A0Exp: ${paymentItem.expiration}`} value={paymentItem.id}/>

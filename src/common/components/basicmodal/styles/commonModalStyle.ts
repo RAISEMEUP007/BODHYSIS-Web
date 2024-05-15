@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { TextSmallSize, TextdefaultSize } from '../../../../common/constants/Fonts';
+import { TextSmallSize, TextdefaultSize } from '../../../constants/Fonts';
 
-export const extraModalstyles = StyleSheet.create({
+export const commonModalStyle = StyleSheet.create({
   label: {
     color: '#555',
     fontSize: TextSmallSize,
@@ -36,7 +36,7 @@ export const extraModalstyles = StyleSheet.create({
     borderColor: '#6c757d',
   },
   addButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#2e96e1',
     color: 'white',
     padding: 10,
     textAlign: 'center',
@@ -67,9 +67,9 @@ export const extraModalstyles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#80C0FF80', // Warm color border with transparency
-    borderWidth: 2, // Border width
-    borderStyle: 'solid', // Border style
+    borderColor: '#80C0FF80',
+    borderWidth: 2,
+    borderStyle: 'solid',
     marginVertical: 10,
   },
   imageUpload: {

@@ -39,7 +39,7 @@ const Products = ({ navigation, openInventory, data }) => {
     0: 'Ready',
     1: 'Ordered',
     2: 'Checked out',
-    // 3: 'Checked in',
+    3: 'Checked in',
     4: 'Broken',
     5: 'Sold',
     6: 'Transferred',
@@ -425,7 +425,7 @@ const Products = ({ navigation, openInventory, data }) => {
                 {item.current_location_tbl ? item.current_location_tbl.location : ''}
               </Text>
             </View>
-            <View style={[styles.cell, { width: 80 }]}>
+            <View style={[styles.cell, { width: 110 }]}>
               <Text>{item.status != null ? StatusObj[item.status] : ''}</Text>
             </View>
             <View style={[styles.IconCell]}>
@@ -634,7 +634,7 @@ const Products = ({ navigation, openInventory, data }) => {
                   : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
                 }
               </Pressable>
-              <Pressable style={[styles.columnHeader, styles.sortableColumn, { width: 80 }]} onPress={()=>sortData('status')}>
+              <Pressable style={[styles.columnHeader, styles.sortableColumn, { width: 110 }]} onPress={()=>sortData('status')}>
                 <Text>{'Status'}</Text>
                 {sortColumn == 'status' && sortDirection == 'desc'?
                   <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />

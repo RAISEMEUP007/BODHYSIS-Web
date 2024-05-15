@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Platform, Linking } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 interface Props {
@@ -40,12 +40,12 @@ const BasicLayout = ({
 
   useEffect(() => {
     if(Platform.OS === 'web'){
-      const handleBrowserBack = () => {
+      const handleBrowserBack = (event) => {
+        event.preventDefault();
         if (goBack) {
           goBack();
         }
         else {
-          // navigation.navigate('Customer');
           window.history.go(1);
         }
       };
@@ -95,10 +95,17 @@ const styles = StyleSheet.create({
     height: '100%',
     paddingTop: 0,
     justifyContent: 'center',
+    backgroundColor: 'white',
   },
   header: {
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#f2f2f2',
+    shadowColor:'#b3b3b3',
+    shadowOffset: {
+      width: -1,
+      height: 3,
+    },
+    shadowRadius: 10,
     flexDirection: 'row',
   },
   Icon: {

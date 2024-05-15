@@ -6,8 +6,9 @@ export const priceTablesStyle = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
-    padding: 16,
-    paddingTop: 32,
+    padding: 38,
+    paddingTop: 28,
+    paddingBottom: 16,
   },
 
   tableContainer: {
@@ -17,9 +18,9 @@ export const priceTablesStyle = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#bfbfbf',
     borderLeftWidth: 1,
-    borderLeftColor: '#06685ea3',
+    borderLeftColor: '#bfBFbf',
     borderRightWidth: 1,
-    borderRightColor: '#06685ea3',
+    borderRightColor: '#bfBFbf',
     borderBottomWidth: 1,
     borderBottomColor: '#bfbfbf',
   },
@@ -37,7 +38,7 @@ export const priceTablesStyle = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#2e96e1',
     borderRadius: 4,
     paddingVertical: TextSmallSize/2,
     paddingHorizontal: TextSmallSize,
@@ -159,9 +160,9 @@ export const priceTablesStyle = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     borderLeftWidth: 1,
-    borderLeftColor: '#06685ea3',
+    borderLeftColor: '#bfBFbf',
     borderRightWidth: 1,
-    borderRightColor: '#06685ea3',
+    borderRightColor: '#bfBFbf',
   },
   familyIconCell: {
     width: 60,

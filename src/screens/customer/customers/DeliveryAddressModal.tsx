@@ -130,7 +130,7 @@ const DeliveryAddress = ({ isModalVisible, customerId, closeModal }) => {
         rows.push(
           <View key={index} style={styles.tableRow}>
             <View style={[styles.cell, { width: 300 }]}>
-              <Text>{item.address1}</Text>
+              <Text>{item.all_addresses && `${item.all_addresses.number} ${item.all_addresses.street} ${item.all_addresses.plantation} ${item.all_addresses.property_name}`}</Text>
             </View>
             <View style={[styles.IconCell]}>
               <TouchableWithoutFeedback
@@ -141,7 +141,7 @@ const DeliveryAddress = ({ isModalVisible, customerId, closeModal }) => {
                 <FontAwesome5
                   name={item.is_used ? 'dot-circle' : 'circle'}
                   size={15}
-                  color={item.is_used ? '#007bff' : '#6c757d'}
+                  color={item.is_used ? '#2e96e1' : '#6c757d'}
                 />
               </TouchableWithoutFeedback>
             </View>

@@ -3,7 +3,7 @@ import { Modal, View, Text, StyleSheet, Pressable } from 'react-native';
 import { useConfirmModal } from '../../hooks/UseConfirmModal';
 
 const ConfirmModal = () => {
-  const { modalVisible, modalText, closeConfirm, confirm } = useConfirmModal();
+  const { modalVisible, modalText, cancelText, closeConfirm, cancel, confirm } = useConfirmModal();
 
   return (
     <Modal
@@ -17,9 +17,9 @@ const ConfirmModal = () => {
           <View style={styles.buttonContainer}>
             <Pressable
               style={[styles.button, styles.cancelButton]}
-              onPress={closeConfirm}
+              onPress={cancel}
             >
-              <Text style={[styles.textStyle, styles.cancelButtonText]}>{"Cancel"}</Text>
+              <Text style={[styles.textStyle, styles.cancelButtonText]}>{cancelText || "Cancel"}</Text>
             </Pressable>
             <Pressable
               style={[styles.button, styles.confirmButton]}

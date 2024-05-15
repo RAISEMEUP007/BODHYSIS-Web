@@ -6,10 +6,11 @@ import TransactionList from './TransactionList';
 interface Props {
   reservationId: number;
   openAddTransactionModal: ()=>void;
+  openRefundModal: (refundDetails)=>void;
   width?: number;
 }
 
-export const ReservationExtensionPanel = ({reservationId, openAddTransactionModal, width}:Props) => {
+export const ReservationExtensionPanel = ({reservationId, openAddTransactionModal, openRefundModal, width}:Props) => {
   
   const [activeTab, setActiveTab] = useState(2);
 
@@ -44,7 +45,11 @@ export const ReservationExtensionPanel = ({reservationId, openAddTransactionModa
           </View>
         )}
         {activeTab === 2 && (
-          <TransactionList reservationId={reservationId} openAddTransactionModal={openAddTransactionModal}/>
+          <TransactionList 
+            reservationId={reservationId} 
+            openAddTransactionModal={openAddTransactionModal}
+            openRefundModal={openRefundModal}
+          />
         )}
         {activeTab === 3 && (
           <View>
@@ -100,7 +105,7 @@ const styles = StyleSheet.create({
     paddingHorizontal:30,
     paddingTop:6,
     paddingBottom:12,
-    marginLeft:16,
+    // minWidth: 550,
     marginBottom: 10,
   },
   tabBar: {

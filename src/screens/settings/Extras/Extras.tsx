@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ScrollView,
-  View,
-  Text,
-  TouchableHighlight,
-  TouchableOpacity,
-  Dimensions,
-  Image,
-} from 'react-native';
+import { Text, TouchableHighlight, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { getExtrasData, deleteExtra } from '../../../api/Settings';
@@ -16,13 +8,13 @@ import { API_URL } from '../../../common/constants/AppConstants';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
-import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
+import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
+import { BOHButton, BOHToolbar } from '../../../common/components/bohtoolbar';
+import { BOHTBody, BOHTD, BOHTDIconBox, BOHTDImageBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
 
-import { extrasStyle } from './styles/ExtrasStyle';
 import AddExtraModal from './AddExtraModal';
 
 const Extras = ({ navigation, openInventory }) => {
-  const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
@@ -32,6 +24,8 @@ const Extras = ({ navigation, openInventory }) => {
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [selectedExtra, setSelectedExtra] = useState(null);
+
+  const InitialWidths = [70, 200, 60, 70, 50, 50];
 
   const openAddExtraModal = () => {
     setAddModalVisible(true);
@@ -45,16 +39,7 @@ const Extras = ({ navigation, openInventory }) => {
     setSelectedExtra(tableData[index]);
     setAddModalVisible(true);
   };
-
-  const changeCellData = (index, key, newVal) => {
-    const updatedTableData = [...tableData];
-    updatedTableData[index] = {
-      ...updatedTableData[index],
-      [key]: newVal,
-    };
-    setTableData(updatedTableData);
-  };
-
+  
   useEffect(() => {
     if (updateExtraTrigger == true) getTable();
   }, [updateExtraTrigger]);
@@ -110,30 +95,12 @@ const Extras = ({ navigation, openInventory }) => {
             break;
         }
         rows.push(
-          <View key={index} style={styles.tableRow}>
-            <View style={[styles.cell, { width: 150 }]}>
-              <Text>{(item.status?'Active':'Inactive')}</Text>
-            </View>
-            <View style={[styles.cell, { width: 300}]}>
-              <Text>{item.name}</Text>
-            </View>
-            <View style={[styles.cell, { width: 150, alignItems:'flex-end' }]}>
-              <Text>{price}</Text>
-            </View>
-            <View style={[styles.imageCell]}>
-              {item.img_url ? (
-                <Image
-                  source={{ uri: API_URL + item.img_url }}
-                  style={styles.cellImage}
-                  onError={() => {
-                    changeCellData(index, 'img_url', null);
-                  }}
-                />
-              ) : (
-                <FontAwesome5 name="image" size={26} color="#666"></FontAwesome5>
-              )}
-            </View>
-            <View style={[styles.IconCell]}>
+          <BOHTR key={index}>
+            <BOHTD width={InitialWidths[0]}>{(item.status?'Active':'Inactive')}</BOHTD>
+            <BOHTD width={InitialWidths[1]}>{item.name}</BOHTD>
+            <BOHTD width={InitialWidths[2]} style={{textAlign:'right'}}>{price}</BOHTD>
+            <BOHTDImageBox width={InitialWidths[3]} imgURL={API_URL + item.img_url}/>
+            <BOHTDIconBox width={InitialWidths[4]}>
               <TouchableOpacity
                 onPress={() => {
                   editExtra(index);
@@ -141,8 +108,8 @@ const Extras = ({ navigation, openInventory }) => {
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
-            </View>
-            <View style={[styles.IconCell]}>
+            </BOHTDIconBox>
+            <BOHTDIconBox width={InitialWidths[5]}>
               <TouchableOpacity
                 onPress={() => {
                   removeExtra(item.id);
@@ -150,8 +117,8 @@ const Extras = ({ navigation, openInventory }) => {
               >
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />
               </TouchableOpacity>
-            </View>
-          </View>
+            </BOHTDIconBox>
+          </BOHTR>
         );
       });
     } else {
@@ -168,28 +135,28 @@ const Extras = ({ navigation, openInventory }) => {
       }}
       screenName={'Extras'}
     >
-      <ScrollView horizontal={true}>
-        <View style={styles.container}>
-          <View style={styles.toolbar}>
-            <TouchableHighlight style={styles.button} onPress={openAddExtraModal}>
-              <Text style={styles.buttonText}>Add</Text>
-            </TouchableHighlight>
-          </View>
-          <View style={styles.tableContainer}>
-            <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader, { width: 150 }]}>{'Status'}</Text>
-              <Text style={[styles.columnHeader, { width: 300 }]}>{'Name'}</Text>
-              <Text style={[styles.columnHeader, { width: 150 }]}>{'Price'}</Text>
-              <Text style={[styles.columnHeader, styles.imageCell]}>{'Image'}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
-            </View>
-            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
-              {renderTableData()}
-            </ScrollView>
-          </View>
-        </View>
-      </ScrollView>
+      <CommonContainer>
+        <BOHToolbar>
+          <BOHButton 
+            label={'Add'}
+            onPress={openAddExtraModal}/>
+        </BOHToolbar>
+        <BOHTable>
+          <BOHTHead>
+            <BOHTR>
+              <BOHTH width={InitialWidths[0]}>{'Status'}</BOHTH>
+              <BOHTH width={InitialWidths[1]}>{'Name'}</BOHTH>
+              <BOHTH width={InitialWidths[2]}>{'Price'}</BOHTH>
+              <BOHTH width={InitialWidths[3]}>{'Image'}</BOHTH>
+              <BOHTH width={InitialWidths[4]}>{'Edit'}</BOHTH>
+              <BOHTH width={InitialWidths[5]}>{'DEL'}</BOHTH>
+            </BOHTR>
+          </BOHTHead>
+          <BOHTBody>
+            {renderTableData()}
+          </BOHTBody>
+        </BOHTable>
+      </CommonContainer>
 
       <AddExtraModal
         isModalVisible={isAddModalVisible}
@@ -200,7 +167,5 @@ const Extras = ({ navigation, openInventory }) => {
     </BasicLayout>
   );
 };
-
-const styles = extrasStyle;
 
 export default Extras;

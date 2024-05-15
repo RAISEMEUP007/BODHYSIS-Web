@@ -159,7 +159,7 @@ const Seasons = ({ navigation, openInventory }) => {
                 <FontAwesome5
                   name={item.is_active ? 'dot-circle' : 'circle'}
                   size={15}
-                  color={item.is_active ? '#007bff' : '#6c757d'}
+                  color={item.is_active ? '#2e96e1' : '#6c757d'}
                 />
               </TouchableWithoutFeedback>
             </View>

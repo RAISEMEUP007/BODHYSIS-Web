@@ -1,24 +1,25 @@
 import { StyleSheet } from 'react-native';
-import { TextSmallSize, TextdefaultSize } from '../../../../../common/constants/Fonts';
+import { TextSmallSize, TextdefaultSize } from '../../../../common/constants/Fonts';
 
-export const productLineModalstyles = StyleSheet.create({
+export const LocationModalstyles = StyleSheet.create({
   label: {
     color: '#555',
     fontSize: TextSmallSize,
   },
   input: {
+    height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     marginTop: 4,
     marginBottom: 10,
-    padding: 10,
-    paddingHorizontal: 8,
-    width: 700,
+    padding: 8,
+    width: 500,
   },
   inputDisable: {
     borderColor: '#ddd',
   },
   select: {
+    width: 500,
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
@@ -27,7 +28,7 @@ export const productLineModalstyles = StyleSheet.create({
     padding: 8,
   },
   addButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#2e96e1',
     color: 'white',
     padding: 10,
     textAlign: 'center',

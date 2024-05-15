@@ -9,6 +9,7 @@ import {
   Platform,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import Checkbox from 'expo-checkbox';
 
 import {
   createProductLine,
@@ -16,7 +17,7 @@ import {
   getProductCategoriesData,
   getProductFamiliesData,
 } from '../../../../api/Product';
-import { getPriceGroupsData } from '../../../../api/Price';
+import { getBrandsData, getPriceGroupsData } from '../../../../api/Price';
 import BasicModalContainer from '../../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../../common/components/basicmodal/ModalBody';
@@ -24,8 +25,8 @@ import ModalFooter from '../../../../common/components/basicmodal/ModalFooter';
 import { msgStr } from '../../../../common/constants/Message';
 import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
 
-import { productLineModalstyles } from './styles/ProductLineModalStyle';
 import NumericInput from '../../../../common/components/formcomponents/NumericInput';
+import { commonModalStyle } from '../../../../common/components/basicmodal';
 
 const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger, closeModal }) => {
   const isUpdate = Line ? true : false;
@@ -41,6 +42,9 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
   const [families, setFamilies] = useState([]);
   const [PriceGroups, setPriceGroups] = useState([]);
 
+  const [brands, setBrands] = useState([]);
+  const [associatedBrandIds, setAssociatedBrandIds] = useState([]);
+
   const [selectedCategory, selectCategory] = useState<any>({});
   const [selectedFamily, selectFamily] = useState<any>({});
   const [LineTxt, setLineTxt] = useState('');
@@ -50,6 +54,14 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
   const [HoldbackTxt, setHoldbackTxt] = useState('');
   const [ShortCodeTxt, setShortCodeTxt] = useState('');
   const [selectedPriceGroup, selectPriceGroup] = useState<any>({});
+
+  const handleBrandSelection = (brandId) => {
+    if (associatedBrandIds.includes(brandId)) {
+      setAssociatedBrandIds(associatedBrandIds.filter((id) => id !== brandId));
+    } else {
+      setAssociatedBrandIds([...associatedBrandIds, brandId]);
+    }
+  };
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -66,6 +78,12 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
       };
     }
   }, [closeModal]);
+
+  useEffect(()=>{
+    getBrandsData((jsonRes)=>{
+      setBrands(jsonRes);
+    });
+  }, []);
 
   useEffect(() => {
     if (StartInitalizing) {
@@ -139,7 +157,9 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
           });
         });
       });
-    }
+      if(Line?.brand_ids) setAssociatedBrandIds(JSON.parse(Line.brand_ids));
+      else setAssociatedBrandIds([]); 
+    }else setAssociatedBrandIds([]);
   }, [isModalVisible]);
 
   const loadProductCategoriesData = (callback) => {
@@ -211,6 +231,7 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
       holdback: HoldbackTxt,
       shortcode: ShortCodeTxt,
       price_group_id: selectedPriceGroup.id,
+      brand_ids: JSON.stringify(associatedBrandIds)
     };
 
     const handleResponse = (jsonRes, status) => {
@@ -265,106 +286,119 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
       <BasicModalContainer>
         <ModalHeader label={'Product Line'} closeModal={closeModal} />
         <ModalBody>
-          <Text style={styles.label}>Category</Text>
-          <Picker
-            style={styles.select}
-            selectedValue={selectedCategory.id}
-            onValueChange={(itemValue, itemIndex) => {
-              selectCategory(categories[itemIndex]);
-              setCategoryChanged(true);
-            }}
-          >
-            {categories.length > 0 &&
-              categories.map((category, index) => {
-                return <Picker.Item key={index} label={category.category} value={category.id} />;
-              })}
-          </Picker>
+          <View style={{flexDirection:'row'}}>
+            <View>
+              <Text style={styles.label}>Category</Text>
+              <Picker
+                style={styles.select}
+                selectedValue={selectedCategory.id}
+                onValueChange={(itemValue, itemIndex) => {
+                  selectCategory(categories[itemIndex]);
+                  setCategoryChanged(true);
+                }}
+              >
+                {categories.length > 0 &&
+                  categories.map((category, index) => {
+                    return <Picker.Item key={index} label={category.category} value={category.id} />;
+                  })}
+              </Picker>
 
-          <Text style={styles.label}>Family</Text>
-          <Picker
-            style={styles.select}
-            selectedValue={selectedFamily.id}
-            onValueChange={(itemValue, itemIndex) => {
-              selectFamily(families[itemIndex]);
-            }}
-          >
-            {families.length > 0 &&
-              families.map((family, index) => {
-                return <Picker.Item key={index} label={(family.family)} value={family.id} />;
-              })}
-          </Picker>
+              <Text style={styles.label}>Family</Text>
+              <Picker
+                style={styles.select}
+                selectedValue={selectedFamily.id}
+                onValueChange={(itemValue, itemIndex) => {
+                  selectFamily(families[itemIndex]);
+                }}
+              >
+                {families.length > 0 &&
+                  families.map((family, index) => {
+                    return <Picker.Item key={index} label={(family.family)} value={family.id} />;
+                  })}
+              </Picker>
 
-          <Text style={styles.label}>Line</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Line"
-            value={LineTxt}
-            onChangeText={setLineTxt}
-            placeholderTextColor="#ccc"
-            onBlur={checkInput}
-          />
-          {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
-          <Text style={styles.label}>Size</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Size"
-            value={SizeTxt}
-            onChangeText={setSizeTxt}
-            placeholderTextColor="#ccc"
-          />
-          <Text style={styles.label}>Suitability</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Suitability"
-            value={SuitabilityTxt}
-            onChangeText={setSuitabilityTxt}
-            placeholderTextColor="#ccc"
-          />
-          <Text style={styles.label}>Quantity</Text>
-          <TextInput
-            style={[styles.input, styles.inputDisable]}
-            placeholder="Quantity"
-            placeholderTextColor="#ccc"
-            editable={false}
-          />
-          <Text style={styles.label}>Holdback Percentage</Text>
-          <NumericInput
-            placeholder="Holdback Percentage"
-            value={HoldbackTxt}
-            onChangeText={setHoldbackTxt}
-            validMinNumber={0}
-            validMaxNumber={100}
-          ></NumericInput>
-          <Text style={styles.label}>Short Code / Name Stem</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Short Code / Name Stem"
-            value={ShortCodeTxt}
-            onChangeText={setShortCodeTxt}
-            placeholderTextColor="#ccc"
-          />
+              <Text style={styles.label}>Line</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Line"
+                value={LineTxt}
+                onChangeText={setLineTxt}
+                placeholderTextColor="#ccc"
+                onBlur={checkInput}
+              />
+              {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>}
+              <Text style={styles.label}>Size</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Size"
+                value={SizeTxt}
+                onChangeText={setSizeTxt}
+                placeholderTextColor="#ccc"
+              />
+              <Text style={styles.label}>Suitability</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Suitability"
+                value={SuitabilityTxt}
+                onChangeText={setSuitabilityTxt}
+                placeholderTextColor="#ccc"
+              />
+              <Text style={styles.label}>Quantity</Text>
+              <TextInput
+                style={[styles.input, styles.inputDisable]}
+                placeholder="Quantity"
+                placeholderTextColor="#ccc"
+                editable={false}
+              />
+              <Text style={styles.label}>Holdback Percentage</Text>
+              <NumericInput
+                placeholder="Holdback Percentage"
+                value={HoldbackTxt}
+                onChangeText={setHoldbackTxt}
+                validMinNumber={0}
+                validMaxNumber={100}
+              ></NumericInput>
+              <Text style={styles.label}>Short Code / Name Stem</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Short Code / Name Stem"
+                value={ShortCodeTxt}
+                onChangeText={setShortCodeTxt}
+                placeholderTextColor="#ccc"
+              />
 
-          <Text style={styles.label}>Price Group</Text>
-          <Picker
-            // enabled={false}
-            style={styles.select}
-            selectedValue={selectedPriceGroup.id}
-            onValueChange={(itemValue, itemIndex) => {
-              selectPriceGroup(PriceGroups[itemIndex]);
-            }}
-          >
-            {PriceGroups.length > 0 &&
-              PriceGroups.map((item, index) => {
-                return <Picker.Item key={index} label={item.price_group} value={item.id} />;
-              })}
-          </Picker>
-          {/* <TextInput
-            style={styles.input}
-            editable={false}
-            placeholder=""
-            value={selectedPriceGroup.price_group || ''}
-            placeholderTextColor="#ccc"
-          /> */}
+              <Text style={styles.label}>Price Group</Text>
+              <Picker
+                // enabled={false}
+                style={styles.select}
+                selectedValue={selectedPriceGroup.id}
+                onValueChange={(itemValue, itemIndex) => {
+                  selectPriceGroup(PriceGroups[itemIndex]);
+                }}
+              >
+                {PriceGroups.length > 0 &&
+                  PriceGroups.map((item, index) => {
+                    return <Picker.Item key={index} label={item.price_group} value={item.id} />;
+                  })}
+              </Picker>
+              {/* <TextInput
+                style={styles.input}
+                editable={false}
+                placeholder=""
+                value={selectedPriceGroup.price_group || ''}
+                placeholderTextColor="#ccc"
+              /> */}
+            </View>
+            <View style={{marginLeft: 40, marginRight:40}}>
+              <Text style={{marginBottom:8, fontSize:20}}>{"Associated Brands"}</Text>
+              {brands.length>0 && brands.map((brand)=>(
+                <View key={brand.id} style={{flexDirection:'row', alignItems:'center', marginVertical:10, marginLeft:10}}>
+                  <Checkbox value={associatedBrandIds.includes(brand.id)} onValueChange={() => handleBrandSelection(brand.id)} />
+                  <Text style={{marginLeft:10}}>{brand.brand}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
         </ModalBody>
         <ModalFooter>
           <TouchableOpacity onPress={AddLineButtonHandler}>
@@ -381,6 +415,6 @@ const AddProductLineModal = ({ isModalVisible, Line, setUpdateProductLineTrigger
   );
 };
 
-const styles = productLineModalstyles;
+const styles = commonModalStyle;
 
 export default AddProductLineModal;

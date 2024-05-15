@@ -6,8 +6,9 @@ export const exclusionStyle = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
-    padding: 16,
-    paddingTop: 32,
+    padding: 38,
+    paddingTop: 28,
+    paddingBottom: 16,
   },
   tableContainer: {
     marginBottom: 16,
@@ -16,9 +17,9 @@ export const exclusionStyle = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#bfbfbf',
     borderLeftWidth: 1,
-    borderLeftColor: '#06685ea3',
+    borderLeftColor: '#bfBFbf',
     borderRightWidth: 1,
-    borderRightColor: '#06685ea3',
+    borderRightColor: '#bfBFbf',
     borderBottomWidth: 1,
     borderBottomColor: '#bfbfbf',
   },

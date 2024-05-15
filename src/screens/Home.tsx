@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Platform } from 'react-native';
+import { View, Image, Platform, Linking, ScrollView } from 'react-native';
 import { createDrawerNavigator, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useScreenSize } from '../common/hooks/UseScreenDimention';
-import Dashboard from './Dashboard';
+import Dashboard from './dashboard/Dashboard';
 import Inventory from './Inventory/Inventory';
 import Settings from './settings/Settings';
 import Customers from './customer/customers/Customers';
@@ -13,18 +13,49 @@ import { logout } from '../api/Auth';
 import Orders from './orders/Orders';
 import Scheduler from './scheduler/Scheduler';
 import { useHambugerMenuHistory } from '../common/hooks/UseHambugerMenuHistory';
+import { appLinking } from '../common/constants/AppLinking';
+import Marketing from './marketing/Marketing';
 
 const MainDrawer = ({ navigation }) => {
 
-  const initialRouteName = 'Delivery Order';
+  const initialRouteName = 'Settings';
 
   const { isLargeScreen } = useScreenSize();
   const { addMenuHistory } = useHambugerMenuHistory();
 
   const Drawer = createDrawerNavigator();
 
+  useEffect(() => {
+    const handleDeepLinking = async () => {
+      try {
+        const url = await Linking.getInitialURL();
+        if (url) {
+          const route = url.replace(/.*?:\/\//g, '');
+          if (route.toLowerCase().includes('dashboard')) {
+            navigation.navigate('Dashboard');
+          }else if (route.toLowerCase().includes('reservation')) {
+            navigation.navigate('Reservation');
+          }else if (route.toLowerCase().includes('delivery')) {
+            navigation.navigate('Delivery Order');
+          }else if (route.toLowerCase().includes('inventory')) {
+            navigation.navigate('Inventory');
+          }else if (route.toLowerCase().includes('customer')) {
+            navigation.navigate('Customer');
+          }else if (route.toLowerCase().includes('scheduler')) {
+            navigation.navigate('Scheduler');
+          }else if (route.toLowerCase().includes('settings')) {
+            navigation.navigate('Settings');
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching initial URL: ', error);
+      }
+    };
+    handleDeepLinking();
+  }, []);
+
   const DashboardScreen = ({ navigation }) => {
-    return <Dashboard />;
+    return <Dashboard navigation={navigation} />;
   };
 
   const ReservationScreen = ({ navigation, route }) => {
@@ -47,6 +78,10 @@ const MainDrawer = ({ navigation }) => {
     return <Settings navigation={navigation} />;
   };
 
+  const MarketingScreen = ({ navigation }) => {
+    return <Marketing navigation={navigation} />;
+  };
+
   const DeliveryOrderScreen = ({ navigation }) => {
     return <Orders navigation={navigation} />;
   };
@@ -59,7 +94,7 @@ const MainDrawer = ({ navigation }) => {
     const { navigation } = props;
 
     return (
-      <>
+      <ScrollView>
         <DrawerItem
           label="#"
           onPress={() => navigation.navigate('Home')}
@@ -80,7 +115,7 @@ const MainDrawer = ({ navigation }) => {
             navigation.navigate('Auth');
           }}
         />
-      </>
+      </ScrollView>
     );
   };
 
@@ -91,6 +126,7 @@ const MainDrawer = ({ navigation }) => {
         drawerContent={(props) => <DrawerContent {...props} />}
         screenOptions={{
           drawerType: Platform.OS == 'web' && isLargeScreen ? 'permanent' : 'front',
+          drawerStyle: { backgroundColor: '#f1f3fc', },
         }}
       >
         <Drawer.Screen
@@ -173,6 +209,20 @@ const MainDrawer = ({ navigation }) => {
           }}
           options={{
             drawerLabel: 'Scheduler',
+            unmountOnBlur: true,
+            headerShown: false,
+          }}
+        />
+        <Drawer.Screen
+          name="Marketing"
+          component={MarketingScreen}
+          listeners={{
+            drawerItemPress: (e) => {
+              addMenuHistory('Marketing');
+            },
+          }}
+          options={{
+            drawerLabel: 'Marketing',
             unmountOnBlur: true,
             headerShown: false,
           }}

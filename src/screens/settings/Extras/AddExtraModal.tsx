@@ -9,21 +9,18 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { RadioButton } from 'react-native-paper';
+import Checkbox from 'expo-checkbox';
 
 import { createExtra, updateExtra } from '../../../api/Settings';
-import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
-import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
-import ModalBody from '../../../common/components/basicmodal/ModalBody';
-import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
+import { BasicModalContainer, ModalHeader, ModalBody, ModalFooter, commonModalStyle } from '../../../common/components/basicmodal';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
-import { extraModalstyles } from './styles/ExtraModalStyle';
 import { API_URL } from '../../../common/constants/AppConstants';
 import LabeledTextInput from '../../../common/components/input/LabeledTextInput';
 import { Switch } from 'react-native-gesture-handler';
 import NumericInput from '../../../common/components/formcomponents/NumericInput';
-import { getPriceGroupsData } from '../../../api/Price';
+import { getBrandsData, getPriceGroupsData } from '../../../api/Price';
 
 interface FormValues {
   level: number;
@@ -76,6 +73,16 @@ const AddExtraModal = ({
   const levelArr = ['item', 'Reservation'];
   const optionArr = ['FREE', 'FIXED PRICE', 'PRICE GROUP'];
   const [priceGroups, setPriceGroups] = useState<Array<any>>([]);
+  const [brands, setBrands] = useState([]);
+  const [associatedBrandIds, setAssociatedBrandIds] = useState([]);
+
+  const handleBrandSelection = (brandId) => {
+    if (associatedBrandIds.includes(brandId)) {
+      setAssociatedBrandIds(associatedBrandIds.filter((id) => id !== brandId));
+    } else {
+      setAssociatedBrandIds([...associatedBrandIds, brandId]);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,6 +91,9 @@ const AddExtraModal = ({
         const resData = await response.json();
         setPriceGroups(resData);
       }
+      await getBrandsData((jsonRes)=>{
+        setBrands(jsonRes);
+      });
     }
   
     fetchData();
@@ -125,6 +135,7 @@ const AddExtraModal = ({
           selectedFile: null,
         })
         setImagePreviewUrl(Extra.img_url ? API_URL + Extra.img_url : '');
+        if(Extra.brand_ids) setAssociatedBrandIds(JSON.parse(Extra.brand_ids));
       } else {
         setFormValues({
           level: 0,
@@ -143,8 +154,10 @@ const AddExtraModal = ({
           selectedFile: null,
         })
         setImagePreviewUrl('');
+        setAssociatedBrandIds([]);
       }
     } else {
+      setAssociatedBrandIds([]);
     }
   }, [isModalVisible]);
 
@@ -182,6 +195,7 @@ const AddExtraModal = ({
         formData.append(i, formValues[i]);
       }
     }
+    formData.append('brand_ids', JSON.stringify(associatedBrandIds));
 
     const handleResponse = (jsonRes, status) => {
       switch (status) {
@@ -277,7 +291,7 @@ const AddExtraModal = ({
                       <RadioButton
                         value={index.toString()}
                         status={formValues.option == index ? 'checked' : 'unchecked'}
-                        // style={{ marginRight: 10 }}
+                        color='#0099ff'
                         onPress={()=>changeFormValue('option', index)}
                       />
                       <Text>{optionItem}</Text>
@@ -313,7 +327,7 @@ const AddExtraModal = ({
             <View style={{width:400}}>
               {Platform.OS == 'web' && (
                 <View style={styles.imagePicker}>
-                  <TouchableOpacity style={styles.imageUpload} onPress={() => inputRef.current.click()}>
+                  <TouchableOpacity style={styles.imageUpload} onPress={() => inputRef.current && inputRef.current.click()}>
                     {imagePreviewUrl ? (
                       <Image source={{ uri: imagePreviewUrl }} style={styles.previewImage} />
                     ) : (
@@ -333,7 +347,7 @@ const AddExtraModal = ({
               <Text style={[styles.label, {color:'#000000', marginTop:8}]}>Online</Text>
               <View style={{flexDirection: 'row', marginTop:8}}>
                 <Switch
-                  trackColor={{ false: '#6c757d', true: '#007bff' }}
+                  trackColor={{ false: '#6c757d', true: '#2e96e1' }}
                   thumbColor={formValues.is_visible_online ? '#ffc107' : '#f8f9fa'}
                   ios_backgroundColor="#343a40"
                   onValueChange={(val)=>changeFormValue('is_visible_online', val)}
@@ -343,7 +357,7 @@ const AddExtraModal = ({
               </View>
               <View style={{flexDirection: 'row', marginTop:8}}>
                 <Switch
-                  trackColor={{ false: '#6c757d', true: '#007bff' }}
+                  trackColor={{ false: '#6c757d', true: '#2e96e1' }}
                   thumbColor={formValues.is_default_selected ? '#ffc107' : '#f8f9fa'}
                   ios_backgroundColor="#343a40"
                   onValueChange={(val)=>changeFormValue('is_default_selected', val)}
@@ -353,7 +367,7 @@ const AddExtraModal = ({
               </View>
               <View style={{flexDirection: 'row', marginTop:8}}>
                 <Switch
-                  trackColor={{ false: '#6c757d', true: '#007bff' }}
+                  trackColor={{ false: '#6c757d', true: '#2e96e1' }}
                   thumbColor={formValues.is_online_mandatory ? '#ffc107' : '#f8f9fa'}
                   ios_backgroundColor="#343a40"
                   onValueChange={(val)=>changeFormValue('is_online_mandatory', val)}
@@ -364,7 +378,7 @@ const AddExtraModal = ({
               <Text style={[styles.label, {color:'#000000', marginTop:16}]}>Other</Text>
               <View style={{flexDirection: 'row', marginTop:8}}>
                 <Switch
-                  trackColor={{ false: '#6c757d', true: '#007bff' }}
+                  trackColor={{ false: '#6c757d', true: '#2e96e1' }}
                   thumbColor={formValues.is_apply_tax ? '#ffc107' : '#f8f9fa'}
                   ios_backgroundColor="#343a40"
                   onValueChange={(val)=>changeFormValue('is_apply_tax', val)}
@@ -374,7 +388,7 @@ const AddExtraModal = ({
               </View>
               <View style={{flexDirection: 'row', marginTop:8, marginBottom:6}}>
                 <Switch
-                  trackColor={{ false: '#6c757d', true: '#007bff' }}
+                  trackColor={{ false: '#6c757d', true: '#2e96e1' }}
                   thumbColor={formValues.is_apply_discounts ? '#ffc107' : '#f8f9fa'}
                   ios_backgroundColor="#343a40"
                   onValueChange={(val)=>changeFormValue('is_apply_discounts', val)}
@@ -382,6 +396,15 @@ const AddExtraModal = ({
                 />
                 <Text style={[styles.label, {marginLeft:20}]}>Apply Discounts</Text>
               </View>
+            </View>
+            <View style={{marginRight:20, marginLeft:40}}>
+              <Text style={{marginBottom:8, fontSize:20}}>{"Associated Brands"}</Text>
+              {brands.length>0 && brands.map((brand)=>(
+                <View key={brand.id} style={{flexDirection:'row', alignItems:'center', marginVertical:10, marginLeft:10}}>
+                  <Checkbox value={associatedBrandIds.includes(brand.id)} onValueChange={() => handleBrandSelection(brand.id)} />
+                  <Text style={{marginLeft:10}}>{brand.brand}</Text>
+                </View>
+              ))}
             </View>
           </View>
         </ModalBody>
@@ -402,6 +425,6 @@ const AddExtraModal = ({
   ) : null;
 };
 
-const styles = extraModalstyles;
+const styles = commonModalStyle;
 
 export default AddExtraModal;

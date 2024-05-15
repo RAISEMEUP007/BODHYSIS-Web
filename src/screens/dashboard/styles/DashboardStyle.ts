@@ -1,27 +1,33 @@
 import { StyleSheet } from 'react-native';
-import { TextMediumSize, TextSmallSize } from '../../../../../common/constants/Fonts';
-import { TextdefaultSize } from '../../../../../common/constants/Fonts';
+import { TextMediumSize, TextSmallSize } from '../../../common/constants/Fonts';
+import { TextdefaultSize } from '../../../common/constants/Fonts';
 
-export const productCategoriesStyle = StyleSheet.create({
+export const DashboardStyle = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection:'column',
     alignItems: 'flex-start',
-    padding: 16,
-    paddingTop: 32,
+    height:'100%',
+    padding: 38,
+    paddingTop: 28,
+    paddingBottom: 16,
   },
+
   tableContainer: {
+    flex:1,
     marginBottom: 16,
     marginTop: 10,
     overflow: 'hidden',
     borderTopWidth: 1,
     borderTopColor: '#bfbfbf',
     borderLeftWidth: 1,
-    borderLeftColor: '#06685ea3',
+    borderLeftColor: '#bfbfbf',
     borderRightWidth: 1,
-    borderRightColor: '#06685ea3',
+    borderRightColor: '#bfbfbf',
     borderBottomWidth: 1,
     borderBottomColor: '#bfbfbf',
   },
+
   toolbar: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -35,7 +41,7 @@ export const productCategoriesStyle = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#2e96e1',
     borderRadius: 4,
     paddingVertical: TextSmallSize / 2,
     paddingHorizontal: TextSmallSize,
@@ -52,7 +58,7 @@ export const productCategoriesStyle = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ced4da',
     borderRadius: 5,
-    width: 150,
+    width: 200,
     paddingVertical: 5,
     paddingHorizontal: 10,
   },
@@ -76,64 +82,25 @@ export const productCategoriesStyle = StyleSheet.create({
     fontWeight: 'bold',
     backgroundColor: '#f5f5f5',
     alignItems: 'flex-start',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    width: 200,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    // fontSize: TextdefaultSize,
+    width: 100,
     borderRightWidth: 1,
     borderRightColor: '#ccc',
   },
   cell: {
     position: 'relative',
     padding: 2,
-    width: 200,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    fontSize: TextdefaultSize,
+    width: 100,
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
-  cellInput: {
-    width: 150,
-    paddingHorizontal: 6,
-    paddingVertical: 6,
-  },
-  categoryCell: {
-    width: 400,
-    paddingHorizontal: 6,
-    paddingVertical: 6,
-    justifyContent: 'center',
-  },
-  focusedCell: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-  },
-  cellcheckbox: {
-    width: 60,
-    textAlign: 'center',
-    alignItems: 'center',
-  },
-  groupCell: {
-    width: 250,
-    paddingHorizontal: 12,
-    justifyContent: 'center',
-    textAlign: 'left',
-  },
-  headerIcon: {
-    position: 'absolute',
-    left: 0,
-    width: '100%',
-    alignItems: 'center',
-    top: -26,
-  },
-  deleteRow: {
-    position: 'absolute',
-    right: 5,
-    top: 3,
-  },
-  editRow: {
-    position: 'absolute',
-    right: TextMediumSize * 1.5,
-    top: -20,
-  },
   IconCell: {
-    width: 60,
+    width: 80,
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
@@ -149,16 +116,37 @@ export const productCategoriesStyle = StyleSheet.create({
     height: 50,
     resizeMode: 'contain',
   },
-  familyRow: {
-    marginLeft: 20,
+  searchBox: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  familyIconCell: {
-    width: 60,
     alignItems: 'center',
-    justifyContent: 'center',
+    marginBottom: 10,
+    marginRight: 20,
+  },
+  searchLabel: {
+    marginHorizontal: 8,
+    fontSize: TextdefaultSize,
+  },
+  searchInput: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingVertical: 4,
+    paddingHorizontal: 6,
+    borderWidth: 1,
+    borderColor: '#999',
+    borderRadius: 5,
+    fontSize: TextSmallSize,
+    width: 130,
+  },
+  dateInput:{
+    borderTopWidth:0,
+    borderRightWidth:0,
+    borderBottomWidth:1,
+    borderLeftWidth:0,
     textAlign: 'center',
+    paddingTop:6,
+    paddingBottom:4,
+    fontSize:16,
+    width:100,
+    borderColor:'#808080',
   },
 });

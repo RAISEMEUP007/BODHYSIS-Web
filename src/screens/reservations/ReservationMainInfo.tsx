@@ -6,14 +6,14 @@ import { reservationMainInfoStyle } from './styles/ReservationMainInfoStyle';
 import LabeledTextInput from '../../common/components/input/LabeledTextInput';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { CommonSelectDropdown } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
-import { DropdownData } from '../../common/components/CommonDropdown/CommonDropdown';
+import { CommonSelectDropdown, DropdownData } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
 import { LocationType } from '../../types/LocationType';
 import { useRequestLocationsQuery } from '../../redux/slices/baseApiSlice';
 import { getDiscountCodesData } from '../../api/Settings';
 import { updateReservation } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
+import { getBrandDetail } from '../../api/Price';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -41,6 +41,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
   });
 
   const [discountCodes, setDiscountCodes] = useState([]);
+  const [brandDetail, setBrandDetail] = useState<any>({});
 
   useEffect(() => {
     if(details){
@@ -65,10 +66,19 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         group: details.group || '',
         startLocationId: details.start_location_id || '',
         endLocationId: details.end_location_id || '',
-        deliveryAddress: details?.delivery_address?.address1??''
+        deliveryAddress: (details?.all_addresses?.number??'') + ' ' + (details?.all_addresses?.street??'') + ' ' + (details?.all_addresses?.plantation??'') + ' ' + (details?.all_addresses?.property_name??'')
       });
     }
   }, [details]);
+
+  useEffect(()=>{
+    if(details && details.brand_id){
+      getBrandDetail({id:details.brand_id}, (jsonRes, status)=>{
+        if(status == 200) setBrandDetail(jsonRes);
+        else setBrandDetail({});
+      });
+    } else setBrandDetail({});
+  }, [details])
 
   useEffect(() => {
     if (inputValues.startDate && inputValues.endDate) {
@@ -223,9 +233,19 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
   // };
 
   return (
-    <View>
+    <View style={{marginRight:30}}>
       <View style={[styles.reservationRow, {zIndex:10}]}>
-        <View>
+        <View style={{flex:1, padding:1}}>
+          <Text style={{marginBottom:6, color:"#555555"}}>{'Brand'}</Text>
+          <Text style={[styles.text, {width:'100%'}]} selectable={true}>{brandDetail?.brand??' '}</Text>
+        </View>
+        {/* <View>
+          <Text style={{marginBottom:6, color:"#555555"}}>{'Season'}</Text>
+          <Text style={styles.text} selectable={true}>{inputValues.endDate || ' '}</Text>
+        </View> */}
+      </View>
+      <View style={[styles.reservationRow, {zIndex:10}]}>
+        <View style={{marginRight:30}}>
           <Text style={{marginBottom:6, color:"#555555"}}>{'Start date'}</Text>
           {/* {Platform.OS == 'web' && renderDatePicker(inputValues.startDate, (date)=>{handleInputChange('startDate', date)})} */}
           <Text style={styles.text} selectable={true}>{inputValues.startDate || ' '}</Text>
@@ -239,7 +259,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
       <View style={styles.reservationRow}>
         <LabeledTextInput
           label='Billable days'
-          width={300}
+          width={200}
           containerStyle={{marginRight:30}}
           placeholder='Billable days'
           placeholderTextColor="#ccc"
@@ -250,7 +270,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         />
         <LabeledTextInput
           label='Reservation duration'
-          width={300}
+          width={200}
           placeholder='Reservation duration'
           placeholderTextColor="#ccc"
           inputStyle={{marginVertical:6}}
@@ -264,7 +284,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           containerStyle={{
             marginRight: 30,
           }}
-          width={300}
+          width={200}
           height={40}
           onItemSelected={(item) => {
             handleInputChange('discountCode', item.value.id);
@@ -277,7 +297,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         />
         <LabeledTextInput
           label='Custom Price'
-          width={300}
+          width={200}
           placeholder='Custom Price'
           placeholderTextColor="#ccc"
           inputStyle={{marginVertical:6}}
@@ -285,33 +305,33 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           onChangeText={value => handleInputChange('customPrice', value)}
         />
       </View>
-      <View style={styles.reservationRow}>
-        <LabeledTextInput
+      {/* <View style={styles.reservationRow}> */}
+        {/* <LabeledTextInput
           label='Referrer'
-          width={300}
+          width={200}
           containerStyle={{marginRight:30}}
           placeholder='Referrer'
           placeholderTextColor="#ccc"
           inputStyle={{marginVertical:6}}
           value={inputValues.referrer}
           onChangeText={value => handleInputChange('referrer', value)}
-        />
-        <LabeledTextInput
+        /> */}
+        {/* <LabeledTextInput
           label='Group'
-          width={300}
+          width={200}
           placeholder='Group'
           placeholderTextColor="#ccc"
           inputStyle={{marginVertical:6}}
           value={inputValues.group}
           onChangeText={value => handleInputChange('group', value)}
-        />
-      </View>
-      <View style={styles.reservationRow}>
+        /> */}
+      {/* </View> */}
+      <View style={[styles.reservationRow, {width:'100%'}]}>
         {/* <CommonSelectDropdown
           containerStyle={{
             marginRight: 30,
           }}
-          width={300}
+          width={200}
           height={40}
           onItemSelected={(item) => {
             handleInputChange('startLocationId', item.value.id);
@@ -326,7 +346,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           containerStyle={{
             // marginRight: 40,
           }}
-          width={300}
+          width={200}
           height={40}
           onItemSelected={(item) => {
             handleInputChange('endLocationId', item.value.id);
@@ -339,7 +359,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         /> */}
         <LabeledTextInput
           label='Delivery Address'
-          width={300}
+          width={"100%"}
           placeholder='Delivery Address'
           placeholderTextColor="#ccc"
           inputStyle={{marginVertical:6}}

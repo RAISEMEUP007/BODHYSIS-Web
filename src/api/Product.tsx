@@ -102,3 +102,15 @@ export const updateBulkLocation = (payload, cb=(jR, s, e)=>{}) => {
 export const updateBulkStatus = (payload, cb=(jR, s, e)=>{}) => {
   postAPICall('product/updatebulkstatus', payload, cb);
 };
+
+export const getDisplayGroupOrder = async (cb=(jR, s, e)=>{}) => {
+  return await getAPICall('product/getdisplaygrouporder', cb);
+}
+
+export const updateOrderIndex = async (payload, cb=(jR, s, e)=>{}) => {
+  return await postAPICall('product/updateorderindex', payload, cb);
+}
+
+export const getProductDetailByBarcode = async (payload, cb=(jR, s, e)=>{}) => {
+  return await postAPICall('product/getproductdetailbybarcode/', payload, cb);
+}

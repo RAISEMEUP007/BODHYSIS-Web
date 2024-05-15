@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { getReservationDetail, getTransactionsData } from '../../../api/Reservation';
 
 interface Props {
   reservationId: number;
   openAddTransactionModal: ()=>void;
+  openRefundModal: (refundDetails)=>void;
 }
 
-const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
+const TransactionList = ({reservationId, openAddTransactionModal, openRefundModal}:Props) => {
   const [reservationInfo, setReservationInfo] = useState<any>({});
   const [transactionData, setTransactionData] = useState([]);
 
@@ -42,7 +43,7 @@ const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
       });
     }
   }, [reservationId, openAddTransactionModal]);
-  
+
   const renderItems = () => {
     return transactionData.map((transaction) => (
       <View key={transaction.id} style={styles.transactionItem}>
@@ -54,9 +55,46 @@ const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
             day: '2-digit',
           })}</Text>
         </View>
-        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-          <Text>{transaction.method}</Text>
-          <Text>{"$" + transaction.amount}</Text>
+        <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+          <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
+            <Text>{transaction.method}</Text>
+            {transaction.method && transaction.method.toLowerCase() == 'stripe' && transaction.refunded < transaction.amount && (
+              <TouchableOpacity 
+                style={{
+                  alignItems: 'center',
+                  justifyContent:'center',
+                  paddingVertical: 3,
+                  paddingHorizontal: 12,
+                  borderRadius: 5,
+                  borderWidth: 2,
+                  borderColor: '#6c757d',
+                  marginLeft: 13,
+                }}
+                onPress={()=>{
+                  const refundDetails = {
+                    id: transaction.id,
+                    reservation_id: reservationInfo.id,
+                    reservation_paid: reservationInfo.paid,
+                    old_refunded: transaction.refunded | 0,
+                    amount: transaction.amount,
+                    payment_intent: transaction.payment_intent
+                  }
+                  openRefundModal(refundDetails)
+                }}
+              >
+                <View style={{flexDirection:'row', alignItems:'center'}}>
+                  <FontAwesome5 name={'redo'} size={14} style={{marginRight:10, marginTop:1}}/>
+                  <Text style={[styles.outlineBtnText]}>{"refund"}</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          </View>
+          <View style={{flexDirection:'row'}}>
+            <Text>{"$" + transaction.amount}</Text>
+            {transaction.refunded && (
+              <Text>{` (refunded: $${transaction.refunded})`}</Text>
+            )}
+          </View>
         </View>
       </View>
     ));
@@ -64,8 +102,8 @@ const TransactionList = ({reservationId, openAddTransactionModal}:Props) => {
   
   return (
     <View style={styles.container}>
-      <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:6, marginBottom:12}}>
-        <View style={{flexDirection:'row'}}>
+      <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:6, flexWrap:'wrap-reverse'}}>
+        <View style={{flexDirection:'row', marginBottom:12}}>
           <Text style={{fontSize:16, marginRight:8}}>Total</Text>
           <Text style={{fontSize:16, marginRight:60}}>
             {parseFloat(reservationInfo.total_price).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}
@@ -121,7 +159,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 2,
     borderColor: '#6c757d',
-    marginLeft: 13,
+    marginBottom:12,
   },
   outlineBtnText: {
     fontSize: 14,

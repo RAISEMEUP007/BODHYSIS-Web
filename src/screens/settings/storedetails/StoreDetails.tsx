@@ -26,6 +26,7 @@ import {
   updateStoreDetail,
   getStoreDetail,
   getDocumentsData,
+  getTaxcodesData,
 } from '../../../api/Settings';
 import { msgStr } from '../../../common/constants/Message';
 import { API_URL } from '../../../common/constants/AppConstants';
@@ -84,12 +85,17 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
   const [Currency, setCurrency] = useState(0);
   const [Dateformat, setDateformat] = useState(0);
   const [Timeformat, setTimeformat] = useState(0);
+  const [PickupTime, setPickupTime] = useState('');
+  const [DropOffTime, setDropOffTime] = useState('');
   const [WeekStart, setWeekStart] = useState(0);
 
   const [StoreWavier, setStoreWavier] = useState('');
   const [documentId, setDocumentId] = useState(0);
   const [isDocument, setIsDocument] = useState(0);
   const [selectedDocument, setSelectedDocument] = useState<any>({});
+
+  const [taxCodes, setTaxCodes] = useState([]);
+  const [selectedTaxCode, selectTaxCode] = useState(null);
 
   useEffect(() => {
     getLanguagesData((jsonRes, status, error) => {
@@ -148,6 +154,14 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
         } else setDocumentId(0);
       }
     });
+    getTaxcodesData((jsonRes, status, error) => {
+      if (status == 200) {
+        setTaxCodes(jsonRes);
+        if (jsonRes[0]) {
+          selectTaxCode(jsonRes[0].id);
+        } else selectTaxCode(null);
+      }else setTaxCodes([]);
+    });
 
     setTimeout(() => {
       loadDetails();
@@ -181,6 +195,9 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
         if (jsonRes.store_wavier) setStoreWavier(jsonRes.store_wavier);
         if (jsonRes.document_id) setDocumentId(jsonRes.document_id);
         if (jsonRes.is_document) setIsDocument(jsonRes.is_document);
+        if (jsonRes.taxcode_id) selectTaxCode(jsonRes.taxcode_id);
+        if (jsonRes.pickup_time) setPickupTime(jsonRes.pickup_time);
+        if (jsonRes.dropoff_time) setDropOffTime(jsonRes.dropoff_time);
       }
     });
   };
@@ -225,10 +242,13 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
     formData.append('date_format', Dateformat.toString());
     formData.append('time_format', Timeformat.toString());
     formData.append('week_start_day', WeekStart.toString());
-    formData.append('sales_tax', SalesTaxTxt.toString());
+    // formData.append('sales_tax', SalesTaxTxt.toString());
     formData.append('store_wavier', StoreWavier);
     formData.append('document_id', documentId.toString());
     formData.append('is_document', isDocument.toString());
+    formData.append('taxcode_id', selectedTaxCode.toString());
+    formData.append('pickup_time', PickupTime.toString());
+    formData.append('dropoff_time', DropOffTime.toString());
 
     const handleResponse = (jsonRes, status) => {
       switch (status) {
@@ -279,6 +299,14 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
             padding: 36,
             backgroundColor: 'white',
             borderRadius: 8,
+            borderWidth: 1,
+            borderColor:'#b3b3b3',
+            shadowColor:'#999',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowRadius: 8,
           }}
         >
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -584,15 +612,43 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
               </View>
               <View style={[styles.inputContainer, { flex: 1 }]}></View>
             </View>
+            <View style={styles.inputRow}>
+              <View style={[styles.inputContainer, { flex: 1 }]}>
+                <Text style={styles.label}>Pickup Time</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Pickup Time"
+                  value={PickupTime}
+                  onChangeText={setPickupTime}
+                  placeholderTextColor="#ccc"
+                />
+              </View>
+              <View style={[styles.inputContainer, { flex: 1 }]}>
+                <Text style={styles.label}>Drop off Time</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Drop off Time"
+                  value={DropOffTime}
+                  onChangeText={setDropOffTime}
+                  placeholderTextColor="#ccc"
+                />
+              </View>
+            </View>
           </View>
           <Text style={styles.label}>Sales tax</Text>
-          <NumericInput
-            placeholder="Sales tax"
-            value={SalesTaxTxt}
-            onChangeText={setSalesTaxTxt}
-            validMinNumber={0}
-            validMaxNumber={100}
-          />
+          <Picker style={styles.select} selectedValue={selectedTaxCode} onValueChange={selectTaxCode}>
+            {taxCodes.length > 0 &&
+              taxCodes.map((code, index) => {
+                return (
+                  <Picker.Item
+                    style={styles.selectOption}
+                    key={index}
+                    label={code.code}
+                    value={code.id}
+                  />
+                );
+              })}
+          </Picker>
 
           <View style={styles.inputGroup}>
             <Text style={[styles.label, styles.inputGroupLabel, { marginBottom: 8 }]}>
@@ -655,7 +711,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
               </>
             )}
             {isDocument == 1 && (
-              <View style={{ height: 251, marginBottom: 10, borderWidth: 1, borderColor: '#ccc' }}>
+              <ScrollView style={{ height: 251, marginBottom: 10, borderWidth: 1, borderColor: '#ccc' }}>
                 {selectedDocument && (
                   <>
                     {selectedDocument.document_type == 1 ? (
@@ -684,7 +740,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
                     )}
                   </>
                 )}
-              </View>
+              </ScrollView>
             )}
           </View>
 

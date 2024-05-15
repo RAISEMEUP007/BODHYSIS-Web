@@ -8,6 +8,7 @@ import {
   TextInput,
   Platform,
 } from 'react-native';
+
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../../common/constants/Colors';
@@ -26,11 +27,9 @@ import { createReservation, verifyQauntity } from '../../api/Reservation';
 import { getHeaderData, getPriceDataByGroup, getPriceGroupValue } from '../../api/Price';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
-import { DropdownData } from '../../common/components/CommonDropdown/CommonDropdown';
 import { BrandType } from '../../types/BrandType';
 import { CustomerType } from '../../types/CustomerTypes';
-import { LocationType } from '../../types/LocationType';
-import { CommonSelectDropdown } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
+import { CommonSelectDropdown, DropdownData } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
 import AddCustomerModal from '../customer/customers/AddCustomerModal';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { msgStr } from '../../common/constants/Message';
@@ -38,6 +37,7 @@ import EquipmentsTable from './EquipmentsTable';
 import AddReservationItemModal from './AddReservationItemModal';
 import { createReservationStyle } from './styles/CreateReservationStyle';
 import { getStoreDetail } from '../../api/Settings';
+import { getDiscountCodesData } from '../../api/Settings';
 import QuantitiesDetailsModal from './QuantitiesDetailsModal';
 
 if (Platform.OS === 'web') {
@@ -83,6 +83,9 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
 
   const [customerAddresses, setCustomerAddresses] = useState([]);
   const [customerAddressId, selectCustomerAddressId] = useState();
+
+  const [discountCodes, setDiscountCodes] = useState([]);
+  const [selectedDiscountCode, selectDiscountCode] = useState<any>(null);
 
   const openAddReservationItemModal = () => {
     editReservationItem(null, null);
@@ -178,6 +181,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     return result;
   }, [brandsData]);
 
+  console.log(priceLogicData);
   useEffect(() => {
     getStoreDetail(brandId, (jsonRes, status) => {
       if (status == 200) setTaxRate(jsonRes.sales_tax);
@@ -205,7 +209,31 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       selectCustomerAddressId(null);
     }
   }, [customerId])
-console.log(customerAddressId);
+
+  useEffect(()=>{
+    getDiscountCodesData((jsonRes, status, error) => {
+      switch (status) {
+        case 200:
+          setDiscountCodes(jsonRes);
+          break;
+      }
+    });
+  }, [])
+  
+  const discountCodesDropdownData = useMemo(() => {
+    if (!discountCodes?.length) {
+      return [];
+    }
+
+    const result: Array<any> = discountCodes.map((item, index) => {
+      return {
+        value: item,
+        displayLabel: item.code,
+        index,
+      };
+    });
+    return result;
+  }, [discountCodes]);
 
   const customerAddressDropdownData = useMemo(() => {
     if (!customerAddresses?.length) {
@@ -213,9 +241,10 @@ console.log(customerAddressId);
     }
 
     const result: DropdownData<BrandType> = customerAddresses.map((item, index) => {
+      console.log(item.all_addresses);
       return {
         value: item,
-        displayLabel: item.address1 + ' ' + item.city + ' ' + item.state,
+        displayLabel: (item?.all_addresses?.number??'') + ' ' + (item?.all_addresses?.street??'') + ' ' + (item?.all_addresses?.plantation??'') + ' ' + (item?.all_addresses?.property_name??''),
         index,
       };
     });
@@ -231,10 +260,13 @@ console.log(customerAddressId);
   }, [equipmentData]);
 
   const taxAmount = useMemo(() => {
-    return Math.round(taxRate * subTotal) / 100;
+    const txR = taxRate || 0;
+    return Math.round(txR * subTotal) / 100;
   }, [taxRate, subTotal]);
 
   const getPriceTableByBrandAndDate = (brandId, date) => {
+    console.log(brandId);
+    console.log(date);
     if (!priceLogicData || !priceLogicData.length) return null;
     let selectedPriceLogic = priceLogicData.find(
       (group) =>
@@ -329,48 +361,61 @@ console.log(customerAddressId);
       return true;
     };
 
-    const existingProduct = equipmentData.find((item) => {
-      return item.family_id === productFamily.id && arraysAreEqual(item.extras, extras);
-    });
+    // const existingProduct = equipmentData.find((item) => {
+    //   return item.display_name === productFamily.display_name && arraysAreEqual(item.extras, extras);
+    // });
 
-    if (existingProduct) {
-      showConfirm(
-        `${productFamily.display_name} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
-        () => {
-          const updatedEquipmentData = equipmentData.map((item) => {
-            if (item.family_id === productFamily.id && arraysAreEqual(item.extras, extras)) {
-              return { ...item, quantity: item.quantity + quantity, extras };
-            }
-            return item;
-          });
+    // if (existingProduct) {
+    //   showConfirm(
+    //     `${productFamily.display_name} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
+    //     () => {
+    //       const updatedEquipmentData = equipmentData.map((item) => {
+    //         if (item.display_name === productFamily.display_name && arraysAreEqual(item.extras, extras)) {
+    //           return { ...item, quantity: item.quantity + quantity, extras };
+    //         }
+    //         return item;
+    //       });
 
-          setEquipmentData(updatedEquipmentData);
-          setItemOperations((prev) => prev + 1);
-        }
-      );
-    } else {
+    //       setEquipmentData(updatedEquipmentData);
+    //       setItemOperations((prev) => prev + 1);
+    //     }
+    //   );
+    // } else {
       const equipment = { 
         ...productFamily,
         family_id: productFamily.id,
-        quantity,
+        quantity:1,
         extras,
         price_group_id: productFamily?.lines[0]?.price_group_id ?? 0, 
       };
-      setEquipmentData((prevEquipmentData) => [...prevEquipmentData, equipment]);
+
+      let updatedEquipments = [...equipmentData];
+      if(quantity){
+        for(let i=0; i<quantity; i++){
+          updatedEquipments.push(equipment);
+        }
+      }
+      setEquipmentData(updatedEquipments);
       setItemOperations((prev) => prev + 1);
-    }
+    // }
   };
 
   const updateReservationItem = (oldLine, productFamily, quantity, extras) => {
     const existingProduct = equipmentData.find((item) => item.id === productFamily.id);
 
-    if (oldLine.id != productFamily.id && existingProduct) {
-      showAlert(
-        'warning',
-        `${productFamily.line} ${productFamily.size} is already in the reservation items.`
-      );
-    } else {
-      const newEquipment = { ...productFamily, family_id: productFamily.id, quantity, extras };
+    // if (oldLine.id != productFamily.id && existingProduct) {
+    //   showAlert(
+    //     'warning',
+    //     `${productFamily.line} ${productFamily.size} is already in the reservation items.`
+    //   );
+    // } else {
+      const newEquipment = { 
+        ...productFamily, 
+        family_id: productFamily.id, 
+        quantity:1, 
+        extras,
+        price_group_id: productFamily?.lines[0]?.price_group_id ?? 0, 
+      };
       const replaceIndex = editingIndex;
       setEquipmentData((prevEquipmentData) => {
         return prevEquipmentData.map((item, index) => {
@@ -381,10 +426,12 @@ console.log(customerAddressId);
         });
       });
       setItemOperations((prev) => prev + 1);
-    }
+    // }
   };
 
   useEffect(() => {
+    console.log(startDate);
+    console.log(endDate);
     const calculatePricedData = async () => {
       if (equipmentData.length > 0) {
         if (headerData && selectedPriceTable && startDate && endDate) {
@@ -402,6 +449,7 @@ console.log(customerAddressId);
   }, [selectedPriceTable, startDate, endDate, headerData, itemOperations]);
 
   const calculatePricedEquipmentData = async (tableId) => {
+    console.log(equipmentData);
     const pricedEquipmentData = await Promise.all(
       equipmentData.map(async (item) => {
         const payload = {
@@ -412,7 +460,7 @@ console.log(customerAddressId);
         const rows = await response.json();
 
         const reversedHeaderData = headerData.slice().reverse();
-        const updatedReversedHeaderData = reversedHeaderData.map((item) => {
+        const updatedReversedHeaderData = headerData.map((item) => {
           const value = rows.find((row) => row.point_id === item.id)?.value || 0;
           const pricePMS = value / item.milliseconds;
           const pricePH = value / (item.milliseconds / (1000 * 60 * 60));
@@ -422,20 +470,26 @@ console.log(customerAddressId);
 
         const diff = endDate.getTime() - startDate.getTime();
 
+        console.log(endDate);
+        console.log(startDate);
+        console.log(diff);
+        console.log(updatedReversedHeaderData);
         const basedonPoint = updatedReversedHeaderData.find((item) => {
-          if (item.value > 0 && item.milliseconds <= diff) {
+          if (item.value > 0 && item.milliseconds >= diff) {
             return item;
           }
         });
 
         let price = 0;
         if (basedonPoint) {
-          if (Math.floor(diff / (1000 * 60 * 60 * 24)) == 0)
-            price = basedonPoint.pricePH * Math.floor(diff / (1000 * 60 * 60));
-          else price = basedonPoint.pricePD * Math.floor(diff / (1000 * 60 * 60 * 24));
+          // if (Math.floor(diff / (1000 * 60 * 60 * 24)) == 0)
+          //   price = basedonPoint.pricePH * Math.floor(diff / (1000 * 60 * 60));
+          // else price = basedonPoint.pricePD * Math.floor(diff / (1000 * 60 * 60 * 24));
 
-          price = (Math.round(price * 100) / 100) * item.quantity;
+          price = (Math.round(basedonPoint.value * 100) / 100) * item.quantity;
         }
+
+        console.log(basedonPoint);
 
         //calcualte extras price
         if (item.extras && item.extras.length > 0) {
@@ -478,7 +532,15 @@ console.log(customerAddressId);
   const submitReservation = () => {
     setIsLoading(true);
 
-    const payload = {
+    let discountAmount;
+    if(selectedDiscountCode){
+      // discountInfo = discountCodes.find((item) => item.id === reservationInfo.promo_code);
+      discountAmount = selectedDiscountCode.type == 1 ? (Math.round(subTotal * selectedDiscountCode.amount) / 100) : selectedDiscountCode.amount;
+    }else {
+      discountAmount = 0;
+    }
+
+    const payload:any = {
       customer_id: customerId,
       brand_id: brandId,
       start_date: startDate,
@@ -487,11 +549,13 @@ console.log(customerAddressId);
       subtotal: subTotal,
       tax_rate: taxRate,
       tax_amount: taxAmount,
-      total_price: subTotal + taxAmount,
+      total_price: subTotal + taxAmount - discountAmount,
       price_table_id: selectedPriceTable.id,
-      delivery_address_id: customerAddressId,
+      address_id: customerAddressId,
       stage: 1,
     };
+
+    if(selectedDiscountCode) payload.promo_code = selectedDiscountCode.id;
 
     const handleResponse = (jsonRes, status) => {
       switch (status) {
@@ -557,7 +621,7 @@ console.log(customerAddressId);
       </View>
     );
   };
-  
+console.log(selectedPriceTable);
   const renderInitial = () => {
     return (
       <BasicLayout
@@ -567,242 +631,265 @@ console.log(customerAddressId);
           openReservationScreen('Reservations List');
         }}
         backKeyboard={false}
+        containerStyle={{
+          backgroundColor:'#f7f7f7',
+        }}
       >
-        <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
-          <View style={styles.outterContainer}>
-            <View
-              style={{ flexDirection: 'row', zIndex: 10 }}
-              onLayout={(event) => {
-                const { width } = event.nativeEvent.layout;
-                setContentWidth(width);
-              }}
-            >
+        <div style={{overflow:'auto', padding:'0 30px'}}>
+          <div style={{width:'fit-content', margin:'auto'}}>
+            <View style={styles.outterContainer}>
               <View
-                style={{
-                  width: 400,
-                  marginTop: 53,
-                  marginRight: 50,
-                  marginBottom: 15,
-                  borderWidth: 1,
-                  borderColor: '#808080',
+                style={{ flexDirection: 'row', zIndex: 10 }}
+                onLayout={(event) => {
+                  const { width } = event.nativeEvent.layout;
+                  // setContentWidth(width);
                 }}
               >
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    marginVertical: 8,
-                    marginHorizontal: 16,
-                    marginTop: 18,
-                  }}
-                >
-                  Based off price logic
-                </Text>
-                <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
-                  <Text>{'Brand:'}</Text>
-                  <Text style={{ marginLeft: 20, color: selectedPriceLogic ? 'black' : '#999' }}>
-                    {selectedPriceLogic?.brand?.brand ?? 'Not selected'}
-                  </Text>
-                </View>
-                <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
-                  <Text>{'Season:'}</Text>
-                  <Text style={{ marginLeft: 20, color: selectedPriceLogic ? 'black' : '#999' }}>
-                    {selectedPriceLogic?.season?.season ?? 'Not selected'}
-                  </Text>
-                </View>
-                <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
-                  <Text>{'Price Table:'}</Text>
-                  <Text style={{ marginLeft: 20, color: selectedPriceTable ? '#ff4d4d' : '#999' }}>
-                    {selectedPriceTable ? selectedPriceTable.table_name : 'No available'}
-                  </Text>
-                </View>
-                <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
-                  <Text>{'Start date:'}</Text>
-                  <Text
-                    style={{
-                      marginLeft: 20,
-                      color: selectedPriceTable && selectedPriceTable.start_date ? 'black' : '#999',
-                    }}
-                  >
-                    {selectedPriceTable?.start_date ?? 'undefined'}
-                  </Text>
-                </View>
-                <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
-                  <Text>{'End date:'}</Text>
-                  <Text
-                    style={{
-                      marginLeft: 20,
-                      color: selectedPriceTable && selectedPriceTable.start_date ? 'black' : '#999',
-                    }}
-                  >
-                    {selectedPriceTable?.end_date ?? 'undefined'}
-                  </Text>
-                </View>
-              </View>
-              <View>
                 <View
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'flex-end',
-                    justifyContent: 'flex-end',
+                    width: 280,
+                    marginTop: 53,
+                    marginRight: 50,
+                    marginBottom: 15,
+                    borderWidth: 1,
+                    borderColor: '#808080',
                   }}
                 >
-                  <CommonButton
-                    width={177}
-                    onPressWhileDisabled={() => {
-                      if (!customerId) showAlert('warning', 'Please select a customer.');
-                      else if (!brandId) showAlert('warning', 'Please select a brand.');
-                      else if (!startDate) showAlert('warning', 'Please select Pick Up.');
-                      else if (!endDate) showAlert('warning', 'Please select Drop off.');
-                      else if (!selectedPriceTable)
-                        showAlert('warning', 'No available Price table. Can not set price.');
-                      else if (!equipmentData.length) showAlert('warning', 'Please add an item.');
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      marginVertical: 8,
+                      marginHorizontal: 16,
+                      marginTop: 18,
                     }}
-                    onPress={() => {
-                      CreateReservationHandler();
+                  >
+                    Based off price logic
+                  </Text>
+                  <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
+                    <Text>{'Brand:'}</Text>
+                    <Text style={{ marginLeft: 20, color: selectedPriceLogic ? 'black' : '#999' }}>
+                      {selectedPriceLogic?.brand?.brand ?? 'Not selected'}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
+                    <Text>{'Season:'}</Text>
+                    <Text style={{ marginLeft: 20, color: selectedPriceLogic ? 'black' : '#999' }}>
+                      {selectedPriceLogic?.season?.season ?? 'Not selected'}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
+                    <Text>{'Price Table:'}</Text>
+                    <Text style={{ marginLeft: 20, color: selectedPriceTable ? '#ff4d4d' : '#999' }}>
+                      {selectedPriceTable ? selectedPriceTable.table_name : 'No available'}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
+                    <Text>{'Start date:'}</Text>
+                    <Text
+                      style={{
+                        marginLeft: 20,
+                        color: selectedPriceTable && startDate ? 'black' : '#999',
+                      }}
+                    >
+                      {startDate?startDate.toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                      }):'undefined'}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', marginVertical: 8, marginHorizontal: 16 }}>
+                    <Text>{'End date:'}</Text>
+                    <Text
+                      style={{
+                        marginLeft: 20,
+                        color: selectedPriceTable && endDate ? 'black' : '#999',
+                      }}
+                    >
+                      {endDate?endDate.toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                      }):'undefined'}
+                    </Text>
+                  </View>
+                </View>
+                <View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'flex-end',
+                      justifyContent: 'flex-end',
                     }}
-                    label={'Create Reservation'}
-                    disabledConfig={{ backgroundColor: Colors.Neutrals.DARK, disabled: !valid }}
-                    backgroundColor={Colors.Secondary.GREEN}
-                    type={'rounded'}
-                    textColor={Colors.Neutrals.WHITE}
-                    containerStyle={
-                      {
-                        // marginRight: 20,
+                  >
+                    <CommonButton
+                      width={177}
+                      onPressWhileDisabled={() => {
+                        if (!customerId) showAlert('warning', 'Please select a customer.');
+                        else if (!brandId) showAlert('warning', 'Please select a brand.');
+                        else if (!startDate) showAlert('warning', 'Please select Pick Up.');
+                        else if (!endDate) showAlert('warning', 'Please select Drop off.');
+                        else if (!selectedPriceTable)
+                          showAlert('warning', 'No available Price table. Can not set price.');
+                        else if (!equipmentData.length) showAlert('warning', 'Please add an item.');
+                      }}
+                      onPress={() => {
+                        CreateReservationHandler();
+                      }}
+                      label={'Create Reservation'}
+                      disabledConfig={{ backgroundColor: Colors.Neutrals.DARK, disabled: !valid }}
+                      backgroundColor={Colors.Secondary.GREEN}
+                      type={'rounded'}
+                      textColor={Colors.Neutrals.WHITE}
+                      containerStyle={
+                        {
+                          // marginRight: 20,
+                        }
                       }
-                    }
-                  />
-                </View>
-                <View style={styles.reservationRow}>
-                  <TouchableHighlight style={styles.button} onPress={openAddCustomerModal}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                      <FontAwesome5 name="plus" size={14} color="white" style={{ marginTop: 3 }} />
-                      <Text style={styles.buttonText}>Add Customer</Text>
-                    </View>
-                  </TouchableHighlight>
-                  <CommonSelectDropdown
-                    containerStyle={{
-                      marginRight: 40,
-                    }}
-                    width={350}
-                    onItemSelected={(item) => {
-                      selectCustomerId(item.value.id);
-                    }}
-                    data={customersDropdownData}
-                    placeholder="Select A Customer"
-                    title={'Customers'}
-                    defaultValue={defaultCustomer}
-                  />
-                </View>
-                <View style={styles.reservationRow}>
-                  <CommonSelectDropdown
-                    containerStyle={
-                      {
+                    />
+                  </View>
+                  <View style={styles.reservationRow}>
+                    <TouchableHighlight style={styles.button} onPress={openAddCustomerModal}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <FontAwesome5 name="plus" size={14} color="white" style={{ marginTop: 3 }} />
+                        <Text style={styles.buttonText}>Add Customer</Text>
+                      </View>
+                    </TouchableHighlight>
+                    <CommonSelectDropdown
+                      containerStyle={{
                         marginRight: 40,
-                      }
-                    }
-                    width={350}
-                    onItemSelected={(item) => {
-                      selectCustomerAddressId(item.value.id);
-                    }}
-                    data={customerAddressDropdownData}
-                    placeholder="Select An Address"
-                    title={'Delivery Address'}
-                    defaultValue={customerAddressId}
-                  />
-                  <CommonSelectDropdown
-                    containerStyle={
-                      {
-                        // marginRight: 40,
-                      }
-                    }
-                    width={350}
-                    onItemSelected={(item) => {
-                      selectBrandId(item.value.id);
-                    }}
-                    data={brandsDropdownData}
-                    placeholder="Select A Brand"
-                    title={'Brands'}
-                  />
-                </View>
-                <View style={[styles.reservationRow, {zIndex:10}]}>
-                  <View style={{marginRight:40}}>
-                    <Text style={{marginBottom:10}}>{'Pick Up'}</Text>
-                    {Platform.OS == 'web' && renderDatePicker(startDate, (date)=>setStartdate(date))}
+                      }}
+                      width={250}
+                      onItemSelected={(item) => {
+                        selectCustomerId(item.value.id);
+                      }}
+                      data={customersDropdownData}
+                      placeholder="Select A Customer"
+                      title={'Customers'}
+                      defaultValue={defaultCustomer}
+                    />
                   </View>
-                  <View style={{ marginRight: 0 }}>
-                    <Text style={{ marginBottom: 10 }}>{'Drop Off'}</Text>
-                    {Platform.OS == 'web' &&
-                      renderEndDatePicker(endDate, (date) => setEnddate(date), startDate)}
-                    {Platform.OS != 'web' && (
-                      <TextInput
-                        editable={false}
-                        style={styles.input}
-                        value={endDate ? endDate.toDateString() : ''}
-                      ></TextInput>
-                    )}
+                  <View style={styles.reservationRow}>
+                    <CommonSelectDropdown
+                      containerStyle={
+                        {
+                          marginRight: 40,
+                        }
+                      }
+                      width={"100%"}
+                      onItemSelected={(item) => {
+                        console.log(item);
+                        selectCustomerAddressId(item.value.address_id);
+                      }}
+                      data={customerAddressDropdownData}
+                      placeholder="Select An Address"
+                      title={'Delivery Address'}
+                      defaultValue={customerAddressId}
+                    />
                   </View>
-                </View>
-
-                {/* <View style={[styles.reservationRow, { zIndex: 10 }]}>
-                </View> */}
-                {/* <View style={[styles.reservationRow, {marginTop:16}]}>
-                  <Text style={{marginRight:20, fontSize:14}}>{'Price Table:'}</Text>
-                  <Text style={{marginRight:20, fontSize:15, color:(selectedPriceTable ? '#ff4d4d': '#999')}}>{selectedPriceTable ? selectedPriceTable.table_name : 'No available table'}</Text>
-                </View> */}
-                <View style={[styles.reservationRow, { width: 740 }]}>
-                  <Slots
-                    onSelect={(item) => {
-                      setEnddate(new Date(new Date(startDate).getTime() + item.milliseconds));
-                    }}
-                    items={headerData}
-                  />
+                  <View style={styles.reservationRow}>
+                    <CommonSelectDropdown
+                      containerStyle={{
+                        marginRight: 40,
+                        marginTop: 5,
+                      }}
+                      width={250}
+                      onItemSelected={(item) => {
+                        selectDiscountCode(item.value);
+                      }}
+                      data={discountCodesDropdownData}
+                      placeholder="Select A Code"
+                      title={'Discount code'}
+                      titleStyle={{marginBottom:6, color:"#555555", fontSize:14}}
+                    />
+                    <CommonSelectDropdown
+                      containerStyle={
+                        {
+                          // marginRight: 40,
+                        }
+                      }
+                      width={250}
+                      onItemSelected={(item) => {
+                        selectBrandId(item.value.id);
+                      }}
+                      data={brandsDropdownData}
+                      placeholder="Select A Brand"
+                      title={'Brands'}
+                    />
+                  </View>
+                  <View style={[styles.reservationRow, {zIndex:10}]}>
+                    <View style={{marginRight:40}}>
+                      <Text style={{marginBottom:10}}>{'Pick Up'}</Text>
+                      {Platform.OS == 'web' && renderDatePicker(startDate, (date)=>setStartdate(date))}
+                    </View>
+                    <View style={{ marginRight: 0 }}>
+                      <Text style={{ marginBottom: 10 }}>{'Drop Off'}</Text>
+                      {Platform.OS == 'web' &&
+                        renderEndDatePicker(endDate, (date) => setEnddate(date), startDate)}
+                      {Platform.OS != 'web' && (
+                        <TextInput
+                          editable={false}
+                          style={styles.input}
+                          value={endDate ? endDate.toDateString() : ''}
+                        ></TextInput>
+                      )}
+                    </View>
+                  </View>
+                  <View style={[styles.reservationRow, { width: 550 }]}>
+                    <Slots
+                      onSelect={(item) => {
+                        setEnddate(new Date(new Date(startDate).getTime() + item.milliseconds));
+                      }}
+                      items={headerData}
+                    />
+                  </View>
                 </View>
               </View>
-            </View>
-            <View
-              style={[
-                styles.reservationRow,
-                { marginTop: 10, alignItems: 'flex-end', justifyContent: 'space-between' },
-              ]}
-            >
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={{ marginRight: 8 }}>Subtotal</Text>
-                <Text style={{ marginRight: 24 }}>
-                  {subTotal.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
-                </Text>
-                <Text style={{ marginRight: 8 }}>Tax</Text>
-                <Text>
-                  {taxAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
-                </Text>
-              </View>
-              <TouchableHighlight
-                style={[styles.addItemButton]}
-                onPress={openAddReservationItemModal}
+              <View
+                style={[
+                  styles.reservationRow,
+                  { marginTop: 10, alignItems: 'flex-end', justifyContent: 'space-between' },
+                ]}
               >
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <FontAwesome5 name="plus" size={14} color="white" style={{ marginTop: 3 }} />
-                  <Text style={styles.buttonText}>Add Items</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{ marginRight: 8 }}>Subtotal</Text>
+                  <Text style={{ marginRight: 24 }}>
+                    {subTotal.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                  </Text>
+                  <Text style={{ marginRight: 8 }}>Tax</Text>
+                  <Text>
+                    {taxAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                  </Text>
                 </View>
-              </TouchableHighlight>
+                <TouchableHighlight
+                  style={[styles.addItemButton]}
+                  onPress={openAddReservationItemModal}
+                >
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <FontAwesome5 name="plus" size={14} color="white" style={{ marginTop: 3 }} />
+                    <Text style={styles.buttonText}>Add Items</Text>
+                  </View>
+                </TouchableHighlight>
+              </View>
+              <EquipmentsTable
+                items={equipmentData}
+                width={"100%"}
+                onEdit={(item, index) => {
+                  editReservationItem(item, index);
+                }}
+                onDelete={(item, index) => {
+                  const updatedEquipmentData = [
+                    ...equipmentData.slice(0, index),
+                    ...equipmentData.slice(index + 1),
+                  ];
+                  setEquipmentData(updatedEquipmentData);
+                }}
+                isExtra={true}
+                extraWith={300}
+              />
             </View>
-            <EquipmentsTable
-              items={equipmentData}
-              width={contentWidth}
-              onEdit={(item, index) => {
-                editReservationItem(item, index);
-              }}
-              onDelete={(item, index) => {
-                const updatedEquipmentData = [
-                  ...equipmentData.slice(0, index),
-                  ...equipmentData.slice(index + 1),
-                ];
-                setEquipmentData(updatedEquipmentData);
-              }}
-              isExtra={true}
-              extraWith={300}
-            />
-          </View>
-        </ScrollView>
+          </div>
+        </div>
         <AddCustomerModal
           isModalVisible={isAddModalVisible}
           Customer={selectedCustomer}

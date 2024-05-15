@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, TextInputProps } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TextInputProps, DimensionValue } from 'react-native';
 import { TextSmallSize } from '../../constants/Fonts';
 
 interface Props {
   label: string;
-  width?: number;
+  width?: DimensionValue;
   containerStyle?: object;
   labelStyle?: object;
   inputStyle?: object;
@@ -16,15 +16,20 @@ const LabeledTextInput = ({
   containerStyle,
   labelStyle,
   inputStyle,
+  editable,
   ...otherTextInputProps
 }: Props & TextInputProps) => {
 
+  // const inputContainerStyle = editable !== false ? styles.input : [styles.input, styles.inputDisable];
+  const inputContainerStyle = styles.input;
+
   return (
-    <View style={[containerStyle]}>
+    <View style={[containerStyle, {width}]}>
       <Text style={[styles.label, labelStyle]}>{label}</Text>
       <TextInput
-        style={[styles.input, {width:width?width:'auto'}, inputStyle]}
+        style={[inputContainerStyle, {width:'!00%'}, inputStyle]}
         placeholderTextColor="#ccc"
+        editable={editable}
         {...otherTextInputProps}
       />
     </View>
@@ -45,7 +50,8 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   inputDisable: {
-    borderColor: '#ddd',
+    // colro: ''
+    borderColor: '#bfbfbf',
   },
 });
 

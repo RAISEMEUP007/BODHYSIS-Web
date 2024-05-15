@@ -20,6 +20,14 @@ export const actionOrderStyle = StyleSheet.create({
     paddingHorizontal: 60,
     backgroundColor: 'white',
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor:'#b3b3b3',
+    shadowColor:'#999',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 8,
   },
   nextStageButton: {
     alignItems: 'center',
@@ -94,6 +102,6 @@ export const actionOrderStyle = StyleSheet.create({
     borderRadius: 3,
     borderWidth: 0,
     borderColor: '#6c757d',
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2e96e1',
   },
 });

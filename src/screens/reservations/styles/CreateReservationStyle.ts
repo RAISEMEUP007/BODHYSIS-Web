@@ -4,13 +4,19 @@ import { Colors } from '../../../common/constants/Colors';
 
 export const createReservationStyle = StyleSheet.create({
   outterContainer: {
-    // width: '60%',
-    // minWidth: 500,
     marginVertical: 30,
     paddingVertical: 40,
     paddingHorizontal: 60,
     backgroundColor: 'white',
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor:'#b3b3b3',
+    shadowColor:'#999',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 8,
   },
   container: {
     flex: 1,
@@ -20,6 +26,7 @@ export const createReservationStyle = StyleSheet.create({
     flexDirection: 'row',
     flexWrap:'wrap',
     marginVertical: 8,
+    justifyContent:'space-between',
     gap:8,
     // paddingVertical: 8,
   },
@@ -57,7 +64,7 @@ export const createReservationStyle = StyleSheet.create({
   dateInput:{
     padding:8,
     fontSize:14,
-    width:333,
+    width:233,
     borderWidth:1, 
     borderColor:'#808080',
   },
@@ -71,14 +78,14 @@ export const createReservationStyle = StyleSheet.create({
     zIndex: 1,
     position: 'absolute',
     bottom: 0,
-    left: 390,
+    left: 300,
     paddingVertical: 8,
     paddingHorizontal: 14,
     alignItems: 'center',
     borderRadius: 3,
     borderWidth: 0,
     borderColor: '#6c757d',
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2e96e1',
   },
   addItemButton: {
     paddingVertical: 8,
@@ -87,7 +94,7 @@ export const createReservationStyle = StyleSheet.create({
     borderRadius: 3,
     borderWidth: 0,
     borderColor: '#6c757d',
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2e96e1',
   },
   overlay: {
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
