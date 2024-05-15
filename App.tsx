@@ -16,7 +16,7 @@ import { appLinking } from './src/common/constants/AppLinking';
 import * as Sentry from "@sentry/react-native";
 
 Sentry.init({
-  dsn: "https://74c443f3f6484697ac090e1f7e19fea1@o180316.ingest.us.sentry.io/1468413",
+  dsn: "https://deb9289f93938841be41cb5dbb7abfb4@o382651.ingest.us.sentry.io/4507070883495936",
 
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
