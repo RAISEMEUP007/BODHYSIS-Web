@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import 'react-datepicker/dist/react-datepicker.css';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getReservationsData } from '../../api/Reservation';
 import { BasicLayout, CommonContainer } from '../../common/components/CustomLayout';
@@ -53,6 +54,19 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     'checked out',
     'checked in',
   ];
+
+  useEffect(()=>{
+    loadSearchOption();
+  }, [])
+  
+  const loadSearchOption = async () => {
+    const cachedSearchOptions:any = await AsyncStorage.getItem('__search_options');
+    if(cachedSearchOptions) setSearchOptions(JSON.parse(cachedSearchOptions));
+  }
+
+  useEffect(()=>{
+    AsyncStorage.setItem('__search_options', JSON.stringify(searchOptions))
+  }, [searchOptions])
 
   useEffect(() => {
     switch (periodRange.toLowerCase()) {
