@@ -31,13 +31,13 @@ const Dashboard = ({ navigation }) => {
   const [tableData, setTableData] = useState([]);
   const [updateReservationListTrigger, setUpdateReservationListTrigger] = useState(true);
 
-  const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
-  const today = new Date().toISOString().substr(0, 10);
-
   const [periodRange, setPeriodRange] = useState<any>('');
+  const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
+  const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
   const [ searchOptions, setSearchOptions ] = useState({
-    start_date : twoWeeksAgo.toISOString().substr(0, 10),
-    end_date : today,
+    start_date : `${twoWeeksAgo.getFullYear()}-${String(twoWeeksAgo.getMonth() + 1).padStart(2, '0')}-${String(twoWeeksAgo.getDate()).padStart(2, '0')}`,
+    end_date : `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`,
     customer : '',
     brand: '',
     order_number: '',
@@ -92,12 +92,20 @@ const Dashboard = ({ navigation }) => {
   }, [])
   
   const loadSearchOption = async () => {
-    const cachedSearchOptions:any = await AsyncStorage.getItem('__search_options');
-    if(cachedSearchOptions) setSearchOptions(JSON.parse(cachedSearchOptions));
+    const [cachedSearchOptions, cachedTimestamp] = await Promise.all([
+      AsyncStorage.getItem('__search_options'),
+      AsyncStorage.getItem('__search_options_timestamp')
+    ]);
+    if (cachedTimestamp && cachedSearchOptions &&(new Date().getTime() - parseInt(cachedTimestamp, 10)) < 600000 ) {
+      setSearchOptions(JSON.parse(cachedSearchOptions));
+    } else {
+      AsyncStorage.removeItem('__search_options');
+    }
   }
 
   useEffect(()=>{
     AsyncStorage.setItem('__search_options', JSON.stringify(searchOptions))
+    AsyncStorage.setItem('__search_options_timestamp', new Date().getTime().toString())
   }, [searchOptions])
 
   useEffect(() => {
@@ -204,10 +212,10 @@ const Dashboard = ({ navigation }) => {
               <Text>{item.full_name}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.start_date ? formatDateInline(item.start_date):''}</Text>
+              <Text>{item.start_date}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.end_date ? formatDateInline(item.end_date):''}</Text>
+              <Text>{item.end_date}</Text>
             </View>
             <View style={[styles.cell, {alignItems:'flex-end'}]}>
               <Text>{item?.quantity??''}</Text>
