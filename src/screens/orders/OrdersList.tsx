@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { getReservationsData } from '../../api/Reservation';
+import { checkedInBarcode, getReservationsData, scanBarcode } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
@@ -26,11 +26,11 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
   const [periodRange, setPeriodRange] = useState<any>('');
 
   const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
-  const today = new Date().toISOString().substr(0, 10);
-  
+  const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
   const [ searchOptions, setSearchOptions ] = useState({
-    start_date : twoWeeksAgo.toISOString().substr(0, 10),
-    end_date : today,
+    start_date : `${twoWeeksAgo.getFullYear()}-${String(twoWeeksAgo.getMonth() + 1).padStart(2, '0')}-${String(twoWeeksAgo.getDate()).padStart(2, '0')}`,
+    end_date : `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`,
     customer : '',
     brand: '',
     order_number: '',
@@ -50,14 +50,27 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     if (barcodeInputRef.current) {
       barcodeInputRef.current.focus();
     }
-
+    
     loadSearchOption();
   }, [])
   
   const loadSearchOption = async () => {
-    const cachedSearchOptions:any = await AsyncStorage.getItem('__search_options');
-    if(cachedSearchOptions) setSearchOptions(JSON.parse(cachedSearchOptions));
+    const [cachedSearchOptions, cachedTimestamp] = await Promise.all([
+      AsyncStorage.getItem('__search_options'),
+      AsyncStorage.getItem('__search_options_timestamp')
+    ]);
+    if (cachedTimestamp && cachedSearchOptions &&(new Date().getTime() - parseInt(cachedTimestamp, 10)) < 600000 ) {
+      setSearchOptions(JSON.parse(cachedSearchOptions));
+    } else {
+      AsyncStorage.removeItem('__search_options');
+    }
   }
+  
+  useEffect(()=>{
+    console.log('ddd');
+    AsyncStorage.setItem('__search_options', JSON.stringify(searchOptions))
+    AsyncStorage.setItem('__search_options_timestamp', new Date().getTime().toString())
+  }, [searchOptions])
 
   useEffect(() => {
     switch (periodRange.toLowerCase()) {
@@ -135,10 +148,6 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     getTable();
   }, [searchOptions]);
 
-  useEffect(()=>{
-    AsyncStorage.setItem('__search_options', JSON.stringify(searchOptions))
-  }, [searchOptions])
-
   const getTable = () => {
     const payload = {
       searchOptions: {...searchOptions}
@@ -168,6 +177,42 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
       ...prevOptions,
       [key]: val
     }));
+  }
+
+  const scanBarcodeHandle = async () => {
+    // if(barcode.trim() && tableData.length > 0){
+    //   openOrderScreen('Action Order', {orderId:tableData[0].id, barcode:barcode.trim()})
+    // }
+    // if(barcode.trim() && tableData.length > 0){
+    //   openOrderScreen('Action Order', {orderId:tableData[0].id, barcode:barcode.trim()})
+    // }
+    if(!barcode.trim() || tableData.length === 0) return;
+    
+    let flag = false;
+    for(const order of tableData){
+      const payload = {
+        barcode: barcode,
+        reservation_id: order.id,
+      }
+
+      if(order.stage == 2){
+        const result = await scanBarcode(payload);
+        if(result.status == 200){
+          openOrderScreen('Action Order', {orderId:order.id});
+          flag = true;
+          break;
+        }
+      }else if(order.stage == 3){
+        const result = await checkedInBarcode(payload);
+        if(result.status == 200){
+          openOrderScreen('Action Order', {orderId:order.id})
+          flag = true;
+          break;
+        }
+      }
+    }
+
+    if(!flag) showAlert("error", "No matched order for this item");
   }
 
   const renderTableData = () => {
@@ -201,8 +246,8 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
             <BOHTD width={InitialWidths[0]}>{item.order_number}</BOHTD>
             <BOHTD width={InitialWidths[1]}>{item.brand}</BOHTD>
             <BOHTD width={InitialWidths[2]}>{item.full_name}</BOHTD>
-            <BOHTD width={InitialWidths[3]}>{item.start_date ? new Date(item.start_date).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit'}) : ''}</BOHTD>
-            <BOHTD width={InitialWidths[4]}>{item.end_date ? new Date(item.end_date).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit'}) : ''}</BOHTD>
+            <BOHTD width={InitialWidths[3]}>{item.start_date}</BOHTD>
+            <BOHTD width={InitialWidths[4]}>{item.end_date}</BOHTD>
             <BOHTD width={InitialWidths[5]}>{item.start_location}</BOHTD>
             <BOHTD width={InitialWidths[6]}>{item.end_location}</BOHTD>
             <BOHTD width={InitialWidths[7]}>{convertStageToString(item.stage)}</BOHTD>
@@ -397,18 +442,10 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
             style={{paddingVertical:5}}
             defaultValue={barcode}
             onChangeText={SetBarcode}
-            onSubmitEditing={()=>{
-              if(barcode.trim() && tableData.length > 0){
-                openOrderScreen('Action Order', {orderId:tableData[0].id, barcode:barcode.trim()})
-              }
-            }}/>
+            onSubmitEditing={scanBarcodeHandle}/>
           <BOHButton
             label='Scan'
-            onPress={()=>{
-              if(barcode.trim() && tableData.length > 0){
-                openOrderScreen('Action Order', {orderId:tableData[0].id, barcode:barcode.trim()})
-              }
-            }}/>
+            onPress={scanBarcodeHandle}/>
         </BOHToolbar>
         <BOHTable>
           <BOHTHead>

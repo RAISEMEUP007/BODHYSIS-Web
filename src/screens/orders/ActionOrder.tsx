@@ -30,6 +30,8 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
   const [barcode, SetBarcode] = useState(initialData.barcode || '');
   const [nextDisable, setNextDisable] = useState(true);
 
+  console.log(barcode);
+
   const [inputValues, setInputValues] = useState({
     email: '',
     phone_number: '',
@@ -195,7 +197,9 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
                 })
               };
             })
-            break;
+            SetBarcode('');
+          barcodeInputRef.current.focus();
+          break;
           default:
             if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
             else showAlert('error', msgStr('unknownError'));
@@ -224,6 +228,8 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
                 })
               };
             })
+            SetBarcode('');
+            barcodeInputRef.current.focus();
             break;
           default:
             if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
@@ -447,10 +453,10 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
           <BOHToolbar style={{justifyContent:'space-between', alignItems:'center',}}>
             <BOHButton 
               disabled={nextDisable}
-              label={orderInfo.stage == 2 && "Check Out" || orderInfo.stage == 3 && "Check In" || 'Next'}
+              label={orderInfo.stage == 2 && "Check Out " || orderInfo.stage == 3 && "Check In" || 'Completed'}
               onPress={processNextStage}
             />
-            <Text style={{fontWeight:'bold', fontSize:16}}>{orderInfo.stage == 3 && "Checked Out!" || orderInfo.stage == 4 && "Checked In!"}</Text>
+            <Text style={{fontWeight:'bold', fontSize:16}}>{orderInfo.stage == 3 && "All Checked Out!" || orderInfo.stage == 4 && "All Checked In!"}</Text>
             <View style={{flexDirection:'row'}}>
               <TextInput 
                 ref={barcodeInputRef}
@@ -464,7 +470,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
                   borderRadius: 4,
                   marginRight: 20,
                 }}
-                defaultValue={barcode}
+                value={barcode}
                 onChangeText={SetBarcode}
                 onSubmitEditing={()=>scanBarcodeHandle(barcode, orderInfo)} 
               />
