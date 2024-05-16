@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { ScrollView, Text, TouchableOpacity, Platform } from 'react-native';
+import { Text, TouchableOpacity, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getReservationsData } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
@@ -49,7 +50,14 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     if (barcodeInputRef.current) {
       barcodeInputRef.current.focus();
     }
+
+    loadSearchOption();
   }, [])
+  
+  const loadSearchOption = async () => {
+    const cachedSearchOptions:any = await AsyncStorage.getItem('__search_options');
+    if(cachedSearchOptions) setSearchOptions(JSON.parse(cachedSearchOptions));
+  }
 
   useEffect(() => {
     switch (periodRange.toLowerCase()) {
@@ -126,6 +134,10 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
   useEffect(() => {
     getTable();
   }, [searchOptions]);
+
+  useEffect(()=>{
+    AsyncStorage.setItem('__search_options', JSON.stringify(searchOptions))
+  }, [searchOptions])
 
   const getTable = () => {
     const payload = {

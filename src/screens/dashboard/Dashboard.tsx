@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import { getReservationsData } from '../../api/Reservation';
@@ -85,6 +86,19 @@ const Dashboard = ({ navigation }) => {
         break;
     }
   }, [periodRange]);
+
+  useEffect(()=>{
+    loadSearchOption();
+  }, [])
+  
+  const loadSearchOption = async () => {
+    const cachedSearchOptions:any = await AsyncStorage.getItem('__search_options');
+    if(cachedSearchOptions) setSearchOptions(JSON.parse(cachedSearchOptions));
+  }
+
+  useEffect(()=>{
+    AsyncStorage.setItem('__search_options', JSON.stringify(searchOptions))
+  }, [searchOptions])
 
   useEffect(() => {
     if (searchOptions.start_date && searchOptions.end_date) {
