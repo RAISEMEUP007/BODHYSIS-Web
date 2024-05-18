@@ -180,12 +180,6 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
   }
 
   const scanBarcodeHandle = async () => {
-    // if(barcode.trim() && tableData.length > 0){
-    //   openOrderScreen('Action Order', {orderId:tableData[0].id, barcode:barcode.trim()})
-    // }
-    // if(barcode.trim() && tableData.length > 0){
-    //   openOrderScreen('Action Order', {orderId:tableData[0].id, barcode:barcode.trim()})
-    // }
     if(!barcode.trim() || tableData.length === 0) return;
     
     let flag = false;
@@ -195,14 +189,15 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
         reservation_id: order.id,
       }
 
-      if(order.stage == 2){
-        const result = await scanBarcode(payload);
-        if(result.status == 200){
-          openOrderScreen('Action Order', {orderId:order.id});
-          flag = true;
-          break;
-        }
-      }else if(order.stage == 3){
+      // if(order.stage == 2){
+      //   const result = await scanBarcode(payload);
+      //   if(result.status == 200){
+      //     openOrderScreen('Action Order', {orderId:order.id});
+      //     flag = true;
+      //     break;
+      //   }
+      // }else 
+      if(order.stage == 3){
         const result = await checkedInBarcode(payload);
         if(result.status == 200){
           openOrderScreen('Action Order', {orderId:order.id})
@@ -212,7 +207,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
       }
     }
 
-    if(!flag) showAlert("error", "No matched order for this item");
+    if(!flag) showAlert("error", "There are no orders for this item checked out");
   }
 
   const renderTableData = () => {
