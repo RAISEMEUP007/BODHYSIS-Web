@@ -198,7 +198,16 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
       //   }
       // }else 
       if(order.stage == 3){
-        const result = await checkedInBarcode(payload);
+        const result = await checkedInBarcode(payload, (jsonRes, status)=>{
+          switch (status) {
+            case 200:
+              break;
+            default:
+              if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+              else showAlert('error', msgStr('unknownError'));
+              break;
+          }
+        });
         if(result.status == 200){
           openOrderScreen('Action Order', {orderId:order.id})
           flag = true;
@@ -207,7 +216,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
       }
     }
 
-    if(!flag) showAlert("error", "There are no orders for this item checked out");
+    // if(!flag) showAlert("error", "There are no orders for this item checked out");
   }
 
   const renderTableData = () => {
