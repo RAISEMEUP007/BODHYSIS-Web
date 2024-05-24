@@ -112,7 +112,7 @@ const AddReservationItemModal = ({
       if(item){
         const familyId = item.family_id;
         const selectedItem = productFamiliesData.find(item => item.id === familyId);
-        setSelectedCategoryId(selectedItem.category_id);
+        setSelectedCategoryId(selectedItem?.category_id);
         selectProductFamily(selectedItem);
         setSelectedProductId(familyId);
       }else{

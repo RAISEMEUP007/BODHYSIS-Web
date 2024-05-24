@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, ScrollView, TouchableOpacity, Text, TouchableHighlight, Platform } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Text, TouchableHighlight, Platform, ActivityIndicator } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -42,6 +42,8 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   const [discountCodes, setDiscountCodes] = useState([]);
   const [nextStageProcessingStatus, setNextStageProcessingStatus] = useState<boolean>(false);
   const [isRefundStripeModalVisible, setRefundStripeModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
   const [refundDetails, setRefundDetails] = useState<any>({
     id: null,
     amount: null,
@@ -101,7 +103,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   };
 
   const addReservationItem = async (productFamily, quantity, extras) => {
-    console.log(productFamily);
+    setIsLoading(true);
     const arraysAreEqual = (arr1, arr2) => {
       if (arr1.length !== arr2.length) {
         return false;
@@ -162,6 +164,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   // }
 
   const updateReservationItem = async (oldFamily, newFamily, quantity, extras) => {
+    setIsLoading(true);
     const existingProduct = equipmentData.find(item => item.display_name === newFamily.display_name);
 
     // if (oldFamily.display_name != newFamily.display_name && existingProduct) {
@@ -196,6 +199,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   const removeReservationItem = async (item, index) => {
     showConfirm(msgStr('deleteConfirmStr'), () => {
       const updatedEquipmentData = [...equipmentData.slice(0, index), ...equipmentData.slice(index + 1)];
+      setIsLoading(true);
       deleteReservationItem({id:item.id}, (jsonRes, status)=>{
         if(status == 200){
           saveReservationItems(updatedEquipmentData, (jsonRes)=>{
@@ -207,6 +211,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   }
 
   const saveReservationItems = (items, callback) =>{
+    setIsLoading(true);
     if(!reservationInfo || !reservationInfo.id) return;
 
     const subTotal = items.reduce((total, item) => total + item.price, 0);
@@ -294,6 +299,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       showAlert('error', 'Non valid reservation!');
       openReservationScreen('Reservations List');
     }else{
+      setIsLoading(true);
       getReservationDetail(initialData.reservationId, (jsonRes, status, error) => {
         switch (status) {
           case 200:
@@ -301,6 +307,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
               jsonRes.total_price = jsonRes.subtotal + jsonRes.tax_amount - jsonRes.discount_amount;
             }
             setReservationInfo(jsonRes);
+            setIsLoading(false);
             break;
           case 500:
             showAlert('error', msgStr('serverError'));
@@ -508,8 +515,9 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
             </View>
             <View style={[styles.reservationRow, {justifyContent:'flex-end'}]}>
               <TouchableHighlight 
-                disabled={(reservationInfo && reservationInfo.stage>1 && true)} 
-                style={[styles.addItemButton, (reservationInfo && reservationInfo.stage>1 && {backgroundColor:'#ccc'})]} 
+                // disabled={(reservationInfo && reservationInfo.stage>2 && true)} 
+                // style={[styles.addItemButton, (reservationInfo && reservationInfo.stage>2 && {backgroundColor:'#ccc'})]} 
+                style={[styles.addItemButton]} 
                 onPress={openAddReservationItemModal}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
                   <FontAwesome5 name="plus" size={14} color="white" style={{marginTop:3}}/>
@@ -578,6 +586,11 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
           reservationId={reservationInfo?.id??null}
           closeModal={closeAddCardModal}
         />
+      )}
+      {isLoading && (
+        <View style={styles.overlay}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
       )}
     </BasicLayout>
   );

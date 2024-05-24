@@ -106,7 +106,7 @@ const TransactionList = ({reservationId, openAddTransactionModal, openRefundModa
         <View style={{flexDirection:'row', marginBottom:12}}>
           <Text style={{fontSize:16, marginRight:8}}>Total</Text>
           <Text style={{fontSize:16, marginRight:60}}>
-            {parseFloat(reservationInfo.total_price).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}
+            {parseFloat(reservationInfo?.total_price??0).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}
           </Text>
           <Text style={{fontSize:16, marginRight:8}}>Paid</Text>
           <Text style={{fontSize:16, marginRight:60}}>{parseFloat(reservationInfo.paid || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD'})}</Text>
