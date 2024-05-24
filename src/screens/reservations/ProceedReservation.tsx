@@ -515,7 +515,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
             </View>
             <View style={[styles.reservationRow, {justifyContent:'flex-end'}]}>
               <TouchableHighlight 
-                disabled={(reservationInfo && reservationInfo.stage>1 && true)} 
+                // disabled={(reservationInfo && reservationInfo.stage>1 && true)} 
                 style={[styles.addItemButton, (reservationInfo && reservationInfo.stage>1 && {backgroundColor:'#ccc'})]} 
                 onPress={openAddReservationItemModal}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
