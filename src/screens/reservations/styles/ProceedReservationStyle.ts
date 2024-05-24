@@ -92,4 +92,14 @@ export const proceedReservationStyle = StyleSheet.create({
     borderColor: '#6c757d',
     backgroundColor: '#2e96e1',
   },
+  overlay: {
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+  },
 });

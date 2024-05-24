@@ -201,58 +201,33 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
 
   };
 
-  // const CustomInput = forwardRef(({ value, onChange, onClick }:any, ref) => (
-  //   <input
-  //     onClick={onClick}
-  //     onChange={onChange}
-  //     ref={ref}
-  //     style={styles.input}
-  //     value={value}
-  //   ></input>
-  // ))
-
-  // const renderDatePicker = (selectedDate, onChangeHandler, minDate = null) => {
-  //   return (
-  //     <View>
-  //       <DatePicker
-  //         selected={selectedDate}
-  //         onChange={(date) => onChangeHandler(date)}
-  //         customInput={<CustomInput />}
-  //         minDate={minDate}
-  //         // disabled={true}
-  //         peekNextMonth
-  //         showMonthDropdown
-  //         showYearDropdown
-  //         dropdownMode="select"
-  //         timeInputLabel="Time:"
-  //         dateFormat="MM/dd/yyyy hh:mm aa"
-  //         showTimeSelect
-  //       />
-  //     </View>
-  //   );
-  // };
-
   return (
     <View style={{marginRight:30}}>
       <View style={[styles.reservationRow, {zIndex:10}]}>
-        <View style={{flex:1, padding:1}}>
-          <Text style={{marginBottom:6, color:"#555555"}}>{'Brand'}</Text>
-          <Text style={[styles.text, {width:'100%'}]} selectable={true}>{brandDetail?.brand??' '}</Text>
+        <View style={{marginRight:30}}>
+          <Text style={{marginBottom:6, color:"#555555"}}>{'Order number'}</Text>
+          <Text style={styles.text} selectable={true}>{details?.order_number??' '}</Text>
         </View>
-        {/* <View>
-          <Text style={{marginBottom:6, color:"#555555"}}>{'Season'}</Text>
-          <Text style={styles.text} selectable={true}>{inputValues.endDate || ' '}</Text>
-        </View> */}
+        <View>
+          <Text style={{marginBottom:6, color:"#555555"}}>{'Brand'}</Text>
+          <Text style={[styles.text]} selectable={true}>{brandDetail?.brand??' '}</Text>
+        </View>
+      </View>
+      <View style={[styles.reservationRow, {zIndex:10}]}>
+        <View style={{flex:1, padding:1}}>
+          <Text style={{marginBottom:6, color:"#555555"}}>{'Customer'}</Text>
+          <Text style={[styles.text, {width:'100%'}]} selectable={true}>
+            {(details?.customer?.first_name??'') + ' ' + (details?.customer?.last_name ?? '')}
+          </Text>
+        </View>
       </View>
       <View style={[styles.reservationRow, {zIndex:10}]}>
         <View style={{marginRight:30}}>
           <Text style={{marginBottom:6, color:"#555555"}}>{'Start date'}</Text>
-          {/* {Platform.OS == 'web' && renderDatePicker(inputValues.startDate, (date)=>{handleInputChange('startDate', date)})} */}
           <Text style={styles.text} selectable={true}>{inputValues.startDate || ' '}</Text>
         </View>
         <View>
           <Text style={{marginBottom:6, color:"#555555"}}>{'End date'}</Text>
-          {/* {Platform.OS == 'web' && renderDatePicker(inputValues.endDate, (date)=>{handleInputChange('endDate', date)}, inputValues.startDate)} */}
           <Text style={styles.text} selectable={true}>{inputValues.endDate || ' '}</Text>
         </View>
       </View>
@@ -280,7 +255,15 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         />
       </View>
       <View style={styles.reservationRow}>
-        <CommonSelectDropdown
+        <View style={{marginRight:30}}>
+          <Text style={{marginBottom:6, color:"#555555"}}>{'Discount code'}</Text>
+          <Text style={styles.text} selectable={true}>{(discountCodes && details && details.promo_code)?discountCodes.find(item=>item.id==details.promo_code)?.code:' '}</Text>
+        </View>
+        <View>
+          <Text style={{marginBottom:6, color:"#555555"}}>{'Discount Rate'}</Text>
+          <Text style={styles.text} selectable={true}>{(discountCodes && details && details.promo_code)?discountCodes.find(item=>item.id==details.promo_code)?.amount:' '}</Text>
+        </View>
+        {/* <CommonSelectDropdown
           containerStyle={{
             marginRight: 30,
           }}
@@ -294,8 +277,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           title={'Discount code'}
           titleStyle={{marginBottom:6, color:"#555555", fontSize:14}}
           defaultValue={defaultDiscountCode}
-        />
-        <LabeledTextInput
+        /> */}
+        {/* <LabeledTextInput
           label='Custom Price'
           width={200}
           placeholder='Custom Price'
@@ -303,66 +286,16 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           inputStyle={{marginVertical:6}}
           value={inputValues.customPrice}
           onChangeText={value => handleInputChange('customPrice', value)}
-        />
+        /> */}
       </View>
-      {/* <View style={styles.reservationRow}> */}
-        {/* <LabeledTextInput
-          label='Referrer'
-          width={200}
-          containerStyle={{marginRight:30}}
-          placeholder='Referrer'
-          placeholderTextColor="#ccc"
-          inputStyle={{marginVertical:6}}
-          value={inputValues.referrer}
-          onChangeText={value => handleInputChange('referrer', value)}
-        /> */}
-        {/* <LabeledTextInput
-          label='Group'
-          width={200}
-          placeholder='Group'
-          placeholderTextColor="#ccc"
-          inputStyle={{marginVertical:6}}
-          value={inputValues.group}
-          onChangeText={value => handleInputChange('group', value)}
-        /> */}
-      {/* </View> */}
       <View style={[styles.reservationRow, {width:'100%'}]}>
-        {/* <CommonSelectDropdown
-          containerStyle={{
-            marginRight: 30,
-          }}
-          width={200}
-          height={40}
-          onItemSelected={(item) => {
-            handleInputChange('startLocationId', item.value.id);
-          }}
-          data={locationsDropdownData}
-          placeholder="Select A Location"
-          title={'Start Location'}
-          titleStyle={{marginBottom:6, color:"#555555", fontSize:14}}
-          defaultValue={defaultStartLocation}
-        /> */}
-        {/* <CommonSelectDropdown
-          containerStyle={{
-            // marginRight: 40,
-          }}
-          width={200}
-          height={40}
-          onItemSelected={(item) => {
-            handleInputChange('endLocationId', item.value.id);
-          }}
-          data={locationsDropdownData}
-          placeholder="Select A Location"
-          title={'End Location'}
-          titleStyle={{marginBottom:6, color:"#555555", fontSize:14}}
-          defaultValue={defaultEndLocation}
-        /> */}
         <LabeledTextInput
           label='Delivery Address'
           width={"100%"}
           placeholder='Delivery Address'
           placeholderTextColor="#ccc"
           inputStyle={{marginVertical:6}}
+          editable={false}
           value={inputValues.deliveryAddress}
           onChangeText={value => handleInputChange('group', value)}
         />
