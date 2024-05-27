@@ -157,6 +157,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
         changeOptedIn(false);
       }
     }
+    setEmailValidMessage('');
   }, [isModalVisible]);
 
   const AddFirstNameButtonHandler = () => {
