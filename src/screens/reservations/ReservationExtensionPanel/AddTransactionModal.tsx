@@ -99,13 +99,15 @@ const AddTransactionModal = ({
   }, [isModalVisible])
 
   useEffect(() => {
-    const payload = {
-      customerId: customerId
-    }
-    const response = getPaymentsList(payload, (jsonRes)=>{
-      setPaymentsList(jsonRes);
-    });
-    
+    if(customerId){
+      const payload = {
+        customerId: customerId
+      }
+      const response = getPaymentsList(payload, (jsonRes, status)=>{
+        if(status == 200 && jsonRes) setPaymentsList(jsonRes);
+        else setPaymentsList([]);
+      });
+    }else setPaymentsList([]);
   }, [isModalVisible, addCard])
 
   const AddButtonHandler = () => {

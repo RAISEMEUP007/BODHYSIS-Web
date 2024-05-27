@@ -21,6 +21,7 @@ import AddReservationItemModal from './AddReservationItemModal';
 import RefundStripeModal from './ReservationExtensionPanel/RefundStripeModal';
 
 import { proceedReservationStyle } from './styles/ProceedReservationStyle';
+import { getCustomerIdById } from '../../api/Stripe';
 
 interface Props {
   openReservationScreen: (itemName: string, data?: any ) => void;
@@ -29,7 +30,7 @@ interface Props {
 
 export const ProceedReservation = ({ openReservationScreen, initialData }: Props) => {
 
-  const customerId = "cus_PapWGjfCEdOh8J";
+  // const customerId = "cus_PapWGjfCEdOh8J";
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
@@ -43,6 +44,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   const [nextStageProcessingStatus, setNextStageProcessingStatus] = useState<boolean>(false);
   const [isRefundStripeModalVisible, setRefundStripeModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [customerId, setCustomerId] = useState<string|null>(null);
   
   const [refundDetails, setRefundDetails] = useState<any>({
     id: null,
@@ -341,6 +343,18 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       });
     }else setHeaderData([]);
   }, [reservationInfo]);
+
+  useEffect(()=>{
+    console.log(reservationInfo);
+    if(reservationInfo && reservationInfo.customer_id ){
+      console.log('----------------');
+      getCustomerIdById({id:reservationInfo.customer_id}, (jsonRes, status)=>{
+        console.log(jsonRes);
+        if(status == 200) setCustomerId(jsonRes)
+        else setCustomerId(null);
+      })
+    }else setCustomerId(null);
+  }, [reservationInfo && reservationInfo.customer_id])
 
   const subTotal = useMemo(()=>{
     if(equipmentData.length>0){
