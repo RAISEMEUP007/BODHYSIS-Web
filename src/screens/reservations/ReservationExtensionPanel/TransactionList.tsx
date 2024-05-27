@@ -48,7 +48,7 @@ const TransactionList = ({reservationId, openAddTransactionModal, openRefundModa
     return transactionData.map((transaction) => (
       <View key={transaction.id} style={styles.transactionItem}>
         <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:8}}>
-          <Text>{'customer_email@example.com'}</Text>
+          <Text>{reservationInfo?.customer?.email}</Text>
           <Text>{new Date(transaction.createdAt).toLocaleString('en-US', {
             year: 'numeric',
             month: '2-digit',
