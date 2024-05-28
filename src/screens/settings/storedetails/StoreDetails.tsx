@@ -751,8 +751,8 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={[styles.label, styles.inputGroupLabel, { marginBottom: 8 }]}>
-              {`Email confirmation template: \nPlease use [store_name], [order_number], [pickup_time], [drop_off_time]`}
+            <Text style={[styles.label, styles.inputGroupLabel, { marginBottom: 8 }]} selectable={true}>
+              {`Email confirmation template: \nPlease use [customer_name], [store_name], [order_number], [start_date], [end_date], [start_time], [end_time]`}
             </Text>
             {Platform.OS == 'web' && (
               <>
@@ -769,11 +769,11 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={[styles.label, styles.inputGroupLabel, { marginBottom: 8 }]}>
-              {`Text confirmation template: \nPlease use [store_name], [order_number], [pickup_time], [drop_off_time]`}
+            <Text style={[styles.label, styles.inputGroupLabel, { marginBottom: 8 }]} selectable={true}>
+              {`Text confirmation template: \nPlease use [customer_name], [store_name], [order_number], [start_date], [end_date], [start_time], [end_time]`}
             </Text>
             <TextInput
-              style={[styles.input, styles.textarea]}
+              style={[styles.input, styles.textarea, {height:150,}]}
               placeholder="State"
               value={TextConfirmation}
               onChangeText={setTextConfirmation}
