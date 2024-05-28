@@ -55,6 +55,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
       const hours = Math.floor(totalHours % 24);
       const durationText = hours > 0 ? `${days} days and ${hours} hours` : `${days} days`;
 
+      const deliveryAddress = details.use_manual? details.manual_address: (details?.all_addresses?.number??'') + ' ' + (details?.all_addresses?.street??'') + ' ' + (details?.all_addresses?.plantation??'') + ' ' + (details?.all_addresses?.property_name??'');
+
       setInputValues({
         startDate: _startDate,
         endDate: _endDate,
@@ -66,7 +68,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         group: details.group || '',
         startLocationId: details.start_location_id || '',
         endLocationId: details.end_location_id || '',
-        deliveryAddress: (details?.all_addresses?.number??'') + ' ' + (details?.all_addresses?.street??'') + ' ' + (details?.all_addresses?.plantation??'') + ' ' + (details?.all_addresses?.property_name??'')
+        deliveryAddress: deliveryAddress
       });
     }
   }, [details]);

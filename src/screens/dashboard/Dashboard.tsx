@@ -212,10 +212,18 @@ const Dashboard = ({ navigation }) => {
               <Text>{item.full_name}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.start_date}</Text>
+              <Text>{item.start_date ? new Date(`${item.start_date} 0:0:0`).toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+              }) : ''}</Text>
             </View>
             <View style={[styles.cell]}>
-              <Text>{item.end_date}</Text>
+              <Text>{item.end_date ? new Date(`${item.end_date} 0:0:0`).toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+              }) : ''}</Text>
             </View>
             <View style={[styles.cell, {alignItems:'flex-end'}]}>
               <Text>{item?.quantity??''}</Text>

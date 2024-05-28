@@ -37,6 +37,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
     phone_number: '',
     color_id: null,
     note: '',
+    deliveryAddress: '',
   });
 
   const barcodeInputRef = useRef(null);
@@ -77,11 +78,13 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
         }else disable=true;
       }
       setNextDisable(disable)
+      const deliveryAddress = orderInfo.use_manual? orderInfo.manual_address: (orderInfo?.all_addresses?.number??'') + ' ' + (orderInfo?.all_addresses?.street??'') + ' ' + (orderInfo?.all_addresses?.plantation??'') + ' ' + (orderInfo?.all_addresses?.property_name??'');
       setInputValues({
         email: orderInfo?.email || orderInfo?.customer?.email || '',
         phone_number: orderInfo?.phone_number || orderInfo?.customer?.phone_number || '',
         color_id: orderInfo?.color?.id??null,
         note: orderInfo?.note || '',
+        deliveryAddress: deliveryAddress,
       })
     }else {
       setInputValues({
@@ -89,6 +92,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
         phone_number: '',
         color_id: null,
         note: '',
+        deliveryAddress: '',
       })
     }
   }, [orderInfo])
@@ -362,6 +366,15 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               placeholderTextColor="#ccc"
               value={orderInfo.customer? orderInfo.customer?.first_name + ' ' + orderInfo.customer?.last_name : ''}
               // onChangeText={value => handleInputChange('billableDays', value)}
+              editable={false}
+            />
+            <LabeledTextInput
+              label='Delivery Address'
+              width={300}
+              placeholder='Delivery Address'
+              placeholderTextColor="#ccc"
+              value={inputValues.deliveryAddress}
+              onChangeText={value => handleInputChange('phone_number', value)}
               editable={false}
             />
           </View>

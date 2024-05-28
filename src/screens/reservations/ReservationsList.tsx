@@ -208,8 +208,16 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
             <BOHTD width={90}>{item.order_number}</BOHTD>
             <BOHTD width={160}>{item.brand}</BOHTD>
             <BOHTD width={160}>{item.full_name}</BOHTD>
-            <BOHTD width={100}>{item.start_date}</BOHTD>
-            <BOHTD width={100}>{item.end_date}</BOHTD>
+            <BOHTD width={100}>{item.start_date ? new Date(`${item.start_date} 0:0:0`).toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+              }) : ''}</BOHTD>
+            <BOHTD width={100}>{item.end_date ? new Date(`${item.end_date} 0:0:0`).toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+              }) : ''}</BOHTD>
             <BOHTD width={110} style={{textAlign:'right'}}>{item?.quantity??''}</BOHTD>
             <BOHTD width={100}>{convertStageToString(item.stage)}</BOHTD>
             <BOHTDIconBox width={80}>
