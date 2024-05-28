@@ -45,8 +45,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
 
   useEffect(() => {
     if(details){
-      const _startDate = new Date(details.start_date).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit',})
-      const _endDate = new Date(details.end_date).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', })
+      const _startDate = new Date(`${details.start_date} 0:0:0`).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit',})
+      const _endDate = new Date(`${details.end_date} 0:0:0`).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', })
 
       const billableDays = Math.ceil((new Date(details.end_date).getTime() - new Date(details.start_date).getTime()) / (1000 * 60 * 60 * 24));
 

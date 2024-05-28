@@ -16,7 +16,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
-  const InitialWidths = [90, 160, 160, 100, 100, 120, 120, 100, 80, 80];
+  const InitialWidths = [90, 160, 160, 100, 100, 110, 120, 100, 80, 80];
 
   const barcodeInputRef = useRef(null);
 
@@ -252,8 +252,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
             <BOHTD width={InitialWidths[2]}>{item.full_name}</BOHTD>
             <BOHTD width={InitialWidths[3]}>{item.start_date}</BOHTD>
             <BOHTD width={InitialWidths[4]}>{item.end_date}</BOHTD>
-            <BOHTD width={InitialWidths[5]}>{item.start_location}</BOHTD>
-            <BOHTD width={InitialWidths[6]}>{item.end_location}</BOHTD>
+            <BOHTD width={InitialWidths[5]} style={{textAlign:'right'}}>{item?.quantity??''}</BOHTD>
             <BOHTD width={InitialWidths[7]}>{convertStageToString(item.stage)}</BOHTD>
             <BOHTD width={InitialWidths[8]} style={{textAlign:'center'}}>{item?.color_id?'YES':'NO'}</BOHTD>
             <BOHTDIconBox  width={InitialWidths[9]}>
@@ -403,24 +402,27 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
         <BOHToolbar style={{width: '100%', justifyContent:'space-between'}}>
           <BOHTlbrSearchInput
             boxStyle={{margin:0}}
+            width={150}
             label='Customer'
             defaultValue={searchOptions.customer}
             onChangeText={(val)=>changeSearchOptions('customer', val)}
           />
           <BOHTlbrSearchInput
             boxStyle={{margin:0}}
+            width={150}
             label='Brand'
             defaultValue={searchOptions.brand}
             onChangeText={(val)=>changeSearchOptions('brand', val)}
           />
           <BOHTlbrSearchInput
             boxStyle={{margin:0}}
+            width={150}
             label='Order number'
             defaultValue={searchOptions.order_number}
             onChangeText={(val)=>changeSearchOptions('order_number', val)}
           />
           <BOHTlbrSearchPicker
-            width={170}
+            width={150}
             boxStyle={{margin:0}}
             enabled={searchOptions.status_filter?false:true}
             label="Category"
@@ -459,8 +461,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
               <BOHTH width={InitialWidths[2]}>{'Customer'}</BOHTH>
               <BOHTH width={InitialWidths[4]}>{'Start'}</BOHTH>
               <BOHTH width={InitialWidths[3]}>{'End'}</BOHTH>
-              <BOHTH width={InitialWidths[5]}>{'Start Location'}</BOHTH>
-              <BOHTH width={InitialWidths[6]}>{'End Location'}</BOHTH>
+              <BOHTH width={InitialWidths[5]}>{'Qty of bikes'}</BOHTH>
               <BOHTH width={InitialWidths[7]}>{'Stage'}</BOHTH>
               <BOHTH width={InitialWidths[8]}>{'Locked'}</BOHTH>
               <BOHTH width={InitialWidths[9]}>{'Action'}</BOHTH>
