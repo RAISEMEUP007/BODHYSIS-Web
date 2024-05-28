@@ -31,7 +31,7 @@ const renderBOHTlbDatePicker = (selectedDate, onChangeHandler) => {
         showMonthDropdown
         showYearDropdown
         dropdownMode="select"
-        dateFormat="yyyy-MM-dd"
+        dateFormat="MM/dd/yyyy"
       />
     </View>
   );
