@@ -36,7 +36,7 @@ const MainDrawer = ({ navigation }) => {
           }else if (route.toLowerCase().includes('reservation')) {
             navigation.navigate('Reservation');
           }else if (route.toLowerCase().includes('delivery')) {
-            navigation.navigate('Wakup Order');
+            navigation.navigate('Walkup Order');
           }else if (route.toLowerCase().includes('inventory')) {
             navigation.navigate('Inventory');
           }else if (route.toLowerCase().includes('customer')) {
@@ -158,15 +158,15 @@ const MainDrawer = ({ navigation }) => {
           }}
         />
         <Drawer.Screen
-          name="Wakup Order"
+          name="Walkup Order"
           component={DeliveryOrderScreen}
           listeners={{
             drawerItemPress: (e) => {
-              addMenuHistory('Wakup Order');
+              addMenuHistory('Walkup Order');
             },
           }}
           options={{
-            drawerLabel: 'Wakup Order',
+            drawerLabel: 'Walkup Order',
             unmountOnBlur: true,
             headerShown: false,
           }}

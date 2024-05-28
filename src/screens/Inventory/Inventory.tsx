@@ -98,16 +98,6 @@ const Inventory = ({ navigation, initalItem = null }) => {
             ]}
             handleItemClick={handleItemClick}
           />
-          <TouchNavGroup
-            sectionTitle="Bulk Update"
-            items={[{ title: 'Bulk Update', icon: 'wrench' }]}
-            handleItemClick={handleItemClick}
-          />
-          <TouchNavGroup
-            sectionTitle="Print"
-            items={[{ title: 'Print Snapshot', icon: 'print' }]}
-            handleItemClick={handleItemClick}
-          />
         </View>
       </ScrollView>
     </BasicLayout>
