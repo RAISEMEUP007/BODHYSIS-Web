@@ -210,7 +210,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
             <BOHTD width={160}>{item.full_name}</BOHTD>
             <BOHTD width={100}>{item.start_date}</BOHTD>
             <BOHTD width={100}>{item.end_date}</BOHTD>
-            <BOHTD width={110}>{item?.quantity??''}</BOHTD>
+            <BOHTD width={110} style={{textAlign:'right'}}>{item?.quantity??''}</BOHTD>
             <BOHTD width={100}>{convertStageToString(item.stage)}</BOHTD>
             <BOHTDIconBox width={80}>
               <TouchableOpacity

@@ -282,7 +282,6 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
       'No'
     );
   }
-
   return (
     <BasicLayout
       goBack={()=>{
@@ -311,7 +310,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               containerStyle={{marginRight:30}}
               placeholder='Start date'
               placeholderTextColor="#ccc"
-              value={orderInfo.start_date ? new Date(orderInfo.start_date).toLocaleString('en-US', {
+              value={orderInfo.start_date ? new Date(`${orderInfo.start_date} 0:0:0`).toLocaleString('en-US', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
@@ -324,7 +323,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               width={300}
               placeholder='End date'
               placeholderTextColor="#ccc"
-              value={orderInfo.end_date ? new Date(orderInfo.end_date).toLocaleString('en-US', {
+              value={orderInfo.end_date ? new Date(`${orderInfo.end_date} 0:0:0`).toLocaleString('en-US', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',

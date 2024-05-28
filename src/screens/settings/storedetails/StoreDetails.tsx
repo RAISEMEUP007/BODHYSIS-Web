@@ -90,6 +90,8 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
   const [WeekStart, setWeekStart] = useState(0);
 
   const [StoreWavier, setStoreWavier] = useState('');
+  const [EmailConfirmation, setEmailConfirmation] = useState('');
+  const [TextConfirmation, setTextConfirmation] = useState('');
   const [documentId, setDocumentId] = useState(0);
   const [isDocument, setIsDocument] = useState(0);
   const [selectedDocument, setSelectedDocument] = useState<any>({});
@@ -193,6 +195,8 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
         if (jsonRes.week_start_day) setWeekStart(jsonRes.week_start_day);
         if (jsonRes.sales_tax) setSalesTaxTxt(jsonRes.sales_tax);
         if (jsonRes.store_wavier) setStoreWavier(jsonRes.store_wavier);
+        if (jsonRes.email_confirmation) setEmailConfirmation(jsonRes.email_confirmation);
+        if (jsonRes.text_confirmation) setTextConfirmation(jsonRes.text_confirmation);
         if (jsonRes.document_id) setDocumentId(jsonRes.document_id);
         if (jsonRes.is_document) setIsDocument(jsonRes.is_document);
         if (jsonRes.taxcode_id) selectTaxCode(jsonRes.taxcode_id);
@@ -249,6 +253,8 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
     formData.append('taxcode_id', selectedTaxCode.toString());
     formData.append('pickup_time', PickupTime.toString());
     formData.append('dropoff_time', DropOffTime.toString());
+    formData.append('email_confirmation', EmailConfirmation);
+    formData.append('text_confirmation', TextConfirmation);
 
     const handleResponse = (jsonRes, status) => {
       switch (status) {
@@ -742,6 +748,38 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
                 )}
               </ScrollView>
             )}
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={[styles.label, styles.inputGroupLabel, { marginBottom: 8 }]}>
+              {`Email confirmation template: \nPlease use [store_name], [order_number], [pickup_time], [drop_off_time]`}
+            </Text>
+            {Platform.OS == 'web' && (
+              <>
+                <Editor
+                  value={EmailConfirmation}
+                  onTextChange={(e) => setEmailConfirmation(e.htmlValue)}
+                  style={{ height: 185, marginBottom: '10px' }}
+                  onKeyDown={(event) => {
+                    event.stopPropagation();
+                  }}
+                />
+              </>
+            )}
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={[styles.label, styles.inputGroupLabel, { marginBottom: 8 }]}>
+              {`Text confirmation template: \nPlease use [store_name], [order_number], [pickup_time], [drop_off_time]`}
+            </Text>
+            <TextInput
+              style={[styles.input, styles.textarea]}
+              placeholder="State"
+              value={TextConfirmation}
+              onChangeText={setTextConfirmation}
+              placeholderTextColor="#ccc"
+              multiline={true}
+            />
           </View>
 
           <View style={{ alignItems: 'flex-end' }}>
