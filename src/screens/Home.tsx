@@ -141,6 +141,9 @@ const MainDrawer = ({ navigation }) => {
             drawerLabel: 'Dashboard',
             unmountOnBlur: true,
             headerShown: false,
+            drawerIcon: ({focused, size}) => (
+              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/dashboard.png')}></Image>
+           ),
           }}
         />
         <Drawer.Screen
@@ -152,6 +155,9 @@ const MainDrawer = ({ navigation }) => {
             },
           }}
           options={{
+            drawerIcon: ({focused, size}) => (
+              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/reservations.png')}></Image>
+           ),
             drawerLabel: 'Reservation',
             unmountOnBlur: true,
             headerShown: false,
@@ -166,6 +172,9 @@ const MainDrawer = ({ navigation }) => {
             },
           }}
           options={{
+            drawerIcon: ({focused, size}) => (
+              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/walk-up-order.png')}></Image>
+           ),
             drawerLabel: 'Walkup Order',
             unmountOnBlur: true,
             headerShown: false,
@@ -180,6 +189,9 @@ const MainDrawer = ({ navigation }) => {
             },
           }}
           options={{
+            drawerIcon: ({focused, size}) => (
+              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/inventory.png')}></Image>
+           ),
             drawerLabel: 'Inventory',
             unmountOnBlur: true,
             headerShown: false,
@@ -194,6 +206,9 @@ const MainDrawer = ({ navigation }) => {
             },
           }}
           options={{
+            drawerIcon: ({focused, size}) => (
+              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/customers.png')}></Image>
+           ),
             drawerLabel: 'Customer',
             unmountOnBlur: true,
             headerShown: false,
@@ -208,6 +223,9 @@ const MainDrawer = ({ navigation }) => {
             },
           }}
           options={{
+            drawerIcon: ({focused, size}) => (
+              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/scheduler.png')}></Image>
+           ),
             drawerLabel: 'Scheduler',
             unmountOnBlur: true,
             headerShown: false,
@@ -222,6 +240,9 @@ const MainDrawer = ({ navigation }) => {
             },
           }}
           options={{
+            drawerIcon: ({focused, size}) => (
+              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/marketing.png')}></Image>
+           ),
             drawerLabel: 'Marketing',
             unmountOnBlur: true,
             headerShown: false,
@@ -236,6 +257,9 @@ const MainDrawer = ({ navigation }) => {
             },
           }}
           options={{
+            drawerIcon: ({focused, size}) => (
+              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/settings.png')}></Image>
+           ),
             drawerLabel: 'Settings',
             unmountOnBlur: true,
             headerShown: false,
