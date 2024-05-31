@@ -6,6 +6,7 @@ import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import LocationManager from './locationmanager/Locations';
 import Forecasting from './forecasting/Forecasting';
+import Avaiable from './avaiable/Avaiable';
 
 interface Props {
     navigation: any;
@@ -25,6 +26,8 @@ const Marketing = ({navigation, initialItem }:Props) => {
                 return <LocationManager navigation={navigation} openMarketingMenu={handleItemClick}/>;
             case 'Forecasting':
                 return <Forecasting navigation={navigation} openMarketingMenu={handleItemClick}/>;
+            case 'Demands Summary':
+                return <Avaiable navigation={navigation} openMarketingMenu={handleItemClick}/>;
             default:
                 return (
                     <View style={{ marginTop: 20, paddingHorizontal: 10, paddingVertical:2, height: 28, justifyContent: 'center', flexDirection: 'row',}}>
@@ -47,6 +50,7 @@ const Marketing = ({navigation, initialItem }:Props) => {
                     <TouchNavGroup sectionTitle="Marketing" items={[
                         { title: "Locations", icon: 'map-marker-alt' },
                         { title: "Forecasting", icon: 'th' },
+                        { title: "Demands Summary", icon: 'th' },
                     ]} handleItemClick={handleItemClick} />
                 </View>
             </ScrollView>
