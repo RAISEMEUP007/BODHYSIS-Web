@@ -293,11 +293,12 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
                 <Text style={styles.message}>{emailValidMessage}</Text>
               )}
               <Text style={styles.label}>Phone Number</Text>
-              <NumericInput
+              <TextInput
+                style={styles.input}
                 placeholder="Phone Number"
                 value={PhoneNumber}
                 onChangeText={setPhoneNumber}
-              ></NumericInput>
+              ></TextInput>
               <Text style={styles.label}>Billing/Home Address</Text>
               <TextInput
                 style={styles.input}
@@ -331,7 +332,7 @@ const AddCustomerModal = ({ isModalVisible, Customer, setUpdateCustomerTrigger, 
                 placeholderTextColor="#ccc"
               />
               <Text style={styles.label}>Mobile Phone</Text>
-              <NumericInput
+              <TextInput
                 style={styles.input}
                 placeholder="Mobile Phone"
                 value={MobilePhoneTxt}

@@ -35,8 +35,8 @@ const Extras = ({ navigation, openInventory }) => {
     setAddModalVisible(false);
     setSelectedExtra(null);
   };
-  const editExtra = (index) => {
-    setSelectedExtra(tableData[index]);
+  const editExtra = (item) => {
+    setSelectedExtra(item);
     setAddModalVisible(true);
   };
   
@@ -103,7 +103,7 @@ const Extras = ({ navigation, openInventory }) => {
             <BOHTDIconBox width={InitialWidths[4]}>
               <TouchableOpacity
                 onPress={() => {
-                  editExtra(index);
+                  editExtra(item);
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />

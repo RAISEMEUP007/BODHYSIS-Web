@@ -41,8 +41,8 @@ const DiscountCodes = ({ navigation, openInventory }) => {
     setAddModalVisible(false);
     setSelectedDiscountCode(null);
   };
-  const editDiscountCode = (index) => {
-    setSelectedDiscountCode(tableData[index]);
+  const editDiscountCode = (item) => {
+    setSelectedDiscountCode(item);
     setAddModalVisible(true);
   };
 
@@ -146,7 +146,7 @@ const DiscountCodes = ({ navigation, openInventory }) => {
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
-                  editDiscountCode(index);
+                  editDiscountCode(item);
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
