@@ -52,8 +52,9 @@ const Customers = ({ navigation }) => {
     setOpenStoreModalVisible(false);
   };
 
-  const editCustomer = (index) => {
-    setSelectedCustomer(tableData[index]);
+  const editCustomer = (customer) => {
+    console.log(customer);
+    setSelectedCustomer(customer);
     setAddModalVisible(true);
   };
 
@@ -176,7 +177,7 @@ const Customers = ({ navigation }) => {
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
-                  editCustomer(index);
+                  editCustomer(item);
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />

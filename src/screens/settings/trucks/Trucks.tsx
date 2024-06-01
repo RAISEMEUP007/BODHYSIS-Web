@@ -39,8 +39,8 @@ const Trucks = ({ navigation, openInventory }) => {
     setAddModalVisible(false);
     setSelectedTruck(null);
   };
-  const editTruck = (index) => {
-    setSelectedTruck(tableData[index]);
+  const editTruck = (item) => {
+    setSelectedTruck(item);
     setAddModalVisible(true);
   };
 
@@ -131,7 +131,7 @@ const Trucks = ({ navigation, openInventory }) => {
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
-                  editTruck(index);
+                  editTruck(item);
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />

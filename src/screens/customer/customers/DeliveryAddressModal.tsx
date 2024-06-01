@@ -46,8 +46,8 @@ const DeliveryAddress = ({ isModalVisible, customerId, closeModal }) => {
     setAddDeliveryModalVisible(false);
     setSelectedAddress(null);
   };
-  const editAddress = (index) => {
-    setSelectedAddress(tableData[index]);
+  const editAddress = (item) => {
+    setSelectedAddress(item);
     setAddDeliveryModalVisible(true);
   };
 
@@ -148,7 +148,7 @@ const DeliveryAddress = ({ isModalVisible, customerId, closeModal }) => {
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
-                  editAddress(index);
+                  editAddress(item);
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />

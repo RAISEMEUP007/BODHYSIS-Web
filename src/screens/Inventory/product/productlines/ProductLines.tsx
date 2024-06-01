@@ -43,8 +43,8 @@ const ProductLines = ({ navigation, openInventory }) => {
     setAddModalVisible(false);
     setSelectedLine(null);
   };
-  const editProductLine = (index) => {
-    setSelectedLine(tableData[index]);
+  const editProductLine = (item) => {
+    setSelectedLine(item);
     setAddModalVisible(true);
   };
 
@@ -156,7 +156,7 @@ const ProductLines = ({ navigation, openInventory }) => {
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
-                  editProductLine(index);
+                  editProductLine(item);
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />

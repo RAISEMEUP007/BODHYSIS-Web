@@ -39,8 +39,8 @@ const Documents = ({ navigation, openInventory }) => {
     setAddModalVisible(false);
     setSelectedDocument(null);
   };
-  const editDocument = (index) => {
-    setSelectedDocument(tableData[index]);
+  const editDocument = (item) => {
+    setSelectedDocument(item);
     setAddModalVisible(true);
   };
 
@@ -102,7 +102,7 @@ const Documents = ({ navigation, openInventory }) => {
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
-                  editDocument(index);
+                  editDocument(item);
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />

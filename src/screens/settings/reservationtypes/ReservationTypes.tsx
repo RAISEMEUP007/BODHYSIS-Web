@@ -41,8 +41,8 @@ const ReservationTypes = ({ navigation, openInventory }) => {
     setAddModalVisible(false);
     setSelectedReservationType(null);
   };
-  const editReservationType = (index) => {
-    setSelectedReservationType(tableData[index]);
+  const editReservationType = (item) => {
+    setSelectedReservationType(item);
     setAddModalVisible(true);
   };
 
@@ -119,7 +119,7 @@ const ReservationTypes = ({ navigation, openInventory }) => {
             <View style={[styles.IconCell]}>
               <TouchableOpacity
                 onPress={() => {
-                  editReservationType(index);
+                  editReservationType(item);
                 }}
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
