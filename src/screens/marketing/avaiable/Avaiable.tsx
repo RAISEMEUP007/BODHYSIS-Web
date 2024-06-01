@@ -66,7 +66,7 @@ const Avaiable = ({ navigation, openMarketingMenu }) => {
       goBack={() => {
         openMarketingMenu(null);
       }}
-      screenName={'Avaiable'}
+      screenName={'Demands'}
     >
       <CommonContainer>
         <BOHTable>
