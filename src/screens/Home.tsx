@@ -9,11 +9,10 @@ import Inventory from './Inventory/Inventory';
 import Settings from './settings/Settings';
 import Customers from './customer/customers/Customers';
 import Reservations from './reservations/Reservations';
-import { logout } from '../api/Auth';
+import { logout, testTokenValid } from '../api/Auth';
 import Orders from './orders/Orders';
 import Scheduler from './scheduler/Scheduler';
 import { useHambugerMenuHistory } from '../common/hooks/UseHambugerMenuHistory';
-import { appLinking } from '../common/constants/AppLinking';
 import Marketing from './marketing/Marketing';
 
 const MainDrawer = ({ navigation }) => {
@@ -274,6 +273,15 @@ const Home = ({ navigation }) => {
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
+
+    const checkTokenValidity = async () => {
+      await testTokenValid((jsonRes, status)=>{
+        if(status != 200) navigation.navigate('Auth');
+      });
+    };
+
+    checkTokenValidity();
+
     const unsubscribe = navigation.addListener('state', () => {
       setRefreshKey((prevKey) => prevKey + 1);
     });
