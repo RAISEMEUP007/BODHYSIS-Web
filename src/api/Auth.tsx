@@ -1,5 +1,5 @@
 import { BASE_URL } from '../common/constants/AppConstants';
-import { baseGetAPICall, postAPICall } from './BaseAPI';
+import { baseGetAPICall, getAPICall, postAPICall } from './BaseAPI';
 
 export const login = (email, password, callback) => {
   const payload = { email, password };
@@ -14,6 +14,11 @@ export const signup = (email, password, name, callback) => {
   const payload = { email, password, name };
   postAPICall('signup', payload, callback);
 };
+
+export const testTokenValid = async (callback) => {
+  return await getAPICall('testtokenvalid', callback);
+};
+
 
 export const privateSync = (token, callback) => {
   const headers = {
