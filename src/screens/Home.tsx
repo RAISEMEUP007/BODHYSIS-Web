@@ -273,7 +273,7 @@ const Home = ({ navigation }) => {
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-
+    console.log('111');
     const checkTokenValidity = async () => {
       await testTokenValid((jsonRes, status)=>{
         if(status != 200) navigation.navigate('Auth');
@@ -281,6 +281,9 @@ const Home = ({ navigation }) => {
     };
 
     checkTokenValidity();
+  }, []);
+
+  useEffect(() => {
 
     const unsubscribe = navigation.addListener('state', () => {
       setRefreshKey((prevKey) => prevKey + 1);
