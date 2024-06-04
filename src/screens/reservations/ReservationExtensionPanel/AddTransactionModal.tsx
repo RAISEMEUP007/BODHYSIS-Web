@@ -190,7 +190,6 @@ const AddTransactionModal = ({
 
   const closeModalhandler = () => {
     closeModal();
-    // if(onClose) onClose(nextStageProcessingStatus);
   };
 
   const checkInput = () => {
@@ -228,6 +227,10 @@ const AddTransactionModal = ({
               <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:6}}>
                 <Text style={{marginRight:32}}>Discounts</Text>
                 <Text>{reservationInfo.discount_amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
+              </View>
+              <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:6}}>
+                <Text style={{marginRight:32}}>Driver tip</Text>
+                <Text>{reservationInfo.driver_tip.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
               </View>
               <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom:6}}>
                 <Text style={{marginRight:32}}>Tax</Text>

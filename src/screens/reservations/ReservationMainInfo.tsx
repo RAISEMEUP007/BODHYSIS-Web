@@ -4,7 +4,6 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 import { reservationMainInfoStyle } from './styles/ReservationMainInfoStyle';
 import LabeledTextInput from '../../common/components/input/LabeledTextInput';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { CommonSelectDropdown, DropdownData } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
 import { LocationType } from '../../types/LocationType';
@@ -14,6 +13,8 @@ import { updateReservation } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { getBrandDetail } from '../../api/Price';
+import { formatDate } from '../../common/utils/DateUtils';
+import { renderBOHFormDatePicker } from '../../common/components/bohform';
 
 if (Platform.OS === 'web') {
   const link = document.createElement('link');
@@ -27,8 +28,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
   const { showAlert } = useAlertModal();
 
   const [inputValues, setInputValues] = useState({
-    startDate: '',
-    endDate: '',
+    startDate: formatDate(new Date()),
+    endDate: formatDate(new Date()),
     billableDays: 0,
     reservationDuration: '',
     discountCode: '',
@@ -45,8 +46,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
 
   useEffect(() => {
     if(details){
-      const _startDate = new Date(`${details.start_date} 0:0:0`).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit',})
-      const _endDate = new Date(`${details.end_date} 0:0:0`).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', })
+      const _startDate = formatDate(new Date(`${details.start_date} 0:0:0`))
+      const _endDate = formatDate(new Date(`${details.end_date} 0:0:0`))
 
       const billableDays = Math.ceil((new Date(details.end_date).getTime() - new Date(details.start_date).getTime()) / (1000 * 60 * 60 * 24));
 
@@ -133,18 +134,6 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
     return result;
   }, [locationsData]);
 
-  const defaultStartLocation = useMemo(()=>{
-    if(details && details.start_location_id)
-      return locationsDropdownData.find(item=>item.value.id == details.start_location_id);
-    else return null;
-  }, [details, locationsData]);
-
-  const defaultEndLocation = useMemo(()=>{
-    if(details && details.end_location_id)
-      return locationsDropdownData.find(item=>item.value.id == details.end_location_id);
-    else return null;
-  }, [details, locationsData]);
-
   const discountCodesDropdownData = useMemo(() => {
     if (!discountCodes?.length) {
       return [];
@@ -174,14 +163,16 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
 
     const discountInfo = discountCodes.find((item) => item.id === newValues.discountCode);
     const discountAmount = discountInfo.type == 1 ? (Math.round(details.subtotal * discountInfo.amount) / 100) : discountInfo.amount;
+    const taxAmount = (details.subtotal - discountAmount + (details.driver_tip || 0)) * (details.tax_rate?details.tax_rate/100:0) ?? 0;
 
     const payload:any = {
       id: details.id,
-      // start_date : newValues.startDate,
-      // end_date : newValues.endDate,
+      start_date : newValues.startDate,
+      end_date : newValues.endDate,
       promo_code: newValues.discountCode,
       discount_amount: discountAmount,
-      total_price: details.subtotal + details.tax_amount - discountAmount,
+      tax_amount: taxAmount,
+      total_price: details.subtotal + details.tax_amount + (details.driver_tip || 0) - discountAmount,
     }
 
     if(newValues.startLocationId) payload.start_location_id = newValues.startLocationId
@@ -204,8 +195,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
   };
 
   return (
-    <View style={{marginRight:30}}>
-      <View style={[styles.reservationRow, {zIndex:10}]}>
+    <View style={{marginRight:30, zIndex:10}}>
+      <View style={[styles.reservationRow]}>
         <View style={{marginRight:30}}>
           <Text style={{marginBottom:6, color:"#555555"}}>{'Order number'}</Text>
           <Text style={styles.text} selectable={true}>{details?.order_number??' '}</Text>
@@ -215,7 +206,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           <Text style={[styles.text]} selectable={true}>{brandDetail?.brand??' '}</Text>
         </View>
       </View>
-      <View style={[styles.reservationRow, {zIndex:10}]}>
+      <View style={[styles.reservationRow]}>
         <View style={{flex:1, padding:1}}>
           <Text style={{marginBottom:6, color:"#555555"}}>{'Customer'}</Text>
           <Text style={[styles.text, {width:'100%'}]} selectable={true}>
@@ -224,13 +215,24 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         </View>
       </View>
       <View style={[styles.reservationRow, {zIndex:10}]}>
-        <View style={{marginRight:30}}>
+        <View style={{width:200, marginRight:30}}>
           <Text style={{marginBottom:6, color:"#555555"}}>{'Start date'}</Text>
-          <Text style={styles.text} selectable={true}>{inputValues.startDate || ' '}</Text>
+          {Platform.OS == 'web' && 
+            renderBOHFormDatePicker(inputValues.startDate, (date) => {
+              const year = date.getFullYear();
+              const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+              handleInputChange('startDate', formattedDate);
+          })}
         </View>
-        <View>
+        <View style={{width:200}}>
           <Text style={{marginBottom:6, color:"#555555"}}>{'End date'}</Text>
-          <Text style={styles.text} selectable={true}>{inputValues.endDate || ' '}</Text>
+          {Platform.OS == 'web' && 
+            renderBOHFormDatePicker(inputValues.endDate, (date) => {
+              console.log(date);
+              const year = date.getFullYear();
+              const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+              handleInputChange('endDate', formattedDate);
+          })}
         </View>
       </View>
       <View style={styles.reservationRow}>
@@ -257,15 +259,11 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         />
       </View>
       <View style={styles.reservationRow}>
-        <View style={{marginRight:30}}>
+        {/* <View style={{marginRight:30}}>
           <Text style={{marginBottom:6, color:"#555555"}}>{'Discount code'}</Text>
           <Text style={styles.text} selectable={true}>{(discountCodes && details && details.promo_code)?discountCodes.find(item=>item.id==details.promo_code)?.code:' '}</Text>
-        </View>
-        <View>
-          <Text style={{marginBottom:6, color:"#555555"}}>{'Discount Rate'}</Text>
-          <Text style={styles.text} selectable={true}>{(discountCodes && details && details.promo_code)?discountCodes.find(item=>item.id==details.promo_code)?.amount:' '}</Text>
-        </View>
-        {/* <CommonSelectDropdown
+        </View> */}
+        <CommonSelectDropdown
           containerStyle={{
             marginRight: 30,
           }}
@@ -279,7 +277,11 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           title={'Discount code'}
           titleStyle={{marginBottom:6, color:"#555555", fontSize:14}}
           defaultValue={defaultDiscountCode}
-        /> */}
+        />
+        <View>
+          <Text style={{marginBottom:6, color:"#555555"}}>{'Discount Rate'}</Text>
+          <Text style={styles.text} selectable={true}>{(discountCodes && details && details.promo_code)?discountCodes.find(item=>item.id==details.promo_code)?.amount:' '}</Text>
+        </View>
         {/* <LabeledTextInput
           label='Custom Price'
           width={200}
