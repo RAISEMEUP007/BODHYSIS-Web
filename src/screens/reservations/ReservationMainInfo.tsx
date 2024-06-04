@@ -36,8 +36,6 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
     customPrice: '',
     referrer: '',
     group: '',
-    startLocationId: '',
-    endLocationId: '',
     deliveryAddress: ''
   });
 
@@ -67,8 +65,6 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         customPrice: details.customPrice || '',
         referrer: details.referrer || '',
         group: details.group || '',
-        startLocationId: details.start_location_id || '',
-        endLocationId: details.end_location_id || '',
         deliveryAddress: deliveryAddress
       });
     }
@@ -161,23 +157,24 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
       [fieldName]: value
     };
 
-    const discountInfo = discountCodes.find((item) => item.id === newValues.discountCode);
-    const discountAmount = discountInfo.type == 1 ? (Math.round(details.subtotal * discountInfo.amount) / 100) : discountInfo.amount;
-    const taxAmount = (details.subtotal - discountAmount + (details.driver_tip || 0)) * (details.tax_rate?details.tax_rate/100:0) ?? 0;
-
     const payload:any = {
       id: details.id,
       start_date : newValues.startDate,
       end_date : newValues.endDate,
       promo_code: newValues.discountCode,
-      discount_amount: discountAmount,
-      tax_amount: taxAmount,
-      total_price: details.subtotal + details.tax_amount + (details.driver_tip || 0) - discountAmount,
     }
 
-    if(newValues.startLocationId) payload.start_location_id = newValues.startLocationId
-    if(newValues.endLocationId) payload.end_location_id = newValues.endLocationId
     if(newValues.deliveryAddress) payload.delivery_address = newValues.deliveryAddress
+
+    // if(fieldName == 'discountCode'){
+    //   const discountInfo = discountCodes.find((item) => item.id === newValues.discountCode);
+    //   const discountAmount = discountInfo.type == 1 ? (Math.round(details.subtotal * discountInfo.amount) / 100) : discountInfo.amount;
+    //   const taxAmount = (details.subtotal - discountAmount + (details.driver_tip || 0)) * (details.tax_rate?details.tax_rate/100:0) ?? 0;
+    //   payload.promo_code = newValues.discountCode;
+    //   payload.discount_amount = discountAmount;
+    //   payload.tax_amount = taxAmount;
+    //   payload.total_price = details.subtotal + details.tax_amount + (details.driver_tip || 0) - discountAmount;
+    // }
 
     updateReservation(payload, (jsonRes, status) => {
       switch (status) {
@@ -228,7 +225,6 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           <Text style={{marginBottom:6, color:"#555555"}}>{'End date'}</Text>
           {Platform.OS == 'web' && 
             renderBOHFormDatePicker(inputValues.endDate, (date) => {
-              console.log(date);
               const year = date.getFullYear();
               const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
               handleInputChange('endDate', formattedDate);

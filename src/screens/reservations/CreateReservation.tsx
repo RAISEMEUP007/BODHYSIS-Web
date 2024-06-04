@@ -181,7 +181,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     return result;
   }, [brandsData]);
 
-  console.log(priceLogicData);
   useEffect(() => {
     getStoreDetail(brandId, (jsonRes, status) => {
       if (status == 200) setTaxRate(jsonRes.sales_tax);
@@ -241,7 +240,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     }
 
     const result: DropdownData<BrandType> = customerAddresses.map((item, index) => {
-      console.log(item.all_addresses);
       return {
         value: item,
         displayLabel: (item?.all_addresses?.number??'') + ' ' + (item?.all_addresses?.street??'') + ' ' + (item?.all_addresses?.plantation??'') + ' ' + (item?.all_addresses?.property_name??''),
@@ -265,8 +263,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   }, [taxRate, subTotal]);
 
   const getPriceTableByBrandAndDate = (brandId, date) => {
-    console.log(brandId);
-    console.log(date);
     if (!priceLogicData || !priceLogicData.length) return null;
     let selectedPriceLogic = priceLogicData.find(
       (group) =>
@@ -347,91 +343,45 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   }, [customerId, brandId, startDate, endDate, selectedPriceTable, equipmentData]);
 
   const addReservationItem = (productFamily, quantity, extras) => {
-    const arraysAreEqual = (arr1, arr2) => {
-      if (arr1.length !== arr2.length) {
-        return false;
-      }
-      const arr1Ids = arr1.map((item) => item.id).sort();
-      const arr2Ids = arr2.map((item) => item.id).sort();
-      for (let i = 0; i < arr1Ids.length; i++) {
-        if (arr1Ids[i] !== arr2Ids[i]) {
-          return false;
-        }
-      }
-      return true;
+    const equipment = {
+      ...productFamily,
+      family_id: productFamily.id,
+      quantity:1,
+      extras,
+      price_group_id: productFamily?.lines[0]?.price_group_id ?? 0, 
     };
 
-    // const existingProduct = equipmentData.find((item) => {
-    //   return item.display_name === productFamily.display_name && arraysAreEqual(item.extras, extras);
-    // });
-
-    // if (existingProduct) {
-    //   showConfirm(
-    //     `${productFamily.display_name} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
-    //     () => {
-    //       const updatedEquipmentData = equipmentData.map((item) => {
-    //         if (item.display_name === productFamily.display_name && arraysAreEqual(item.extras, extras)) {
-    //           return { ...item, quantity: item.quantity + quantity, extras };
-    //         }
-    //         return item;
-    //       });
-
-    //       setEquipmentData(updatedEquipmentData);
-    //       setItemOperations((prev) => prev + 1);
-    //     }
-    //   );
-    // } else {
-      const equipment = { 
-        ...productFamily,
-        family_id: productFamily.id,
-        quantity:1,
-        extras,
-        price_group_id: productFamily?.lines[0]?.price_group_id ?? 0, 
-      };
-
-      let updatedEquipments = [...equipmentData];
-      if(quantity){
-        for(let i=0; i<quantity; i++){
-          updatedEquipments.push(equipment);
-        }
+    let updatedEquipments = [...equipmentData];
+    if(quantity){
+      for(let i=0; i<quantity; i++){
+        updatedEquipments.push(equipment);
       }
-      setEquipmentData(updatedEquipments);
-      setItemOperations((prev) => prev + 1);
-    // }
+    }
+    setEquipmentData(updatedEquipments);
+    setItemOperations((prev) => prev + 1);
   };
 
   const updateReservationItem = (oldLine, productFamily, quantity, extras) => {
-    const existingProduct = equipmentData.find((item) => item.id === productFamily.id);
-
-    // if (oldLine.id != productFamily.id && existingProduct) {
-    //   showAlert(
-    //     'warning',
-    //     `${productFamily.line} ${productFamily.size} is already in the reservation items.`
-    //   );
-    // } else {
-      const newEquipment = { 
-        ...productFamily, 
-        family_id: productFamily.id, 
-        quantity:1, 
-        extras,
-        price_group_id: productFamily?.lines[0]?.price_group_id ?? 0, 
-      };
-      const replaceIndex = editingIndex;
-      setEquipmentData((prevEquipmentData) => {
-        return prevEquipmentData.map((item, index) => {
-          if (index === replaceIndex) {
-            return { ...newEquipment };
-          }
-          return item;
-        });
+    const newEquipment = { 
+      ...productFamily, 
+      family_id: productFamily.id, 
+      quantity:1, 
+      extras,
+      price_group_id: productFamily?.lines[0]?.price_group_id ?? 0, 
+    };
+    const replaceIndex = editingIndex;
+    setEquipmentData((prevEquipmentData) => {
+      return prevEquipmentData.map((item, index) => {
+        if (index === replaceIndex) {
+          return { ...newEquipment };
+        }
+        return item;
       });
-      setItemOperations((prev) => prev + 1);
-    // }
+    });
+    setItemOperations((prev) => prev + 1);
   };
 
   useEffect(() => {
-    console.log(startDate);
-    console.log(endDate);
     const calculatePricedData = async () => {
       if (equipmentData.length > 0) {
         if (headerData && selectedPriceTable && startDate && endDate) {
@@ -449,7 +399,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   }, [selectedPriceTable, startDate, endDate, headerData, itemOperations]);
 
   const calculatePricedEquipmentData = async (tableId) => {
-    console.log(equipmentData);
     const pricedEquipmentData = await Promise.all(
       equipmentData.map(async (item) => {
         const payload = {
@@ -459,7 +408,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
         const response = await getPriceDataByGroup(payload);
         const rows = await response.json();
 
-        const reversedHeaderData = headerData.slice().reverse();
         const updatedReversedHeaderData = headerData.map((item) => {
           const value = rows.find((row) => row.point_id === item.id)?.value || 0;
           const pricePMS = value / item.milliseconds;
@@ -469,11 +417,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
         });
 
         const diff = endDate.getTime() - startDate.getTime();
-
-        console.log(endDate);
-        console.log(startDate);
-        console.log(diff);
-        console.log(updatedReversedHeaderData);
         const basedonPoint = updatedReversedHeaderData.find((item) => {
           if (item.value > 0 && item.milliseconds >= diff) {
             return item;
@@ -488,8 +431,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
 
           price = (Math.round(basedonPoint.value * 100) / 100) * item.quantity;
         }
-
-        console.log(basedonPoint);
 
         //calcualte extras price
         if (item.extras && item.extras.length > 0) {
@@ -621,7 +562,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       </View>
     );
   };
-console.log(selectedPriceTable);
+
   const renderInitial = () => {
     return (
       <BasicLayout
@@ -778,7 +719,6 @@ console.log(selectedPriceTable);
                       }
                       width={"100%"}
                       onItemSelected={(item) => {
-                        console.log(item);
                         selectCustomerAddressId(item.value.address_id);
                       }}
                       data={customerAddressDropdownData}
