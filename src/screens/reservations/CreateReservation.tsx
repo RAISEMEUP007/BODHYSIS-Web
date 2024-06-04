@@ -181,7 +181,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     return result;
   }, [brandsData]);
 
-  console.log(priceLogicData);
   useEffect(() => {
     getStoreDetail(brandId, (jsonRes, status) => {
       if (status == 200) setTaxRate(jsonRes.sales_tax);
@@ -241,7 +240,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     }
 
     const result: DropdownData<BrandType> = customerAddresses.map((item, index) => {
-      console.log(item.all_addresses);
       return {
         value: item,
         displayLabel: (item?.all_addresses?.number??'') + ' ' + (item?.all_addresses?.street??'') + ' ' + (item?.all_addresses?.plantation??'') + ' ' + (item?.all_addresses?.property_name??''),
@@ -265,8 +263,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   }, [taxRate, subTotal]);
 
   const getPriceTableByBrandAndDate = (brandId, date) => {
-    console.log(brandId);
-    console.log(date);
     if (!priceLogicData || !priceLogicData.length) return null;
     let selectedPriceLogic = priceLogicData.find(
       (group) =>
@@ -430,8 +426,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   };
 
   useEffect(() => {
-    console.log(startDate);
-    console.log(endDate);
     const calculatePricedData = async () => {
       if (equipmentData.length > 0) {
         if (headerData && selectedPriceTable && startDate && endDate) {
@@ -449,7 +443,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   }, [selectedPriceTable, startDate, endDate, headerData, itemOperations]);
 
   const calculatePricedEquipmentData = async (tableId) => {
-    console.log(equipmentData);
     const pricedEquipmentData = await Promise.all(
       equipmentData.map(async (item) => {
         const payload = {
@@ -459,7 +452,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
         const response = await getPriceDataByGroup(payload);
         const rows = await response.json();
 
-        const reversedHeaderData = headerData.slice().reverse();
         const updatedReversedHeaderData = headerData.map((item) => {
           const value = rows.find((row) => row.point_id === item.id)?.value || 0;
           const pricePMS = value / item.milliseconds;
@@ -469,11 +461,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
         });
 
         const diff = endDate.getTime() - startDate.getTime();
-
-        console.log(endDate);
-        console.log(startDate);
-        console.log(diff);
-        console.log(updatedReversedHeaderData);
         const basedonPoint = updatedReversedHeaderData.find((item) => {
           if (item.value > 0 && item.milliseconds >= diff) {
             return item;
@@ -488,8 +475,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
 
           price = (Math.round(basedonPoint.value * 100) / 100) * item.quantity;
         }
-
-        console.log(basedonPoint);
 
         //calcualte extras price
         if (item.extras && item.extras.length > 0) {
@@ -621,7 +606,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       </View>
     );
   };
-console.log(selectedPriceTable);
+
   const renderInitial = () => {
     return (
       <BasicLayout
@@ -778,7 +763,6 @@ console.log(selectedPriceTable);
                       }
                       width={"100%"}
                       onItemSelected={(item) => {
-                        console.log(item);
                         selectCustomerAddressId(item.value.address_id);
                       }}
                       data={customerAddressDropdownData}
