@@ -29,7 +29,7 @@ const Dashboard = ({ navigation }) => {
   const { showConfirm } = useConfirmModal();
 
   const [tableData, setTableData] = useState([]);
-  const [updateReservationListTrigger, setUpdateReservationListTrigger] = useState(true);
+  const [updateReservationListTrigger, setUpdateReservationListTrigger] = useState(false);
 
   const [periodRange, setPeriodRange] = useState<any>('');
   const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
@@ -106,6 +106,7 @@ const Dashboard = ({ navigation }) => {
   useEffect(()=>{
     AsyncStorage.setItem('__search_options', JSON.stringify(searchOptions))
     AsyncStorage.setItem('__search_options_timestamp', new Date().getTime().toString())
+    setUpdateReservationListTrigger(true);
   }, [searchOptions])
 
   useEffect(() => {
@@ -152,10 +153,6 @@ const Dashboard = ({ navigation }) => {
   useEffect(() => {
     if (updateReservationListTrigger == true) getTable();
   }, [updateReservationListTrigger]);
-
-  useEffect(() => {
-    getTable();
-  }, [searchOptions]);
 
   const getTable = () => {
     getReservationsData({searchOptions:searchOptions}, (jsonRes, status, error) => {
