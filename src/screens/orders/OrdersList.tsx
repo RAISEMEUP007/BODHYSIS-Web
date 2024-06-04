@@ -21,7 +21,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
   const barcodeInputRef = useRef(null);
 
   const [tableData, setTableData] = useState([]);
-  const [updateOrderListTrigger, setUpdateOrderListTrigger] = useState(true);
+  const [updateOrderListTrigger, setUpdateOrderListTrigger] = useState(false);
   const [barcode, SetBarcode] = useState('');
   const [periodRange, setPeriodRange] = useState<any>('');
 
@@ -67,9 +67,9 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
   }
   
   useEffect(()=>{
-    console.log('ddd');
     AsyncStorage.setItem('__search_options', JSON.stringify(searchOptions))
     AsyncStorage.setItem('__search_options_timestamp', new Date().getTime().toString())
+    setUpdateOrderListTrigger(true);
   }, [searchOptions])
 
   useEffect(() => {
@@ -144,10 +144,6 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     if (updateOrderListTrigger == true) getTable();
   }, [updateOrderListTrigger]);
 
-  useEffect(() => {
-    getTable();
-  }, [searchOptions]);
-
   const getTable = () => {
     const payload = {
       searchOptions: {...searchOptions}
@@ -189,14 +185,6 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
         reservation_id: order.id,
       }
 
-      // if(order.stage == 2){
-      //   const result = await scanBarcode(payload);
-      //   if(result.status == 200){
-      //     openOrderScreen('Action Order', {orderId:order.id});
-      //     flag = true;
-      //     break;
-      //   }
-      // }else 
       if(order.stage == 3){
         const result = await checkedInBarcode(payload, (jsonRes, status)=>{
           switch (status) {
@@ -215,8 +203,6 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
         }
       }
     }
-
-    // if(!flag) showAlert("error", "There are no orders for this item checked out");
   }
 
   const renderTableData = () => {

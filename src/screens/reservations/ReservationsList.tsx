@@ -32,7 +32,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
   const { showConfirm } = useConfirmModal();
 
   const [tableData, setTableData] = useState([]);
-  const [updateReservationListTrigger, setUpdateReservationListTrigger] = useState(true);
+  const [updateReservationListTrigger, setUpdateReservationListTrigger] = useState(false);
   const [periodRange, setPeriodRange] = useState<any>('');
 
   const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
@@ -75,6 +75,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
   useEffect(()=>{
     AsyncStorage.setItem('__search_options', JSON.stringify(searchOptions))
     AsyncStorage.setItem('__search_options_timestamp', new Date().getTime().toString())
+    setUpdateReservationListTrigger(true)
   }, [searchOptions])
 
   useEffect(() => {
@@ -156,10 +157,6 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     if (updateReservationListTrigger == true) getTable();
   }, [updateReservationListTrigger]);
 
-  useEffect(() => {
-    getTable();
-  }, [searchOptions]);
-
   const getTable = () => {
     getReservationsData({searchOptions:searchOptions}, (jsonRes, status, error) => {
       switch (status) {
@@ -177,15 +174,6 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
       }
     });
   };
-
-  const formatDateInline = (dateString) => {
-    const date = new Date(dateString);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const year = date.getFullYear();
-    
-    return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
-  }
 
   const renderTableData = () => {
     const convertStageToString = (stage) => {
