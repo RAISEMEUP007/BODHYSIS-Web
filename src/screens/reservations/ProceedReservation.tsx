@@ -4,7 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { v4 as uuidv4 } from 'uuid';
 
 import { deleteReservationItem, getReservationDetail, updateReservation } from '../../api/Reservation';
-import { getHeaderData, getPriceDataByGroup } from '../../api/Price';
+import { getHeaderData, getPriceDataByGroup, getTableData } from '../../api/Price';
 import { getDiscountCodesData } from '../../api/Settings';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
@@ -22,6 +22,8 @@ import RefundStripeModal from './ReservationExtensionPanel/RefundStripeModal';
 
 import { proceedReservationStyle } from './styles/ProceedReservationStyle';
 import { getCustomerIdById } from '../../api/Stripe';
+import { calculatePricedEquipmentData, getPriceTableByBrandAndDate } from './CalcPrice';
+import { useRequestPriceLogicDataQuery } from '../../redux/slices/baseApiSlice';
 
 interface Props {
   openReservationScreen: (itemName: string, data?: any ) => void;
@@ -45,6 +47,9 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   const [isRefundStripeModalVisible, setRefundStripeModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [customerId, setCustomerId] = useState<string|null>(null);
+  const { data: priceLogicData } = useRequestPriceLogicDataQuery({}, { refetchOnFocus: true });
+  const [price_table_id, setPriceTableId] = useState(null);
+  const [priceTableData, setPricetableData] = useState(null);
   
   const [refundDetails, setRefundDetails] = useState<any>({
     id: null,
@@ -104,98 +109,102 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     setEditingIndex(index);
   };
 
-  const addReservationItem = async (productFamily, quantity, extras) => {
-    setIsLoading(true);
-    const arraysAreEqual = (arr1, arr2) => {
-      if (arr1.length !== arr2.length) {
-        return false;
-      }
-      const arr1Ids = arr1.map(item => item.id).sort();
-      const arr2Ids = arr2.map(item => item.id).sort();
-      for(let i = 0; i < arr1Ids.length; i++) {
-        if (arr1Ids[i] !== arr2Ids[i]) {
-          return false;
-        }
-      }
-      return true;
-    };
-    
-    const existingProduct = equipmentData.find(item => {
-      return item.display_name === productFamily.display_name && arraysAreEqual(item.extras, extras);
+  const calcAndSetData = async (ReservationItems:Array<any>) =>{
+    const calculatedReservedItems = await calculatePricedEquipmentData(headerData, price_table_id, priceTableData, ReservationItems, new Date(`${reservationInfo.start_date} 0:0:0`), new Date(`${reservationInfo.end_date} 0:0:0`));
+
+    let prices = {
+      subtotal: 0,
+      tax: 0,
+      discount: 0,
+      total: 0,
+    }
+
+    calculatedReservedItems.map((item:any)=>{
+      let subtotal = item.price || 0;
+      prices.subtotal += subtotal;
     });
 
-    // if (existingProduct) {
-    //   showConfirm(
-    //     `${productFamily.display_name} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
-    //     async ()=>{
-    //     const updatedEquipmentData = equipmentData.map(item => {
-    //       if (item.family_id === productFamily.id && arraysAreEqual(item.extras, extras)) {
-    //         return { ...item, quantity: item.quantity + quantity, extras:extras };
-    //       }
-    //       return item;
-    //     });
+    if(reservationInfo.promo_code){
+      const selectedDiscount:any = discountCodes.find((item:any) => {
+          return item.id == reservationInfo.promo_code;
+      });
 
-    //     const caclcuatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, updatedEquipmentData);
-    //     saveReservationItems(caclcuatedPricedData, ()=>{
-    //       setUpdateCount(prev => prev + 1);
-    //     })
-    //   });
-    // } else {
-      const newItem = {
-        ...productFamily,
-        id: parseInt(uuidv4(), 16),
-        reservation_id: reservationInfo.id,
-        family_id: productFamily.id,
-        price_group_id: productFamily?.lines[0]?.price_group_id ?? 0,
-        quantity: 1,
-        extras: extras,
+      if(selectedDiscount){
+        prices.discount = selectedDiscount.type == 1 ? (Math.round(prices.subtotal * selectedDiscount.amount) / 100) : selectedDiscount.amount;
+      }else{
+        prices.discount = 0;
       }
-
-      let newData = [...equipmentData];
-      if(quantity){
-        for(let i=0; i<quantity; i++){
-          newData.push(newItem);
-        }
-      }
-      const caclcuatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
-      console.log(caclcuatedPricedData);
-      saveReservationItems(caclcuatedPricedData, ()=>{
-        setUpdateCount(prev => prev + 1);
-      })
     }
-  // }
+    prices.tax = (prices.subtotal - prices.discount + (reservationInfo.driver_tip || 0)) * (reservationInfo.tax_rate?reservationInfo.tax_rate/100:0) ?? 0;
+    prices.total = prices.subtotal - prices.discount + (reservationInfo.driver_tip || 0) + prices.tax;
+
+    const payload = {
+      id: reservationInfo.id,
+      items : calculatedReservedItems,
+      subtotal : prices.subtotal,
+      tax_amount : prices.tax,
+      discount_amount : prices.discount,
+      total_price: prices.total,
+    }
+
+    updateReservation(payload, (jsonRes, status) => {
+      switch (status) {
+        case 201:
+          setUpdateCount(prev => prev + 1);
+          break;
+        default:
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
+
+  const addReservationItem = async (productFamily, quantity, extras) => {
+    setIsLoading(true);
+
+    const newItem = {
+      ...productFamily,
+      id: parseInt(uuidv4(), 16),
+      reservation_id: reservationInfo.id,
+      family_id: productFamily.id,
+      price_group_id: productFamily?.lines[0]?.price_group_id ?? 0,
+      quantity: 1,
+      extras: extras,
+    }
+
+    let newData = [...equipmentData];
+    if(quantity){
+      for(let i=0; i<quantity; i++){
+        newData.push(newItem);
+      }
+    }
+    calcAndSetData(newData);
+  }
 
   const updateReservationItem = async (oldFamily, newFamily, quantity, extras) => {
     setIsLoading(true);
     const existingProduct = equipmentData.find(item => item.display_name === newFamily.display_name);
 
-    // if (oldFamily.display_name != newFamily.display_name && existingProduct) {
-    //   showAlert('warning', `${newFamily.display_name} is already in the reservation items.`);
-    // }else {
-      const newItem = {
-        ...newFamily,
-        id: oldFamily.id,
-        reservation_id: oldFamily.reservation_id,
-        family_id: newFamily.id,
-        price_group_id: newFamily?.lines[0]?.price_group_id ?? 0,
-        quantity: 1,
-        extras: extras,
+    const newItem = {
+      ...newFamily,
+      id: oldFamily.id,
+      reservation_id: oldFamily.reservation_id,
+      family_id: newFamily.id,
+      price_group_id: newFamily?.lines[0]?.price_group_id ?? 0,
+      quantity: 1,
+      extras: extras,
+    }
+
+    const replaceIndex = editingIndex;
+    const newData = equipmentData.map((item, index) => {
+      if (index === replaceIndex) {
+        return { ...newItem };
       }
+      return item;
+    });
   
-      const replaceIndex = editingIndex;
-      const newData = equipmentData.map((item, index) => {
-        if (index === replaceIndex) {
-          return { ...newItem };
-        }
-        return item;
-      });
-    
-      const caclcuatedPricedData = await calculatePricedEquipmentData(reservationInfo.price_table_id, newData);
-      console.log(caclcuatedPricedData);
-      saveReservationItems(caclcuatedPricedData, (jsonRes)=>{
-        setUpdateCount(prev => prev + 1);
-      })
-    // }
+    calcAndSetData(newData);
   }
 
   const removeReservationItem = async (item, index) => {
@@ -204,52 +213,10 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       setIsLoading(true);
       deleteReservationItem({id:item.id}, (jsonRes, status)=>{
         if(status == 200){
-          saveReservationItems(updatedEquipmentData, (jsonRes)=>{
-            setUpdateCount(prev => prev + 1);
-          })
+          calcAndSetData(updatedEquipmentData);
         }
       })
     });
-  }
-
-  const saveReservationItems = (items, callback) =>{
-    setIsLoading(true);
-    if(!reservationInfo || !reservationInfo.id) return;
-
-    const subTotal = items.reduce((total, item) => total + item.price, 0);
-    const taxAmount = Math.round(subTotal * reservationInfo.tax_rate)/100;
-
-    let discountInfo;
-    let discountAmount;
-    if(reservationInfo.promo_code){
-      discountInfo = discountCodes.find((item) => item.id === reservationInfo.promo_code);
-      discountAmount = discountInfo.type == 1 ? (Math.round(subTotal * discountInfo.amount) / 100) : discountInfo.amount;
-    }else {
-      discountAmount = 0;
-    }
-
-    const totalPrice = subTotal + taxAmount - discountAmount;
-
-    const payload = {
-      id: reservationInfo.id,
-      items : items,
-      subtotal : subTotal,
-      tax_amount : taxAmount,
-      discount_amount : discountAmount,
-      total_price: totalPrice,
-    }
-
-    updateReservation(payload, (jsonRes, status) => {
-      switch (status) {
-        case 201:
-          callback(jsonRes);
-          break;
-        default:
-          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
-          else showAlert('error', msgStr('unknownError'));
-          break;
-      }
-    })
   }
 
   const confirmNextStage = () =>{
@@ -341,89 +308,38 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
             break;
         }
       });
-    }else setHeaderData([]);
-  }, [reservationInfo]);
+      getTableData(reservationInfo.price_table_id, (jsonRes:any, status, error) => {
+        switch (status) {
+          case 200:
+            setPricetableData(jsonRes)
+            break;
+          default:
+            setPricetableData([]);
+            break;
+        }
+      });
+    }else{
+      setHeaderData([]);
+      setPricetableData([]);
+    } 
+
+  }, [(reservationInfo && reservationInfo.price_table_id)]);
+
+  useEffect(() => {
+    if(reservationInfo && reservationInfo.start_date){
+      const priceTable = getPriceTableByBrandAndDate(priceLogicData, reservationInfo.brand_id, new Date(reservationInfo.start_date));
+      setPriceTableId(priceTable?.id??null);
+    }
+  }, [priceLogicData, (reservationInfo && reservationInfo.brand_id), (reservationInfo && reservationInfo.start_date)])
 
   useEffect(()=>{
-    console.log(reservationInfo);
     if(reservationInfo && reservationInfo.customer_id ){
-      console.log('----------------');
       getCustomerIdById({id:reservationInfo.customer_id}, (jsonRes, status)=>{
-        console.log(jsonRes);
         if(status == 200) setCustomerId(jsonRes)
         else setCustomerId(null);
       })
     }else setCustomerId(null);
   }, [reservationInfo && reservationInfo.customer_id])
-
-  const subTotal = useMemo(()=>{
-    if(equipmentData.length>0){
-      const subtotal = equipmentData.reduce((total, item) => total + item.price, 0);
-      return subtotal;
-    }else return 0;
-  }, [equipmentData]);
-
-  // const calculatePricedData = async (equipmentData) => {
-  //   if (equipmentData.length > 0) {
-  //     if (headerData && reservationInfo.price_table_id) {
-  //       const tableId = reservationInfo.price_table_id;
-  //       const pricedEquipmentData = await calculatePricedEquipmentData(tableId, equipmentData);
-  //       return pricedEquipmentData;
-  //     }else{
-  //       const pricedEquipmentData = equipmentData.map((item) => ({ ...item, price: 0 }));
-  //       return pricedEquipmentData;
-  //     }
-  //   }
-  //   return [];
-  // };
-
-  const calculatePricedEquipmentData = async (tableId, equipmentData) => {
-    console.log(equipmentData);
-    const pricedEquipmentData = await Promise.all(equipmentData.map(async (item) => {
-      const payload = {
-        tableId,
-        groupId: item.price_group_id || 0,
-      }
-      const response = await getPriceDataByGroup(payload);
-      const rows = await response.json();
-
-      const reversedHeaderData = headerData.slice().reverse();
-      const updatedReversedHeaderData = headerData.map((item) => {
-        const value = rows.find((row) => row.point_id === item.id)?.value || 0;
-        const pricePMS = value/item.milliseconds;
-        const pricePH = value / (item.milliseconds / (1000 * 60 * 60));
-        const pricePD = value / (item.milliseconds / (1000 * 60 * 60 * 24));
-        return { ...item, value, pricePH, pricePD };
-      });
-
-      const diff = new Date(reservationInfo.end_date).getTime() - new Date(reservationInfo.start_date).getTime();
-
-      const basedonPoint  = updatedReversedHeaderData.find((item) => {
-        if(item.value>0 && item.milliseconds >= diff){
-          return item;
-        }
-      });
-      console.log(basedonPoint);
-
-      let price = 0;
-      if(basedonPoint){
-        // if(Math.floor(diff/(1000 * 60 * 60 *24)) == 0) price = basedonPoint.pricePH * Math.floor(diff/(1000 * 60 * 60));
-        // else price = basedonPoint.pricePD * Math.floor(diff/(1000 * 60 * 60 * 24));
-
-        price = Math.round(basedonPoint.value*100)/100 * item.quantity;
-      }
-
-      console.log(price);
-
-      //calcualte extras price
-      if(item.extras && item.extras.length>0){
-        let extrasPrice = item.extras.reduce((total, extra) => total + extra.fixed_price, 0);
-        price += extrasPrice;
-      }
-      return { ...item, price };
-    }));
-    return pricedEquipmentData;
-  }
 
   useEffect(() => {
     if(reservationInfo) {
@@ -471,7 +387,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         <div style={{width:'fit-content', margin:'auto'}}>
           <View style={styles.container}>
             <View
-            style={{flexDirection:'row'}}
+              style={{flexDirection:'row', zIndex:10}}
               onLayout={(event)=>{
                 const { width } = event.nativeEvent.layout;
                 setContentWidth(width);
@@ -529,8 +445,6 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
             </View>
             <View style={[styles.reservationRow, {justifyContent:'flex-end'}]}>
               <TouchableHighlight 
-                // disabled={(reservationInfo && reservationInfo.stage>2 && true)} 
-                // style={[styles.addItemButton, (reservationInfo && reservationInfo.stage>2 && {backgroundColor:'#ccc'})]} 
                 style={[styles.addItemButton]} 
                 onPress={openAddReservationItemModal}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
