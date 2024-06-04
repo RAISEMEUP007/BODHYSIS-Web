@@ -228,7 +228,6 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           <Text style={{marginBottom:6, color:"#555555"}}>{'End date'}</Text>
           {Platform.OS == 'web' && 
             renderBOHFormDatePicker(inputValues.endDate, (date) => {
-              console.log(date);
               const year = date.getFullYear();
               const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
               handleInputChange('endDate', formattedDate);

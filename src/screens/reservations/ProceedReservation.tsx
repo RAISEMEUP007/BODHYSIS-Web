@@ -301,7 +301,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
             setPricetableData(jsonRes)
             break;
           default:
-            setPricetableData([]);
+            setPricetableData(null);
             break;
         }
       });
@@ -337,6 +337,18 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       }
     }
   }, [reservationInfo])
+
+  useEffect(()=>{
+    if( headerData.length>0 && price_table_id && priceTableData && reservationInfo.start_date && reservationInfo.end_date && reservationInfo.items){
+      calcAndSetData(reservationInfo.items);
+    }
+  }, [
+    (reservationInfo && reservationInfo.start_date),
+    (reservationInfo && reservationInfo.end_date),
+    (reservationInfo && reservationInfo.driver_tip),
+    (reservationInfo && reservationInfo.promo_code),
+    (reservationInfo && reservationInfo.tax_rate),
+  ]);
 
   const convertStageToString = (stage) => {
     switch (stage) {
