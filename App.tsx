@@ -15,14 +15,14 @@ import { setNavigator } from './src/common/utils/NavigationUtils';
 import { appLinking } from './src/common/constants/AppLinking';
 import * as Sentry from "@sentry/react-native";
 
-Sentry.init({
-  dsn: "https://deb9289f93938841be41cb5dbb7abfb4@o382651.ingest.us.sentry.io/4507070883495936",
+// Sentry.init({
+//   dsn: "https://deb9289f93938841be41cb5dbb7abfb4@o382651.ingest.us.sentry.io/4507070883495936",
 
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate: 1.0,
-});
+//   // Set tracesSampleRate to 1.0 to capture 100%
+//   // of transactions for performance monitoring.
+//   // We recommend adjusting this value in production
+//   tracesSampleRate: 1.0,
+// });
 const Stack = createStackNavigator();
 
 const LoadingIndicator = () => {

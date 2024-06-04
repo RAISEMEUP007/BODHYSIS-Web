@@ -47,7 +47,6 @@ export const calculatePricedEquipmentData = async (headerData:Array<any>, tableI
     return equipmentData.map((item)=>({...item, price:0}));
   }
 
-  
   const pricedEquipmentData = await Promise.all(equipmentData.map(async (item) => {
 
     let priceGroupId = 0;
@@ -81,9 +80,6 @@ export const calculatePricedEquipmentData = async (headerData:Array<any>, tableI
 
     let price = 0;
     if(basedonPoint){
-      // if(Math.floor(diff/(1000 * 60 * 60 *24)) == 0) price = basedonPoint.pricePH * Math.floor(diff/(1000 * 60 * 60));
-      // else price = basedonPoint.pricePD * Math.floor(diff/(1000 * 60 * 60 * 24));
-
       price = Math.round(basedonPoint.value*100)/100 * item.quantity;
     }else{
       const lastPoint = updatedHeaderData[updatedHeaderData.length-1];
@@ -100,7 +96,6 @@ export const calculatePricedEquipmentData = async (headerData:Array<any>, tableI
       }
     }
 
-    //calcualte extras price
     if(item.extras && item.extras.length>0){
       let extrasPrice = item.extras.reduce((total:any, extra:any) => total + extra.fixed_price, 0);
       price += extrasPrice;

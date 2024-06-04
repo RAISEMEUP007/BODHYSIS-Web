@@ -4,7 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { v4 as uuidv4 } from 'uuid';
 
 import { deleteReservationItem, getReservationDetail, updateReservation } from '../../api/Reservation';
-import { getHeaderData, getPriceDataByGroup, getTableData } from '../../api/Price';
+import { getHeaderData, getTableData } from '../../api/Price';
 import { getDiscountCodesData } from '../../api/Settings';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
@@ -32,14 +32,11 @@ interface Props {
 
 export const ProceedReservation = ({ openReservationScreen, initialData }: Props) => {
 
-  // const customerId = "cus_PapWGjfCEdOh8J";
-
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
   const [updateCount, setUpdateCount] = useState<number>(0);
   const [reservationInfo, setReservationInfo] = useState<any>();
-  const [contentWidth, setContentWidth] = useState<number>();
   const [isAddTransactionModalVisible, setAddTransactionModalVisible] = useState(false);
   const [headerData, setHeaderData] = useState([]);
   const [discountCodes, setDiscountCodes] = useState([]);
@@ -80,14 +77,6 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   };
   const closeAddCardModal = () => {
     setAddCardModalVisible(false);
-  };
-
-  const [isPDFPrintModalVisible, setPDFPrintModalVisible] = useState(false);
-  const openPDFPrintModal = () => {
-    setPDFPrintModalVisible(true);
-  };
-  const closePDFPrintModal = () => {
-    setPDFPrintModalVisible(false);
   };
 
   const [equipmentData, setEquipmentData] = useState<Array<any>>([]);
@@ -184,8 +173,6 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
 
   const updateReservationItem = async (oldFamily, newFamily, quantity, extras) => {
     setIsLoading(true);
-    const existingProduct = equipmentData.find(item => item.display_name === newFamily.display_name);
-
     const newItem = {
       ...newFamily,
       id: oldFamily.id,
@@ -386,12 +373,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       <div style={{overflow:'auto', padding:'0 30px'}}>
         <div style={{width:'fit-content', margin:'auto'}}>
           <View style={styles.container}>
-            <View
-              style={{flexDirection:'row', zIndex:10}}
-              onLayout={(event)=>{
-                const { width } = event.nativeEvent.layout;
-                setContentWidth(width);
-              }}>
+            <View style={{flexDirection:'row', zIndex:10}}>
               <ReservationMainInfo details={reservationInfo} setUpdateCount={setUpdateCount}/>
               <ReservationExtensionPanel 
                 reservationId={reservationInfo?.id??null} 

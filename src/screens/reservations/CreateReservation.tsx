@@ -343,86 +343,42 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   }, [customerId, brandId, startDate, endDate, selectedPriceTable, equipmentData]);
 
   const addReservationItem = (productFamily, quantity, extras) => {
-    const arraysAreEqual = (arr1, arr2) => {
-      if (arr1.length !== arr2.length) {
-        return false;
-      }
-      const arr1Ids = arr1.map((item) => item.id).sort();
-      const arr2Ids = arr2.map((item) => item.id).sort();
-      for (let i = 0; i < arr1Ids.length; i++) {
-        if (arr1Ids[i] !== arr2Ids[i]) {
-          return false;
-        }
-      }
-      return true;
+    const equipment = {
+      ...productFamily,
+      family_id: productFamily.id,
+      quantity:1,
+      extras,
+      price_group_id: productFamily?.lines[0]?.price_group_id ?? 0, 
     };
 
-    // const existingProduct = equipmentData.find((item) => {
-    //   return item.display_name === productFamily.display_name && arraysAreEqual(item.extras, extras);
-    // });
-
-    // if (existingProduct) {
-    //   showConfirm(
-    //     `${productFamily.display_name} with the extras is already in the reservation items. \nDo you want to increase the quantity?`,
-    //     () => {
-    //       const updatedEquipmentData = equipmentData.map((item) => {
-    //         if (item.display_name === productFamily.display_name && arraysAreEqual(item.extras, extras)) {
-    //           return { ...item, quantity: item.quantity + quantity, extras };
-    //         }
-    //         return item;
-    //       });
-
-    //       setEquipmentData(updatedEquipmentData);
-    //       setItemOperations((prev) => prev + 1);
-    //     }
-    //   );
-    // } else {
-      const equipment = { 
-        ...productFamily,
-        family_id: productFamily.id,
-        quantity:1,
-        extras,
-        price_group_id: productFamily?.lines[0]?.price_group_id ?? 0, 
-      };
-
-      let updatedEquipments = [...equipmentData];
-      if(quantity){
-        for(let i=0; i<quantity; i++){
-          updatedEquipments.push(equipment);
-        }
+    let updatedEquipments = [...equipmentData];
+    if(quantity){
+      for(let i=0; i<quantity; i++){
+        updatedEquipments.push(equipment);
       }
-      setEquipmentData(updatedEquipments);
-      setItemOperations((prev) => prev + 1);
-    // }
+    }
+    setEquipmentData(updatedEquipments);
+    setItemOperations((prev) => prev + 1);
   };
 
   const updateReservationItem = (oldLine, productFamily, quantity, extras) => {
-    const existingProduct = equipmentData.find((item) => item.id === productFamily.id);
-
-    // if (oldLine.id != productFamily.id && existingProduct) {
-    //   showAlert(
-    //     'warning',
-    //     `${productFamily.line} ${productFamily.size} is already in the reservation items.`
-    //   );
-    // } else {
-      const newEquipment = { 
-        ...productFamily, 
-        family_id: productFamily.id, 
-        quantity:1, 
-        extras,
-        price_group_id: productFamily?.lines[0]?.price_group_id ?? 0, 
-      };
-      const replaceIndex = editingIndex;
-      setEquipmentData((prevEquipmentData) => {
-        return prevEquipmentData.map((item, index) => {
-          if (index === replaceIndex) {
-            return { ...newEquipment };
-          }
-          return item;
-        });
+    const newEquipment = { 
+      ...productFamily, 
+      family_id: productFamily.id, 
+      quantity:1, 
+      extras,
+      price_group_id: productFamily?.lines[0]?.price_group_id ?? 0, 
+    };
+    const replaceIndex = editingIndex;
+    setEquipmentData((prevEquipmentData) => {
+      return prevEquipmentData.map((item, index) => {
+        if (index === replaceIndex) {
+          return { ...newEquipment };
+        }
+        return item;
       });
-      setItemOperations((prev) => prev + 1);
-    // }
+    });
+    setItemOperations((prev) => prev + 1);
   };
 
   useEffect(() => {
