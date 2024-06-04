@@ -6,7 +6,6 @@ import {
   View,
   ActivityIndicator,
   Platform,
-  Image,
 } from 'react-native';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -44,12 +43,11 @@ const AddDiscountCodeModal = ({
   closeModal,
 }) => {
   const isUpdate = DiscountCode ? true : false;
-  const inputRef = useRef(null);
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const DiscountCodeId = useRef();
+  const DiscountCodeId = useRef<any>();
   const [updateExclusionTrigger, setUpdateExclusionTrigger] = useState(true);
 
   useEffect(() => {
@@ -78,7 +76,7 @@ const AddDiscountCodeModal = ({
     { id: 2, type: 'Flat fee' },
   ]);
   const [CodeTxt, setCodeTxt] = useState('');
-  const [Type, setType] = useState(0);
+  const [Type, setType] = useState(1);
   const [AmountTxt, setAmountTxt] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -110,7 +108,7 @@ const AddDiscountCodeModal = ({
         if (DiscountCode.valid_end_date) setEndDate(new Date(DiscountCode.valid_end_date));
       } else {
         setCodeTxt('');
-        setType(0);
+        setType(1);
         setAmountTxt('');
         setStartDate(null);
         setEndDate(null);
@@ -127,7 +125,7 @@ const AddDiscountCodeModal = ({
 
     setIsLoading(true);
 
-    const payload = {
+    const payload:any = {
       code: CodeTxt,
       type: Type,
       amount: AmountTxt,
