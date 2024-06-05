@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { checkedInBarcode, getReservationsData, scanBarcode } from '../../api/Reservation';
+import { checkedInBarcode, getReservationsData } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
@@ -16,7 +16,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
-  const InitialWidths = [90, 160, 160, 100, 100, 110, 120, 100, 80, 80];
+  const InitialWidths = [90, 160, 160, 100, 100, 110, 70, 100, 80, 80];
 
   const barcodeInputRef = useRef(null);
 
@@ -252,6 +252,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
                 day: '2-digit',
               }) : ''}</BOHTD>
             <BOHTD width={InitialWidths[5]} style={{textAlign:'right'}}>{item?.quantity??''}</BOHTD>
+            <BOHTD width={InitialWidths[6]} style={{textAlign:'right'}}>{(item && item.driver_tip>0)?item.driver_tip.toLocaleString('en-US', { style: 'currency', currency: 'USD' }):''}</BOHTD>
             <BOHTD width={InitialWidths[7]}>{convertStageToString(item.stage)}</BOHTD>
             <BOHTD width={InitialWidths[8]} style={{textAlign:'center'}}>{item?.color_id?'YES':'NO'}</BOHTD>
             <BOHTDIconBox  width={InitialWidths[9]}>
@@ -480,11 +481,11 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
               <BOHTH width={InitialWidths[4]}>{'Start'}</BOHTH>
               <BOHTH width={InitialWidths[3]}>{'End'}</BOHTH>
               <BOHTH width={InitialWidths[5]}>{'Qty of bikes'}</BOHTH>
+              <BOHTH width={InitialWidths[6]}>{'Tips'}</BOHTH>
               <BOHTH width={InitialWidths[7]}>{'Stage'}</BOHTH>
               <BOHTH width={InitialWidths[8]}>{'Locked'}</BOHTH>
               <BOHTH width={InitialWidths[9]}>{'Action'}</BOHTH>
             </BOHTR>
-            {/* <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text> */}
           </BOHTHead>
           <BOHTBody>
             {renderTableData()}

@@ -668,8 +668,8 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                       onPressWhileDisabled={() => {
                         if (!customerId) showAlert('warning', 'Please select a customer.');
                         else if (!brandId) showAlert('warning', 'Please select a brand.');
-                        else if (!startDate) showAlert('warning', 'Please select Pick Up.');
-                        else if (!endDate) showAlert('warning', 'Please select Drop off.');
+                        else if (!startDate) showAlert('warning', 'Please select start date.');
+                        else if (!endDate) showAlert('warning', 'Please select end date.');
                         else if (!selectedPriceTable)
                           showAlert('warning', 'No available Price table. Can not set price.');
                         else if (!equipmentData.length) showAlert('warning', 'Please add an item.');
@@ -759,11 +759,11 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
                   </View>
                   <View style={[styles.reservationRow, {zIndex:10}]}>
                     <View style={{marginRight:40}}>
-                      <Text style={{marginBottom:10}}>{'Pick Up'}</Text>
+                      <Text style={{marginBottom:10}}>{'Start date'}</Text>
                       {Platform.OS == 'web' && renderDatePicker(startDate, (date)=>setStartdate(date))}
                     </View>
                     <View style={{ marginRight: 0 }}>
-                      <Text style={{ marginBottom: 10 }}>{'Drop Off'}</Text>
+                      <Text style={{ marginBottom: 10 }}>{'End date'}</Text>
                       {Platform.OS == 'web' &&
                         renderEndDatePicker(endDate, (date) => setEnddate(date), startDate)}
                       {Platform.OS != 'web' && (
