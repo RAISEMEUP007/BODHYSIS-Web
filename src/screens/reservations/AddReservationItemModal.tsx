@@ -110,11 +110,11 @@ const AddReservationItemModal = ({
   useEffect(()=>{
     if(productFamiliesData && productFamiliesData.length>0){
       if(item){
-        const familyId = item.family_id;
-        const selectedItem = productFamiliesData.find(item => item.id === familyId);
+        const displayName = item.display_name;
+        const selectedItem = productFamiliesData.find(item => item.display_name == displayName);
         setSelectedCategoryId(selectedItem?.category_id);
         selectProductFamily(selectedItem);
-        setSelectedProductId(familyId);
+        setSelectedProductId(selectedItem?.id);
       }else{
         setSelectedCategoryId(productFamiliesData[0].category_id);
         selectProductFamily(productFamiliesData[0]);

@@ -15,7 +15,7 @@ const Avaiable = ({ navigation, openMarketingMenu }) => {
   
   const [tableData, setTableData] = useState([]);
   const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(true);
-  const InitialWidths = [200, 90, 90, 80, 160, 160, 100, 80];
+  const InitialWidths = [250, 90, 90, 80, 160, 160, 100, 80];
 
   useEffect(() => {
     if (updateLocationTrigger == true) getTable();
