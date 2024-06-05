@@ -4,6 +4,13 @@ export const getAddressesData = async (payload, cb = (jR, s, e)=>{}) => {
   return await postAPICall('alladdresses/getaddressesdata/', payload,  cb);
 }
 
+
+export const searchAddress = async (str:any, storeId:number, cb = (jR, s, e)=>{}) => {
+  const encodedStr = encodeURIComponent(str);
+  return await getAPICall('address/search/'+encodedStr+'/'+storeId, cb);
+}
+
+
 export const getForecastingData = async (cb = (jR, s, e)=>{}) => {
   return await getAPICall('forecasting/getsummary/', cb);
 }

@@ -5,7 +5,6 @@ import {
   Platform
 } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import 'react-datepicker/dist/react-datepicker.css';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getReservationsData } from '../../api/Reservation';
@@ -16,15 +15,6 @@ import { msgStr } from '../../common/constants/Message';
 import { TextMediumSize, TextdefaultSize } from '../../common/constants/Fonts';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
-
-
-if (Platform.OS === 'web') {
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.type = 'text/css';
-  link.href = 'react-datepicker/dist/react-datepicker.css';
-  document.head.appendChild(link);
-}
 
 const ReservationsList = ({ navigation, openReservationScreen }) => {
 
