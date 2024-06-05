@@ -620,20 +620,20 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
             </View>
             <View style={styles.inputRow}>
               <View style={[styles.inputContainer, { flex: 1 }]}>
-                <Text style={styles.label}>Pickup Time</Text>
+                <Text style={styles.label}>Start Time</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Pickup Time"
+                  placeholder="Start Time"
                   value={PickupTime}
                   onChangeText={setPickupTime}
                   placeholderTextColor="#ccc"
                 />
               </View>
               <View style={[styles.inputContainer, { flex: 1 }]}>
-                <Text style={styles.label}>Drop off Time</Text>
+                <Text style={styles.label}>End Time</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Drop off Time"
+                  placeholder="End Time"
                   value={DropOffTime}
                   onChangeText={setDropOffTime}
                   placeholderTextColor="#ccc"
