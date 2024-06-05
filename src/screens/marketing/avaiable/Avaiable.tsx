@@ -1,28 +1,44 @@
 import React, { useEffect, useState } from 'react';
-
+import { Text, Platform } from 'react-native';
 
 import { getAvaliableSheet } from '../../../api/Reservation';
 import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTH2, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
 import { msgStr } from '../../../common/constants/Message';
-import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
+import { BOHTlbrSearchInput, BOHToolbar, renderBOHTlbDatePicker } from '../../../common/components/bohtoolbar';
+import { TextdefaultSize } from '../../../common/constants/Fonts';
+import { formatDate } from '../../../common/utils/DateUtils';
 
 const Avaiable = ({ navigation, openMarketingMenu }) => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
   
   const [tableData, setTableData] = useState([]);
-  const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(true);
+  const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(false);
   const InitialWidths = [250, 90, 90, 80, 160, 160, 100, 80];
+
+  const today = new Date();
+  const twoWeeksLater = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+
+  const [ searchOptions, setSearchOptions ] = useState({
+    start_date : formatDate(today),
+    end_date : formatDate(twoWeeksLater),
+    display_name : '',
+  });
 
   useEffect(() => {
     if (updateLocationTrigger == true) getTable();
   }, [updateLocationTrigger]);
 
+  useEffect(()=>{
+    setUpdateLocationsTrigger(true);
+  }, [searchOptions.start_date, searchOptions.end_date])
+
   const getTable = () => {
-    getAvaliableSheet((jsonRes, status, error) => {
+    const payload = searchOptions
+    getAvaliableSheet(payload, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           setUpdateLocationsTrigger(false);
@@ -39,10 +55,21 @@ const Avaiable = ({ navigation, openMarketingMenu }) => {
     });
   };
 
+  const changeSearchOptions = (key, val) => {
+    setSearchOptions(prevOptions => ({
+      ...prevOptions,
+      [key]: val
+    }));
+  }
+
   const renderTableData = () => {
     const rows = [];
     if (tableData && tableData.length && tableData.length > 0) {
-      tableData.map((item, index) => {
+
+      const filteredData = tableData.filter(item => {
+        return item.display_name.toLowerCase().includes(searchOptions.display_name.toLowerCase());
+      });
+      filteredData.map((item, index) => {
         rows.push(
           <BOHTR key={index}>
             <BOHTD width={InitialWidths[0]}>{item.display_name ||" "}</BOHTD>
@@ -69,6 +96,26 @@ const Avaiable = ({ navigation, openMarketingMenu }) => {
       screenName={'Demands'}
     >
       <CommonContainer>
+        <BOHToolbar style={{zIndex:100}}>
+          <Text style={{marginRight:8, fontSize:TextdefaultSize}}>Start</Text>
+          {Platform.OS == 'web' && 
+            renderBOHTlbDatePicker(searchOptions.start_date, (date) => {
+              const formattedDate = formatDate(date);
+              changeSearchOptions('start_date', formattedDate);
+          })}
+          <Text style={{marginHorizontal:8, fontSize:TextdefaultSize}}>End</Text>
+          {Platform.OS == 'web' && 
+            renderBOHTlbDatePicker(searchOptions.end_date, (date) => {
+              const formattedDate = formatDate(date);
+              changeSearchOptions('end_date', formattedDate);
+          })}
+          <BOHTlbrSearchInput
+            width={125}
+            label='Display name'
+            defaultValue={searchOptions.display_name}
+            onChangeText={(val)=>changeSearchOptions('display_name', val)}
+          />
+        </BOHToolbar>
         <BOHTable>
           <BOHTHead>
             <BOHTR>

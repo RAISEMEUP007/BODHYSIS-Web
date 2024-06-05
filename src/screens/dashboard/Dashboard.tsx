@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getReservationsData } from '../../api/Reservation';
 import { BasicLayout, CommonContainer } from '../../common/components/CustomLayout';
 import { BOHTable } from '../../common/components/bohtable';
-import { BOHTlbRadio, BOHTlbrSearchInput, BOHTlbrSearchPicker, BOHToolbar, renderBOHTlbDatePicker } from '../../common/components/bohtoolbar';
+import { BOHTlbCheckbox, BOHTlbRadio, BOHTlbrSearchInput, BOHTlbrSearchPicker, BOHToolbar, renderBOHTlbDatePicker } from '../../common/components/bohtoolbar';
 import { msgStr } from '../../common/constants/Message';
 import { TextMediumSize, TextdefaultSize } from '../../common/constants/Fonts';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
@@ -34,6 +34,8 @@ const Dashboard = ({ navigation }) => {
     order_number: '',
     stage: null,
     status_filter: null,
+    hideBeachTennis: false,
+    ShowOnlyManual: false,
   });
 
   useEffect(() => {
@@ -95,9 +97,12 @@ const Dashboard = ({ navigation }) => {
   }
 
   useEffect(()=>{
-    AsyncStorage.setItem('__search_options', JSON.stringify(searchOptions))
-    AsyncStorage.setItem('__search_options_timestamp', new Date().getTime().toString())
-    setUpdateReservationListTrigger(true);
+    const timeout = setTimeout(() => {
+      AsyncStorage.setItem('__search_options', JSON.stringify(searchOptions))
+      AsyncStorage.setItem('__search_options_timestamp', new Date().getTime().toString())
+      setUpdateReservationListTrigger(true)
+    }, 300);
+    return () => clearTimeout(timeout);
   }, [searchOptions])
 
   useEffect(() => {
@@ -405,6 +410,27 @@ const Dashboard = ({ navigation }) => {
               ]}
               selectedValue={searchOptions.stage || ''}
               onValueChange={val=>changeSearchOptions('stage', val)}/>
+          </BOHToolbar>
+          <BOHToolbar>
+            <BOHTlbCheckbox
+              label={'Hide beach and tennis'}
+              style={{marginRight:10}}
+              CheckboxProps={{
+                value:searchOptions.hideBeachTennis
+              }}
+              onPress={()=>{
+                changeSearchOptions('hideBeachTennis', !searchOptions.hideBeachTennis);
+              }}
+            />
+            <BOHTlbCheckbox
+              label={'Show only manual addresses'}
+              CheckboxProps={{
+                value:searchOptions.ShowOnlyManual
+              }}
+              onPress={()=>{
+                changeSearchOptions('ShowOnlyManual', !searchOptions.ShowOnlyManual);
+              }}
+            />
           </BOHToolbar>
           <BOHTable>
             <View style={styles.tableHeader}>
