@@ -44,6 +44,6 @@ export const checkedInBarcode = async (payload, cb=(jR, s, e)=>{}) => {
   return await postAPICall('reservation/checkedinbarcode/', payload, cb);
 }
 
-export const getAvaliableSheet = async (cb = (jR, s, e)=>{}) => {
-  return await getAPICall('reservations/getavailablesheet/', cb);
+export const getAvaliableSheet = async (payload, cb = (jR, s, e)=>{}) => {
+  return await postAPICall('reservations/getavailablesheet/', payload, cb);
 }

@@ -1,17 +1,17 @@
 import React from 'react';
 import { Text, Pressable, StyleSheet, PressableProps, TextStyle, ViewStyle } from 'react-native';
-import { RadioButton, RadioButtonProps } from 'react-native-paper';
+import Checkbox, { CheckboxProps } from 'expo-checkbox';
 import { TextdefaultSize } from '../../constants/Fonts';
 
-interface BOHTlbRadioProps extends PressableProps {
+interface BOHTlbCheckboxProps extends PressableProps {
   label?: string;
   labelStyle?: TextStyle;
   disabled?: boolean; 
-  RadioButtonProps?: RadioButtonProps;
+  CheckboxProps?: CheckboxProps;
   style?: ViewStyle;
 }
 
-const BOHTlbRadio: React.FC<BOHTlbRadioProps> = ({ label, labelStyle, disabled, RadioButtonProps, style, onPress, ...rest }) => {
+const BOHTlbCheckbox: React.FC<BOHTlbCheckboxProps> = ({ label, labelStyle, disabled, CheckboxProps, style, onPress, ...rest }) => {
   return (
     <Pressable
       {...rest}
@@ -19,12 +19,11 @@ const BOHTlbRadio: React.FC<BOHTlbRadioProps> = ({ label, labelStyle, disabled, 
       style={[styles.defaultTheme, style, disabled && styles.disabledTheme]}
       disabled={disabled}
     >
-      <RadioButton
-        color="#0099ff"
-        {...RadioButtonProps}
-        onPress={RadioButtonProps.onPress || onPress}
+      <Checkbox
+        // color="#0099ff"
+        {...CheckboxProps}
       />
-      <Text style={[{fontSize:TextdefaultSize}, labelStyle]}>{label}</Text>
+      <Text style={[{marginLeft:10, fontSize:TextdefaultSize}, labelStyle]}>{label}</Text>
     </Pressable>
   );
 };
@@ -40,4 +39,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BOHTlbRadio;
+export default BOHTlbCheckbox;
