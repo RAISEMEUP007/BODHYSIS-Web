@@ -100,7 +100,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
 
   const calcAndSetData = async (ReservationItems:Array<any>) =>{
     const calculatedReservedItems = await calculatePricedEquipmentData(headerData, price_table_id, priceTableData, ReservationItems, new Date(`${reservationInfo.start_date} 0:0:0`), new Date(`${reservationInfo.end_date} 0:0:0`));
-console.log(calculatedReservedItems);
+
     let prices = {
       subtotal: 0,
       tax: 0,

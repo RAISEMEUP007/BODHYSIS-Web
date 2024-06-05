@@ -146,6 +146,10 @@ const AddReservationItemModal = ({
   useEffect(()=>{
     const filteredFamilies = productFamiliesData.filter(item=>item.category_id == selectedCategoryId);
     setFilteredFamilies(filteredFamilies);
+    if(filteredFamilies.length >0){
+      selectProductFamily(filteredFamilies[0])
+      setSelectedProductId(filteredFamilies[0].id)
+    }
   }, [productFamiliesData, productCategoriesData, selectedCategoryId])
 
   const AddButtonHandler = () => {
