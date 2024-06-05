@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import 'react-datepicker/dist/react-datepicker.css';
 
 import { getReservationsData } from '../../api/Reservation';
 import { BasicLayout, CommonContainer } from '../../common/components/CustomLayout';
@@ -14,14 +13,6 @@ import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
 
 import { DashboardStyle } from './styles/DashboardStyle';
-
-if (Platform.OS === 'web') {
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.type = 'text/css';
-  link.href = 'react-datepicker/dist/react-datepicker.css';
-  document.head.appendChild(link);
-}
 
 const Dashboard = ({ navigation }) => {
 

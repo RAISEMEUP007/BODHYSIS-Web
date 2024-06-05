@@ -1,13 +1,11 @@
-import React, { forwardRef, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, Platform } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 import { reservationMainInfoStyle } from './styles/ReservationMainInfoStyle';
 import LabeledTextInput from '../../common/components/input/LabeledTextInput';
-import 'react-datepicker/dist/react-datepicker.css';
 import { CommonSelectDropdown, DropdownData } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
-import { LocationType } from '../../types/LocationType';
-import { useRequestLocationsQuery } from '../../redux/slices/baseApiSlice';
 import { getDiscountCodesData } from '../../api/Settings';
 import { updateReservation } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
@@ -15,14 +13,7 @@ import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { getBrandDetail } from '../../api/Price';
 import { formatDate } from '../../common/utils/DateUtils';
 import { renderBOHFormDatePicker } from '../../common/components/bohform';
-
-if (Platform.OS === 'web') {
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.type = 'text/css';
-  link.href = 'react-datepicker/dist/react-datepicker.css';
-  document.head.appendChild(link);
-}
+import { getAddressesData, searchAddress } from '../../api/AllAddress ';
 
 const ReservationMainInfo = ({ details, setUpdateCount }) => {
   const { showAlert } = useAlertModal();
@@ -41,6 +32,9 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
 
   const [discountCodes, setDiscountCodes] = useState([]);
   const [brandDetail, setBrandDetail] = useState<any>({});
+  const [searchedAddresses, setSearchedAddresses] = useState<Array<any>>([]);
+  const [selectedAddress, selectAddress] = useState(null);
+  const [searchKey, setSearchKey] = useState('');
 
   useEffect(() => {
     if(details){
@@ -67,6 +61,9 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         group: details.group || '',
         deliveryAddress: deliveryAddress
       });
+
+      if(details.use_manual) setSearchKey(details?.manual_address??'');
+      else if(details.all_addresses) setSearchKey(`${details.all_addresses.number || ''} ${details.all_addresses.street || ''}, ${details.all_addresses.plantation || ''}${details.all_addresses.property_name? ` - ${details.all_addresses.property_name}` :''}`);
     }
   }, [details]);
 
@@ -77,7 +74,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         else setBrandDetail({});
       });
     } else setBrandDetail({});
-  }, [details])
+  }, [(details && details.brand_id)])
 
   useEffect(() => {
     if (inputValues.startDate && inputValues.endDate) {
@@ -113,22 +110,26 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
     });
   }, [])
 
-  const { data: locationsData } = useRequestLocationsQuery({}, {refetchOnFocus: true,});
-  
-  const locationsDropdownData = useMemo(() => {
-    if (!locationsData?.length) {
-      return [];
+  const getAddresses = useCallback(async (q:any) => {
+    setSearchKey(q);
+    selectAddress(null);
+    const filterToken = q.toLowerCase();
+    const response = await searchAddress(filterToken, details.brand_id);
+    const items = await response.json();
+    if (Array.isArray(items)) {
+      setSearchedAddresses(
+        items.map((address, index) => {
+          let addressOption = {
+            ...address,
+            label: `${address.number || ''} ${address.street || ''}, ${address.plantation || ''}${address.property_name? ` - ${address.property_name}` :''}<span style="display:none;">${index}</span>`
+          }
+          return addressOption;
+        })
+      );
+    } else {
+      setSearchedAddresses([]);
     }
-
-    const result: DropdownData<LocationType> = locationsData.map((item, index) => {
-      return {
-        value: item,
-        displayLabel: item.location,
-        index,
-      };
-    });
-    return result;
-  }, [locationsData]);
+  }, [details])
 
   const discountCodesDropdownData = useMemo(() => {
     if (!discountCodes?.length) {
@@ -190,6 +191,25 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
     })
 
   };
+
+  const handleAddressChange = (event, value) => {
+    const payload={
+      id: details.id,
+      address_id : value.id,
+      use_manual : false,
+    }
+    updateReservation(payload, (jsonRes, status) => {
+      switch (status) {
+        case 201:
+          selectAddress(value);
+          break;
+        default:
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
+  }
 
   return (
     <View style={{marginRight:30, zIndex:10}}>
@@ -255,10 +275,6 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         />
       </View>
       <View style={styles.reservationRow}>
-        {/* <View style={{marginRight:30}}>
-          <Text style={{marginBottom:6, color:"#555555"}}>{'Discount code'}</Text>
-          <Text style={styles.text} selectable={true}>{(discountCodes && details && details.promo_code)?discountCodes.find(item=>item.id==details.promo_code)?.code:' '}</Text>
-        </View> */}
         <CommonSelectDropdown
           containerStyle={{
             marginRight: 30,
@@ -278,27 +294,73 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           <Text style={{marginBottom:6, color:"#555555"}}>{'Discount Rate'}</Text>
           <Text style={styles.text} selectable={true}>{(discountCodes && details && details.promo_code)?discountCodes.find(item=>item.id==details.promo_code)?.amount:' '}</Text>
         </View>
-        {/* <LabeledTextInput
-          label='Custom Price'
-          width={200}
-          placeholder='Custom Price'
-          placeholderTextColor="#ccc"
-          inputStyle={{marginVertical:6}}
-          value={inputValues.customPrice}
-          onChangeText={value => handleInputChange('customPrice', value)}
-        /> */}
       </View>
       <View style={[styles.reservationRow, {width:'100%'}]}>
-        <LabeledTextInput
-          label='Delivery Address'
-          width={"100%"}
-          placeholder='Delivery Address'
-          placeholderTextColor="#ccc"
-          inputStyle={{marginVertical:6}}
-          editable={false}
-          value={inputValues.deliveryAddress}
-          onChangeText={value => handleInputChange('group', value)}
-        />
+        {Platform.OS === 'web' ?
+          <>
+            <Text style={{marginBottom:6, color:"#555555"}}>{'Delivery Address'}</Text>
+            <Autocomplete
+              // Multiple={true}
+              freeSolo
+              sx={{ 
+                width: '100%', 
+                padding: '0px',
+                borderRadius: '0px',
+              }}
+              disableClearable
+              options={searchedAddresses}
+              value={selectedAddress}
+              inputValue={searchKey}
+              onChange={handleAddressChange}
+              onInputChange={(event, value)=>{
+                getAddresses(value);
+              }}
+              onClose = {(event: React.SyntheticEvent, reason: string)=>{
+                
+              }}
+              filterOptions={(x) => {
+                return x;
+              }}
+              renderInput={(params) => {
+                const text = String(params?.inputProps?.value ?? ' ');
+                const spanIndex = text.indexOf('<span');
+                const inputVal = spanIndex !== -1 ? text.substring(0, spanIndex) : text;
+                return (
+                  <TextField
+                    {...params}
+                    inputProps={{
+                      ...params.inputProps,
+                      type: 'search',
+                      value: inputVal,
+                      style: {
+                        padding:'2px',
+                        fontSize:'14px',
+                      }
+                    }}
+                  />
+                )
+              }}
+              renderOption={(props, option) => {
+                const htmlLabel = { __html: option.label };
+                return (
+                  <li {...props}>
+                    <span style={{fontSize:'14px'}} dangerouslySetInnerHTML={htmlLabel} />
+                  </li>
+                );
+              }}
+            />
+          </>
+          :
+          <LabeledTextInput
+            label='Delivery Address'
+            width={"100%"}
+            placeholder='Delivery Address'
+            placeholderTextColor="#ccc"
+            inputStyle={{marginVertical:6}}
+            editable={false}
+            value={inputValues.deliveryAddress}
+            onChangeText={value => handleInputChange('group', value)}
+          />}
       </View>
     </View>
   );
