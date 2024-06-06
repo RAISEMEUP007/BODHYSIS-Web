@@ -19,7 +19,7 @@ import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import NumericInput from '../../../common/components/formcomponents/NumericInput';
-import LabeledTextInput from '../../../common/components/input/LabeledTextInput';
+import LabeledTextInput from '../../../common/components/bohform/LabeledTextInput';
 import { API_URL } from '../../../common/constants/AppConstants';
 
 import { addTransactionModaltyles } from './styles/AddTransactionModalStyle';
