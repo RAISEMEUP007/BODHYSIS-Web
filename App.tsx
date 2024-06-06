@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Linking, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, Linking, View, ActivityIndicator, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -14,6 +14,14 @@ import { Provider } from 'react-redux';
 import { setNavigator } from './src/common/utils/NavigationUtils';
 import { appLinking } from './src/common/constants/AppLinking';
 import * as Sentry from "@sentry/react-native";
+
+if (Platform.OS === 'web') {
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = 'react-datepicker/dist/react-datepicker.css';
+  document.head.appendChild(link);
+}
 
 Sentry.init({
   dsn: "https://deb9289f93938841be41cb5dbb7abfb4@o382651.ingest.us.sentry.io/4507070883495936",

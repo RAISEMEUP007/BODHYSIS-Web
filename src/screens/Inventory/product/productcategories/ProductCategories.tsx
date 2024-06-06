@@ -31,7 +31,7 @@ const ProductCategories = ({ navigation, openInventory }) => {
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const InitialWidths = [220, 80, 90, 50, 50];
+  const InitialWidths = [220, 90, 90, 50, 50];
 
   const openAddProductCategoryModal = () => {
     setAddModalVisible(true);
@@ -119,7 +119,7 @@ const ProductCategories = ({ navigation, openInventory }) => {
         rows.push(
           <BOHTR key={index}>
             <BOHTD width={InitialWidths[0]}>{item.category}</BOHTD>
-            <BOHTD width={InitialWidths[1]} style={{textAlign:'right'}}>{item.quantity ? item.quantity : '0'}</BOHTD>
+            <BOHTD width={InitialWidths[1]} textAlign={'right'}>{item.quantity ? item.quantity : '0'}</BOHTD>
             <BOHTDImageBox width={InitialWidths[2]} imgURL={ API_URL + item.img_url }/>
             <BOHTDIconBox width={InitialWidths[3]}>
               <TouchableOpacity

@@ -1,19 +1,26 @@
 import React, { ReactNode } from 'react';
-import { Text, StyleSheet, TextProps } from 'react-native';
+import { Text, StyleSheet, TextProps, View, ViewProps } from 'react-native';
 
-interface BOHTDProps extends TextProps {
+interface BOHTDProps extends ViewProps {
   children?: ReactNode;
   width?: number;
+  textAlign?: 'auto' | 'left' | 'right' | 'center' | 'justify' | undefined;
+  textProps?: TextProps;
 }
 
-const BOHTD: React.FC<BOHTDProps> = ({ children, width, style, ...rest }) => {
+const BOHTD: React.FC<BOHTDProps> = ({ children, width, textAlign, textProps, style, ...rest }) => {
   return (
-    <Text
+    <View
       {...rest}
       style={[styles.defaultTheme, width && {width:width}, style]}
     >
-      {children}
-    </Text>
+      <Text
+        style={textAlign && {textAlign}}
+        {...textProps}
+      >
+        {children}
+      </Text>
+    </View>
   );
 };
 

@@ -98,7 +98,7 @@ const Extras = ({ navigation, openInventory }) => {
           <BOHTR key={index}>
             <BOHTD width={InitialWidths[0]}>{(item.status?'Active':'Inactive')}</BOHTD>
             <BOHTD width={InitialWidths[1]}>{item.name}</BOHTD>
-            <BOHTD width={InitialWidths[2]} style={{textAlign:'right'}}>{price}</BOHTD>
+            <BOHTD width={InitialWidths[2]} textAlign={'right'}>{price}</BOHTD>
             <BOHTDImageBox width={InitialWidths[3]} imgURL={API_URL + item.img_url}/>
             <BOHTDIconBox width={InitialWidths[4]}>
               <TouchableOpacity

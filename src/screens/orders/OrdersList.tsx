@@ -10,7 +10,7 @@ import { TextMediumSize, TextdefaultSize } from '../../common/constants/Fonts';
 import { BasicLayout, CommonContainer } from '../../common/components/CustomLayout';
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
 import { BOHTlbrSearchInput, BOHTlbrSearchPicker, BOHToolbar, BOHTlbRadio, renderBOHTlbDatePicker, BOHButton, BOHTlbCheckbox } from '../../common/components/bohtoolbar';
-import { formatDate } from '../../common/utils/DateUtils';
+import { formatDate, formatDate2 } from '../../common/utils/DateUtils';
 
 const OrdersList = ({ navigation, openOrderScreen }) => {
 
@@ -289,12 +289,12 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
             <BOHTD width={InitialWidths[0]}>{item.order_number}</BOHTD>
             <BOHTD width={InitialWidths[1]}>{item.brand}</BOHTD>
             <BOHTD width={InitialWidths[2]}>{item.full_name}</BOHTD>
-            <BOHTD width={InitialWidths[3]}>{item.start_date ? formatDate(new Date(`${item.start_date} 0:0:0`)) : ''}</BOHTD>
-            <BOHTD width={InitialWidths[4]}>{item.end_date ? formatDate(new Date(`${item.end_date} 0:0:0`)) : ''}</BOHTD>
-            <BOHTD width={InitialWidths[5]} style={{textAlign:'right'}}>{item?.quantity??''}</BOHTD>
-            <BOHTD width={InitialWidths[6]} style={{textAlign:'right'}}>{(item && item.driver_tip>0)?item.driver_tip.toLocaleString('en-US', { style: 'currency', currency: 'USD' }):''}</BOHTD>
+            <BOHTD width={InitialWidths[3]}>{item.start_date ? formatDate2(new Date(`${item.start_date} 00:00:00`)) : ''}</BOHTD>
+            <BOHTD width={InitialWidths[4]}>{item.end_date ? formatDate2(new Date(`${item.end_date} 00:00:00`)) : ''}</BOHTD>
+            <BOHTD width={InitialWidths[5]} textAlign={'right'}>{item?.quantity??''}</BOHTD>
+            <BOHTD width={InitialWidths[6]} textAlign={'right'}>{(item && item.driver_tip>0)?item.driver_tip.toLocaleString('en-US', { style: 'currency', currency: 'USD' }):''}</BOHTD>
             <BOHTD width={InitialWidths[7]}>{convertStageToString(item.stage)}</BOHTD>
-            <BOHTD width={InitialWidths[8]} style={{textAlign:'center'}}>{item?.color_id?'YES':'NO'}</BOHTD>
+            <BOHTD width={InitialWidths[8]} textAlign={'center'}>{item?.color_id?'YES':'NO'}</BOHTD>
             <BOHTDIconBox  width={InitialWidths[9]}>
               <TouchableOpacity
                 onPress={() => {

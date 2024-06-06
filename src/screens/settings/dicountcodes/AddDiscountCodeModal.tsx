@@ -11,14 +11,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import DatePicker from 'react-datepicker';
 
-if (Platform.OS === 'web') {
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.type = 'text/css';
-  link.href = 'react-datepicker/dist/react-datepicker.css';
-  document.head.appendChild(link);
-}
-
 import {
   createDiscountCode,
   deleteExclusionByDCId,

@@ -75,7 +75,7 @@ const Avaiable = ({ navigation, openMarketingMenu }) => {
             <BOHTD width={InitialWidths[0]}>{item.display_name ||" "}</BOHTD>
             {item.quantities.length >0 && (
               item.quantities.map((quantity, index)=>(
-                <BOHTD key={index} width={80} style={{textAlign:'center'}}>{`${quantity.out_amount}/${quantity.inventoryAmount}`}</BOHTD>
+                <BOHTD key={index} width={80} textAlign={'center'}>{`${quantity.out_amount}/${quantity.inventoryAmount}`}</BOHTD>
               ))
             )}
           </BOHTR>
@@ -122,7 +122,7 @@ const Avaiable = ({ navigation, openMarketingMenu }) => {
               <BOHTH2 width={InitialWidths[0]}>{'Display Name'}</BOHTH2>
               {(tableData && tableData.length >0) && (
                 tableData[0].quantities.map((quantity, index)=>(
-                  <BOHTH2 key={index} width={80} style={{textAlign:'center'}}>{quantity.date ? new Date(`${quantity.date} 0:0:0`).toLocaleString('en-US', {
+                  <BOHTH2 key={index} width={80} style={{textAlign:'center'}}>{quantity.date ? new Date(`${quantity.date} 00:00:00`).toLocaleString('en-US', {
                     month: '2-digit',
                     day: '2-digit',
                   }) : ''}</BOHTH2>

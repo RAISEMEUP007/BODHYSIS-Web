@@ -4,7 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 import { getAddressesData, deleteAddress } from '../../../api/AllAddress ';
 import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
-import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
+import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTH2, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
 import { BOHButton, BOHTlbrSearchInput, BOHToolbar } from '../../../common/components/bohtoolbar';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
@@ -19,7 +19,7 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
   
   const [tableData, setTableData] = useState([]);
   const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(true);
-  const InitialWidths = [76, 170, 170, 170, 113, 50, 50];
+  const InitialWidths = [80, 170, 170, 170, 113, 50, 50];
   const [searchKey, setSearchKey] = useState('');
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
@@ -141,13 +141,13 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
         <BOHTable>
           <BOHTHead>
             <BOHTR>
-              <BOHTH width={InitialWidths[0]}>{'Number'}</BOHTH>
-              <BOHTH width={InitialWidths[1]}>{'Street'}</BOHTH>
-              <BOHTH width={InitialWidths[2]}>{'Plantation'}</BOHTH>
-              <BOHTH width={InitialWidths[3]}>{'Property name'}</BOHTH>
-              <BOHTH width={InitialWidths[4]}>{'Property type'}</BOHTH>
-              <BOHTH width={InitialWidths[5]}>{'Edit'}</BOHTH>
-              <BOHTH width={InitialWidths[6]}>{'DEL'}</BOHTH>
+              <BOHTH2 width={InitialWidths[0]}>{'Number'}</BOHTH2>
+              <BOHTH2 width={InitialWidths[1]}>{'Street'}</BOHTH2>
+              <BOHTH2 width={InitialWidths[2]}>{'Plantation'}</BOHTH2>
+              <BOHTH2 width={InitialWidths[3]}>{'Property name'}</BOHTH2>
+              <BOHTH2 width={InitialWidths[4]}>{'Property type'}</BOHTH2>
+              <BOHTH2 width={InitialWidths[5]}>{'Edit'}</BOHTH2>
+              <BOHTH2 width={InitialWidths[6]}>{'DEL'}</BOHTH2>
             </BOHTR>
           </BOHTHead>
           <BOHTBody>
