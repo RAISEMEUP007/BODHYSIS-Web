@@ -1,6 +1,14 @@
 import React, { InputHTMLAttributes, forwardRef } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import DatePicker from 'react-datepicker';
+
+if (Platform.OS === 'web') {
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = 'react-datepicker/dist/react-datepicker.css';
+  document.head.appendChild(link);
+}
 
 const renderBOHFormDatePicker = (selectedDate, onChangeHandler) => {
   const CustomInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(

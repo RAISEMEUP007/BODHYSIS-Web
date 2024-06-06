@@ -14,6 +14,7 @@ import { msgStr } from '../../common/constants/Message';
 import { printReservation } from '../../common/utils/Print';
 
 import { actionOrderStyle } from './styles/ActionOrderStyle';
+import { formatDate } from '../../common/utils/DateUtils';
 
 interface Props {
   openOrderScreen: (itemName: string, data?: any ) => void;
@@ -314,11 +315,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               containerStyle={{marginRight:30}}
               placeholder='Start date'
               placeholderTextColor="#ccc"
-              value={orderInfo.start_date ? new Date(`${orderInfo.start_date} 0:0:0`).toLocaleString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-              }) : ''}
+              value={orderInfo.start_date ? formatDate(new Date(`${orderInfo.start_date} 0:0:0`)) : ''}
               // onChangeText={value => handleInputChange('billableDays', value)}
               editable={false}
             />
@@ -327,11 +324,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               width={300}
               placeholder='End date'
               placeholderTextColor="#ccc"
-              value={orderInfo.end_date ? new Date(`${orderInfo.end_date} 0:0:0`).toLocaleString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-              }) : ''}
+              value={orderInfo.end_date ? formatDate(new Date(`${orderInfo.end_date} 0:0:0`)) : ''}
               // onChangeText={value => handleInputChange('billableDays', value)}
               editable={false}
             />
