@@ -1,7 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, TextInput } from 'react-native';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { View, Text, TextInput, Platform } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
+import { searchAddress } from '../../api/AllAddress ';
 import { checkedInBarcode, getReservationDetail, scanBarcode, updateReservation, updateReservationItem } from '../../api/Reservation';
 import { getColorcombinationsData } from '../../api/Settings';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
@@ -14,7 +17,7 @@ import { msgStr } from '../../common/constants/Message';
 import { printReservation } from '../../common/utils/Print';
 
 import { actionOrderStyle } from './styles/ActionOrderStyle';
-import { formatDate } from '../../common/utils/DateUtils';
+import { formatDate, formatDate2 } from '../../common/utils/DateUtils';
 
 interface Props {
   openOrderScreen: (itemName: string, data?: any ) => void;
@@ -31,7 +34,9 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
   const [barcode, SetBarcode] = useState(initialData.barcode || '');
   const [nextDisable, setNextDisable] = useState(true);
 
-  console.log(barcode);
+  const [searchedAddresses, setSearchedAddresses] = useState<Array<any>>([]);
+  const [selectedAddress, selectAddress] = useState(null);
+  const [searchKey, setSearchKey] = useState('');
 
   const [inputValues, setInputValues] = useState({
     email: '',
@@ -40,7 +45,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
     note: '',
     deliveryAddress: '',
   });
-
+  const updateTimer = useRef(null);
   const barcodeInputRef = useRef(null);
 
   useEffect(() => {
@@ -97,27 +102,6 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
       })
     }
   }, [orderInfo])
-
-  const UpdateDetails = () => {
-    const payload = {
-      id: orderInfo.id,
-      ...inputValues
-    }
-    updateReservation(payload, (jsonRes, status)=>{
-      if(status == 201) showAlert('success', 'Updated successfully');
-    });
-  }
-
-  const UpdateOrderInfo = (key: string, value: any) => {
-    const payload = {
-      id: orderInfo.id,
-      [key]:value || null
-    }
-    updateReservation(payload, (jsonRes)=>{
-      const newColor = key === 'color_id' ? colors.find(item => item.id == value) : orderInfo.color;
-      setOrderInfo(prevOrderInfo => ({ ...prevOrderInfo, [key]: value, color: newColor }));
-    });
-  };
 
   const updateItem = (payload, index) => {
     updateReservationItem(payload, (jsonRes, status)=>{
@@ -246,12 +230,72 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
   }
 
   const handleInputChange = (fieldName, value) => {
-    const newValues = {
+    const newValues:any = {
       ...inputValues,
       [fieldName]: value
     };
-    // setInputValues(newValues);
-    UpdateOrderInfo(fieldName, value);
+    if(fieldName === 'color_id'){
+      const newColor = colors.find(item => item.id == value);
+      newValues.color = newColor; 
+    }
+    setInputValues(newValues);
+
+    const payload = {
+      id: orderInfo.id,
+      [fieldName]:value || null
+    }
+    if (updateTimer.current) {
+      clearTimeout(updateTimer.current);
+    }
+
+    updateTimer.current = setTimeout(() => {
+      updateReservation(payload, (jsonRes, status) => {
+        switch (status) {
+          case 201:
+            break;
+        }
+      });
+    }, 1000);
+  }
+
+  const getAddresses = useCallback(async (q:any) => {
+    setSearchKey(q);
+    selectAddress(null);
+    const filterToken = q.toLowerCase();
+    const response = await searchAddress(filterToken, orderInfo.brand_id);
+    const items = await response.json();
+    if (Array.isArray(items)) {
+      setSearchedAddresses(
+        items.map((address, index) => {
+          let addressOption = {
+            ...address,
+            label: `${address.number || ''} ${address.street || ''}, ${address.plantation || ''}${address.property_name? ` - ${address.property_name}` :''}<span style="display:none;">${index}</span>`
+          }
+          return addressOption;
+        })
+      );
+    } else {
+      setSearchedAddresses([]);
+    }
+  }, [orderInfo])
+
+  const handleAddressChange = (event, value) => {
+    const payload={
+      id: orderInfo.id,
+      address_id : value.id,
+      use_manual : false,
+    }
+    updateReservation(payload, (jsonRes, status) => {
+      switch (status) {
+        case 201:
+          selectAddress(value);
+          break;
+        default:
+          if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
+          else showAlert('error', msgStr('unknownError'));
+          break;
+      }
+    })
   }
 
   const processNextStage = () => {
@@ -315,7 +359,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               containerStyle={{marginRight:30}}
               placeholder='Start date'
               placeholderTextColor="#ccc"
-              value={orderInfo.start_date ? formatDate(new Date(`${orderInfo.start_date} 0:0:0`)) : ''}
+              value={orderInfo.start_date ? formatDate2(new Date(`${orderInfo.start_date} 00:00:00`)) : ''}
               // onChangeText={value => handleInputChange('billableDays', value)}
               editable={false}
             />
@@ -324,7 +368,7 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               width={300}
               placeholder='End date'
               placeholderTextColor="#ccc"
-              value={orderInfo.end_date ? formatDate(new Date(`${orderInfo.end_date} 0:0:0`)) : ''}
+              value={orderInfo.end_date ? formatDate2(new Date(`${orderInfo.end_date} 00:00:00`)) : ''}
               // onChangeText={value => handleInputChange('billableDays', value)}
               editable={false}
             />
@@ -453,6 +497,73 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               <Text style={styles.buttonText}>NEXT</Text>
             </TouchableOpacity>
           </View> */}
+          <View style={[styles.orderRow, {width:'100%'}]}>
+            {Platform.OS === 'web' ?
+              <>
+                <Text style={{marginBottom:6, color:"#555555"}}>{'Delivery Address'}</Text>
+                <Autocomplete
+                  // Multiple={true}
+                  freeSolo
+                  sx={{ 
+                    width: '100%', 
+                    padding: '0px',
+                    borderRadius: '0px',
+                  }}
+                  disableClearable
+                  options={searchedAddresses}
+                  value={selectedAddress}
+                  inputValue={searchKey}
+                  onChange={handleAddressChange}
+                  onInputChange={(event, value)=>{
+                    getAddresses(value);
+                  }}
+                  onClose = {(event: React.SyntheticEvent, reason: string)=>{
+                    
+                  }}
+                  filterOptions={(x) => {
+                    return x;
+                  }}
+                  renderInput={(params) => {
+                    const text = String(params?.inputProps?.value ?? ' ');
+                    const spanIndex = text.indexOf('<span');
+                    const inputVal = spanIndex !== -1 ? text.substring(0, spanIndex) : text;
+                    return (
+                      <TextField
+                        {...params}
+                        inputProps={{
+                          ...params.inputProps,
+                          type: 'search',
+                          value: inputVal,
+                          style: {
+                            padding:'2px',
+                            fontSize:'14px',
+                          }
+                        }}
+                      />
+                    )
+                  }}
+                  renderOption={(props, option) => {
+                    const htmlLabel = { __html: option.label };
+                    return (
+                      <li {...props}>
+                        <span style={{fontSize:'14px'}} dangerouslySetInnerHTML={htmlLabel} />
+                      </li>
+                    );
+                  }}
+                />
+              </>
+              :
+              <LabeledTextInput
+                label='Delivery Address'
+                width={"100%"}
+                placeholder='Delivery Address'
+                placeholderTextColor="#ccc"
+                inputStyle={{marginVertical:6}}
+                editable={false}
+                value={inputValues.deliveryAddress}
+                onChangeText={value => handleInputChange('group', value)}
+              />}
+          </View>
           <View style={[styles.orderRow, {justifyContent:'flex-end'}]}>
           </View>
           <BOHToolbar style={{justifyContent:'space-between', alignItems:'center',}}>

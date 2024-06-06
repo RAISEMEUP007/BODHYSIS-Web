@@ -8,14 +8,6 @@ import TruckTripsAll from './TruckTripsAll';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-if (Platform.OS === 'web') {
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.type = 'text/css';
-  link.href = 'react-datepicker/dist/react-datepicker.css';
-  document.head.appendChild(link);
-}
-
 interface Props {
   navigation: any;
 }

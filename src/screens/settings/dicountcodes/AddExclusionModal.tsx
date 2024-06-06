@@ -12,14 +12,6 @@ import {
 
 import DatePicker from 'react-datepicker';
 
-if (Platform.OS === 'web') {
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.type = 'text/css';
-  link.href = 'react-datepicker/dist/react-datepicker.css';
-  document.head.appendChild(link);
-}
-
 import { createExclusion, updateExclusion } from '../../../api/Settings';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';

@@ -43,6 +43,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
     note: '',
     deliveryAddress: ''
   });
+  const updateTimer = useRef(null);
 
   const [discountCodes, setDiscountCodes] = useState([]);
   const [brandDetail, setBrandDetail] = useState<any>({});
@@ -52,8 +53,8 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
 
   useEffect(() => {
     if(details){
-      const _startDate = formatDate(new Date(`${details.start_date} 0:0:0`))
-      const _endDate = formatDate(new Date(`${details.end_date} 0:0:0`))
+      const _startDate = formatDate(new Date(`${details.start_date} 00:00:00`))
+      const _endDate = formatDate(new Date(`${details.end_date} 00:00:00`))
 
       const billableDays = Math.ceil((new Date(details.end_date).getTime() - new Date(details.start_date).getTime()) / (1000 * 60 * 60 * 24));
 
@@ -204,7 +205,33 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           break;
       }
     })
+  };
 
+  const handleInputChange2 = (fieldName:'note', value) => {
+    const newValues = {
+      ...inputValues,
+      [fieldName]: value
+    };
+
+    setInputValues(newValues);
+
+    const payload:any = {
+      id: details.id,
+      note: newValues.note,
+    }
+
+    if (updateTimer.current) {
+      clearTimeout(updateTimer.current);
+    }
+
+    updateTimer.current = setTimeout(() => {
+      updateReservation(payload, (jsonRes, status) => {
+        switch (status) {
+          case 201:
+            break;
+        }
+      });
+    }, 1000);
   };
 
   const handleAddressChange = (event, value) => {
@@ -383,7 +410,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           multiline={true}
           inputStyle={{height:100}}
           value={inputValues.note}
-          onChangeText={value => handleInputChange('note', value)}
+          onChangeText={value => handleInputChange2('note', value)}
         />
       </View>
     </View>

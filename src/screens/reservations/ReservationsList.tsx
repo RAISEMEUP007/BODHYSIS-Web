@@ -15,7 +15,7 @@ import { msgStr } from '../../common/constants/Message';
 import { TextMediumSize, TextdefaultSize } from '../../common/constants/Fonts';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
-import { formatDate } from '../../common/utils/DateUtils';
+import { formatDate, formatDate2 } from '../../common/utils/DateUtils';
 
 const ReservationsList = ({ navigation, openReservationScreen }) => {
 
@@ -242,9 +242,9 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
             <BOHTD width={initialWidths[0]}>{item.order_number}</BOHTD>
             <BOHTD width={initialWidths[1]}>{item.brand}</BOHTD>
             <BOHTD width={initialWidths[2]}>{item.full_name}</BOHTD>
-            <BOHTD width={initialWidths[3]}>{item.start_date ? formatDate(new Date(`${item.start_date} 0:0:0`)) : ''}</BOHTD>
-            <BOHTD width={initialWidths[4]}>{item.end_date ? formatDate(new Date(`${item.end_date} 0:0:0`)) : ''}</BOHTD>
-            <BOHTD width={initialWidths[5]} style={{textAlign:'right'}}>{item?.quantity??''}</BOHTD>
+            <BOHTD width={initialWidths[3]}>{item.start_date ? formatDate2(new Date(`${item.start_date} 00:00:00`)) : ''}</BOHTD>
+            <BOHTD width={initialWidths[4]}>{item.end_date ? formatDate2(new Date(`${item.end_date} 00:00:00`)) : ''}</BOHTD>
+            <BOHTD width={initialWidths[5]} textAlign={'right'}>{item?.quantity??''}</BOHTD>
             <BOHTD width={initialWidths[6]}>{convertStageToString(item.stage)}</BOHTD>
             <BOHTDIconBox width={initialWidths[7]}>
               <TouchableOpacity

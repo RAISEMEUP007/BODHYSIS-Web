@@ -160,7 +160,7 @@ export const customersStyle = StyleSheet.create({
     top: -20,
   },
   IconCell: {
-    width: 70,
+    width: 75,
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',

@@ -140,7 +140,7 @@ const DiscountCodes = ({ navigation, openInventory }) => {
             <View style={[styles.cell]}>
               <Text>{item.type === 1 ? 'Percentage' : item.type === 2 ? 'Flat fee' : ''}</Text>
             </View>
-            <View style={[styles.cell, { alignItems: 'center' }]}>
+            <View style={[styles.cell, { alignItems: 'flex-end', width:100 }]}>
               <Text>{item.amount}</Text>
             </View>
             <View style={[styles.IconCell]}>
@@ -194,7 +194,7 @@ const DiscountCodes = ({ navigation, openInventory }) => {
               <Text style={[styles.columnHeader, { width: 200 }]}>{'Valid From'}</Text>
               <Text style={[styles.columnHeader, { width: 200 }]}>{'Valid To'}</Text>
               <Text style={[styles.columnHeader]}>{'Type'}</Text>
-              <Text style={[styles.columnHeader]}>{'Amount'}</Text>
+              <Text style={[styles.columnHeader, { width: 100 }]}>{'Amount'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
               <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
             </View>

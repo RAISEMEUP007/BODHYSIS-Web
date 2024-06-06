@@ -89,7 +89,7 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
             <BOHTD width={InitialWidths[4]}>{item.street||" "}</BOHTD>
             <BOHTD width={InitialWidths[5]}>{item.property_name||" "}</BOHTD>
             <BOHTD width={InitialWidths[6]}>{""}</BOHTD>
-            <BOHTD width={InitialWidths[7]} style={{textAlign:'right'}}>{item.guests}</BOHTD>
+            <BOHTD width={InitialWidths[7]} textAlign={'right'}>{item.guests}</BOHTD>
             { item.queryResult.map((subItem, index)=>{
               let color = getCellColor(subItem?.percentage??0);
               return (

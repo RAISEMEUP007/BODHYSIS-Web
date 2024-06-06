@@ -40,14 +40,6 @@ import { getStoreDetail } from '../../api/Settings';
 import { getDiscountCodesData } from '../../api/Settings';
 import QuantitiesDetailsModal from './QuantitiesDetailsModal';
 
-if (Platform.OS === 'web') {
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.type = 'text/css';
-  link.href = 'react-datepicker/dist/react-datepicker.css';
-  document.head.appendChild(link);
-}
-
 interface Props {
   openReservationScreen: (itemName: string, data?: any) => void;
   initialData?: any;
