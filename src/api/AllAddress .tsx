@@ -11,8 +11,8 @@ export const searchAddress = async (str:any, storeId:number, cb = (jR, s, e)=>{}
 }
 
 
-export const getForecastingData = async (cb = (jR, s, e)=>{}) => {
-  return await getAPICall('forecasting/getsummary/', cb);
+export const getForecastingData = async (payload, cb = (jR, s, e)=>{}) => {
+  return await postAPICall('forecasting/getsummary/', payload, cb);
 }
 
 export const updateAddress = (payload, cb=(jR, s, e)=>{}) => {

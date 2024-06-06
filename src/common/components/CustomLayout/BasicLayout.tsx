@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Platform, Linking } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Platform, ActivityIndicator } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
   children?: string | JSX.Element | JSX.Element[];
   containerStyle?: ViewStyle;
   backKeyboard?: boolean;
+  isLoading?: boolean;
 }
 
 const BasicLayout = ({
@@ -20,6 +21,7 @@ const BasicLayout = ({
   children,
   containerStyle,
   backKeyboard,
+  isLoading,
 }: Props) => {
 
   useEffect(() => {
@@ -86,6 +88,11 @@ const BasicLayout = ({
         <Text style={styles.screenName}>{screenName}</Text>
       </View>
       {children}
+      {isLoading && (
+        <View style={styles.overlay}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
     </View>
   );
 };
@@ -117,6 +124,16 @@ const styles = StyleSheet.create({
   screenName: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  overlay: {
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
   },
 });
 
