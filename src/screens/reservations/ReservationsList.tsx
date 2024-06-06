@@ -335,6 +335,41 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
         </BOHToolbar>
         <BOHToolbar>
           <BOHTlbRadio
+            label='Next Fri'
+            style={{margin:0}}
+            onPress={()=>{setPeriodRange('Next Fri')}}
+            RadioButtonProps={{
+              value: '1',
+              status: periodRange == 'Next Fri'? 'checked': 'unchecked',
+            }}
+          />
+          <BOHTlbRadio
+            label='Next Sat'
+            onPress={()=>{setPeriodRange('Next Sat')}}
+            RadioButtonProps={{
+              value: '1',
+              status: periodRange == 'Next Sat'? 'checked': 'unchecked',
+            }}
+          />
+          <BOHTlbRadio
+            label='Next Sun'
+            onPress={()=>{setPeriodRange('Next Sun')}}
+            RadioButtonProps={{
+              value: '1',
+              status: periodRange == 'Next Sun'? 'checked': 'unchecked',
+            }}
+          />
+          <BOHTlbRadio
+            label='Next Mon'
+            onPress={()=>{setPeriodRange('Next Mon')}}
+            RadioButtonProps={{
+              value: '1',
+              status: periodRange == 'Next Mon'? 'checked': 'unchecked',
+            }}
+          />
+        </BOHToolbar>
+        <BOHToolbar>
+          <BOHTlbRadio
             label='Checked In'
             style={{margin:0}}
             onPress={()=>{
