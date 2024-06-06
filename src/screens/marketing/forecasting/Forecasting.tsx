@@ -101,7 +101,6 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
   }
 
   const renderTableData = () => {
-    console.log('ee');
     const rows = [];
     if (tableData && tableData.length && tableData.length > 0) {
       tableData.map((item, index) => {
