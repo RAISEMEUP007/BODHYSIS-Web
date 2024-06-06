@@ -208,7 +208,7 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
           })}
           <BOHTlbCheckbox
             label={'FIF'}
-            style={{marginRight:10}}
+            style={{marginLeft:30, marginRight:10}}
             CheckboxProps={{
               value:searchOptions.xploriefif
             }}
