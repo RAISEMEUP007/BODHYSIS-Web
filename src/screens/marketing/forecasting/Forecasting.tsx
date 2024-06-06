@@ -16,6 +16,7 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
   const { showConfirm } = useConfirmModal();
 
   const [tableData, setTableData] = useState([]);
+  const [totalNights, setTotalNights] = useState(0);
   const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(false);
   const InitialWidths = [200, 90, 90, 80, 160, 160, 100, 80];
   const [searchKey, setSearchKey] = useState('');
@@ -60,6 +61,7 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
         case 200:
           setUpdateLocationsTrigger(false);
           setTableData(jsonRes.gridData);
+          setTotalNights(jsonRes.totalNights);
           setweeksArray(jsonRes.weeksArray);
           break;
         case 500:
@@ -208,7 +210,7 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
           })}
           <BOHTlbCheckbox
             label={'FIF'}
-            style={{marginRight:10}}
+            style={{marginLeft:30, marginRight:10}}
             CheckboxProps={{
               value:searchOptions.xploriefif
             }}
@@ -225,6 +227,7 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
               changeSearchOptions('xplorievoucher', !searchOptions.xplorievoucher);
             }}
           />
+          <Text style={{fontSize:TextdefaultSize, marginLeft:30,}}>{`Total Nights: ${totalNights}`}</Text>
         </BOHToolbar>
         {tableElement}
       </CommonContainer>
