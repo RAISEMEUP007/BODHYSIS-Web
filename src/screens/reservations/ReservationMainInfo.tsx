@@ -27,6 +27,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
     customPrice: '',
     referrer: '',
     group: '',
+    note: '',
     deliveryAddress: ''
   });
 
@@ -48,7 +49,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
       const hours = Math.floor(totalHours % 24);
       const durationText = hours > 0 ? `${days} days and ${hours} hours` : `${days} days`;
 
-      const deliveryAddress = details.use_manual? details.manual_address: (details?.all_addresses?.number??'') + ' ' + (details?.all_addresses?.street??'') + ' ' + (details?.all_addresses?.plantation??'') + ' ' + (details?.all_addresses?.property_name??'');
+      const deliveryAddress = details.use_manual? details.manual_address: (details?.all_addresses?.number??'') + ' ' + (details?.all_addresses?.street??'') + ' ' + (details?.all_addresses?.property_name??'') + ' ' + (details?.all_addresses?.plantation??'');
 
       setInputValues({
         startDate: _startDate,
@@ -59,11 +60,12 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         customPrice: details.customPrice || '',
         referrer: details.referrer || '',
         group: details.group || '',
-        deliveryAddress: deliveryAddress
+        deliveryAddress: deliveryAddress,
+        note: details.note,
       });
 
       if(details.use_manual) setSearchKey(details?.manual_address??'');
-      else if(details.all_addresses) setSearchKey(`${details.all_addresses.number || ''} ${details.all_addresses.street || ''}, ${details.all_addresses.plantation || ''}${details.all_addresses.property_name? ` - ${details.all_addresses.property_name}` :''}`);
+      else if(details.all_addresses) setSearchKey(`${details.all_addresses.number || ''} ${details.all_addresses.street || ''}${details.all_addresses.property_name? `${details.all_addresses.property_name}` :''}, ${details.all_addresses.plantation || ''}`);
     }
   }, [details]);
 
@@ -92,7 +94,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         setInputValues(prev => ({
           ...prev,
           billableDays: billableDays,
-          reservationDuration: durationText
+          reservationDuration: durationText,
         }));
       };
   
@@ -251,7 +253,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           })}
         </View>
       </View>
-      <View style={styles.reservationRow}>
+      {/* <View style={styles.reservationRow}>
         <LabeledTextInput
           label='Billable days'
           width={200}
@@ -273,7 +275,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           onChangeText={value => handleInputChange('reservationDuration', value)}
           editable={false}
         />
-      </View>
+      </View> */}
       <View style={styles.reservationRow}>
         <CommonSelectDropdown
           containerStyle={{
@@ -361,6 +363,19 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
             value={inputValues.deliveryAddress}
             onChangeText={value => handleInputChange('group', value)}
           />}
+      </View>
+
+      <View style={[styles.reservationRow]}>
+        <LabeledTextInput
+          label='Notes'
+          width={"100%"}
+          placeholder='Notes'
+          placeholderTextColor="#ccc"
+          multiline={true}
+          inputStyle={{height:100}}
+          value={inputValues.note}
+          onChangeText={value => handleInputChange('note', value)}
+        />
       </View>
     </View>
   );
