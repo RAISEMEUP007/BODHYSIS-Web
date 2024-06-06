@@ -38,21 +38,6 @@ const AddDocumentModal = ({ isModalVisible, Document, setUpdateDocumentTrigger, 
   const [documentType, setDocumentType] = useState(0);
   const [documentContentTxt, setDocumentContentTxt] = useState('');
 
-  useEffect(() => {
-    if (Platform.OS === 'web') {
-      const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-          closeModal();
-        }
-      };
-
-      window.addEventListener('keydown', handleKeyDown);
-
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-      };
-    }
-  }, [closeModal]);
 
   useEffect(() => {
     if (isModalVisible) {

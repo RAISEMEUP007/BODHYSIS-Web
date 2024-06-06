@@ -31,21 +31,6 @@ const CreateGroupModal = ({
 
   const [_groupName, setGroupname] = useState(groupName);
 
-  useEffect(() => {
-    if (Platform.OS === 'web') {
-      const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-          closeModal();
-        }
-      };
-
-      window.addEventListener('keydown', handleKeyDown);
-
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-      };
-    }
-  }, [closeModal]);
 
   const handleAddButtonClick = () => {
     if (!_groupName.trim()) {

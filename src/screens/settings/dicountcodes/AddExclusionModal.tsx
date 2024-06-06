@@ -52,21 +52,6 @@ const AddExclusionModal = ({
   const [fromdate, setFrom] = useState(null);
   const [todate, setTo] = useState(null);
 
-  useEffect(() => {
-    if (Platform.OS === 'web') {
-      const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-          closeModal();
-        }
-      };
-
-      window.addEventListener('keydown', handleKeyDown);
-
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-      };
-    }
-  }, [closeModal]);
 
   useEffect(() => {
     if (isModalVisible) {

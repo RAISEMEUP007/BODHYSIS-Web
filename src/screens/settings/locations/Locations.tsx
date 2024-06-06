@@ -1,24 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, TouchableHighlight, TouchableOpacity, Dimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
 
 import { getLocationsData, deleteLocation } from '../../../api/Settings';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
-import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
+import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
+import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
+import { BOHToolbar, BOHButton } from '../../../common/components/bohtoolbar';
 
-import { LocationsStyle } from './styles/LocationsStyle';
 import AddLocationModal from './AddLocationModal';
 
 const Locations = ({ navigation, openInventory }) => {
-  const screenHeight = Dimensions.get('window').height;
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
   const [tableData, setTableData] = useState([]);
   const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(true);
+  const InitialWidths = [200, 50, 50];
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -80,11 +81,9 @@ const Locations = ({ navigation, openInventory }) => {
     if (tableData.length > 0) {
       tableData.map((item, index) => {
         rows.push(
-          <View key={index} style={styles.tableRow}>
-            <View style={[styles.cell, styles.categoryCell]}>
-              <Text style={styles.categoryCell}>{item.location}</Text>
-            </View>
-            <View style={[styles.IconCell]}>
+          <BOHTR key={index}>
+            <BOHTD width={InitialWidths[0]}>{item.location}</BOHTD>
+            <BOHTDIconBox  width={InitialWidths[1]}>
               <TouchableOpacity
                 onPress={() => {
                   editLocation(item);
@@ -92,8 +91,8 @@ const Locations = ({ navigation, openInventory }) => {
               >
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
-            </View>
-            <View style={[styles.IconCell]}>
+            </BOHTDIconBox>
+            <BOHTDIconBox  width={InitialWidths[2]}>
               <TouchableOpacity
                 onPress={() => {
                   removeLocation(item.id);
@@ -101,8 +100,8 @@ const Locations = ({ navigation, openInventory }) => {
               >
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />
               </TouchableOpacity>
-            </View>
-          </View>
+            </BOHTDIconBox>
+          </BOHTR>
         );
       });
     } else {
@@ -119,34 +118,33 @@ const Locations = ({ navigation, openInventory }) => {
       }}
       screenName={'Locations'}
     >
-      <View style={styles.container}>
-        <View style={styles.toolbar}>
-          <TouchableHighlight style={styles.button} onPress={openAddLocationModal}>
-            <Text style={styles.buttonText}>Add</Text>
-          </TouchableHighlight>
-        </View>
-        <View style={styles.tableContainer}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.columnHeader, { width: 400 }]}>{'Location'}</Text>
-            <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
-            <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
-          </View>
-          <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
+      <CommonContainer>
+        <BOHToolbar>
+          <BOHButton 
+            label={"Add"}
+            onPress={openAddLocationModal}/>
+        </BOHToolbar>
+        <BOHTable>
+          <BOHTHead>
+            <BOHTR>
+              <BOHTH width={InitialWidths[0]}>{'Location'}</BOHTH>
+              <BOHTH width={InitialWidths[1]}>{'Edit'}</BOHTH>
+              <BOHTH width={InitialWidths[2]}>{'DEL'}</BOHTH>
+            </BOHTR>
+          </BOHTHead>
+          <BOHTBody>
             {renderTableData()}
-          </ScrollView>
-        </View>
-
+          </BOHTBody>
+        </BOHTable>
         <AddLocationModal
           isModalVisible={isAddModalVisible}
           Location={selectedLocation}
           setUpdateLocationsTrigger={setUpdateLocationsTrigger}
           closeModal={closeAddLocationModal}
         />
-      </View>
+      </CommonContainer>
     </BasicLayout>
   );
 };
-
-const styles = LocationsStyle;
 
 export default Locations;

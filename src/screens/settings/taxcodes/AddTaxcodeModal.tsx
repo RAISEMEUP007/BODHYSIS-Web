@@ -38,21 +38,6 @@ const AddTaxcodeModal = ({
   const [RateTxt, setRateTxt] = useState(0);
   const [isSuspended, setIsSuspended] = useState(false);
 
-  useEffect(() => {
-    if (Platform.OS === 'web') {
-      const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-          closeModal();
-        }
-      };
-
-      window.addEventListener('keydown', handleKeyDown);
-
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-      };
-    }
-  }, [closeModal]);
 
   const AddTaxcodeButtonHandler = () => {
     if (!TaxcodeTxt.trim()) {

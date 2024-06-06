@@ -5,14 +5,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getReservationsData } from '../../api/Reservation';
 import { BasicLayout, CommonContainer } from '../../common/components/CustomLayout';
-import { BOHTable } from '../../common/components/bohtable';
 import { BOHTlbCheckbox, BOHTlbRadio, BOHTlbrSearchInput, BOHTlbrSearchPicker, BOHToolbar, renderBOHTlbDatePicker } from '../../common/components/bohtoolbar';
+import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
 import { msgStr } from '../../common/constants/Message';
 import { TextMediumSize, TextdefaultSize } from '../../common/constants/Fonts';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
-
-import { DashboardStyle } from './styles/DashboardStyle';
+import { formatDate } from '../../common/utils/DateUtils';
 
 const Dashboard = ({ navigation }) => {
 
@@ -106,25 +105,116 @@ const Dashboard = ({ navigation }) => {
   }, [searchOptions])
 
   useEffect(() => {
+    switch (periodRange.toLowerCase()) {
+      case 'today':
+        setSearchOptions({
+          ...searchOptions,
+          start_date: formatDate(new Date()),
+          end_date: formatDate(new Date()),
+        });
+        break;
+      case 'tomorrow':
+        setSearchOptions({
+          ...searchOptions,
+          start_date: formatDate(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)),
+          end_date: formatDate(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)),
+        });
+        break;
+      case 'yesterday':
+        setSearchOptions({
+          ...searchOptions,
+          start_date: formatDate(new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)),
+          end_date: formatDate(new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)),
+        });
+        break;
+      case 'today+tomorrow':
+        setSearchOptions({
+          ...searchOptions,
+          start_date: formatDate(new Date()),
+          end_date: formatDate(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)),
+        });
+        break;
+      case '7days':
+        setSearchOptions({
+          ...searchOptions,
+          start_date: formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+          end_date: formatDate(new Date()),
+        });
+      break;
+      case 'next fri':
+        let nextFriday = new Date();
+        nextFriday.setDate(nextFriday.getDate() + (5 + 7 - nextFriday.getDay()) % 7);
+        setSearchOptions({
+          ...searchOptions,
+          start_date: formatDate(nextFriday),
+          end_date: formatDate(nextFriday),
+        });
+        break;
+      case 'next sat':
+        let nextSaturday = new Date();
+        nextSaturday.setDate(nextSaturday.getDate() + (6 + 7 - nextSaturday.getDay()) % 7);
+        setSearchOptions({
+          ...searchOptions,
+          start_date: formatDate(nextSaturday),
+          end_date: formatDate(nextSaturday),
+        });
+        break;
+      case 'next sun':
+        let nextSunday = new Date();
+        nextSunday.setDate(nextSunday.getDate() + (7 + 7 - nextSunday.getDay()) % 7);
+        setSearchOptions({
+          ...searchOptions,
+          start_date: formatDate(nextSunday),
+          end_date: formatDate(nextSunday),
+        });
+        break;
+      case 'next mon':
+        let nextMonday = new Date();
+        nextMonday.setDate(nextMonday.getDate() + (1 + 7 - nextMonday.getDay()) % 7);
+        setSearchOptions({
+          ...searchOptions,
+          start_date: formatDate(nextMonday),
+          end_date: formatDate(nextMonday),
+        });
+        break;
+      default:
+        break;
+    }
+  }, [periodRange]);
+
+  useEffect(() => {
     if (searchOptions.start_date && searchOptions.end_date) {
-      const startDate = new Date(searchOptions.start_date);
-      const endDate = new Date(searchOptions.end_date);
-  
-      if (startDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10) &&
-          endDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10)) {
+      if (searchOptions.start_date === formatDate(new Date()) &&
+          searchOptions.end_date === formatDate(new Date())) {
         if(periodRange != 'Today') setPeriodRange('Today');
-      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
-                  endDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+      } else if (searchOptions.start_date === formatDate(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)) &&
+                  searchOptions.end_date === formatDate(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000))) {
         if(periodRange != 'Tomorrow') setPeriodRange('Tomorrow');
-      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
-                  endDate.toISOString().substr(0, 10) === new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+      } else if (searchOptions.start_date === formatDate(new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)) &&
+                  searchOptions.end_date === formatDate(new Date(Date.now() - 1 * 24 * 60 * 60 * 1000))) {
         if(periodRange != 'Yesterday') setPeriodRange('Yesterday');
-      } else if (startDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10) &&
-                  endDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+      } else if (searchOptions.start_date === formatDate(new Date()) &&
+                  searchOptions.end_date === formatDate(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000))) {
         if(periodRange != 'Today+Tomorrow') setPeriodRange('Today+Tomorrow');
-      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
-                  endDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10)) {
+      } else if (searchOptions.start_date === formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) &&
+                  searchOptions.end_date === formatDate(new Date())) {
         if(periodRange != '7days') setPeriodRange('7days');
+      } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 4 
+                && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
+                  console.log('1');
+        if(periodRange != 'Next Fri') setPeriodRange('Next Fri');
+      } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 5 
+                && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
+                  console.log('2');
+        if(periodRange != 'Next Sat') setPeriodRange('Next Sat');
+      } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 6 
+                && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
+                  console.log('3');
+        if(periodRange != 'Next Sun') setPeriodRange('Next Sun');
+      } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 0 
+                && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
+                  console.log('4');
+        if(periodRange != 'Next Mon') setPeriodRange('Next Mon');
       } else {
         if(periodRange != 'custom') setPeriodRange('custom');
       }
@@ -168,15 +258,6 @@ const Dashboard = ({ navigation }) => {
     });
   };
 
-  const formatDateInline = (dateString) => {
-    const date = new Date(dateString);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const year = date.getFullYear();
-    
-    return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
-  }
-
   const renderTableData = () => {
     const convertStageToString = (stage) => {
       switch (stage) {
@@ -194,46 +275,24 @@ const Dashboard = ({ navigation }) => {
     if (tableData.length > 0) {
       tableData.map((item, index) => {
         rows.push(
-          <View key={index} style={styles.tableRow}>
-            <View style={[styles.cell, {width: 90}]}>
-              <Text>{item.order_number}</Text>
-            </View>
-            <View style={[styles.cell, {width: 160}]}>
-              <Text>{item.brand}</Text>
-            </View>
-            <View style={[styles.cell, {width: 160}]}>
-              <Text>{item.full_name}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.start_date ? new Date(`${item.start_date} 0:0:0`).toLocaleString('en-US', {
+          <BOHTR key={index}>
+            <BOHTD width={90}>{item.order_number}</BOHTD>
+            <BOHTD width={160}>{item.brand}</BOHTD>
+            <BOHTD width={160}>{item.full_name}</BOHTD>
+            <BOHTD width={100}>{item.start_date ? new Date(`${item.start_date} 0:0:0`).toLocaleString('en-US', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
-              }) : ''}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{item.end_date ? new Date(`${item.end_date} 0:0:0`).toLocaleString('en-US', {
+              }) : ''}</BOHTD>
+            <BOHTD width={100}>{item.end_date ? new Date(`${item.end_date} 0:0:0`).toLocaleString('en-US', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
-              }) : ''}</Text>
-            </View>
-            <View style={[styles.cell, {alignItems:'flex-end'}]}>
-              <Text>{item?.quantity??''}</Text>
-            </View>
-            <View style={[styles.cell]}>
-              <Text>{convertStageToString(item.stage)}</Text>
-            </View>
-            <View style={[styles.IconCell]}>
-              <TouchableOpacity
-                onPress={() => {
-                  // openReservationScreen('Proceed Reservation', {reservationId:item.id})
-                }}
-              >
-                <FontAwesome5 size={TextMediumSize} name="arrow-right" color="black" />
-              </TouchableOpacity>
-            </View>
-          </View>
+              }) : ''}</BOHTD>
+            <BOHTD width={110} style={{textAlign:'right'}}>{item?.quantity??''}</BOHTD>
+            <BOHTD width={100}>{convertStageToString(item.stage)}</BOHTD>
+            <BOHTD width={80} style={{textAlign:'center'}}>{item?.color_id?'YES':'NO'}</BOHTD>
+          </BOHTR>
         );
       });
     } else {
@@ -302,6 +361,41 @@ const Dashboard = ({ navigation }) => {
               RadioButtonProps={{
                 value: '1',
                 status: periodRange == '7days'? 'checked': 'unchecked',
+              }}
+            />
+          </BOHToolbar>
+          <BOHToolbar>
+            <BOHTlbRadio
+              label='Next Fri'
+              style={{margin:0}}
+              onPress={()=>{setPeriodRange('Next Fri')}}
+              RadioButtonProps={{
+                value: '1',
+                status: periodRange == 'Next Fri'? 'checked': 'unchecked',
+              }}
+            />
+            <BOHTlbRadio
+              label='Next Sat'
+              onPress={()=>{setPeriodRange('Next Sat')}}
+              RadioButtonProps={{
+                value: '1',
+                status: periodRange == 'Next Sat'? 'checked': 'unchecked',
+              }}
+            />
+            <BOHTlbRadio
+              label='Next Sun'
+              onPress={()=>{setPeriodRange('Next Sun')}}
+              RadioButtonProps={{
+                value: '1',
+                status: periodRange == 'Next Sun'? 'checked': 'unchecked',
+              }}
+            />
+            <BOHTlbRadio
+              label='Next Mon'
+              onPress={()=>{setPeriodRange('Next Mon')}}
+              RadioButtonProps={{
+                value: '1',
+                status: periodRange == 'Next Mon'? 'checked': 'unchecked',
               }}
             />
           </BOHToolbar>
@@ -433,19 +527,21 @@ const Dashboard = ({ navigation }) => {
             />
           </BOHToolbar>
           <BOHTable>
-            <View style={styles.tableHeader}>
-              <Text style={[styles.columnHeader, {width:90}]}>{'Order #'}</Text>
-              <Text style={[styles.columnHeader, {width: 160}]}>{'Brand'}</Text>
-              <Text style={[styles.columnHeader, {width: 160}]}>{'Customer'}</Text>
-              <Text style={[styles.columnHeader]}>{'Start'}</Text>
-              <Text style={[styles.columnHeader]}>{'End'}</Text>
-              <Text style={[styles.columnHeader]}>{'Qty of bikes'}</Text>
-              <Text style={[styles.columnHeader]}>{'Stage'}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{'Proceed'}</Text>
-            </View>
-            <ScrollView style={{ flex: 1 }}>
+            <BOHTHead>
+              <BOHTR>
+                <BOHTH width={90}>{'Order #'}</BOHTH>
+                <BOHTH width={160}>{'Brand'}</BOHTH>
+                <BOHTH width={160}>{'Customer'}</BOHTH>
+                <BOHTH width={100}>{'Start'}</BOHTH>
+                <BOHTH width={100}>{'End'}</BOHTH>
+                <BOHTH width={110}>{'Qty of bikes'}</BOHTH>
+                <BOHTH width={100}>{'Stage'}</BOHTH>
+                <BOHTH width={80}>{'Locked'}</BOHTH>
+              </BOHTR>
+            </BOHTHead>
+            <BOHTBody>
               {renderTableData()}
-            </ScrollView>
+            </BOHTBody>
           </BOHTable>
         </View>
         <View style={{height:'100%'}}>
@@ -455,7 +551,5 @@ const Dashboard = ({ navigation }) => {
     </BasicLayout>
   );
 };
-
-const styles = DashboardStyle;
 
 export default Dashboard;

@@ -26,21 +26,6 @@ const AddBrandModal = ({ isModalVisible, setUpdateBrandTrigger, closeModal }) =>
 
   const [_brand, setBrand] = useState('');
 
-  useEffect(() => {
-    if (Platform.OS === 'web') {
-      const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-          closeModal();
-        }
-      };
-
-      window.addEventListener('keydown', handleKeyDown);
-
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-      };
-    }
-  }, [closeModal]);
 
   const handleAddButtonClick = () => {
     if (!_brand.trim()) {
