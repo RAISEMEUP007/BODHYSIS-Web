@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -120,6 +120,24 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
     return <>{rows}</>;
   };
 
+  const tableElement = useMemo(()=>(        
+  <BOHTable>
+    <BOHTHead>
+      <BOHTR>
+        <BOHTH2 width={InitialWidths[0]}>{'Number'}</BOHTH2>
+        <BOHTH2 width={InitialWidths[1]}>{'Street'}</BOHTH2>
+        <BOHTH2 width={InitialWidths[2]}>{'Plantation'}</BOHTH2>
+        <BOHTH2 width={InitialWidths[3]}>{'Property name'}</BOHTH2>
+        <BOHTH2 width={InitialWidths[4]}>{'Property type'}</BOHTH2>
+        <BOHTH2 width={InitialWidths[5]}>{'Edit'}</BOHTH2>
+        <BOHTH2 width={InitialWidths[6]}>{'DEL'}</BOHTH2>
+      </BOHTR>
+    </BOHTHead>
+    <BOHTBody>
+      {renderTableData()}
+    </BOHTBody>
+  </BOHTable>), [tableData])
+
   return (
     <BasicLayout
       navigation={navigation}
@@ -138,23 +156,7 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
             value={searchKey}
             onChangeText={setSearchKey}/>
         </BOHToolbar>
-        <BOHTable>
-          <BOHTHead>
-            <BOHTR>
-              <BOHTH2 width={InitialWidths[0]}>{'Number'}</BOHTH2>
-              <BOHTH2 width={InitialWidths[1]}>{'Street'}</BOHTH2>
-              <BOHTH2 width={InitialWidths[2]}>{'Plantation'}</BOHTH2>
-              <BOHTH2 width={InitialWidths[3]}>{'Property name'}</BOHTH2>
-              <BOHTH2 width={InitialWidths[4]}>{'Property type'}</BOHTH2>
-              <BOHTH2 width={InitialWidths[5]}>{'Edit'}</BOHTH2>
-              <BOHTH2 width={InitialWidths[6]}>{'DEL'}</BOHTH2>
-            </BOHTR>
-          </BOHTHead>
-          <BOHTBody>
-            {renderTableData()}
-          </BOHTBody>
-        </BOHTable>
-
+        {tableElement}
         <AddLocationModal
           isModalVisible={isAddModalVisible}
           details={selectedLocation}
