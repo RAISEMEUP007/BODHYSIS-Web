@@ -92,6 +92,9 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
         note: orderInfo?.note || '',
         deliveryAddress: deliveryAddress,
       })
+
+      if(orderInfo.use_manual) setSearchKey(orderInfo?.manual_address??'');
+      else if(orderInfo.all_addresses) setSearchKey(`${orderInfo.all_addresses.number || ''} ${orderInfo.all_addresses.street || ''} ${orderInfo.all_addresses.property_name? `${orderInfo.all_addresses.property_name}` :''}, ${orderInfo.all_addresses.plantation || ''}`);
     }else {
       setInputValues({
         email: '',
@@ -396,22 +399,20 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
           </View> */}
           <View style={{flexDirection:'row', marginVertical:4}}>
             <LabeledTextInput
-              label='Customer Name'
+              label='Order Number'
               width={300}
               containerStyle={{marginRight:30}}
-              placeholder='Customer Name'
+              placeholder='Order Number'
               placeholderTextColor="#ccc"
-              value={orderInfo.customer? orderInfo.customer?.first_name + ' ' + orderInfo.customer?.last_name : ''}
-              // onChangeText={value => handleInputChange('billableDays', value)}
+              value={orderInfo.order_number}
               editable={false}
             />
             <LabeledTextInput
-              label='Delivery Address'
+              label='Customer Name'
               width={300}
-              placeholder='Delivery Address'
+              placeholder='Customer Name'
               placeholderTextColor="#ccc"
-              value={inputValues.deliveryAddress}
-              onChangeText={value => handleInputChange('phone_number', value)}
+              value={orderInfo.customer? orderInfo.customer?.first_name + ' ' + orderInfo.customer?.last_name : ''}
               editable={false}
             />
           </View>
@@ -477,26 +478,6 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
               editable={false}
             />
           </View>
-          <View style={{flexDirection:'row', marginVertical:4}}>
-            <LabeledTextInput
-              label='Notes'
-              width={630}
-              placeholder='Notes'
-              placeholderTextColor="#ccc"
-              multiline={true}
-              inputStyle={{height:150}}
-              value={inputValues.note}
-              onChangeText={value => handleInputChange('note', value)}
-            />
-          </View>
-          {/* <View style={{flexDirection:'row'}}>
-            <TouchableOpacity >
-              <Text style={styles.buttonText}>CANCEL</Text>
-            </TouchableOpacity>
-            <TouchableOpacity >
-              <Text style={styles.buttonText}>NEXT</Text>
-            </TouchableOpacity>
-          </View> */}
           <View style={[styles.orderRow, {width:'100%'}]}>
             {Platform.OS === 'web' ?
               <>
@@ -564,6 +545,27 @@ export const ActionOrder = ({ openOrderScreen, initialData }: Props) => {
                 onChangeText={value => handleInputChange('group', value)}
               />}
           </View>
+          <View style={{flexDirection:'row', marginVertical:4}}>
+            <LabeledTextInput
+              label='Notes'
+              containerStyle={{marginTop:8}}
+              width={630}
+              placeholder='Notes'
+              placeholderTextColor="#ccc"
+              multiline={true}
+              inputStyle={{height:100}}
+              value={inputValues.note}
+              onChangeText={value => handleInputChange('note', value)}
+            />
+          </View>
+          {/* <View style={{flexDirection:'row'}}>
+            <TouchableOpacity >
+              <Text style={styles.buttonText}>CANCEL</Text>
+            </TouchableOpacity>
+            <TouchableOpacity >
+              <Text style={styles.buttonText}>NEXT</Text>
+            </TouchableOpacity>
+          </View> */}
           <View style={[styles.orderRow, {justifyContent:'flex-end'}]}>
           </View>
           <BOHToolbar style={{justifyContent:'space-between', alignItems:'center',}}>

@@ -79,7 +79,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
       });
 
       if(details.use_manual) setSearchKey(details?.manual_address??'');
-      else if(details.all_addresses) setSearchKey(`${details.all_addresses.number || ''} ${details.all_addresses.street || ''}${details.all_addresses.property_name? `${details.all_addresses.property_name}` :''}, ${details.all_addresses.plantation || ''}`);
+      else if(details.all_addresses) setSearchKey(`${details.all_addresses.number || ''} ${details.all_addresses.street || ''} ${details.all_addresses.property_name? `${details.all_addresses.property_name}` :''}, ${details.all_addresses.plantation || ''}`);
     }
   }, [details]);
 
