@@ -7,7 +7,6 @@ import {
   View,
   ActivityIndicator,
   Platform,
-  Picker,
 } from 'react-native';
 
 import { createLocation, updateLocation } from '../../../api/Settings';
@@ -17,8 +16,7 @@ import ModalBody from '../../../common/components/basicmodal/ModalBody';
 import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-
-import { LocationModalstyles } from './styles/LocationModalStyle';
+import { commonModalStyle } from '../../../common/components/basicmodal';
 
 const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger, closeModal }) => {
   const isUpdate = Location ? true : false;
@@ -30,21 +28,6 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
   const [LocationTxt, setLocationTxt] = useState('');
   const [DescriptionTxt, setDescriptionTxt] = useState('');
 
-  useEffect(() => {
-    if (Platform.OS === 'web') {
-      const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-          closeModal();
-        }
-      };
-
-      window.addEventListener('keydown', handleKeyDown);
-
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-      };
-    }
-  }, [closeModal]);
 
   const AddLocationButtonHandler = () => {
     if (!LocationTxt.trim()) {
@@ -54,7 +37,7 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
 
     setIsLoading(true);
 
-    const payload = {
+    const payload:any = {
       location: LocationTxt,
       description: DescriptionTxt,
     };
@@ -149,6 +132,6 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
   );
 };
 
-const styles = LocationModalstyles;
+const styles = commonModalStyle;
 
 export default AddLocationModal;

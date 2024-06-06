@@ -59,21 +59,6 @@ const DeliveryAddress = ({ isModalVisible, customerId, closeModal }) => {
     if (isModalVisible == true) getTable();
   }, [isModalVisible]);
 
-  useEffect(() => {
-    if (Platform.OS === 'web') {
-      const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-          closeModal();
-        }
-      };
-
-      window.addEventListener('keydown', handleKeyDown);
-
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-      };
-    }
-  }, [closeModal]);
 
   const removeCustomer = (id) => {
     showConfirm(msgStr('deleteConfirmStr'), () => {

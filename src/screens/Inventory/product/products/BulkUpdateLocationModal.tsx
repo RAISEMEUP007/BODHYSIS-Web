@@ -32,21 +32,6 @@ const BulkUpdateLocationModal = ({ isModalVisible, ids, setUpdateProductsTrigger
   const [selectedHomeLocation, selectHomeLocation] = useState<number>(0);
   const [selectedCurrentLocation, selectCurrentLocation] = useState<number>(0);
 
-  useEffect(() => {
-    if (Platform.OS === 'web') {
-      const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-          closeModal();
-        }
-      };
-
-      window.addEventListener('keydown', handleKeyDown);
-
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-      };
-    }
-  }, [closeModal]);
 
   useEffect(() => {
     if (isModalVisible) {

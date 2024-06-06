@@ -15,6 +15,7 @@ import { msgStr } from '../../common/constants/Message';
 import { TextMediumSize, TextdefaultSize } from '../../common/constants/Fonts';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
 import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
+import { formatDate } from '../../common/utils/DateUtils';
 
 const ReservationsList = ({ navigation, openReservationScreen }) => {
 
@@ -78,36 +79,72 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
       case 'today':
         setSearchOptions({
           ...searchOptions,
-          start_date: new Date().toISOString().substr(0, 10),
-          end_date: new Date().toISOString().substr(0, 10),
+          start_date: formatDate(new Date()),
+          end_date: formatDate(new Date()),
         });
         break;
       case 'tomorrow':
         setSearchOptions({
           ...searchOptions,
-          start_date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10),
-          end_date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10),
+          start_date: formatDate(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)),
+          end_date: formatDate(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)),
         });
         break;
       case 'yesterday':
         setSearchOptions({
           ...searchOptions,
-          start_date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10),
-          end_date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10),
+          start_date: formatDate(new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)),
+          end_date: formatDate(new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)),
         });
         break;
       case 'today+tomorrow':
         setSearchOptions({
           ...searchOptions,
-          start_date: new Date().toISOString().substr(0, 10),
-          end_date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10),
+          start_date: formatDate(new Date()),
+          end_date: formatDate(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)),
         });
         break;
       case '7days':
         setSearchOptions({
           ...searchOptions,
-          start_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10),
-          end_date: new Date().toISOString().substr(0, 10),
+          start_date: formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+          end_date: formatDate(new Date()),
+        });
+      break;
+      case 'next fri':
+        let nextFriday = new Date();
+        nextFriday.setDate(nextFriday.getDate() + (5 + 7 - nextFriday.getDay()) % 7);
+        setSearchOptions({
+          ...searchOptions,
+          start_date: formatDate(nextFriday),
+          end_date: formatDate(nextFriday),
+        });
+        break;
+      case 'next sat':
+        let nextSaturday = new Date();
+        nextSaturday.setDate(nextSaturday.getDate() + (6 + 7 - nextSaturday.getDay()) % 7);
+        setSearchOptions({
+          ...searchOptions,
+          start_date: formatDate(nextSaturday),
+          end_date: formatDate(nextSaturday),
+        });
+        break;
+      case 'next sun':
+        let nextSunday = new Date();
+        nextSunday.setDate(nextSunday.getDate() + (7 + 7 - nextSunday.getDay()) % 7);
+        setSearchOptions({
+          ...searchOptions,
+          start_date: formatDate(nextSunday),
+          end_date: formatDate(nextSunday),
+        });
+        break;
+      case 'next mon':
+        let nextMonday = new Date();
+        nextMonday.setDate(nextMonday.getDate() + (1 + 7 - nextMonday.getDay()) % 7);
+        setSearchOptions({
+          ...searchOptions,
+          start_date: formatDate(nextMonday),
+          end_date: formatDate(nextMonday),
         });
         break;
       default:
@@ -117,24 +154,37 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
 
   useEffect(() => {
     if (searchOptions.start_date && searchOptions.end_date) {
-      const startDate = new Date(searchOptions.start_date);
-      const endDate = new Date(searchOptions.end_date);
-  
-      if (startDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10) &&
-          endDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10)) {
+      if (searchOptions.start_date === formatDate(new Date()) &&
+          searchOptions.end_date === formatDate(new Date())) {
         if(periodRange != 'Today') setPeriodRange('Today');
-      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
-                  endDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+      } else if (searchOptions.start_date === formatDate(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)) &&
+                  searchOptions.end_date === formatDate(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000))) {
         if(periodRange != 'Tomorrow') setPeriodRange('Tomorrow');
-      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
-                  endDate.toISOString().substr(0, 10) === new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+      } else if (searchOptions.start_date === formatDate(new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)) &&
+                  searchOptions.end_date === formatDate(new Date(Date.now() - 1 * 24 * 60 * 60 * 1000))) {
         if(periodRange != 'Yesterday') setPeriodRange('Yesterday');
-      } else if (startDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10) &&
-                  endDate.toISOString().substr(0, 10) === new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10)) {
+      } else if (searchOptions.start_date === formatDate(new Date()) &&
+                  searchOptions.end_date === formatDate(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000))) {
         if(periodRange != 'Today+Tomorrow') setPeriodRange('Today+Tomorrow');
-      } else if (startDate.toISOString().substr(0, 10) === new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().substr(0, 10) &&
-                  endDate.toISOString().substr(0, 10) === new Date().toISOString().substr(0, 10)) {
+      } else if (searchOptions.start_date === formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) &&
+                  searchOptions.end_date === formatDate(new Date())) {
         if(periodRange != '7days') setPeriodRange('7days');
+      } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 4 
+                && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
+                  console.log('1');
+        if(periodRange != 'Next Fri') setPeriodRange('Next Fri');
+      } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 5 
+                && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
+                  console.log('2');
+        if(periodRange != 'Next Sat') setPeriodRange('Next Sat');
+      } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 6 
+                && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
+                  console.log('3');
+        if(periodRange != 'Next Sun') setPeriodRange('Next Sun');
+      } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 0 
+                && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
+                  console.log('4');
+        if(periodRange != 'Next Mon') setPeriodRange('Next Mon');
       } else {
         if(periodRange != 'custom') setPeriodRange('custom');
       }

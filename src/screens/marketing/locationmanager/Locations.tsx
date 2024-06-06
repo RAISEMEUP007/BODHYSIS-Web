@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, Dimensions } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { getAddressesData, deleteAddress } from '../../../api/AllAddress ';
@@ -19,8 +19,7 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
   
   const [tableData, setTableData] = useState([]);
   const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(true);
-  const InitialWidths = [76, 170, 170, 170, 113, 47, 46];
-  // const [widths, setWidths] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const InitialWidths = [76, 170, 170, 170, 113, 50, 50];
   const [searchKey, setSearchKey] = useState('');
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
@@ -83,33 +82,18 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
     });
   };
 
-  // const handleLayoutUpdate = (index, cellWidth) => {
-  //   setWidths(prev => {
-  //     if (prev[index] < cellWidth) {
-  //       const newWidths = [...prev];
-  //       newWidths[index] = cellWidth;
-  //       return newWidths;
-  //     }
-  //     return prev;
-  //   });
-  // };
-
   const renderTableData = () => {
     const rows = [];
     if (tableData.length > 0) {
       tableData.map((item, index) => {
         rows.push(
           <BOHTR key={index}>
-            <BOHTD
-            //  onLayout={(event)=> handleLayoutUpdate(0, event.nativeEvent.layout.width)}
-             width={InitialWidths[0]}>{item.number}</BOHTD>
+            <BOHTD width={InitialWidths[0]}>{item.number}</BOHTD>
             <BOHTD width={InitialWidths[1]}>{item.street}</BOHTD>
             <BOHTD width={InitialWidths[2]}>{item.plantation}</BOHTD>
             <BOHTD width={InitialWidths[3]}>{item.property_name}</BOHTD>
-            <BOHTD width={InitialWidths[4]}>{item.property_type}</BOHTD>
-            <BOHTDIconBox
-              width={InitialWidths[5]}
-            >
+            <BOHTD width={InitialWidths[4]}>{item.property_type == 0?'House':item.property_type == 1?'Condo':''}</BOHTD>
+            <BOHTDIconBox width={InitialWidths[5]}>
               <TouchableOpacity
                 onPress={() => {
                   editLocation(item);
@@ -118,9 +102,7 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
             </BOHTDIconBox>
-            <BOHTDIconBox
-              width={InitialWidths[6]}
-            >
+            <BOHTDIconBox width={InitialWidths[6]}>
               <TouchableOpacity
                 onPress={() => {
                   removeLocation(item.id);
@@ -175,7 +157,7 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
 
         <AddLocationModal
           isModalVisible={isAddModalVisible}
-          Location={selectedLocation}
+          details={selectedLocation}
           setUpdateLocationsTrigger={setUpdateLocationsTrigger}
           closeModal={closeAddLocationModal}
         />

@@ -6,34 +6,34 @@ import {
   Modal,
   View,
   ActivityIndicator,
-  Platform,
+  Pressable,
 } from 'react-native';
+import CheckBox from 'expo-checkbox';
+import { Picker } from '@react-native-picker/picker';
 
-import { createLocation, updateLocation } from '../../../api/Settings';
+import { createAddress, updateAddress } from '../../../api/AllAddress ';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
 import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { commonModalStyle } from '../../../common/components/basicmodal';
 
-import { LocationModalstyles } from './styles/LocationModalStyle';
-import { createAddress, updateAddress } from '../../../api/AllAddress ';
-
-const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger, closeModal }) => {
-  const isUpdate = Location ? true : false;
+const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, closeModal }) => {
+  const isUpdate = details ? true : false;
 
   const { showAlert } = useAlertModal();
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const [formValues, setformValues] = useState<any>({
+  const [formValues, setFormValues] = useState<any>({
     id: null,
     number:null,
     street: null,
     plantation : null,
     property_name : null,
-    property_type : null,
+    property_type : 0,
     price : null,
     guests : null,
     bedrooms : null,
@@ -45,23 +45,45 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
   });
 
   useEffect(() => {
-    if (Platform.OS === 'web') {
-      const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-          closeModal();
-        }
-      };
-
-      window.addEventListener('keydown', handleKeyDown);
-
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-      };
+    if (isModalVisible && details) {
+      setFormValues({
+        id: details.id,
+        number:details.number,
+        street: details.street,
+        plantation : details.plantation,
+        property_name : details.property_name,
+        property_type : details.property_type,
+        price : details.price,
+        guests : details.guests,
+        bedrooms : details.bedrooms,
+        rental_company : details.rental_company,
+        xploriefif : details.xploriefif,
+        xplorievoucher : details.xplorievoucher,
+        geolat : details.geolat,
+        geolong : details.geolong,
+      })
+    } else {
+      setFormValues({
+        id: null,
+        number:null,
+        street: null,
+        plantation : null,
+        property_name : null,
+        property_type : 0,
+        price : null,
+        guests : null,
+        bedrooms : null,
+        rental_company : null,
+        xploriefif : false,
+        xplorievoucher : false,
+        geolat : null,
+        geolong : null,
+      })
     }
-  }, [closeModal]);
+  }, [isModalVisible]);
 
   const updateFormValues = (key, value) => {
-    setformValues(prev => ({
+    setFormValues(prev => ({
       ...prev,
       [key]: value
     }));
@@ -124,11 +146,6 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
       animationType="none"
       transparent={true}
       visible={isModalVisible}
-      onShow={() => {
-        setValidMessage('');
-        if(Location) setformValues(Location);
-        else setformValues({});
-      }}
     >
       <BasicModalContainer>
         <ModalHeader label={isUpdate ? 'Update' : 'Add' + 'Address'} closeModal={closeModal} />
@@ -145,7 +162,6 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
                 onBlur={checkInput}
                 onSubmitEditing={AddLocationButtonHandler}
               />
-              {/* {ValidMessage.trim() != '' && <Text style={styles.message}>{ValidMessage}</Text>} */}
               <Text style={styles.label}>Street</Text>
               <TextInput
                 style={styles.input}
@@ -177,7 +193,7 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
                 onSubmitEditing={AddLocationButtonHandler}
               />
               <Text style={styles.label}>Property Type</Text>
-              <TextInput
+              {/* <TextInput
                 style={styles.input}
                 placeholder="Property Type"
                 value={formValues.property_type || ''}
@@ -185,7 +201,11 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
                 placeholderTextColor="#ccc"
                 onBlur={checkInput}
                 onSubmitEditing={AddLocationButtonHandler}
-              />
+              /> */}
+              <Picker style={styles.select} selectedValue={formValues.property_type} onValueChange={(val)=>updateFormValues('property_type', val)}>
+                <Picker.Item label={"House"} value={0} />;
+                <Picker.Item label={"Condo"} value={1} />;
+              </Picker>
               <Text style={styles.label}>Price</Text>
               <TextInput
                 style={styles.input}
@@ -218,32 +238,12 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
                 onBlur={checkInput}
                 onSubmitEditing={AddLocationButtonHandler}
               />
-              <Text style={styles.label}>Xploriefif</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Xploriefif"
-                value={formValues.xploriefif || ''}
-                onChangeText={val=>updateFormValues('xploriefif', val)}
-                placeholderTextColor="#ccc"
-                onBlur={checkInput}
-                onSubmitEditing={AddLocationButtonHandler}
-              />
-              <Text style={styles.label}>Xploriefif</Text>
+              <Text style={styles.label}>Rental Company</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Rental Company"
                 value={formValues.rental_company || ''}
                 onChangeText={val=>updateFormValues('rental_company', val)}
-                placeholderTextColor="#ccc"
-                onBlur={checkInput}
-                onSubmitEditing={AddLocationButtonHandler}
-              />
-              <Text style={styles.label}>Xplorievoucher</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Xplorievoucher"
-                value={formValues.xplorievoucher || ''}
-                onChangeText={val=>updateFormValues('xplorievoucher', val)}
                 placeholderTextColor="#ccc"
                 onBlur={checkInput}
                 onSubmitEditing={AddLocationButtonHandler}
@@ -268,6 +268,20 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
                 onBlur={checkInput}
                 onSubmitEditing={AddLocationButtonHandler}
               />
+              <Pressable
+                style={{ flexDirection: 'row', marginVertical: 10, alignItems: 'center' }}
+                onPress={() => { updateFormValues('xploriefif', !formValues.xploriefif); }}
+              >
+                <CheckBox value={formValues.xploriefif} style={{ marginRight: 10 }} />
+                <Text>{'Xploriefif'}</Text>
+              </Pressable>
+              <Pressable
+                style={{ flexDirection: 'row', marginVertical: 10, alignItems: 'center' }}
+                onPress={() => { updateFormValues('xplorievoucher', !formValues.xplorievoucher); }}
+              >
+                <CheckBox value={formValues.xplorievoucher} style={{ marginRight: 10 }} />
+                <Text>{'Xplorievoucher'}</Text>
+              </Pressable>
             </View>
           </View>
         </ModalBody>
@@ -286,6 +300,6 @@ const AddLocationModal = ({ isModalVisible, Location, setUpdateLocationsTrigger,
   );
 };
 
-const styles = LocationModalstyles;
+const styles = commonModalStyle;
 
 export default AddLocationModal;
