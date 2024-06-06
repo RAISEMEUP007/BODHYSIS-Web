@@ -5,10 +5,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { Providers } from './src/common/providers/Providers';
-import { AlertModals } from './src/common/components/alertmodal/AlertModals';
 
 import { AuthScreen, Home, RecoverPass, ChangePass } from './src/screens';
-import { ConfirmModal } from './src/common/components/confirmmodal/ConfirmModals';
+import { AlertModals, ConfirmModal } from './src/common/components/bohmodal';
 import { store } from './src/redux/store';
 import { Provider } from 'react-redux';
 import { setNavigator } from './src/common/utils/NavigationUtils';
