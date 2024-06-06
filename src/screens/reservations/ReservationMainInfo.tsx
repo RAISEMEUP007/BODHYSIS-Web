@@ -15,10 +15,23 @@ import { formatDate } from '../../common/utils/DateUtils';
 import { renderBOHFormDatePicker } from '../../common/components/bohform';
 import { getAddressesData, searchAddress } from '../../api/AllAddress ';
 
+interface InputValues {
+  startDate: string;
+  endDate: string;
+  billableDays: number;
+  reservationDuration: string;
+  discountCode: string;
+  customPrice: string;
+  referrer: string;
+  group: string;
+  note: string;
+  deliveryAddress: string;
+}
+
 const ReservationMainInfo = ({ details, setUpdateCount }) => {
   const { showAlert } = useAlertModal();
 
-  const [inputValues, setInputValues] = useState({
+  const [inputValues, setInputValues] = useState<InputValues>({
     startDate: formatDate(new Date()),
     endDate: formatDate(new Date()),
     billableDays: 0,
@@ -238,18 +251,14 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
           <Text style={{marginBottom:6, color:"#555555"}}>{'Start date'}</Text>
           {Platform.OS == 'web' && 
             renderBOHFormDatePicker(inputValues.startDate, (date) => {
-              const year = date.getFullYear();
-              const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-              handleInputChange('startDate', formattedDate);
+              handleInputChange('startDate', formatDate(date));
           })}
         </View>
         <View style={{width:200}}>
           <Text style={{marginBottom:6, color:"#555555"}}>{'End date'}</Text>
           {Platform.OS == 'web' && 
             renderBOHFormDatePicker(inputValues.endDate, (date) => {
-              const year = date.getFullYear();
-              const formattedDate = `${year}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-              handleInputChange('endDate', formattedDate);
+              handleInputChange('endDate', formatDate(date));
           })}
         </View>
       </View>

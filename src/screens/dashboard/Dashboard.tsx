@@ -24,6 +24,7 @@ const Dashboard = ({ navigation }) => {
   const [periodRange, setPeriodRange] = useState<any>('');
   const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
   const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  const initialWidths = [100, 160, 160, 100, 100, 110, 110, 80];
 
   const [ searchOptions, setSearchOptions ] = useState({
     start_date : `${twoWeeksAgo.getFullYear()}-${String(twoWeeksAgo.getMonth() + 1).padStart(2, '0')}-${String(twoWeeksAgo.getDate()).padStart(2, '0')}`,
@@ -276,22 +277,14 @@ const Dashboard = ({ navigation }) => {
       tableData.map((item, index) => {
         rows.push(
           <BOHTR key={index}>
-            <BOHTD width={90}>{item.order_number}</BOHTD>
-            <BOHTD width={160}>{item.brand}</BOHTD>
-            <BOHTD width={160}>{item.full_name}</BOHTD>
-            <BOHTD width={100}>{item.start_date ? new Date(`${item.start_date} 0:0:0`).toLocaleString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-              }) : ''}</BOHTD>
-            <BOHTD width={100}>{item.end_date ? new Date(`${item.end_date} 0:0:0`).toLocaleString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-              }) : ''}</BOHTD>
-            <BOHTD width={110} style={{textAlign:'right'}}>{item?.quantity??''}</BOHTD>
-            <BOHTD width={100}>{convertStageToString(item.stage)}</BOHTD>
-            <BOHTD width={80} style={{textAlign:'center'}}>{item?.color_id?'YES':'NO'}</BOHTD>
+            <BOHTD width={initialWidths[0]}>{item.order_number}</BOHTD>
+            <BOHTD width={initialWidths[1]}>{item.brand}</BOHTD>
+            <BOHTD width={initialWidths[2]}>{item.full_name}</BOHTD>
+            <BOHTD width={initialWidths[3]}>{item.start_date ? formatDate(new Date(`${item.start_date} 0:0:0`)) : ''}</BOHTD>
+            <BOHTD width={initialWidths[4]}>{item.end_date ? formatDate(new Date(`${item.end_date} 0:0:0`)) : ''}</BOHTD>
+            <BOHTD width={initialWidths[5]} style={{textAlign:'right'}}>{item?.quantity??''}</BOHTD>
+            <BOHTD width={initialWidths[6]}>{convertStageToString(item.stage)}</BOHTD>
+            <BOHTD width={initialWidths[7]} style={{textAlign:'center'}}>{item?.color_id?'YES':'NO'}</BOHTD>
           </BOHTR>
         );
       });
@@ -529,14 +522,14 @@ const Dashboard = ({ navigation }) => {
           <BOHTable>
             <BOHTHead>
               <BOHTR>
-                <BOHTH width={90}>{'Order #'}</BOHTH>
-                <BOHTH width={160}>{'Brand'}</BOHTH>
-                <BOHTH width={160}>{'Customer'}</BOHTH>
-                <BOHTH width={100}>{'Start'}</BOHTH>
-                <BOHTH width={100}>{'End'}</BOHTH>
-                <BOHTH width={110}>{'Qty of bikes'}</BOHTH>
-                <BOHTH width={100}>{'Stage'}</BOHTH>
-                <BOHTH width={80}>{'Locked'}</BOHTH>
+                <BOHTH width={initialWidths[0]}>{'Order #'}</BOHTH>
+                <BOHTH width={initialWidths[1]}>{'Brand'}</BOHTH>
+                <BOHTH width={initialWidths[2]}>{'Customer'}</BOHTH>
+                <BOHTH width={initialWidths[3]}>{'Start'}</BOHTH>
+                <BOHTH width={initialWidths[4]}>{'End'}</BOHTH>
+                <BOHTH width={initialWidths[5]}>{'Qty of bikes'}</BOHTH>
+                <BOHTH width={initialWidths[6]}>{'Stage'}</BOHTH>
+                <BOHTH width={initialWidths[7]}>{'Locked'}</BOHTH>
               </BOHTR>
             </BOHTHead>
             <BOHTBody>
