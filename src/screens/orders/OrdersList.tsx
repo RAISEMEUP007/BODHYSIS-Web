@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { Text, TouchableOpacity, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -313,6 +313,27 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     return <>{rows}</>;
   };
 
+  const tableElement = useMemo(()=>(
+  <BOHTable>
+    <BOHTHead>
+      <BOHTR>
+        <BOHTH width={InitialWidths[0]}>{'Order #'}</BOHTH>
+        <BOHTH width={InitialWidths[1]}>{'Brand'}</BOHTH>
+        <BOHTH width={InitialWidths[2]}>{'Customer'}</BOHTH>
+        <BOHTH width={InitialWidths[4]}>{'Start'}</BOHTH>
+        <BOHTH width={InitialWidths[3]}>{'End'}</BOHTH>
+        <BOHTH width={InitialWidths[5]}>{'Qty of bikes'}</BOHTH>
+        <BOHTH width={InitialWidths[6]}>{'Tips'}</BOHTH>
+        <BOHTH width={InitialWidths[7]}>{'Stage'}</BOHTH>
+        <BOHTH width={InitialWidths[8]}>{'Locked'}</BOHTH>
+        <BOHTH width={InitialWidths[9]}>{'Action'}</BOHTH>
+      </BOHTR>
+    </BOHTHead>
+    <BOHTBody>
+      {renderTableData()}
+    </BOHTBody>
+  </BOHTable>), [tableData])
+
   return (
     <BasicLayout
       navigation={navigation}
@@ -547,25 +568,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
             }}
           />
         </BOHToolbar>
-        <BOHTable>
-          <BOHTHead>
-            <BOHTR>
-              <BOHTH width={InitialWidths[0]}>{'Order #'}</BOHTH>
-              <BOHTH width={InitialWidths[1]}>{'Brand'}</BOHTH>
-              <BOHTH width={InitialWidths[2]}>{'Customer'}</BOHTH>
-              <BOHTH width={InitialWidths[4]}>{'Start'}</BOHTH>
-              <BOHTH width={InitialWidths[3]}>{'End'}</BOHTH>
-              <BOHTH width={InitialWidths[5]}>{'Qty of bikes'}</BOHTH>
-              <BOHTH width={InitialWidths[6]}>{'Tips'}</BOHTH>
-              <BOHTH width={InitialWidths[7]}>{'Stage'}</BOHTH>
-              <BOHTH width={InitialWidths[8]}>{'Locked'}</BOHTH>
-              <BOHTH width={InitialWidths[9]}>{'Action'}</BOHTH>
-            </BOHTR>
-          </BOHTHead>
-          <BOHTBody>
-            {renderTableData()}
-          </BOHTBody>
-        </BOHTable>
+        {tableElement}
       </CommonContainer>
     </BasicLayout>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -294,6 +294,25 @@ const Dashboard = ({ navigation }) => {
     return <>{rows}</>;
   };
 
+  const tableElement = useMemo(()=>(
+    <BOHTable>
+    <BOHTHead>
+      <BOHTR>
+        <BOHTH width={initialWidths[0]}>{'Order #'}</BOHTH>
+        <BOHTH width={initialWidths[1]}>{'Brand'}</BOHTH>
+        <BOHTH width={initialWidths[2]}>{'Customer'}</BOHTH>
+        <BOHTH width={initialWidths[3]}>{'Start'}</BOHTH>
+        <BOHTH width={initialWidths[4]}>{'End'}</BOHTH>
+        <BOHTH width={initialWidths[5]}>{'Qty of bikes'}</BOHTH>
+        <BOHTH width={initialWidths[6]}>{'Stage'}</BOHTH>
+        <BOHTH width={initialWidths[7]}>{'Locked'}</BOHTH>
+      </BOHTR>
+    </BOHTHead>
+    <BOHTBody>
+      {renderTableData()}
+    </BOHTBody>
+  </BOHTable>), [tableData])
+
   return (
     <BasicLayout
       navigation={navigation}
@@ -519,23 +538,7 @@ const Dashboard = ({ navigation }) => {
               }}
             />
           </BOHToolbar>
-          <BOHTable>
-            <BOHTHead>
-              <BOHTR>
-                <BOHTH width={initialWidths[0]}>{'Order #'}</BOHTH>
-                <BOHTH width={initialWidths[1]}>{'Brand'}</BOHTH>
-                <BOHTH width={initialWidths[2]}>{'Customer'}</BOHTH>
-                <BOHTH width={initialWidths[3]}>{'Start'}</BOHTH>
-                <BOHTH width={initialWidths[4]}>{'End'}</BOHTH>
-                <BOHTH width={initialWidths[5]}>{'Qty of bikes'}</BOHTH>
-                <BOHTH width={initialWidths[6]}>{'Stage'}</BOHTH>
-                <BOHTH width={initialWidths[7]}>{'Locked'}</BOHTH>
-              </BOHTR>
-            </BOHTHead>
-            <BOHTBody>
-              {renderTableData()}
-            </BOHTBody>
-          </BOHTable>
+          {tableElement}
         </View>
         <View style={{height:'100%'}}>
           {Platform.OS == 'web' && <img style={{height:'100%', boxSizing:'border-box', padding:10}} src={require('./HiltonHeadIsland.png')}/>}

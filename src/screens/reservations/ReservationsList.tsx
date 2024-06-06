@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -264,6 +264,25 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     return <>{rows}</>;
   };
 
+  const tableElement = useMemo(()=>(
+  <BOHTable>
+    <BOHTHead>
+      <BOHTR>
+        <BOHTH width={initialWidths[0]}>{'Order #'}</BOHTH>
+        <BOHTH width={initialWidths[1]}>{'Brand'}</BOHTH>
+        <BOHTH width={initialWidths[2]}>{'Customer'}</BOHTH>
+        <BOHTH width={initialWidths[3]}>{'Start'}</BOHTH>
+        <BOHTH width={initialWidths[4]}>{'End'}</BOHTH>
+        <BOHTH width={initialWidths[5]}>{'Qty of bikes'}</BOHTH>
+        <BOHTH width={initialWidths[6]}>{'Stage'}</BOHTH>
+        <BOHTH width={initialWidths[7]}>{'Proceed'}</BOHTH>
+      </BOHTR>
+    </BOHTHead>
+    <BOHTBody>
+      {renderTableData()}
+    </BOHTBody>
+  </BOHTable>), [tableData])
+
   return (
     <BasicLayout
       navigation={navigation}
@@ -479,23 +498,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
             }}
           />
         </BOHToolbar>
-        <BOHTable>
-          <BOHTHead>
-            <BOHTR>
-              <BOHTH width={initialWidths[0]}>{'Order #'}</BOHTH>
-              <BOHTH width={initialWidths[1]}>{'Brand'}</BOHTH>
-              <BOHTH width={initialWidths[2]}>{'Customer'}</BOHTH>
-              <BOHTH width={initialWidths[3]}>{'Start'}</BOHTH>
-              <BOHTH width={initialWidths[4]}>{'End'}</BOHTH>
-              <BOHTH width={initialWidths[5]}>{'Qty of bikes'}</BOHTH>
-              <BOHTH width={initialWidths[6]}>{'Stage'}</BOHTH>
-              <BOHTH width={initialWidths[7]}>{'Proceed'}</BOHTH>
-            </BOHTR>
-          </BOHTHead>
-          <BOHTBody>
-            {renderTableData()}
-          </BOHTBody>
-        </BOHTable>
+        {tableElement}
       </CommonContainer>
     </BasicLayout>
   );
