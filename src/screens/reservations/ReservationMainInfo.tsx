@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
 import { reservationMainInfoStyle } from './styles/ReservationMainInfoStyle';
-import LabeledTextInput from '../../common/components/input/LabeledTextInput';
+import LabeledTextInput from '../../common/components/bohform/LabeledTextInput';
 import { CommonSelectDropdown, DropdownData } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
 import { getDiscountCodesData } from '../../api/Settings';
 import { updateReservation } from '../../api/Reservation';

@@ -17,7 +17,7 @@ import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks/UseAlertModal';
 
 import { API_URL } from '../../../common/constants/AppConstants';
-import LabeledTextInput from '../../../common/components/input/LabeledTextInput';
+import LabeledTextInput from '../../../common/components/bohform/LabeledTextInput';
 import { Switch } from 'react-native-gesture-handler';
 import NumericInput from '../../../common/components/formcomponents/NumericInput';
 import { getBrandsData, getPriceGroupsData } from '../../../api/Price';

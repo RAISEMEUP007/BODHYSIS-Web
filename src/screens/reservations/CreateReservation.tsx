@@ -1,32 +1,27 @@
-import React, { useCallback, useEffect, useMemo, forwardRef, useState } from 'react';
+import React, { useEffect, useMemo, forwardRef, useState } from 'react';
 import {
   View,
   ActivityIndicator,
   Text,
-  ScrollView,
   TouchableHighlight,
   TextInput,
   Platform,
 } from 'react-native';
 
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
-import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../../common/constants/Colors';
-import Slots from '../../common/slots/slots';
+import Slots from '../../common/components/slots/slots';
 import { CommonButton } from '../../common/components/CommonButton/CommonButton';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
   useRequestBrandsQuery,
-  useRequestPriceTablesQuery,
-  useRequestPriceGroupsQuery,
   useRequestPriceLogicDataQuery,
 } from '../../redux/slices/baseApiSlice';
 import { getCustomersData, getDeliveryAddressesData } from '../../api/Customer';
-import { createReservation, verifyQauntity } from '../../api/Reservation';
-import { getHeaderData, getPriceDataByGroup, getPriceGroupValue } from '../../api/Price';
+import { createReservation } from '../../api/Reservation';
+import { getHeaderData, getPriceDataByGroup } from '../../api/Price';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
 import { BrandType } from '../../types/BrandType';
 import { CustomerType } from '../../types/CustomerTypes';
 import { CommonSelectDropdown, DropdownData } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
@@ -47,11 +42,8 @@ interface Props {
 
 const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   const { showAlert } = useAlertModal();
-  const { showConfirm } = useConfirmModal();
-  const navigation = useNavigation();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [contentWidth, setContentWidth] = useState<number>();
   const [customersData, setCustomers] = useState([]);
   const [selectedPriceLogic, selectPriceLogic] = useState<any>();
   const [selectedPriceTable, setPriceTable] = useState<any>();
@@ -61,7 +53,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
   );
   const [brandId, selectBrandId] = useState<number | null>();
   const [taxRate, setTaxRate] = useState<number>(0);
-  const [locationId, selectLocationId] = useState<number | null>();
   const [startDate, setStartdate] = useState<Date>(()=>{ const date = new Date(); date.setHours(0, 0, 0, 0); return date;});
   const [endDate, setEnddate] = useState<Date>();
   const [headerData, setHeaderData] = useState([]);
@@ -131,8 +122,6 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
     });
   };
   const { data: brandsData } = useRequestBrandsQuery({}, { refetchOnFocus: true });
-  // const { data: priceTablesData } = useRequestPriceTablesQuery({}, { refetchOnFocus: true, });
-  // const { data: priceGroupsData } = useRequestPriceGroupsQuery({}, {refetchOnFocus: true,});
   const { data: priceLogicData } = useRequestPriceLogicDataQuery({}, { refetchOnFocus: true });
 
   useEffect(() => {

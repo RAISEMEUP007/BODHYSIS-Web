@@ -12,7 +12,7 @@ import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
 import { BOHTBody, BOHTD, BOHTDInput, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
 import { BOHButton, BOHToolbar } from '../../common/components/bohtoolbar';
-import LabeledTextInput from '../../common/components/input/LabeledTextInput';
+import LabeledTextInput from '../../common/components/bohform/LabeledTextInput';
 import { msgStr } from '../../common/constants/Message';
 import { printReservation } from '../../common/utils/Print';
 
