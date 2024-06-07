@@ -1,10 +1,8 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
-import reservationSlice from './slices/reservationSlice';
 import { baseApiSlice } from './slices/baseApiSlice';
 
 const rootReducer = combineReducers({
-  reservation: reservationSlice,
   [baseApiSlice.reducerPath]: baseApiSlice.reducer,
 });
 

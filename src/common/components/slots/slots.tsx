@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { Colors } from '../constants/Colors';
-import { PriceTableHeaderData, PriceTableHeaderDataViewModel } from '../../types/PriceTableTypes';
+import { Colors } from '../../constants/Colors';
+import { PriceTableHeaderData, PriceTableHeaderDataViewModel } from '../../../types/PriceTableTypes';
 
 export type SlotType = {
   label: string;
