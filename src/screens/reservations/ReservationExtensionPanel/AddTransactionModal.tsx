@@ -79,7 +79,7 @@ const AddTransactionModal = ({
     if(paymentsList && paymentsList.length > 0) setPaymentId(paymentsList[0].id);
     setNote('');
     if(isModalVisible == false){
-      closeModalhandler();
+      // closeModalhandler();
     }
   }, [isModalVisible])
 
