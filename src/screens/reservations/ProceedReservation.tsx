@@ -2,7 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { View, ScrollView, TouchableOpacity, Text, TouchableHighlight, Platform, ActivityIndicator } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { v4 as uuidv4 } from 'uuid';
+import {loadStripe} from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
 
+import { STRIPE_PUBLIC_KEY } from '../../../env';
+import { STRIPE_PUBLIC_KEY_STAND } from '../../../env';
 import { deleteReservationItem, getReservationDetail, updateReservation } from '../../api/Reservation';
 import { getHeaderData, getTableData } from '../../api/Price';
 import { getDiscountCodesData } from '../../api/Settings';
@@ -68,7 +72,6 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   };
   const closeAddTransactionModal = () => {
     setAddTransactionModalVisible(false);
-    setUpdateCount(prev => prev + 1);
   };
 
   const [isAddCardModalVisible, setAddCardModalVisible] = useState(false);
@@ -372,149 +375,172 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     }
   }
 
+  const stripePromise = useMemo(() => {
+    if (reservationInfo?.store?.store_name && reservationInfo.store.store_name.toLocaleLowerCase().includes('stand')) {
+      console.log('using bike stand key');
+      return loadStripe(STRIPE_PUBLIC_KEY_STAND as string);
+    } else {
+      console.log('using default key');
+      return loadStripe(STRIPE_PUBLIC_KEY as string);
+    }
+  }, [(reservationInfo && reservationInfo.brand_id)]);
+
+  const StripeProviderBaseoffPlatform = ({ children }) => {
+    if (Platform.OS === 'web') {
+      return <Elements stripe={stripePromise}>{children}</Elements>;
+    } else {
+      return children;
+    }
+  }
+
   return (
-    <BasicLayout
-      goBack={()=>{
-        openReservationScreen('Reservations List');
-      }} 
-      screenName={'Proceed Reservation'} 
-      containerStyle={{
-        backgroundColor:'#f7f7f7',
-      }}
-    >
-      <div style={{overflow:'auto', padding:'0 30px'}}>
-        <div style={{width:'fit-content', margin:'auto'}}>
-          <View style={styles.container}>
-            <View style={{flexDirection:'row', zIndex:10}}>
-              <ReservationMainInfo details={reservationInfo} setUpdateCount={setUpdateCount}/>
-              <ReservationExtensionPanel 
-                reservationId={reservationInfo?.id??null} 
-                openAddTransactionModal={()=>openAddTransactionModal(false)}
-                openRefundModal={openRefundModal}
-              />
-            </View>
-            <View style={{flexDirection:'row', justifyContent:'space-between', marginVertical:18}}>
-              <View style={{flexDirection:'row', alignItems:'center'}}>
-                <View style={[styles.stageText, {backgroundColor:convertStageToBgColor(reservationInfo?.stage??null)}]}>
-                  <View style={[styles.circle, {left:10}]}></View>
-                  <View style={[styles.circle, {right:10}]}></View>
-                  <Text style={{color:'white', fontWeight:'bold', fontSize:15, fontFamily:'monospace'}}>{convertStageToString(reservationInfo?.stage??null)}</Text>
-                </View>
-                <TouchableOpacity 
-                  disabled={(reservationInfo && reservationInfo.stage>3)?true:false}
-                  style={[
-                    styles.nextStageButton,
-                    (reservationInfo && reservationInfo.stage > 3) && { backgroundColor: '#ccc' }
-                  ]}
-                  onPress={confirmNextStage}>
-                  <View style={{flexDirection:'row', alignItems:'center'}}>
-                    <Text style={styles.buttonText}>Next stage</Text>
-                    <FontAwesome5 name="angle-right" size={18} color="white" style={{marginLeft:10}}/>
-                  </View>
-                </TouchableOpacity>
+    <StripeProviderBaseoffPlatform>
+      <BasicLayout
+        goBack={()=>{
+          openReservationScreen('Reservations List');
+        }} 
+        screenName={'Proceed Reservation'} 
+        containerStyle={{
+          backgroundColor:'#f7f7f7',
+        }}
+      >
+        <div style={{overflow:'auto', padding:'0 30px'}}>
+          <div style={{width:'fit-content', margin:'auto'}}>
+            <View style={styles.container}>
+              <View style={{flexDirection:'row', zIndex:10}}>
+                <ReservationMainInfo details={reservationInfo} setUpdateCount={setUpdateCount}/>
+                <ReservationExtensionPanel 
+                  reservationId={reservationInfo?.id??null} 
+                  openAddTransactionModal={()=>openAddTransactionModal(false)}
+                  openRefundModal={openRefundModal}
+                />
               </View>
-              <View style={{flexDirection:'row', alignItems:'center'}}>
-                <TouchableOpacity style={styles.outLineButton} onPress={()=>printReservation(reservationInfo.id)}>
-                  <Text style={styles.outlineBtnText}>Print</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.outLineButton}>
-                  <Text style={styles.outlineBtnText}>Email</Text>
-                </TouchableOpacity>
-                {/* <TouchableOpacity style={[styles.outLineButton, {borderColor: '#4379FF'}]} onPress={openAddCardModal}>
-                  <Text style={[styles.outlineBtnText, {color:'#4379FF'}]}>Stripe</Text>
-                </TouchableOpacity> */}
-                <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]}>
-                  <View style={{flexDirection:'row', alignItems:'center'}}>
-                    <FontAwesome5 name={'bookmark'} size={18} color="#DC3545" style={{marginRight:10, marginTop:1}}/>
-                    <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]} onPress={()=>openAddTransactionModal(false)}>
-                  <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add transaction</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.outLineButton}>
-                  <Text style={styles.outlineBtnText}>More</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={[styles.reservationRow, {justifyContent:'flex-end'}]}>
-              <TouchableHighlight 
-                style={[styles.addItemButton]} 
-                onPress={openAddReservationItemModal}>
+              <View style={{flexDirection:'row', justifyContent:'space-between', marginVertical:18}}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
-                  <FontAwesome5 name="plus" size={14} color="white" style={{marginTop:3}}/>
-                  <Text style={styles.buttonText}>Add Items</Text>
+                  <View style={[styles.stageText, {backgroundColor:convertStageToBgColor(reservationInfo?.stage??null)}]}>
+                    <View style={[styles.circle, {left:10}]}></View>
+                    <View style={[styles.circle, {right:10}]}></View>
+                    <Text style={{color:'white', fontWeight:'bold', fontSize:15, fontFamily:'monospace'}}>{convertStageToString(reservationInfo?.stage??null)}</Text>
+                  </View>
+                  <TouchableOpacity 
+                    disabled={(reservationInfo && reservationInfo.stage>3)?true:false}
+                    style={[
+                      styles.nextStageButton,
+                      (reservationInfo && reservationInfo.stage > 3) && { backgroundColor: '#ccc' }
+                    ]}
+                    onPress={confirmNextStage}>
+                    <View style={{flexDirection:'row', alignItems:'center'}}>
+                      <Text style={styles.buttonText}>Next stage</Text>
+                      <FontAwesome5 name="angle-right" size={18} color="white" style={{marginLeft:10}}/>
+                    </View>
+                  </TouchableOpacity>
                 </View>
-              </TouchableHighlight>
+                <View style={{flexDirection:'row', alignItems:'center'}}>
+                  <TouchableOpacity style={styles.outLineButton} onPress={()=>printReservation(reservationInfo.id)}>
+                    <Text style={styles.outlineBtnText}>Print</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.outLineButton}>
+                    <Text style={styles.outlineBtnText}>Email</Text>
+                  </TouchableOpacity>
+                  {/* <TouchableOpacity style={[styles.outLineButton, {borderColor: '#4379FF'}]} onPress={openAddCardModal}>
+                    <Text style={[styles.outlineBtnText, {color:'#4379FF'}]}>Stripe</Text>
+                  </TouchableOpacity> */}
+                  <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]}>
+                    <View style={{flexDirection:'row', alignItems:'center'}}>
+                      <FontAwesome5 name={'bookmark'} size={18} color="#DC3545" style={{marginRight:10, marginTop:1}}/>
+                      <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.outLineButton, {borderColor:'#DC3545'}]} onPress={()=>openAddTransactionModal(false)}>
+                    <Text style={[styles.outlineBtnText, {color:'#DC3545'}]}>Add transaction</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.outLineButton}>
+                    <Text style={styles.outlineBtnText}>More</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={[styles.reservationRow, {justifyContent:'flex-end'}]}>
+                <TouchableHighlight 
+                  style={[styles.addItemButton]} 
+                  onPress={openAddReservationItemModal}>
+                  <View style={{flexDirection:'row', alignItems:'center'}}>
+                    <FontAwesome5 name="plus" size={14} color="white" style={{marginTop:3}}/>
+                    <Text style={styles.buttonText}>Add Items</Text>
+                  </View>
+                </TouchableHighlight>
+              </View>
+              <View>
+                <EquipmentsTable
+                  items={equipmentData}
+                  width={"100%"}
+                  onEdit={(item, index)=>{
+                    editReservationItem(item, index);
+                  }}
+                  onDelete={(item, index)=>{
+                    removeReservationItem(item, index);
+                  }}
+                  isExtra={true}
+                  extraWith={350}
+                />
+              </View>
             </View>
-            <View>
-              <EquipmentsTable
-                items={equipmentData}
-                width={"100%"}
-                onEdit={(item, index)=>{
-                  editReservationItem(item, index);
-                }}
-                onDelete={(item, index)=>{
-                  removeReservationItem(item, index);
-                }}
-                isExtra={true}
-                extraWith={350}
-              />
-            </View>
-          </View>
+          </div>
         </div>
-      </div>
-      <AddTransactionModal
-        isModalVisible={isAddTransactionModalVisible}
-        nextStageProcessingStatus={nextStageProcessingStatus}
-        customerId={customerId}
-        reservationInfo = {reservationInfo}
-        addCard={openAddCardModal}
-        closeModal={closeAddTransactionModal}
-        onAdded={(nextStageProcessingStatus)=>{
-          if(nextStageProcessingStatus) processNextStage();
-        }}
-        continueWithouProcessing={()=>{
-          if(nextStageProcessingStatus) processNextStage();
-          closeAddTransactionModal();
-        }}
-      />
-      <AddReservationItemModal
-        isModalVisible={isAddReservationItemModalVisible}
-        closeModal={closeAddReservationItemModal}
-        item={editingItem}
-        onAdded={(productFamily, quantity, extras)=>{
-          if (productFamily) {
-            addReservationItem(productFamily, quantity, extras);
-          }
-        }}
-        onUpdated={(oldFamily, newFamily, quantity, extras)=>{
-          if (newFamily) {
-            updateReservationItem(oldFamily, newFamily, quantity, extras);
-          }
-          editReservationItem(null, null);
-        }}
-        isExtra={true}
-      />
-      <RefundStripeModal
-        isModalVisible={isRefundStripeModalVisible}
-        closeModal={closeRefundModal}
-        refundDetails={refundDetails}
-      />
-      {Platform.OS === 'web' && (
-        <AddCardModal
-          isModalVisible={isAddCardModalVisible}
-          customerId = {customerId}
-          reservationId={reservationInfo?.id??null}
-          closeModal={closeAddCardModal}
+        <AddTransactionModal
+          isModalVisible={isAddTransactionModalVisible}
+          nextStageProcessingStatus={nextStageProcessingStatus}
+          customerId={customerId}
+          reservationInfo = {reservationInfo}
+          addCard={openAddCardModal}
+          closeModal={closeAddTransactionModal}
+          onAdded={(nextStageProcessingStatus)=>{
+            if(nextStageProcessingStatus) processNextStage();
+            setUpdateCount(prev => prev + 1);
+            closeAddTransactionModal();
+          }}
+          continueWithouProcessing={()=>{
+            if(nextStageProcessingStatus) processNextStage();
+            setUpdateCount(prev => prev + 1);
+            closeAddTransactionModal();
+          }}
         />
-      )}
-      {isLoading && (
-        <View style={styles.overlay}>
-          <ActivityIndicator size="large" color="#0000ff" />
-        </View>
-      )}
-    </BasicLayout>
+        <AddReservationItemModal
+          isModalVisible={isAddReservationItemModalVisible}
+          closeModal={closeAddReservationItemModal}
+          item={editingItem}
+          onAdded={(productFamily, quantity, extras)=>{
+            if (productFamily) {
+              addReservationItem(productFamily, quantity, extras);
+            }
+          }}
+          onUpdated={(oldFamily, newFamily, quantity, extras)=>{
+            if (newFamily) {
+              updateReservationItem(oldFamily, newFamily, quantity, extras);
+            }
+            editReservationItem(null, null);
+          }}
+          isExtra={true}
+        />
+        <RefundStripeModal
+          isModalVisible={isRefundStripeModalVisible}
+          closeModal={closeRefundModal}
+          refundDetails={refundDetails}
+        />
+        {Platform.OS === 'web' && (
+          <AddCardModal
+            isModalVisible={isAddCardModalVisible}
+            customerId = {customerId}
+            reservationId={reservationInfo?.id??null}
+            closeModal={closeAddCardModal}
+          />
+        )}
+        {isLoading && (
+          <View style={styles.overlay}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        )}
+      </BasicLayout>
+    </StripeProviderBaseoffPlatform>
   );
 };
 
