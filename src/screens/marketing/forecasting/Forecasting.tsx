@@ -20,16 +20,16 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
   const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(false);
   const InitialWidths = [200, 90, 90, 80, 160, 160, 100, 80];
   const [searchKey, setSearchKey] = useState('');
-  const [weeksArray, setweeksArray] = useState([]);
+  const [daysArray, setdaysArray] = useState([]);
   const [isLoading, setLoading] = useState(false);
 
   const today = new Date();
-  const lastYearStartDate = new Date(today.getFullYear(), 0, 1);
-  const lastYearEndDate = new Date(today.getFullYear(), 11, 31);
+  const firstDateOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const lastDateOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
   const [ searchOptions, setSearchOptions ] = useState({
-    start_date: formatDate(lastYearStartDate),
-    end_date: formatDate(lastYearEndDate),
+    start_date: formatDate(firstDateOfMonth),
+    end_date: formatDate(lastDateOfMonth),
     xploriefif: false,
     xplorievoucher: false,
   });
@@ -62,7 +62,7 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
           setUpdateLocationsTrigger(false);
           setTableData(jsonRes.gridData);
           setTotalNights(jsonRes.totalNights);
-          setweeksArray(jsonRes.weeksArray);
+          setdaysArray(jsonRes.daysArray);
           break;
         case 500:
           showAlert('error', msgStr('serverError'));
@@ -137,7 +137,7 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
                       textAlign:'center',
                       color: txtColor,
                   }}}>
-                  {subItem?.nights??" "}
+                  {subItem?.booked_guests??" "}
                 </BOHTD>
               );
             })}
@@ -162,7 +162,7 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
           <BOHTH2 width={InitialWidths[5]}>{'Property Name'}</BOHTH2>
           <BOHTH2 width={InitialWidths[6]}>{'Weekly Potential'}</BOHTH2>
           <BOHTH2 width={InitialWidths[7]}>{'Guests #'}</BOHTH2>
-          {weeksArray.length > 0 && weeksArray.map((item, index)=>(
+          {daysArray.length > 0 && daysArray.map((item, index)=>(
             <BOHTH2 
               key={index} 
               width={40} 
@@ -173,7 +173,7 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
                 marginTop: 10,
                 transform: [{ rotate: '-90deg' }]
               }}
-            >{item.formattedEndDate}</BOHTH2>
+            >{item.formattedDate}</BOHTH2>
           ))}
         </BOHTR>
       </BOHTHead>
