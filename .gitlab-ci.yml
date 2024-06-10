@@ -5,7 +5,7 @@ before_script:
   - apt install -y rsync
   - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
   - eval $(ssh-agent -s)
-  - cat "$TEST" | tr -d '\r' | ssh-add -
+  - cat "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
 
 cache:
   paths:
