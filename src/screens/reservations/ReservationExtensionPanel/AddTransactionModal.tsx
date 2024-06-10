@@ -72,7 +72,7 @@ const AddTransactionModal = ({
     'Stripe'
   ];
 
-
+console.log(paymentId);
   useEffect(() => {
     setPaymentMethod('Stripe');
     setAmountTxt('');
@@ -88,8 +88,11 @@ const AddTransactionModal = ({
       const payload = {
         customerId: customerId
       }
-      const response = getPaymentsList(payload, (jsonRes, status)=>{
-        if(status == 200 && jsonRes) setPaymentsList(jsonRes);
+      getPaymentsList(payload, (jsonRes, status)=>{
+        if(status == 200 && jsonRes) {
+          setPaymentsList(jsonRes);
+          setPaymentId(jsonRes[0].id)
+        }
         else setPaymentsList([]);
       });
     }else setPaymentsList([]);
@@ -254,6 +257,7 @@ const AddTransactionModal = ({
                 style={[styles.select, {borderColor: '#999', color:'#666666', width:320, margin:0}]}
                 selectedValue={paymentId}
                 onValueChange={(itemValue, itemIndex) => {
+                  console.log(itemValue);
                   setPaymentId(itemValue);
                 }}
               >
