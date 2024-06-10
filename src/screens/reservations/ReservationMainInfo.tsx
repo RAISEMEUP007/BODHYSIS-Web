@@ -3,17 +3,17 @@ import { View, Text, Platform } from 'react-native';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
+import { getBrandDetail } from '../../api/Price';
+import { updateReservation } from '../../api/Reservation';
+import { getDiscountCodesData } from '../../api/Settings';
+import { searchAddress } from '../../api/AllAddress ';
 import { reservationMainInfoStyle } from './styles/ReservationMainInfoStyle';
 import LabeledTextInput from '../../common/components/bohform/LabeledTextInput';
-import { CommonSelectDropdown, DropdownData } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
-import { getDiscountCodesData } from '../../api/Settings';
-import { updateReservation } from '../../api/Reservation';
+import { CommonSelectDropdown } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
 import { msgStr } from '../../common/constants/Message';
 import { useAlertModal } from '../../common/hooks/UseAlertModal';
-import { getBrandDetail } from '../../api/Price';
 import { formatDate } from '../../common/utils/DateUtils';
 import { renderBOHFormDatePicker } from '../../common/components/bohform';
-import { getAddressesData, searchAddress } from '../../api/AllAddress ';
 
 interface InputValues {
   startDate: string;
