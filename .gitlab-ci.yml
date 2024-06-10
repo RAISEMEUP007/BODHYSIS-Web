@@ -20,7 +20,6 @@ stages:
 build dev:
   stage: build
   only:
-    - merge_request
     - dev
   script:
     - yarn
@@ -34,7 +33,6 @@ build dev:
 build staging:
   stage: build
   only:
-    - merge_request
     - staging
   script:
     - yarn
@@ -49,7 +47,6 @@ build staging:
 build main:
   stage: build
   only:
-    - merge_request
     - main
   script:
     - yarn
@@ -64,7 +61,6 @@ deploy main:
   stage: deploy
   only:
     - main
-    - merge_requests
   script:
     - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./** ubuntu@3.22.62.199:/var/www/apps/bohdisys-mobile
 
@@ -73,7 +69,6 @@ deploy staging:
   stage: deploy
   only:
     - staging
-    - merge_requests
   script:
     - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./** ubuntu@18.220.145.253:/var/www/apps/staging/bohdisys-admin
 
@@ -81,7 +76,6 @@ deploy development:
   stage: deploy
   only:
     - dev
-    - merge_requests
   script:
     - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./** ubuntu@18.220.145.253:/var/www/apps/dev/bohdisys-admin
     - ssh -o StrictHostKeyChecking=no ubuntu@18.220.145.253 "pm2 restart development-api"
