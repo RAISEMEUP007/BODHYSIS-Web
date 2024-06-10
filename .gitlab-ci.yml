@@ -14,7 +14,7 @@ cache:
 
 stages:
   - build
-#  - deploy
+  - deploy
 
 
 build dev:
