@@ -323,12 +323,23 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   }, [priceLogicData, (reservationInfo && reservationInfo.brand_id), (reservationInfo && reservationInfo.start_date)])
 
   useEffect(()=>{
-    if(reservationInfo && reservationInfo.customer_id ){
+    if(reservationInfo && reservationInfo.stripe_cus_id ){
+      setCustomerId(reservationInfo.stripe_cus_id)
+    }else if(reservationInfo && reservationInfo.customer_id) {
       getCustomerIdById({id:reservationInfo.customer_id}, (jsonRes, status)=>{
-        if(status == 200) setCustomerId(jsonRes)
+        if(status == 200){
+          setCustomerId(jsonRes);
+
+          const payload = {
+            id: reservationInfo.id,
+            stripe_cus_id : jsonRes,
+          }
+      
+          updateReservation(payload)
+        }
         else setCustomerId(null);
       })
-    }else setCustomerId(null);
+    } else setCustomerId(null);
   }, [reservationInfo && reservationInfo.customer_id])
 
   useEffect(() => {
@@ -393,6 +404,8 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     }
   }
 
+  const ReservationMainInfoEl = useMemo(()=>{console.log('fff'); return (<ReservationMainInfo details={reservationInfo} setUpdateCount={setUpdateCount}/>)}, [reservationInfo, updateCount])
+
   return (
     <StripeProviderBaseoffPlatform>
       <BasicLayout
@@ -408,7 +421,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
           <div style={{width:'fit-content', margin:'auto'}}>
             <View style={styles.container}>
               <View style={{flexDirection:'row', zIndex:10}}>
-                <ReservationMainInfo details={reservationInfo} setUpdateCount={setUpdateCount}/>
+                {ReservationMainInfoEl}
                 <ReservationExtensionPanel 
                   reservationId={reservationInfo?.id??null} 
                   openAddTransactionModal={()=>openAddTransactionModal(false)}
