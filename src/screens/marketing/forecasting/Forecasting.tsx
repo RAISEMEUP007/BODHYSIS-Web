@@ -137,7 +137,7 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
                       textAlign:'center',
                       color: txtColor,
                   }}}>
-                  {subItem?.booked_guests??" "}
+                  {subItem?.nights??" "}
                 </BOHTD>
               );
             })}
