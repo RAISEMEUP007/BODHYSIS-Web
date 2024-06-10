@@ -13,8 +13,8 @@ cache:
     - .yarn
 
 stages:
-#  - build
-  - deploy
+  - build
+#  - deploy
 
 
 build-job:
