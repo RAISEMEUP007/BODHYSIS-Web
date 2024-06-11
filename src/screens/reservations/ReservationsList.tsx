@@ -244,7 +244,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
             <BOHTD width={initialWidths[4]}>{item.end_date ? formatDate2(new Date(`${item.end_date} 00:00:00`)) : ''}</BOHTD>
             <BOHTD width={initialWidths[5]} textAlign={'right'}>{item?.quantity??''}</BOHTD>
             <BOHTD width={initialWidths[6]}>{convertStageToString(item.stage)}</BOHTD>
-            <BOHTD width={initialWidths[7]} textAlign='center'>{item.Printed?'Yes':'No'}</BOHTD>
+            <BOHTD width={initialWidths[7]} textAlign='center'>{item.printed?'Yes':'No'}</BOHTD>
             <BOHTDIconBox width={initialWidths[8]}>
               <TouchableOpacity
                 onPress={() => {
