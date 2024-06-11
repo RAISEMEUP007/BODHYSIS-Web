@@ -15,7 +15,7 @@ import { formatDate, formatDate2 } from '../../common/utils/DateUtils';
 const OrdersList = ({ navigation, openOrderScreen }) => {
 
   const { showAlert } = useAlertModal();
-  const InitialWidths = [100, 160, 160, 100, 100, 110, 70, 110, 80, 80];
+  const InitialWidths = [100, 160, 160, 100, 100, 110, 70, 110, 80, 80, 80];
 
   const barcodeInputRef = useRef(null);
 
@@ -258,29 +258,28 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     }
   }
 
+  const convertStageToString = (stage) => {
+    switch (stage) {
+      case null: case 'null': return 'Draft';
+      case 0: case '0': return 'Draft';
+      case 1: case '1': return 'Provisional';
+      case 2: case '2': return 'Confirmed';
+      case 3: case '3': return 'Checked out';
+      case 4: case '4': return 'Checked in';
+      default:  return 'Invalid stage';
+    }
+  }
+
+  const returnBgColor = (stage) => {
+    switch (stage) {
+      case 2: case '2': return '#BEE5EB';
+      case 3: case '3': return '#F5C6CB';
+      case 4: case '4': return '#C3E6CB';
+      default:  return '#fff';
+    }
+  }
+
   const renderTableData = () => {
-    const convertStageToString = (stage) => {
-      switch (stage) {
-        case null: case 'null': return 'Draft';
-        case 0: case '0': return 'Draft';
-        case 1: case '1': return 'Provisional';
-        case 2: case '2': return 'Confirmed';
-        case 3: case '3': return 'Checked out';
-        case 4: case '4': return 'Checked in';
-        default:  return 'Invalid stage';
-      }
-    }
-
-    const returnBgColor = (stage) => {
-      switch (stage) {
-        case 2: case '2': return '#BEE5EB';
-        case 3: case '3': return '#F5C6CB';
-        case 4: case '4': return '#C3E6CB';
-        default:  return '#fff';
-      }
-    }
-    
-
     const rows = [];
     if (tableData.length > 0) {
       tableData.map((item, index) => {
@@ -295,7 +294,8 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
             <BOHTD width={InitialWidths[6]} textAlign={'right'}>{(item && item.driver_tip>0)?item.driver_tip.toLocaleString('en-US', { style: 'currency', currency: 'USD' }):''}</BOHTD>
             <BOHTD width={InitialWidths[7]}>{convertStageToString(item.stage)}</BOHTD>
             <BOHTD width={InitialWidths[8]} textAlign={'center'}>{item?.color_id?'YES':'NO'}</BOHTD>
-            <BOHTDIconBox  width={InitialWidths[9]}>
+            <BOHTD width={InitialWidths[9]} textAlign={'center'}>{item?.printed?'YES':'NO'}</BOHTD>
+            <BOHTDIconBox  width={InitialWidths[10]}>
               <TouchableOpacity
                 onPress={() => {
                   openOrderScreen('Action Order', {orderId:item.id})
@@ -314,25 +314,26 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
   };
 
   const tableElement = useMemo(()=>(
-  <BOHTable>
-    <BOHTHead>
-      <BOHTR>
-        <BOHTH width={InitialWidths[0]}>{'Order #'}</BOHTH>
-        <BOHTH width={InitialWidths[1]}>{'Brand'}</BOHTH>
-        <BOHTH width={InitialWidths[2]}>{'Customer'}</BOHTH>
-        <BOHTH width={InitialWidths[4]}>{'Start'}</BOHTH>
-        <BOHTH width={InitialWidths[3]}>{'End'}</BOHTH>
-        <BOHTH width={InitialWidths[5]}>{'Qty of bikes'}</BOHTH>
-        <BOHTH width={InitialWidths[6]}>{'Tips'}</BOHTH>
-        <BOHTH width={InitialWidths[7]}>{'Stage'}</BOHTH>
-        <BOHTH width={InitialWidths[8]}>{'Locked'}</BOHTH>
-        <BOHTH width={InitialWidths[9]}>{'Action'}</BOHTH>
-      </BOHTR>
-    </BOHTHead>
-    <BOHTBody>
-      {renderTableData()}
-    </BOHTBody>
-  </BOHTable>), [tableData])
+    <BOHTable>
+      <BOHTHead>
+        <BOHTR>
+          <BOHTH width={InitialWidths[0]}>{'Order #'}</BOHTH>
+          <BOHTH width={InitialWidths[1]}>{'Brand'}</BOHTH>
+          <BOHTH width={InitialWidths[2]}>{'Customer'}</BOHTH>
+          <BOHTH width={InitialWidths[4]}>{'Start'}</BOHTH>
+          <BOHTH width={InitialWidths[3]}>{'End'}</BOHTH>
+          <BOHTH width={InitialWidths[5]}>{'Qty of bikes'}</BOHTH>
+          <BOHTH width={InitialWidths[6]}>{'Tips'}</BOHTH>
+          <BOHTH width={InitialWidths[7]}>{'Stage'}</BOHTH>
+          <BOHTH width={InitialWidths[8]}>{'Locked'}</BOHTH>
+          <BOHTH width={InitialWidths[9]}>{'Printed'}</BOHTH>
+          <BOHTH width={InitialWidths[10]}>{'Action'}</BOHTH>
+        </BOHTR>
+      </BOHTHead>
+      <BOHTBody>
+        {renderTableData()}
+      </BOHTBody>
+    </BOHTable>), [tableData])
 
   return (
     <BasicLayout
