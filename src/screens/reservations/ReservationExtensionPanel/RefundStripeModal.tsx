@@ -11,7 +11,7 @@ import BasicModalContainer from '../../../common/components/basicmodal/BasicModa
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
 import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { useAlertModal } from '../../../common/hooks';
 import NumericInput from '../../../common/components/formcomponents/NumericInput';
 import { addTransactionModaltyles } from './styles/AddTransactionModalStyle';
 import { RadioButton } from 'react-native-paper';

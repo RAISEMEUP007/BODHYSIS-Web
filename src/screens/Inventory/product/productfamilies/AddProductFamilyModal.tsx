@@ -29,7 +29,7 @@ import ModalBody from '../../../../common/components/basicmodal/ModalBody';
 import ModalFooter from '../../../../common/components/basicmodal/ModalFooter';
 import { API_URL } from '../../../../common/constants/AppConstants';
 import { msgStr } from '../../../../common/constants/Message';
-import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
+import { useAlertModal } from '../../../../common/hooks';
 
 import { productFamilyModalstyles } from './styles/ProductFamilyModalStyle';
 

@@ -4,8 +4,6 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Tooltip } from 'react-native-paper';
 
 import { TextMediumSize } from '../../common/constants/Fonts';
-import { useAlertModal } from '../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
 
 import { equipmentsTableStyle } from './styles/EquipmentsTableStyle';
 
@@ -19,12 +17,8 @@ interface Props {
 }
 
 const EquipmentsTable =  ({ items, onEdit, onDelete, width, isExtra, extraWith }: Props) => {
-  const { showAlert } = useAlertModal();
-  const { showConfirm } = useConfirmModal();
-  const scrollViewRef = useRef();
   
   const [tableData, setTableData] = useState([]);
-  const [contentWidth, setContentWidth] = useState(0);
 
   useEffect(()=>{
     if(items && items.length && items.length > 0){

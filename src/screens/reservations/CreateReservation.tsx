@@ -21,9 +21,8 @@ import {
 import { getCustomersData, getDeliveryAddressesData } from '../../api/Customer';
 import { createReservation } from '../../api/Reservation';
 import { getHeaderData, getPriceDataByGroup } from '../../api/Price';
-import { useAlertModal } from '../../common/hooks/UseAlertModal';
+import { useAlertModal } from '../../common/hooks';
 import { BrandType } from '../../types/BrandType';
-import { CustomerType } from '../../types/CustomerTypes';
 import { CommonSelectDropdown, DropdownData } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
 import AddCustomerModal from '../customer/customers/AddCustomerModal';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -133,7 +132,7 @@ const CreateReservation = ({ openReservationScreen, initialData }: Props) => {
       return [];
     }
 
-    const result: DropdownData<CustomerType> = customersData.map((item, index) => {
+    const result: DropdownData<any> = customersData.map((item, index) => {
       return {
         value: item,
         displayLabel: `${item.first_name} ${item.last_name}`,

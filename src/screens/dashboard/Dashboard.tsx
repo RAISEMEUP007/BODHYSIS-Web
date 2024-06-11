@@ -9,14 +9,12 @@ import { BOHTlbCheckbox, BOHTlbRadio, BOHTlbrSearchInput, BOHTlbrSearchPicker, B
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
 import { msgStr } from '../../common/constants/Message';
 import { TextMediumSize, TextdefaultSize } from '../../common/constants/Fonts';
-import { useAlertModal } from '../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
+import { useAlertModal } from '../../common/hooks';
 import { formatDate, formatDate2 } from '../../common/utils/DateUtils';
 
 const Dashboard = ({ navigation }) => {
 
   const { showAlert } = useAlertModal();
-  const { showConfirm } = useConfirmModal();
 
   const [tableData, setTableData] = useState([]);
   const [updateReservationListTrigger, setUpdateReservationListTrigger] = useState(false);

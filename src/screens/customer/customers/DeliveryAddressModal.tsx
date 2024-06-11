@@ -21,8 +21,7 @@ import BasicModalContainer from '../../../common/components/basicmodal/BasicModa
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
 import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
+import { useAlertModal, useConfirmModal } from '../../../common/hooks';
 
 import { customersStyle } from './styles/CustomersStyle';
 import { TextMediumSize } from '../../../common/constants/Fonts';

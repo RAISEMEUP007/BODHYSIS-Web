@@ -11,7 +11,7 @@ import { reservationMainInfoStyle } from './styles/ReservationMainInfoStyle';
 import LabeledTextInput from '../../common/components/bohform/LabeledTextInput';
 import { CommonSelectDropdown } from '../../common/components/CommonSelectDropdown/CommonSelectDropdown';
 import { msgStr } from '../../common/constants/Message';
-import { useAlertModal } from '../../common/hooks/UseAlertModal';
+import { useAlertModal } from '../../common/hooks';
 import { formatDate } from '../../common/utils/DateUtils';
 import { renderBOHFormDatePicker } from '../../common/components/bohform';
 

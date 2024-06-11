@@ -6,7 +6,7 @@ import BasicModalContainer from '../../../common/components/basicmodal/BasicModa
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
 import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { useAlertModal } from '../../../common/hooks';
 
 import { customerModalstyles } from './styles/CustomerModalStyle';
 import { getTagsData } from '../../../api/Settings';

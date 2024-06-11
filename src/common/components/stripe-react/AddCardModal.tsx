@@ -13,7 +13,7 @@ import BasicModalContainer from '../basicmodal/BasicModalContainer';
 import ModalHeader from '../basicmodal/ModalHeader';
 import ModalBody from '../basicmodal/ModalBody';
 import ModalFooter from '../basicmodal/ModalFooter';
-import { useAlertModal } from '../../hooks/UseAlertModal';
+import { useAlertModal } from '../../hooks';
 import { API_URL } from '../../constants/AppConstants';
 
 interface AddCardModalProps {

@@ -21,7 +21,7 @@ import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
 import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
 import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { useAlertModal } from '../../../common/hooks';
 import { Picker } from '@react-native-picker/picker';
 
 import { discountCodeModalstyles } from './styles/DiscountCodeModalStyle';

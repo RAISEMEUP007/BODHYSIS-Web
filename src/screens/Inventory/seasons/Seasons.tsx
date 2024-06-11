@@ -14,8 +14,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { getSeasonsData, saveSeasonCell, deleteSeason } from '../../../api/Price';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
+import { useAlertModal, useConfirmModal } from '../../../common/hooks';
 import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { seasonsStyle } from './styles/SeasonsStyle';
@@ -50,7 +49,7 @@ const Seasons = ({ navigation, openInventory }) => {
     setTableData(updatedTableData);
   };
 
-  const saveCellData = (id, column, value, callback) => {
+  const saveCellData = (id, column, value, callback = null) => {
     value = value ? value : '';
 
     saveSeasonCell(id, column, value, (jsonRes, status, error) => {

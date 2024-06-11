@@ -10,8 +10,7 @@ import {
 import { msgStr } from '../../../../common/constants/Message';
 import { API_URL } from '../../../../common/constants/AppConstants';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
-import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
+import { useAlertModal, useConfirmModal } from '../../../../common/hooks';
 import { BasicLayout, CommonContainer } from '../../../../common/components/CustomLayout';
 import { BOHButton, BOHToolbar } from '../../../../common/components/bohtoolbar';
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTDImageBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../../../common/components/bohtable';

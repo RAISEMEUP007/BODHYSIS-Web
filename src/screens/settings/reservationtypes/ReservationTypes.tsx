@@ -14,8 +14,7 @@ import { getReservationTypesData, deleteReservationType } from '../../../api/Set
 import { msgStr } from '../../../common/constants/Message';
 import { API_URL } from '../../../common/constants/AppConstants';
 import { TextMediumSize } from '../../../common/constants/Fonts';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
+import { useAlertModal, useConfirmModal } from '../../../common/hooks';
 import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { reservationTypesStyle } from './styles/ReservationTypesStyle';
