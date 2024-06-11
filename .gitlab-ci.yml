@@ -7,10 +7,10 @@ before_script:
   - eval $(ssh-agent -s)
   - cat "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
 
-cache:
-  paths:
-    - node_modules/
-    - .yarn
+#cache:
+#  paths:
+#    - node_modules/
+#    - .yarn
 
 stages:
   - build
