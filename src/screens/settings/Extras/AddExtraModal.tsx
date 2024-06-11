@@ -14,7 +14,7 @@ import Checkbox from 'expo-checkbox';
 import { createExtra, updateExtra } from '../../../api/Settings';
 import { BasicModalContainer, ModalHeader, ModalBody, ModalFooter, commonModalStyle } from '../../../common/components/basicmodal';
 import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { useAlertModal } from '../../../common/hooks';
 
 import { API_URL } from '../../../common/constants/AppConstants';
 import LabeledTextInput from '../../../common/components/bohform/LabeledTextInput';

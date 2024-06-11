@@ -8,8 +8,7 @@ import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTH2, BOHTHead, BOHTR, BOHTable
 import { BOHButton, BOHTlbrSearchInput, BOHToolbar } from '../../../common/components/bohtoolbar';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
+import { useAlertModal, useConfirmModal } from '../../../common/hooks';
 
 import AddLocationModal from './AddLocationModal';
 

@@ -13,8 +13,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 import { getPriceTablesData, savePriceTableCell, deletePriceTable } from '../../../../api/Price';
 import { msgStr } from '../../../../common/constants/Message';
-import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
+import { useAlertModal, useConfirmModal } from '../../../../common/hooks';
 import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout';
 
 import { priceTablesStyle } from './styles/PriceTablesStyle';

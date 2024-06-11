@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextInput, View } from 'react-native';
 import { CommonButton } from '../../../common/components/CommonButton/CommonButton';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { useAlertModal } from '../../../common/hooks';
 import {
   createTemplate,
   editTemplate,

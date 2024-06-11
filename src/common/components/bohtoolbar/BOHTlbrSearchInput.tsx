@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     borderWidth: 1,
     borderColor: '#999',
-    borderRadius: 5,
+    borderRadius: 3,
     fontSize: TextSmallSize,
   },
 });

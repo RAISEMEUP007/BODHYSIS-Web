@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProductCompatibilitiesData, updateCompatibility } from '../../../api/Settings';
 import { getExtrasData } from '../../../api/Settings';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { useAlertModal } from '../../../common/hooks';
 import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
 import { BOHTable, BOHTHead, BOHTBody, BOHTR, BOHTH, BOHTD, BOHTDCheckbox } from '../../../common/components/bohtable';
 import { msgStr } from '../../../common/constants/Message';

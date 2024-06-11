@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { newPasword } from '../api/Auth';
 import { msgStr } from '../common/constants/Message';
-import { useAlertModal } from '../common/hooks/UseAlertModal';
+import { useAlertModal } from '../common/hooks';
 
 import { authStyles } from './styles/AuthStyles';
 

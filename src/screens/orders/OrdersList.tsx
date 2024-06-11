@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { checkedInBarcode, getReservationsData } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
-import { useAlertModal } from '../../common/hooks/UseAlertModal';
+import { useAlertModal } from '../../common/hooks';
 import { TextMediumSize, TextdefaultSize } from '../../common/constants/Fonts';
 import { BasicLayout, CommonContainer } from '../../common/components/CustomLayout';
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';

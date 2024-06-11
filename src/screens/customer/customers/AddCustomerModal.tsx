@@ -21,7 +21,7 @@ import ModalBody from '../../../common/components/basicmodal/ModalBody';
 import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
 import NumericInput from '../../../common/components/formcomponents/NumericInput';
 import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { useAlertModal } from '../../../common/hooks';
 
 import { customerModalstyles } from './styles/CustomerModalStyle';
 import DeliveryAddress from './DeliveryAddressModal';

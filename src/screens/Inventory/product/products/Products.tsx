@@ -23,8 +23,7 @@ import {
 import { getLocationsData, updateLocation } from '../../../../api/Settings';
 import { msgStr } from '../../../../common/constants/Message';
 import { TextMediumSize } from '../../../../common/constants/Fonts';
-import { useAlertModal } from '../../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../../common/hooks/UseConfirmModal';
+import { useAlertModal, useConfirmModal } from '../../../../common/hooks';
 import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout';
 
 import { productsStyle } from './styles/ProductsStyle';

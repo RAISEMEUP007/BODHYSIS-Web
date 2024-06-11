@@ -5,15 +5,13 @@ import { getAvaliableSheet } from '../../../api/Reservation';
 import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTH2, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
 import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../common/hooks/UseConfirmModal';
+import { useAlertModal } from '../../../common/hooks';
 import { BOHTlbrSearchInput, BOHToolbar, renderBOHTlbDatePicker } from '../../../common/components/bohtoolbar';
 import { TextdefaultSize } from '../../../common/constants/Fonts';
 import { formatDate } from '../../../common/utils/DateUtils';
 
 const Avaiable = ({ navigation, openMarketingMenu }) => {
   const { showAlert } = useAlertModal();
-  const { showConfirm } = useConfirmModal();
   
   const [tableData, setTableData] = useState([]);
   const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(false);

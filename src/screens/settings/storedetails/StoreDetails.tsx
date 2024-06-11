@@ -31,7 +31,7 @@ import {
 import { msgStr } from '../../../common/constants/Message';
 import { API_URL } from '../../../common/constants/AppConstants';
 import { TextMediumLargeSize, TextdefaultSize } from '../../../common/constants/Fonts';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { useAlertModal } from '../../../common/hooks';
 import BasicLayout from '../../../common/components/CustomLayout/BasicLayout';
 
 import { StoreDetailsStyle } from './styles/StoreDetailsStyle';

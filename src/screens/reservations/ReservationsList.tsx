@@ -13,19 +13,17 @@ import { BOHButton, BOHTlbCheckbox, BOHTlbRadio, BOHTlbrSearchInput, BOHTlbrSear
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
 import { msgStr } from '../../common/constants/Message';
 import { TextMediumSize, TextdefaultSize } from '../../common/constants/Fonts';
-import { useAlertModal } from '../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../common/hooks/UseConfirmModal';
+import { useAlertModal } from '../../common/hooks';
 import { formatDate, formatDate2 } from '../../common/utils/DateUtils';
 
 const ReservationsList = ({ navigation, openReservationScreen }) => {
 
   const { showAlert } = useAlertModal();
-  const { showConfirm } = useConfirmModal();
 
   const [tableData, setTableData] = useState([]);
   const [updateReservationListTrigger, setUpdateReservationListTrigger] = useState(false);
   const [periodRange, setPeriodRange] = useState<any>('');
-  const initialWidths = [100, 160, 160, 100, 100, 110, 110, 80];
+  const initialWidths = [100, 160, 160, 100, 100, 110, 110, 80, 80];
 
   const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
   const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -246,7 +244,8 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
             <BOHTD width={initialWidths[4]}>{item.end_date ? formatDate2(new Date(`${item.end_date} 00:00:00`)) : ''}</BOHTD>
             <BOHTD width={initialWidths[5]} textAlign={'right'}>{item?.quantity??''}</BOHTD>
             <BOHTD width={initialWidths[6]}>{convertStageToString(item.stage)}</BOHTD>
-            <BOHTDIconBox width={initialWidths[7]}>
+            <BOHTD width={initialWidths[7]} textAlign='center'>{item.printed?'Yes':'No'}</BOHTD>
+            <BOHTDIconBox width={initialWidths[8]}>
               <TouchableOpacity
                 onPress={() => {
                   openReservationScreen('Proceed Reservation', {reservationId:item.id})
@@ -275,7 +274,8 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
         <BOHTH width={initialWidths[4]}>{'End'}</BOHTH>
         <BOHTH width={initialWidths[5]}>{'Qty of bikes'}</BOHTH>
         <BOHTH width={initialWidths[6]}>{'Stage'}</BOHTH>
-        <BOHTH width={initialWidths[7]}>{'Proceed'}</BOHTH>
+        <BOHTH width={initialWidths[7]}>{'Printed'}</BOHTH>
+        <BOHTH width={initialWidths[8]}>{'Proceed'}</BOHTH>
       </BOHTR>
     </BOHTHead>
     <BOHTBody>

@@ -16,7 +16,7 @@ import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
 import ModalFooter from '../../../common/components/basicmodal/ModalFooter';
 import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal } from '../../../common/hooks/UseAlertModal';
+import { useAlertModal } from '../../../common/hooks';
 
 import { reservationTypeModalstyles } from './styles/ReservationTypeModalStyle';
 import { API_URL } from '../../../common/constants/AppConstants';

@@ -14,8 +14,7 @@ import BasicModalContainer from '../../../../../common/components/basicmodal/Bas
 import ModalHeader from '../../../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../../../common/components/basicmodal/ModalBody';
 import { msgStr } from '../../../../../common/constants/Message';
-import { useAlertModal } from '../../../../../common/hooks/UseAlertModal';
-import { useConfirmModal } from '../../../../../common/hooks/UseConfirmModal';
+import { useAlertModal } from '../../../../../common/hooks';
 
 import { selectPriceGroupModalStyle } from './styles/SelectPriceGroupModalStyle';
 import { getPriceGroupActiveDataByTableId, setActiveGroup } from '../../../../../api/Price';
@@ -23,7 +22,6 @@ import CreateGroupModal from '../../pricegrouplist/CreateGroupModal';
 
 const SelectPriceGroupModal = ({ isModalVisible, tableId, setUpdatePointTrigger, closeModal }) => {
   const { showAlert } = useAlertModal();
-  const { showConfirm } = useConfirmModal();
 
   const [tableData, setTableData] = useState([]);
   const [updatGroupListTrigger, setUpdatGroupListTrigger] = useState(true);
