@@ -31,8 +31,7 @@ build dev:
     - export NODE_OPTIONS=--openssl-legacy-provider 
     - npm config set loglevel warn
     - npx expo export:web
-    - ls -la web-build
-    - pwd
+
 
 build staging:
   stage: build
@@ -83,6 +82,8 @@ deploy development:
   only:
     - dev
   script:
+    - npm config set loglevel warn
+    - npx expo export:web
     - ls -la .
 #    - rsync -azhv --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" . ubuntu@18.220.145.253:/var/www/apps/dev/bohdisys-admin
     - scp -r -o StrictHostKeyChecking=no ../** ubuntu@18.220.145.253:/var/www/apps/dev/test
