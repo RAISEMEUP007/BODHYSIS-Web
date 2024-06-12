@@ -82,4 +82,5 @@ deploy development:
     - dev
   script:
     - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./** ubuntu@18.220.145.253:/var/www/apps/dev/bohdisys-admin
+    - ssh -o StrictHostKeyChecking=no ubuntu@18.220.145.253 "cd /var/www/apps/dev/; npx expo export:web"
 
