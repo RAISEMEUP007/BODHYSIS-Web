@@ -42,6 +42,10 @@ export const  getPriceTableByBrandAndDate = (priceLogicData:Array<any>, brandId:
 }
 
 export const calculatePricedEquipmentData = async (headerData:Array<any>, tableId : number|null, priceTableData : Array<any>, equipmentData : Array<any>, startDate:Date | null, endDate:Date | null) => {
+  console.log(headerData);
+  console.log(tableId);
+  console.log(priceTableData);
+  console.log(equipmentData);
 
   if(startDate === null || endDate === null){
     return equipmentData.map((item)=>({...item, price:0}));
@@ -78,6 +82,9 @@ export const calculatePricedEquipmentData = async (headerData:Array<any>, tableI
       }
     });
 
+    console.log(updatedHeaderData);
+    console.log(basedonPoint);
+
     let price = 0;
     if(basedonPoint){
       price = Math.round(basedonPoint.value*100)/100 * item.quantity;
@@ -90,8 +97,8 @@ export const calculatePricedEquipmentData = async (headerData:Array<any>, tableI
             extra_day = priceTableData[key].extra_day;
           }
         }
-        console.log(lastPoint);
-        console.log(extra_day);
+        // console.log(lastPoint);
+        // console.log(extra_day);
         price = Math.round(lastPoint.value*100)/100 * item.quantity + Math.round((diff - lastPoint.milliseconds)/(1000 * 60 * 60 * 24)) * extra_day;
       }
     }

@@ -101,7 +101,7 @@ const Products = ({ navigation, openInventory, data }) => {
 
   const [sortColumn, setSortColumn] = useState('');
   const [sortDirection, setSortDirection] = useState('asc');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getSortedData = (tableData) => {
     if(sortColumn && sortDirection){

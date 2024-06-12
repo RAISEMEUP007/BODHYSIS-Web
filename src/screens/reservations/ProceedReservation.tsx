@@ -99,8 +99,10 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     setEditingItem(item);
     setEditingIndex(index);
   };
+  console.log(price_table_id);
 
   const calcAndSetData = async (ReservationItems:Array<any>) =>{
+    console.log('pritable id id', price_table_id);
     const calculatedReservedItems = await calculatePricedEquipmentData(headerData, price_table_id, priceTableData, ReservationItems, new Date(`${reservationInfo.start_date} 00:00:00`), new Date(`${reservationInfo.end_date} 00:00:00`));
 
     let prices = {
@@ -280,8 +282,8 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   }, [initialData, updateCount]);
 
   useEffect(() => {
-    if(reservationInfo && reservationInfo.price_table_id){
-      getHeaderData(reservationInfo.price_table_id, (jsonRes, status, error) => {
+    if(price_table_id){
+      getHeaderData(price_table_id, (jsonRes, status, error) => {
         switch (status) {
           case 200:
             setHeaderData(jsonRes);
@@ -297,7 +299,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
             break;
         }
       });
-      getTableData(reservationInfo.price_table_id, (jsonRes:any, status, error) => {
+      getTableData(price_table_id, (jsonRes:any, status, error) => {
         switch (status) {
           case 200:
             setPricetableData(jsonRes)
@@ -312,7 +314,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
       setPricetableData([]);
     } 
 
-  }, [(reservationInfo && reservationInfo.price_table_id)]);
+  }, [price_table_id]);
 
   useEffect(() => {
     if(reservationInfo && reservationInfo.start_date){
@@ -403,7 +405,20 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     }
   }
 
-  const ReservationMainInfoEl = useMemo(()=>{console.log('fff'); return (<ReservationMainInfo details={reservationInfo} setUpdateCount={setUpdateCount}/>)}, [reservationInfo, updateCount])
+  const ReservationMainInfoEl = useMemo(()=>(<ReservationMainInfo details={reservationInfo} setUpdateCount={setUpdateCount}/>), [reservationInfo])
+
+  const EquipmentsTableEl = useMemo(()=>(<EquipmentsTable
+    items={equipmentData}
+    width={"100%"}
+    onEdit={(item, index)=>{
+      editReservationItem(item, index);
+    }}
+    onDelete={(item, index)=>{
+      removeReservationItem(item, index);
+    }}
+    isExtra={true}
+    extraWith={350}
+  />), [equipmentData])
 
   return (
     <StripeProviderBaseoffPlatform>
@@ -482,18 +497,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
                 </TouchableHighlight>
               </View>
               <View>
-                <EquipmentsTable
-                  items={equipmentData}
-                  width={"100%"}
-                  onEdit={(item, index)=>{
-                    editReservationItem(item, index);
-                  }}
-                  onDelete={(item, index)=>{
-                    removeReservationItem(item, index);
-                  }}
-                  isExtra={true}
-                  extraWith={350}
-                />
+                {EquipmentsTableEl}
               </View>
             </View>
           </div>

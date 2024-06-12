@@ -72,7 +72,6 @@ const AddTransactionModal = ({
     'Stripe'
   ];
 
-console.log(paymentId);
   useEffect(() => {
     setPaymentMethod('Stripe');
     setAmountTxt('');
