@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Platform, ActivityIndicator } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -64,6 +64,10 @@ const BasicLayout = ({
     }
   }, [goBack]);
 
+  const loadingComponent = useMemo(()=>(<View style={[styles.overlay, !isLoading && {display:"none"}]}>
+    <ActivityIndicator size={32} color="#0000ff" />
+  </View>), [isLoading])
+
   return (
     <View style={{ ...styles.container, ...containerStyle }}>
       <View style={styles.header}>
@@ -88,11 +92,7 @@ const BasicLayout = ({
         <Text style={styles.screenName}>{screenName}</Text>
       </View>
       {children}
-      {isLoading && (
-        <View style={styles.overlay}>
-          <ActivityIndicator size="large" color="#0000ff" />
-        </View>
-      )}
+      {loadingComponent}
     </View>
   );
 };
