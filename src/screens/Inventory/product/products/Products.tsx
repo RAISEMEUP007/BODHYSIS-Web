@@ -345,11 +345,11 @@ const Products = ({ navigation, openInventory, data }) => {
           else showAlert('error', msgStr('unknownError'));
           break;
       }
-      setIsLoading(false);
     });
   };
 
   const setIsChecked = (itemId, value) => {
+    setIsLoading(true);
     setCheckedItemIds((prevIds) => {
       if (value) {
         return [...prevIds, itemId];
@@ -371,6 +371,7 @@ const Products = ({ navigation, openInventory, data }) => {
   }
 
   const updateCheckedAll = (value) => {
+    setIsLoading(true);
     const updatedCheckedItemIds = value ? filteredAndSortedData.map((item) => item.id) : [];
     setCheckedItemIds(updatedCheckedItemIds);
     setIsCheckAll(value);
@@ -379,7 +380,6 @@ const Products = ({ navigation, openInventory, data }) => {
   const sortData = (column) =>{
     setIsLoading(true);
     const direction = column === sortColumn && sortDirection === 'desc' ? 'asc' : 'desc';
-    setTimeout(()=>{setIsLoading(false)}, 100)
 
     setSortColumn(column);
     setSortDirection(direction);
@@ -402,7 +402,7 @@ const Products = ({ navigation, openInventory, data }) => {
             <View style={[styles.cell, { width: 200 }]}>
               <Text>{item.family ? (item.family.family) : ''}</Text>
             </View>
-            <View style={[styles.cell]}>
+            <View style={[styles.cell, {width:200}]}>
               <Text>{item.line ? item.line.line : ''}</Text>
             </View>
             <View style={[styles.cell, { width: 80 }]}>
@@ -451,8 +451,99 @@ const Products = ({ navigation, openInventory, data }) => {
     } else {
       <></>;
     }
+    setIsLoading(false);
     return <>{rows}</>;
   };
+
+  const buttonsElement = useMemo(()=>(<View style={styles.toolbar}>
+    <TouchableHighlight style={styles.button} onPress={openAddProductModal}>
+      <Text style={styles.buttonText}>Add</Text>
+    </TouchableHighlight>
+    <TouchableHighlight style={styles.button} onPress={openQuickAddProductModal}>
+      <Text style={styles.buttonText}>Quick Add</Text>
+    </TouchableHighlight>
+    <Text style={{marginLeft:50, marginRight:5}}>Bulk Actions</Text>
+    <TouchableHighlight style={styles.bulkbutton} onPress={bulkUpdateLocation}>
+      <Text style={styles.buttonText}>Update Location</Text>
+    </TouchableHighlight>
+    <TouchableHighlight style={styles.bulkbutton} onPress={blukUPdateStatus}>
+      <Text style={styles.buttonText}>Update Status</Text>
+    </TouchableHighlight>
+    <TouchableHighlight style={styles.bulkbutton} onPress={blukDelete}>
+      <Text style={styles.buttonText}>Delete</Text>
+    </TouchableHighlight>
+  </View>), []);
+
+  const tableElement = useMemo(()=>(<View style={styles.tableContainer}>
+    <View style={styles.tableHeader}>
+      <View style={[styles.columnHeader, {width:50, alignItems:"center", justifyContent:'center', padding:0}]}>
+        <Checkbox value={isCheckedAll} onValueChange={updateCheckedAll}/>
+      </View>
+      <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('category')}>
+        <Text>{'Category'}</Text>
+        {sortColumn == 'category' && sortDirection == 'desc'?
+          <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+          : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+        }
+      </Pressable>
+      <Pressable style={[styles.columnHeader, styles.sortableColumn, { width: 200 }]} onPress={()=>sortData('family')}>
+        <Text>{'Family'}</Text>
+        {sortColumn == 'family' && sortDirection == 'desc'?
+          <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+          : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+        }
+      </Pressable>
+      <Pressable style={[styles.columnHeader, styles.sortableColumn, {width:200}]} onPress={()=>sortData('line')}>
+        <Text>{'Line'}</Text>
+        {sortColumn == 'line' && sortDirection == 'desc'?
+          <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+          : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+        }
+      </Pressable>
+      <Pressable style={[styles.columnHeader, styles.sortableColumn, { width: 80 }]} onPress={()=>sortData('size')}>
+        <Text>{'Size'}</Text>
+        {sortColumn == 'size' && sortDirection == 'desc'?
+          <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+          : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+        }
+      </Pressable>
+      <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('barcode')}>
+        <Text>{'Barcode'}</Text>
+        {sortColumn == 'barcode' && sortDirection == 'desc'?
+          <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+          : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+        }
+      </Pressable>
+      <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('home_location')}>
+        <Text>{'Home location'}</Text>
+        {sortColumn == 'home_location' && sortDirection == 'desc'?
+          <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+          : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+        }
+      </Pressable>
+      <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('current_location')}>
+        <Text>{'Current location'}</Text>
+        {sortColumn == 'current_location' && sortDirection == 'desc'?
+          <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+          : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+        }
+      </Pressable>
+      <Pressable style={[styles.columnHeader, styles.sortableColumn, { width: 110 }]} onPress={()=>sortData('status')}>
+        <Text>{'Status'}</Text>
+        {sortColumn == 'status' && sortDirection == 'desc'?
+          <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
+          : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
+        }
+      </Pressable>
+      <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
+      <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
+    </View>
+    <View style={{flex:1}}>
+      <ScrollView>
+        {renderTableData()}
+      </ScrollView>
+    </View>
+  </View>), [filteredAndSortedData, checkedItemIds])
 
   return (
     <BasicLayout
@@ -461,6 +552,7 @@ const Products = ({ navigation, openInventory, data }) => {
         openInventory(data?.searchOptions ? 'Product Lines' : null);
       }}
       screenName={'Products'}
+      isLoading={isLoading}
     >
       <ScrollView horizontal={true}>
         <View style={styles.container}>
@@ -561,99 +653,8 @@ const Products = ({ navigation, openInventory, data }) => {
               </Picker>
             </View>
           </View>
-          <View style={styles.toolbar}>
-            <TouchableHighlight style={styles.button} onPress={openAddProductModal}>
-              <Text style={styles.buttonText}>Add</Text>
-            </TouchableHighlight>
-            <TouchableHighlight style={styles.button} onPress={openQuickAddProductModal}>
-              <Text style={styles.buttonText}>Quick Add</Text>
-            </TouchableHighlight>
-            <Text style={{marginLeft:50, marginRight:5}}>Bulk Actions</Text>
-            <TouchableHighlight style={styles.bulkbutton} onPress={bulkUpdateLocation}>
-              <Text style={styles.buttonText}>Update Location</Text>
-            </TouchableHighlight>
-            <TouchableHighlight style={styles.bulkbutton} onPress={blukUPdateStatus}>
-              <Text style={styles.buttonText}>Update Status</Text>
-            </TouchableHighlight>
-            <TouchableHighlight style={styles.bulkbutton} onPress={blukDelete}>
-              <Text style={styles.buttonText}>Delete</Text>
-            </TouchableHighlight>
-          </View>
-          <View style={styles.tableContainer}>
-            <View style={styles.tableHeader}>
-              <View style={[styles.columnHeader, {width:50, alignItems:"center", justifyContent:'center', padding:0}]}>
-                <Checkbox value={isCheckedAll} onValueChange={updateCheckedAll}/>
-              </View>
-              <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('category')}>
-                <Text>{'Category'}</Text>
-                {sortColumn == 'category' && sortDirection == 'desc'?
-                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
-                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
-                }
-              </Pressable>
-              <Pressable style={[styles.columnHeader, styles.sortableColumn, { width: 200 }]} onPress={()=>sortData('family')}>
-                <Text>{'Family'}</Text>
-                {sortColumn == 'family' && sortDirection == 'desc'?
-                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
-                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
-                }
-              </Pressable>
-              <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('line')}>
-                <Text>{'Line'}</Text>
-                {sortColumn == 'line' && sortDirection == 'desc'?
-                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
-                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
-                }
-              </Pressable>
-              <Pressable style={[styles.columnHeader, styles.sortableColumn, { width: 80 }]} onPress={()=>sortData('size')}>
-                <Text>{'Size'}</Text>
-                {sortColumn == 'size' && sortDirection == 'desc'?
-                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
-                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
-                }
-              </Pressable>
-              <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('barcode')}>
-                <Text>{'Barcode'}</Text>
-                {sortColumn == 'barcode' && sortDirection == 'desc'?
-                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
-                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
-                }
-              </Pressable>
-              <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('home_location')}>
-                <Text>{'Home location'}</Text>
-                {sortColumn == 'home_location' && sortDirection == 'desc'?
-                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
-                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
-                }
-              </Pressable>
-              <Pressable style={[styles.columnHeader, styles.sortableColumn]} onPress={()=>sortData('current_location')}>
-                <Text>{'Current location'}</Text>
-                {sortColumn == 'current_location' && sortDirection == 'desc'?
-                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
-                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
-                }
-              </Pressable>
-              <Pressable style={[styles.columnHeader, styles.sortableColumn, { width: 110 }]} onPress={()=>sortData('status')}>
-                <Text>{'Status'}</Text>
-                {sortColumn == 'status' && sortDirection == 'desc'?
-                  <FontAwesome5 name={"sort-amount-up-alt"} style={{}} />
-                  : <FontAwesome5 name={"sort-amount-down-alt"} style={{}} />
-                }
-              </Pressable>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{'Edit'}</Text>
-              <Text style={[styles.columnHeader, styles.IconCell]}>{'DEL'}</Text>
-            </View>
-            <View style={{flex:1}}>
-              <ScrollView>
-                {renderTableData()}
-              </ScrollView>
-            </View>
-            {isLoading && (
-              <View style={styles.overlay}>
-                <ActivityIndicator size="small" color="#006fe6" />
-              </View>
-            )}
-          </View>
+          {buttonsElement}
+          {tableElement}
         </View>
       </ScrollView>
       <AddProductModal
