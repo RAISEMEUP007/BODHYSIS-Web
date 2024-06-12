@@ -31,6 +31,8 @@ build dev:
     - export NODE_OPTIONS=--openssl-legacy-provider 
     - npm config set loglevel warn
     - npx expo export:web
+    - ls -la
+    - pwd
 
 build staging:
   stage: build
