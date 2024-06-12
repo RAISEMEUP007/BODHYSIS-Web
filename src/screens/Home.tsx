@@ -116,7 +116,7 @@ const MainDrawer = ({ navigation }) => {
             }}
           />
         </ScrollView>
-        <View style={{position:"absolute", bottom:0, paddingBottom:10, width:'100%' }}><Text style={{textAlign:'center'}}>{`Version 1.0 - 0135`}</Text></View>
+        <View style={{position:"absolute", bottom:0, paddingBottom:10, width:'100%' }}><Text style={{textAlign:'center'}}>{`Version 1.0 - Commit ID {COMMIT}`}</Text></View>
       </View>
     );
   };
