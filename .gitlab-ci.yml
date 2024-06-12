@@ -31,7 +31,7 @@ build dev:
     - export NODE_OPTIONS=--openssl-legacy-provider 
     - npm config set loglevel warn
     - npx expo export:web
-    - ls -la
+    - ls -la web-build
     - pwd
 
 build staging:
@@ -68,7 +68,7 @@ deploy main:
   only:
     - main
   script:
-    - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./** ubuntu@3.22.62.199:/var/www/apps/bohdisys-mobile
+    - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" ./web-build/** ubuntu@3.22.62.199:/var/www/apps/bohdisys-mobile
 
 
 deploy staging:
@@ -85,6 +85,6 @@ deploy development:
   script:
     - ls -la .
 #    - rsync -azhv --rsh="ssh -o StrictHostKeyChecking=no -l ubuntu" . ubuntu@18.220.145.253:/var/www/apps/dev/bohdisys-admin
-    - scp -r -o StrictHostKeyChecking=no ../** ubuntu@18.220.145.253:/var/www/apps/dev/bohdisys-admin
+    - scp -r -o StrictHostKeyChecking=no ../** ubuntu@18.220.145.253:/var/www/apps/dev/test
 #    - ssh -o StrictHostKeyChecking=no ubuntu@18.220.145.253 "cd /var/www/apps/dev/bohdisys-admin; npx expo export:web"
 
