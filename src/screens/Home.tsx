@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Platform, Linking, ScrollView } from 'react-native';
+import { View, Image, Platform, Linking, ScrollView, Text } from 'react-native';
 import { createDrawerNavigator, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -93,28 +93,31 @@ const MainDrawer = ({ navigation }) => {
     const { navigation } = props;
 
     return (
-      <ScrollView>
-        <DrawerItem
-          label="#"
-          onPress={() => navigation.navigate('Home')}
-          icon={() => (
-            <View style={{ width: '100%', alignItems: 'center' }}>
-              <Image source={require('../assets/icon.png')} style={{ width: 70, height: 70 }} />
-            </View>
-          )}
-          style={{ marginTop: 20 }}
-          labelStyle={{ color: 'black', fontWeight: 'bold' }}
-        />
-        <DrawerItemList {...props} />
-        <DrawerItem
-          label="Log out"
-          onPress={async () => {
-            await logout(() => {});
-            await AsyncStorage.setItem('access-token', '');
-            navigation.navigate('Auth');
-          }}
-        />
-      </ScrollView>
+      <View style={{height:'100%', paddingBottom:50}}>
+        <ScrollView>
+          <DrawerItem
+            label="#"
+            onPress={() => navigation.navigate('Home')}
+            icon={() => (
+              <View style={{ width: '100%', alignItems: 'center' }}>
+                <Image source={require('../assets/icon.png')} style={{ width: 70, height: 70 }} />
+              </View>
+            )}
+            style={{ marginTop: 20 }}
+            labelStyle={{ color: 'black', fontWeight: 'bold' }}
+          />
+          <DrawerItemList {...props} />
+          <DrawerItem
+            label="Log out"
+            onPress={async () => {
+              await logout(() => {});
+              await AsyncStorage.setItem('access-token', '');
+              navigation.navigate('Auth');
+            }}
+          />
+        </ScrollView>
+        <View style={{position:"absolute", bottom:0, paddingBottom:10, width:'100%' }}><Text style={{textAlign:'center'}}>{`Version 1.0 - Commit ID {COMMIT}`}</Text></View>
+      </View>
     );
   };
 
