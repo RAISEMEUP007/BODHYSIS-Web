@@ -330,7 +330,7 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
         />
         <View>
           <Text style={{marginBottom:6, color:"#555555"}}>{'Discount Rate'}</Text>
-          <Text style={styles.text} selectable={true}>{(discountCodes && details && details.promo_code)?discountCodes.find(item=>item.id==details.promo_code)?.amount:' '}</Text>
+          <Text style={styles.text} selectable={true}>{(discountCodes && details && details.promo_code)?discountCodes.find(item=>item.id==details.promo_code)?.amount??' ':' '}</Text>
         </View>
       </View>
       <View style={[styles.reservationRow, {width:'100%'}]}>

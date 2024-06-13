@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Text, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getAvaliableSheet } from '../../../api/Reservation';
 import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
-import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTH2, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
+import { BOHTBody, BOHTD, BOHTDIconBox, BOHTDPressable, BOHTH, BOHTH2, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal } from '../../../common/hooks';
 import { BOHTlbrSearchInput, BOHToolbar, renderBOHTlbDatePicker } from '../../../common/components/bohtoolbar';
 import { TextdefaultSize } from '../../../common/constants/Fonts';
 import { formatDate } from '../../../common/utils/DateUtils';
 
-const Avaiable = ({ navigation, openMarketingMenu }) => {
+const Avaiable = ({ navigation }) => {
   const { showAlert } = useAlertModal();
   
   const [tableData, setTableData] = useState([]);
@@ -60,6 +61,15 @@ const Avaiable = ({ navigation, openMarketingMenu }) => {
     }));
   }
 
+  const openReservations = (searchOptions) => {
+
+    AsyncStorage.setItem('__demand_options', JSON.stringify(searchOptions))
+
+    if(Platform.OS == 'web'){
+      window.open('/home/DemandsList');
+    }
+  }
+
   const renderTableData = () => {
     const rows = [];
     if (tableData && tableData.length && tableData.length > 0) {
@@ -73,7 +83,21 @@ const Avaiable = ({ navigation, openMarketingMenu }) => {
             <BOHTD width={InitialWidths[0]}>{item.display_name ||" "}</BOHTD>
             {item.quantities.length >0 && (
               item.quantities.map((quantity, index)=>(
-                <BOHTD key={index} width={80} textAlign={'center'}>{`${quantity.out_amount}/${quantity.inventoryAmount}`}</BOHTD>
+                <BOHTDPressable
+                  key={index} 
+                  width={80} 
+                  textAlign={'center'} 
+                  onPress={()=>{
+                    openReservations({
+                      date: quantity.date, 
+                      start_date: quantity.start_date, 
+                      end_date: quantity.end_date, 
+                      display_name: item.display_name,
+                      ids: quantity.ids,
+                      out_amount: quantity.out_amount,
+                    })}
+                  }
+                >{`${quantity.out_amount}/${quantity.inventoryAmount}`}</BOHTDPressable>
               ))
             )}
           </BOHTR>
@@ -89,7 +113,7 @@ const Avaiable = ({ navigation, openMarketingMenu }) => {
     <BasicLayout
       navigation={navigation}
       goBack={() => {
-        openMarketingMenu(null);
+        navigation.navigate('Marketing');
       }}
       screenName={'Demands'}
     >

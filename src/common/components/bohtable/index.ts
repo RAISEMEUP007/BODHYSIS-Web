@@ -9,3 +9,4 @@ export { default as BOHTDCheckbox } from "./BOHTDCheckbox";
 export { default as BOHTDIconBox } from "./BOHTDIconBox";
 export { default as BOHTDImageBox } from "./BOHTDImageBox";
 export { default as BOHTDInput } from "./BOHTDInput";
+export { default as BOHTDPressable } from "./BOHTDPressable";
