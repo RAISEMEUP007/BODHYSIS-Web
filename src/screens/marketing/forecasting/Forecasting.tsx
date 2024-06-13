@@ -10,7 +10,7 @@ import { BOHTlbCheckbox, BOHToolbar, renderBOHTlbDatePicker } from '../../../com
 import { TextdefaultSize } from '../../../common/constants/Fonts';
 import { formatDate } from '../../../common/utils/DateUtils';
 
-const Forecasting = ({ navigation, openMarketingMenu }) => {
+const Forecasting = ({ navigation }) => {
   const { showAlert } = useAlertModal();
 
   const [tableData, setTableData] = useState([]);
@@ -185,7 +185,7 @@ const Forecasting = ({ navigation, openMarketingMenu }) => {
     <BasicLayout
       navigation={navigation}
       goBack={() => {
-        openMarketingMenu(null);
+        navigation.navigate('Marketing');
       }}
       screenName={'Forecasting'}
       isLoading={isLoading}

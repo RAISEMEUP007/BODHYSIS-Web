@@ -22,12 +22,9 @@ const Marketing = ({navigation, initialItem }:Props) => {
     
     if(selectedItem) {
         switch (selectedItem) {
-            case 'Locations':
-                return <LocationManager navigation={navigation} openMarketingMenu={handleItemClick}/>;
-            case 'Forecasting':
-                return <Forecasting navigation={navigation} openMarketingMenu={handleItemClick}/>;
-            case 'Demands Summary':
-                return <Avaiable navigation={navigation} openMarketingMenu={handleItemClick}/>;
+            case 'Locations': navigation.navigate('Locations'); break;
+            case 'Forecasting': navigation.navigate('Forecasting'); break;
+            case 'Demands Summary': navigation.navigate('Demands Summary'); break;
             default:
                 return (
                     <View style={{ marginTop: 20, paddingHorizontal: 10, paddingVertical:2, height: 28, justifyContent: 'center', flexDirection: 'row',}}>

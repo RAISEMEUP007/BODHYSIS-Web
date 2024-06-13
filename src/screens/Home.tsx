@@ -15,6 +15,9 @@ import Scheduler from './scheduler/Scheduler';
 import { useHambugerMenuHistory } from '../common/hooks/UseHambugerMenuHistory';
 import Marketing from './marketing/Marketing';
 import DemandsList from './reservations/DemansList';
+import LocationManager from './marketing/locationmanager/Locations';
+import Avaiable from './marketing/avaiable/Avaiable';
+import Forecasting from './marketing/forecasting/Forecasting';
 
 const MainDrawer = ({ navigation }) => {
 
@@ -25,9 +28,9 @@ const MainDrawer = ({ navigation }) => {
 
   const Drawer = createDrawerNavigator();
 
-  useEffect(()=>{
-    addMenuHistory(initialRouteName);
-  }, []);
+  // useEffect(()=>{
+  //   addMenuHistory(initialRouteName);
+  // }, []);
 
   useEffect(() => {
     const handleDeepLinking = async () => {
@@ -96,12 +99,34 @@ const MainDrawer = ({ navigation }) => {
       component: ({navigation})=>{return <Scheduler navigation={navigation} />},
       iconName: "scheduler.png",
       label: "Scheduler",
+      hidden: true,
     },
     {
       name: "Marketing",
       component: ({navigation})=>{return <Marketing navigation={navigation} />},
       iconName: "marketing.png",
       label: "Marketing",
+    },
+    {
+      name: "Locations",
+      component: ({navigation})=>{return <LocationManager navigation={navigation} />},
+      iconName: "marketing.png",
+      label: "Locations",
+      hidden: true,
+    },
+    {
+      name: "Forecasting",
+      component: ({navigation})=>{return <Forecasting navigation={navigation} />},
+      iconName: "marketing.png",
+      label: "Forecasting",
+      hidden: true,
+    },
+    {
+      name: "Demands Summary",
+      component: ({navigation})=>{return <Avaiable navigation={navigation} />},
+      iconName: "marketing.png",
+      label: "Demands Summary",
+      hidden: true,
     },
     {
       name: "Settings",

@@ -11,7 +11,7 @@ import { BOHTlbrSearchInput, BOHToolbar, renderBOHTlbDatePicker } from '../../..
 import { TextdefaultSize } from '../../../common/constants/Fonts';
 import { formatDate } from '../../../common/utils/DateUtils';
 
-const Avaiable = ({ navigation, openMarketingMenu }) => {
+const Avaiable = ({ navigation }) => {
   const { showAlert } = useAlertModal();
   
   const [tableData, setTableData] = useState([]);
@@ -113,7 +113,7 @@ const Avaiable = ({ navigation, openMarketingMenu }) => {
     <BasicLayout
       navigation={navigation}
       goBack={() => {
-        openMarketingMenu(null);
+        navigation.navigate('Marketing');
       }}
       screenName={'Demands'}
     >

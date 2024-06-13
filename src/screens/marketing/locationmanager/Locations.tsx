@@ -12,7 +12,7 @@ import { useAlertModal, useConfirmModal } from '../../../common/hooks';
 
 import AddLocationModal from './AddLocationModal';
 
-const LocationManager = ({ navigation, openMarketingMenu }) => {
+const LocationManager = ({ navigation }) => {
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
   
@@ -141,7 +141,7 @@ const LocationManager = ({ navigation, openMarketingMenu }) => {
     <BasicLayout
       navigation={navigation}
       goBack={() => {
-        openMarketingMenu(null);
+        navigation.navigate('Marketing');
       }}
       screenName={'Location Manager'}
     >
