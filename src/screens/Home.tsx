@@ -25,6 +25,10 @@ const MainDrawer = ({ navigation }) => {
 
   const Drawer = createDrawerNavigator();
 
+  useEffect(()=>{
+    addMenuHistory(initialRouteName);
+  }, []);
+
   useEffect(() => {
     const handleDeepLinking = async () => {
       try {
@@ -56,49 +60,88 @@ const MainDrawer = ({ navigation }) => {
     handleDeepLinking();
   }, []);
 
-  const DashboardScreen = ({ navigation }) => {
-    return <Dashboard navigation={navigation} />;
-  };
-
-  const ReservationScreen = ({ navigation }) => {
-    return <Reservations navigation={navigation} />;
-  };
-
-  const DemandsListScreen = ({ navigation }) => {
-    return <DemandsList navigation={navigation}/>;
-  };
-
-  const InventoryScreen = ({ navigation }) => {
-    return <Inventory navigation={navigation} />;
-  };
-
-  const CustomerScreen = ({ navigation }) => {
-    return <Customers navigation={navigation} />;
-  };
-
-  const SchedulerScreen = ({ navigation }) => {
-    return <Scheduler navigation={navigation} />;
-  };
-
-  const SettingsScreen = ({ navigation }) => {
-    return <Settings navigation={navigation} />;
-  };
-
-  const MarketingScreen = ({ navigation }) => {
-    return <Marketing navigation={navigation} />;
-  };
-
-  const DeliveryOrderScreen = ({ navigation }) => {
-    return <Orders navigation={navigation} />;
-  };
-
-  useEffect(()=>{
-    addMenuHistory(initialRouteName);
-  }, []);
+  const screensConfig = [
+    {
+      name: "Dashboard",
+      component: ({navigation})=>{return <Dashboard navigation={navigation} />},
+      iconName: "dashboard.png",
+      label: "Dashboard",
+    },
+    {
+      name: "Reservation",
+      component: ({navigation})=>{return <Reservations navigation={navigation} />},
+      iconName: "reservations.png",
+      label: "Reservation",
+    },
+    {
+      name: "Walkup Order",
+      component: ({navigation})=>{return <Orders navigation={navigation} />},
+      iconName: "walk-up-order.png",
+      label: "Walkup Order",
+    },
+    {
+      name: "Inventory",
+      component: ({navigation})=>{return <Inventory navigation={navigation} />},
+      iconName: "inventory.png",
+      label: "Inventory",
+    },
+    {
+      name: "Customers",
+      component: ({navigation})=>{return <Customers navigation={navigation} />},
+      iconName: "customers.png",
+      label: "Customers",
+    },
+    {
+      name: "Scheduler",
+      component: ({navigation})=>{return <Scheduler navigation={navigation} />},
+      iconName: "scheduler.png",
+      label: "Scheduler",
+    },
+    {
+      name: "Marketing",
+      component: ({navigation})=>{return <Marketing navigation={navigation} />},
+      iconName: "marketing.png",
+      label: "Marketing",
+    },
+    {
+      name: "Settings",
+      component: ({navigation})=>{return <Settings navigation={navigation} />},
+      iconName: "settings.png",
+      label: "Settings",
+    },   
+    {
+      name: "DemandsList",
+      component: ({navigation})=>{return <DemandsList navigation={navigation} />},
+      iconName: "reservations.png",
+      label: "DemandsList",
+      hidden: true,
+    },
+  ];
+  
+  const drawerScreens = screensConfig.map((screen) => (
+    <Drawer.Screen
+      key={screen.name}
+      name={screen.name}
+      component={screen.component}
+      options={{
+        drawerLabel: screen.label,
+        unmountOnBlur: true,
+        headerShown: false,
+        drawerIcon: ({ focused, size }) => (
+          <Image
+            style={{ width: 25, height: 25, resizeMode: 'contain' }}
+            source={require(`../assets/nav-icons/${screen.iconName}`)}
+          />
+        ),
+        drawerItemStyle: {
+          display: screen.hidden ? 'none' : 'flex',
+        },
+      }}
+    />
+  ));
 
   const DrawerContent = (props) => {
     const { navigation } = props;
-
     return (
       <View style={{height:'100%', paddingBottom:50}}>
         <ScrollView>
@@ -138,162 +181,7 @@ const MainDrawer = ({ navigation }) => {
           drawerStyle: { backgroundColor: '#f1f3fc', },
         }}
       >
-        <Drawer.Screen
-          name="Dashboard"
-          component={DashboardScreen}
-          listeners={{
-            drawerItemPress: (e) => {
-              addMenuHistory('Dashboard');
-            },
-          }}
-          options={{
-            drawerLabel: 'Dashboard',
-            unmountOnBlur: true,
-            headerShown: false,
-            drawerIcon: ({focused, size}) => (
-              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/dashboard.png')}></Image>
-           ),
-          }}
-        />
-        <Drawer.Screen
-          name="Reservation"
-          component={ReservationScreen}
-          listeners={{
-            drawerItemPress: (e) => {
-              addMenuHistory('Reservation');
-            },
-          }}
-          options={{
-            drawerIcon: ({focused, size}) => (
-              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/reservations.png')}></Image>
-           ),
-            drawerLabel: 'Reservation',
-            unmountOnBlur: true,
-            headerShown: false,
-          }}
-        />
-        <Drawer.Screen
-          name="DemandsList"
-          component={DemandsListScreen}
-          listeners={{
-            drawerItemPress: (e) => {
-              addMenuHistory('DemandsList');
-            },
-          }}
-          options={{
-            drawerIcon: ({focused, size}) => (
-              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/reservations.png')}></Image>
-            ),
-            drawerLabel: 'DemandsList',
-            unmountOnBlur: true,
-            headerShown: false,
-            drawerItemStyle:{
-              display:'none'
-            }
-          }}
-        />
-        <Drawer.Screen
-          name="Walkup Order"
-          component={DeliveryOrderScreen}
-          listeners={{
-            drawerItemPress: (e) => {
-              addMenuHistory('Walkup Order');
-            },
-          }}
-          options={{
-            drawerIcon: ({focused, size}) => (
-              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/walk-up-order.png')}></Image>
-           ),
-            drawerLabel: 'Walkup Order',
-            unmountOnBlur: true,
-            headerShown: false,
-          }}
-        />
-        <Drawer.Screen
-          name="Inventory"
-          component={InventoryScreen}
-          listeners={{
-            drawerItemPress: (e) => {
-              addMenuHistory('Inventory');
-            },
-          }}
-          options={{
-            drawerIcon: ({focused, size}) => (
-              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/inventory.png')}></Image>
-           ),
-            drawerLabel: 'Inventory',
-            unmountOnBlur: true,
-            headerShown: false,
-          }}
-        />
-        <Drawer.Screen
-          name="Customer"
-          component={CustomerScreen}
-          listeners={{
-            drawerItemPress: (e) => {
-              addMenuHistory('Customer');
-            },
-          }}
-          options={{
-            drawerIcon: ({focused, size}) => (
-              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/customers.png')}></Image>
-           ),
-            drawerLabel: 'Customer',
-            unmountOnBlur: true,
-            headerShown: false,
-          }}
-        />
-        <Drawer.Screen
-          name="Scheduler"
-          component={SchedulerScreen}
-          listeners={{
-            drawerItemPress: (e) => {
-              addMenuHistory('Scheduler');
-            },
-          }}
-          options={{
-            drawerIcon: ({focused, size}) => (
-              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/scheduler.png')}></Image>
-           ),
-            drawerLabel: 'Scheduler',
-            unmountOnBlur: true,
-            headerShown: false,
-          }}
-        />
-        <Drawer.Screen
-          name="Marketing"
-          component={MarketingScreen}
-          listeners={{
-            drawerItemPress: (e) => {
-              addMenuHistory('Marketing');
-            },
-          }}
-          options={{
-            drawerIcon: ({focused, size}) => (
-              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/marketing.png')}></Image>
-           ),
-            drawerLabel: 'Marketing',
-            unmountOnBlur: true,
-            headerShown: false,
-          }}
-        />
-        <Drawer.Screen
-          name="Settings"
-          component={SettingsScreen}
-          listeners={{
-            drawerItemPress: (e) => {
-              addMenuHistory('Settings');
-            },
-          }}
-          options={{
-            drawerIcon: ({focused, size}) => (
-              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/settings.png')}></Image>
-           ),
-            drawerLabel: 'Settings',
-            unmountOnBlur: true,
-            headerShown: false,
-          }}
-        />
+        {drawerScreens}
       </Drawer.Navigator>
     </>
   );
