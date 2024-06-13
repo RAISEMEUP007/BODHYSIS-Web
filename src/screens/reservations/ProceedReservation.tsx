@@ -29,11 +29,11 @@ import { calculatePricedEquipmentData, getPriceTableByBrandAndDate } from './Cal
 import { useRequestPriceLogicDataQuery } from '../../redux/slices/baseApiSlice';
 
 interface Props {
-  openReservationScreen: (itemName: string, data?: any ) => void;
-  initialData?: any;
+  goBack: () => void;
+  reservationId?: string | number;
 }
 
-export const ProceedReservation = ({ openReservationScreen, initialData }: Props) => {
+export const ProceedReservation = ({ goBack, reservationId }: Props) => {
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
@@ -255,12 +255,12 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
   }, [])
 
   useEffect(() => {
-    if (!initialData || !initialData.reservationId) {
+    if (!reservationId ) {
       showAlert('error', 'Non valid reservation!');
-      openReservationScreen('Reservations List');
+      goBack();
     }else{
       setIsLoading(true);
-      getReservationDetail(initialData.reservationId, (jsonRes, status, error) => {
+      getReservationDetail(reservationId, (jsonRes, status, error) => {
         switch (status) {
           case 200:
             if(jsonRes.total_price == 0){
@@ -279,7 +279,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
         }
       });
     }
-  }, [initialData, updateCount]);
+  }, [reservationId, updateCount]);
 
   useEffect(() => {
     if(price_table_id){
@@ -424,7 +424,7 @@ export const ProceedReservation = ({ openReservationScreen, initialData }: Props
     <StripeProviderBaseoffPlatform>
       <BasicLayout
         goBack={()=>{
-          openReservationScreen('Reservations List');
+          goBack();
         }} 
         screenName={'Proceed Reservation'} 
         containerStyle={{

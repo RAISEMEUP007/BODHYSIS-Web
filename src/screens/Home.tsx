@@ -14,6 +14,7 @@ import Orders from './orders/Orders';
 import Scheduler from './scheduler/Scheduler';
 import { useHambugerMenuHistory } from '../common/hooks/UseHambugerMenuHistory';
 import Marketing from './marketing/Marketing';
+import DemandsList from './reservations/DemansList';
 
 const MainDrawer = ({ navigation }) => {
 
@@ -34,7 +35,9 @@ const MainDrawer = ({ navigation }) => {
             navigation.navigate('Dashboard');
           }else if (route.toLowerCase().includes('reservation')) {
             navigation.navigate('Reservation');
-          }else if (route.toLowerCase().includes('delivery')) {
+          }else if (route.toLowerCase().includes('demand')) {
+            navigation.navigate('DemandsList');
+          }else if (route.toLowerCase().includes('walkup')) {
             navigation.navigate('Walkup Order');
           }else if (route.toLowerCase().includes('inventory')) {
             navigation.navigate('Inventory');
@@ -57,8 +60,12 @@ const MainDrawer = ({ navigation }) => {
     return <Dashboard navigation={navigation} />;
   };
 
-  const ReservationScreen = ({ navigation, route }) => {
-    return <Reservations navigation={navigation} initialData={route.params} />;
+  const ReservationScreen = ({ navigation }) => {
+    return <Reservations navigation={navigation} />;
+  };
+
+  const DemandsListScreen = ({ navigation }) => {
+    return <DemandsList navigation={navigation}/>;
   };
 
   const InventoryScreen = ({ navigation }) => {
@@ -163,6 +170,26 @@ const MainDrawer = ({ navigation }) => {
             drawerLabel: 'Reservation',
             unmountOnBlur: true,
             headerShown: false,
+          }}
+        />
+        <Drawer.Screen
+          name="DemandsList"
+          component={DemandsListScreen}
+          listeners={{
+            drawerItemPress: (e) => {
+              addMenuHistory('DemandsList');
+            },
+          }}
+          options={{
+            drawerIcon: ({focused, size}) => (
+              <Image style={{ width: 25, height: 25, resizeMode: 'contain' }} source={require('../assets/nav-icons/reservations.png')}></Image>
+            ),
+            drawerLabel: 'DemandsList',
+            unmountOnBlur: true,
+            headerShown: false,
+            drawerItemStyle:{
+              display:'none'
+            }
           }}
         />
         <Drawer.Screen
@@ -276,7 +303,6 @@ const Home = ({ navigation }) => {
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-    console.log('111');
     const checkTokenValidity = async () => {
       await testTokenValid((jsonRes, status)=>{
         if(status != 200) navigation.navigate('Auth');

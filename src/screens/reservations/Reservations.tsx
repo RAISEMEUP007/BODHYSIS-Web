@@ -41,8 +41,8 @@ const Reservations = ({ navigation, initialData }: Props) => {
       case 'Proceed Reservation':
         return (
           <ProceedReservation
-            openReservationScreen={handleItemClick}
-            initialData={data}
+            goBack={()=>{handleItemClick('Reservations List');}}
+            reservationId={data.reservationId}
           />
         );
       default:

@@ -468,7 +468,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
             width={125}
             enabled={searchOptions.status_filter?false:true}
             items={[{label:'', value:''}, ...stage.map((item, index)=>({'label':item, 'value':index}))]}
-            label="Category"
+            label="Status"
             selectedValue={searchOptions.stage || ''}
             onValueChange={val=>changeSearchOptions('stage', val)}/>
         </BOHToolbar>

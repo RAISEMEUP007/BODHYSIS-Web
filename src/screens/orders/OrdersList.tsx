@@ -522,7 +522,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
             width={150}
             boxStyle={{margin:0}}
             enabled={searchOptions.status_filter?false:true}
-            label="Category"
+            label="Status"
             items={[
               {label: '', value: ''}, 
               ...stage
