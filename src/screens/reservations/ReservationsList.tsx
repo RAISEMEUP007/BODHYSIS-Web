@@ -7,7 +7,7 @@ import {
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { getReservationsData } from '../../api/Reservation';
+import { getReservationsCounts, getReservationsData } from '../../api/Reservation';
 import { BasicLayout, CommonContainer } from '../../common/components/CustomLayout';
 import { BOHButton, BOHTlbCheckbox, BOHTlbRadio, BOHTlbrSearchInput, BOHTlbrSearchPicker, BOHToolbar, renderBOHTlbDatePicker } from '../../common/components/bohtoolbar';
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
@@ -21,6 +21,13 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
   const { showAlert } = useAlertModal();
 
   const [tableData, setTableData] = useState([]);
+  const [isloading, setIsLoading] = useState(true);
+  const [quantities, setQuantities] = useState({
+    provisional:0,
+    confirmed:0,
+    checkedOut:0,
+    checkedIn:0,
+  });
   const [updateReservationListTrigger, setUpdateReservationListTrigger] = useState(false);
   const [periodRange, setPeriodRange] = useState<any>('');
   const initialWidths = [100, 160, 160, 100, 100, 110, 110, 80, 80];
@@ -74,6 +81,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
   }, [searchOptions])
 
   useEffect(() => {
+    const today = new Date();
     switch (periodRange.toLowerCase()) {
       case 'today':
         setSearchOptions({
@@ -111,8 +119,11 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
         });
       break;
       case 'next fri':
-        let nextFriday = new Date();
+        let nextFriday = new Date(today);
         nextFriday.setDate(nextFriday.getDate() + (5 + 7 - nextFriday.getDay()) % 7);
+        if (nextFriday.getTime() === today.getTime()) {
+          nextFriday.setDate(nextFriday.getDate() + 7);
+        }
         setSearchOptions({
           ...searchOptions,
           start_date: formatDate(nextFriday),
@@ -120,7 +131,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
         });
         break;
       case 'next sat':
-        let nextSaturday = new Date();
+        let nextSaturday = new Date(today);
         nextSaturday.setDate(nextSaturday.getDate() + (6 + 7 - nextSaturday.getDay()) % 7);
         setSearchOptions({
           ...searchOptions,
@@ -129,7 +140,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
         });
         break;
       case 'next sun':
-        let nextSunday = new Date();
+        let nextSunday = new Date(today);
         nextSunday.setDate(nextSunday.getDate() + (7 + 7 - nextSunday.getDay()) % 7);
         setSearchOptions({
           ...searchOptions,
@@ -138,7 +149,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
         });
         break;
       case 'next mon':
-        let nextMonday = new Date();
+        let nextMonday = new Date(today);
         nextMonday.setDate(nextMonday.getDate() + (1 + 7 - nextMonday.getDay()) % 7);
         setSearchOptions({
           ...searchOptions,
@@ -170,19 +181,15 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
         if(periodRange != '7days') setPeriodRange('7days');
       } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 4 
                 && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
-                  console.log('1');
         if(periodRange != 'Next Fri') setPeriodRange('Next Fri');
       } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 5 
                 && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
-                  console.log('2');
         if(periodRange != 'Next Sat') setPeriodRange('Next Sat');
       } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 6 
                 && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
-                  console.log('3');
         if(periodRange != 'Next Sun') setPeriodRange('Next Sun');
       } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 0 
                 && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
-                  console.log('4');
         if(periodRange != 'Next Mon') setPeriodRange('Next Mon');
       } else {
         if(periodRange != 'custom') setPeriodRange('custom');
@@ -202,6 +209,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
   }, [updateReservationListTrigger]);
 
   const getTable = () => {
+    setIsLoading(true);
     getReservationsData({searchOptions:searchOptions}, (jsonRes, status, error) => {
       switch (status) {
         case 200:
@@ -217,17 +225,42 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
           break;
       }
     });
+    getReservationsCounts({searchOptions:searchOptions}, (jsonRes, status, error) => {
+      const quantities = {
+        provisional:0,
+        confirmed:0,
+        checkedOut:0,
+        checkedIn:0,
+      }
+
+      if(status == 200){
+        jsonRes.map(item=>{
+          if(item.stage == 1) quantities.provisional = item.amounts;
+          else if(item.stage == 2) quantities.confirmed = item.amounts;
+          else if(item.stage == 3) quantities.checkedOut = item.amounts;
+          else if(item.stage == 4) quantities.checkedIn = item.amounts;
+        })
+      }
+
+      setQuantities(quantities);
+    })
   };
 
-  const renderTableData = () => {
+  const renderTableData = useMemo(() => {
     const convertStageToString = (stage) => {
       switch (stage) {
-        case null: case 'null': return 'Draft';
-        case 0: case '0': return 'Draft';
-        case 1: case '1': return 'Provisional';
-        case 2: case '2': return 'Confirmed';
-        case 3: case '3': return 'Checked out';
-        case 4: case '4': return 'Checked in';
+        case null: case 'null': 
+          return 'Draft';
+        case 0: case '0': 
+          return 'Draft';
+        case 1: case '1': 
+          return 'Provisional';
+        case 2: case '2': 
+          return 'Confirmed';
+        case 3: case '3': 
+          return 'Checked out';
+        case 4: case '4': 
+          return 'Checked in';
         default:  return 'Invalid stage';
       }
     }
@@ -260,28 +293,30 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     } else {
       <></>;
     }
+
+    setIsLoading(false);
     return <>{rows}</>;
-  };
+  }, [tableData]);
 
   const tableElement = useMemo(()=>(
-  <BOHTable>
-    <BOHTHead>
-      <BOHTR>
-        <BOHTH width={initialWidths[0]}>{'Order #'}</BOHTH>
-        <BOHTH width={initialWidths[1]}>{'Brand'}</BOHTH>
-        <BOHTH width={initialWidths[2]}>{'Customer'}</BOHTH>
-        <BOHTH width={initialWidths[3]}>{'Start'}</BOHTH>
-        <BOHTH width={initialWidths[4]}>{'End'}</BOHTH>
-        <BOHTH width={initialWidths[5]}>{'Qty of bikes'}</BOHTH>
-        <BOHTH width={initialWidths[6]}>{'Stage'}</BOHTH>
-        <BOHTH width={initialWidths[7]}>{'Printed'}</BOHTH>
-        <BOHTH width={initialWidths[8]}>{'Proceed'}</BOHTH>
-      </BOHTR>
-    </BOHTHead>
-    <BOHTBody>
-      {renderTableData()}
-    </BOHTBody>
-  </BOHTable>), [tableData])
+    <BOHTable isLoading={isloading}>
+      <BOHTHead>
+        <BOHTR>
+          <BOHTH width={initialWidths[0]}>{'Order #'}</BOHTH>
+          <BOHTH width={initialWidths[1]}>{'Brand'}</BOHTH>
+          <BOHTH width={initialWidths[2]}>{'Customer'}</BOHTH>
+          <BOHTH width={initialWidths[3]}>{'Start'}</BOHTH>
+          <BOHTH width={initialWidths[4]}>{'End'}</BOHTH>
+          <BOHTH width={initialWidths[5]}>{'Qty of bikes'}</BOHTH>
+          <BOHTH width={initialWidths[6]}>{'Stage'}</BOHTH>
+          <BOHTH width={initialWidths[7]}>{'Printed'}</BOHTH>
+          <BOHTH width={initialWidths[8]}>{'Proceed'}</BOHTH>
+        </BOHTR>
+      </BOHTHead>
+      <BOHTBody>
+        {renderTableData}
+      </BOHTBody>
+    </BOHTable>), [isloading, tableData])
 
   return (
     <BasicLayout
@@ -382,7 +417,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
         </BOHToolbar>
         <BOHToolbar>
           <BOHTlbRadio
-            label='Checked In'
+            label={`Checked In (${quantities.checkedIn})`}
             style={{margin:0}}
             onPress={()=>{
               changeSearchOptions('stage', null);
@@ -395,7 +430,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
             }}
           />
           <BOHTlbRadio
-            label='Checked Out'
+            label={`Checked Out (${quantities.checkedOut})`}
             onPress={()=>{
               changeSearchOptions('stage', null);
               changeSearchOptions('status_filter', 2)
@@ -407,7 +442,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
             }}
           />
           <BOHTlbRadio
-            label='Provisional'
+            label={`Provisional (${quantities.provisional})`}
             onPress={()=>{
               changeSearchOptions('stage', null);
               changeSearchOptions('status_filter', 3)
@@ -419,7 +454,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
             }}
           />
           <BOHTlbRadio
-            label='Confirmed'
+            label={`Confirmed (${quantities.confirmed})`}
             onPress={()=>{
               changeSearchOptions('stage', null);
               changeSearchOptions('status_filter', 4)
@@ -431,7 +466,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
             }}
           />
           <BOHTlbRadio
-            label='All'
+            label={`All (${quantities.checkedIn + quantities.checkedOut + quantities.provisional + quantities.confirmed})`}
             style={{opacity: searchOptions.status_filter?1:0,}}
             onPress={()=>{
               changeSearchOptions('stage', null);
@@ -497,6 +532,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
               changeSearchOptions('ShowOnlyManual', !searchOptions.ShowOnlyManual);
             }}
           />
+          <Text style={{marginLeft:50, fontSize:TextdefaultSize}}>{`Total #:  `}{tableData?.length??0}</Text>
         </BOHToolbar>
         {tableElement}
       </CommonContainer>

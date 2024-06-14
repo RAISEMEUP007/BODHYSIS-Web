@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { checkedInBarcode, getReservationsData } from '../../api/Reservation';
+import { getReservationsCounts, checkedInBarcode, getReservationsData } from '../../api/Reservation';
 import { msgStr } from '../../common/constants/Message';
 import { useAlertModal } from '../../common/hooks';
 import { TextMediumSize, TextdefaultSize } from '../../common/constants/Fonts';
@@ -20,6 +20,13 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
   const barcodeInputRef = useRef(null);
 
   const [tableData, setTableData] = useState([]);
+  const [isloading, setIsLoading] = useState(true);
+  const [quantities, setQuantities] = useState({
+    provisional:0,
+    confirmed:0,
+    checkedOut:0,
+    checkedIn:0,
+  });
   const [updateOrderListTrigger, setUpdateOrderListTrigger] = useState(false);
   const [barcode, SetBarcode] = useState('');
   const [periodRange, setPeriodRange] = useState<any>('');
@@ -68,6 +75,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
   }
   
   useEffect(()=>{
+    const today = new Date();
     const timeout = setTimeout(() => {
       AsyncStorage.setItem('__search_options', JSON.stringify(searchOptions))
       AsyncStorage.setItem('__search_options_timestamp', new Date().getTime().toString())
@@ -77,6 +85,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
   }, [searchOptions])
 
   useEffect(() => {
+    const today = new Date();
     switch (periodRange.toLowerCase()) {
       case 'today':
         setSearchOptions({
@@ -114,8 +123,11 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
         });
       break;
       case 'next fri':
-        let nextFriday = new Date();
+        let nextFriday = new Date(today);
         nextFriday.setDate(nextFriday.getDate() + (5 + 7 - nextFriday.getDay()) % 7);
+        if (nextFriday.getTime() === today.getTime()) {
+          nextFriday.setDate(nextFriday.getDate() + 7);
+        }
         setSearchOptions({
           ...searchOptions,
           start_date: formatDate(nextFriday),
@@ -123,7 +135,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
         });
         break;
       case 'next sat':
-        let nextSaturday = new Date();
+        let nextSaturday = new Date(today);
         nextSaturday.setDate(nextSaturday.getDate() + (6 + 7 - nextSaturday.getDay()) % 7);
         setSearchOptions({
           ...searchOptions,
@@ -132,7 +144,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
         });
         break;
       case 'next sun':
-        let nextSunday = new Date();
+        let nextSunday = new Date(today);
         nextSunday.setDate(nextSunday.getDate() + (7 + 7 - nextSunday.getDay()) % 7);
         setSearchOptions({
           ...searchOptions,
@@ -141,7 +153,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
         });
         break;
       case 'next mon':
-        let nextMonday = new Date();
+        let nextMonday = new Date(today);
         nextMonday.setDate(nextMonday.getDate() + (1 + 7 - nextMonday.getDay()) % 7);
         setSearchOptions({
           ...searchOptions,
@@ -173,19 +185,15 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
         if(periodRange != '7days') setPeriodRange('7days');
       } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 4 
                 && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
-                  console.log('1');
         if(periodRange != 'Next Fri') setPeriodRange('Next Fri');
       } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 5 
                 && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
-                  console.log('2');
         if(periodRange != 'Next Sat') setPeriodRange('Next Sat');
       } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 6 
                 && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
-                  console.log('3');
         if(periodRange != 'Next Sun') setPeriodRange('Next Sun');
       } else if (searchOptions.start_date == searchOptions.end_date && new Date(searchOptions.start_date).getDay() === 0 
                 && (new Date(searchOptions.start_date).getTime() - new Date().getTime())/86400000 < 7) {
-                  console.log('4');
         if(periodRange != 'Next Mon') setPeriodRange('Next Mon');
       } else {
         if(periodRange != 'custom') setPeriodRange('custom');
@@ -198,6 +206,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
   }, [updateOrderListTrigger]);
 
   const getTable = () => {
+    setIsLoading(true);
     const payload = {
       searchOptions: {...searchOptions}
     };
@@ -219,6 +228,25 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
           break;
       }
     });
+    getReservationsCounts({searchOptions:searchOptions}, (jsonRes, status, error) => {
+      const quantities = {
+        provisional:0,
+        confirmed:0,
+        checkedOut:0,
+        checkedIn:0,
+      }
+
+      if(status == 200){
+        jsonRes.map(item=>{
+          if(item.stage == 1) quantities.provisional = item.amounts;
+          else if(item.stage == 2) quantities.confirmed = item.amounts;
+          else if(item.stage == 3) quantities.checkedOut = item.amounts;
+          else if(item.stage == 4) quantities.checkedIn = item.amounts;
+        })
+      }
+
+      setQuantities(quantities);
+    })
   };
 
   const changeSearchOptions = (key, val) => {
@@ -279,7 +307,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     }
   }
 
-  const renderTableData = () => {
+  const renderTableData = useMemo(() => {
     const rows = [];
     if (tableData.length > 0) {
       tableData.map((item, index) => {
@@ -310,11 +338,13 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     } else {
       <></>;
     }
+
+    setIsLoading(false);
     return <>{rows}</>;
-  };
+  }, [tableData]);
 
   const tableElement = useMemo(()=>(
-    <BOHTable>
+    <BOHTable isLoading={isloading}>
       <BOHTHead>
         <BOHTR>
           <BOHTH width={InitialWidths[0]}>{'Order #'}</BOHTH>
@@ -331,9 +361,9 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
         </BOHTR>
       </BOHTHead>
       <BOHTBody>
-        {renderTableData()}
+        {renderTableData}
       </BOHTBody>
-    </BOHTable>), [tableData])
+    </BOHTable>), [isloading, tableData])
 
   return (
     <BasicLayout
@@ -434,7 +464,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
         </BOHToolbar>
         <BOHToolbar>
           <BOHTlbRadio
-            label='Checked In'
+            label={`Checked In (${quantities.checkedIn})`}
             style={{margin:0}}
             onPress={()=>{
               changeSearchOptions('stage', null);
@@ -447,7 +477,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
             }}
           />
           <BOHTlbRadio
-            label='Checked Out'
+            label={`Checked Out (${quantities.checkedOut})`}
             onPress={()=>{
               changeSearchOptions('stage', null);
               changeSearchOptions('status_filter', 2)
@@ -471,7 +501,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
             }}
           /> */}
           <BOHTlbRadio
-            label='Confirmed'
+            label={`Confirmed (${quantities.confirmed})`}
             onPress={()=>{
               changeSearchOptions('stage', null);
               changeSearchOptions('status_filter', 4)
@@ -483,7 +513,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
             }}
           />
           <BOHTlbRadio
-            label='All'
+            label={`All (${quantities.checkedIn + quantities.checkedOut + quantities.provisional + quantities.confirmed})`}
             style={{opacity: searchOptions.status_filter?1:0,}}
             onPress={()=>{
               changeSearchOptions('stage', null);
@@ -568,6 +598,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
               changeSearchOptions('ShowOnlyManual', !searchOptions.ShowOnlyManual);
             }}
           />
+          <Text style={{marginLeft:50, fontSize:TextdefaultSize}}>{`Total #:  `}{tableData?.length??0}</Text>
         </BOHToolbar>
         {tableElement}
       </CommonContainer>

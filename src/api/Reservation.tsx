@@ -12,6 +12,10 @@ export const getReservationsData = (searchOptions, cb=(jR, s, e)=>{}) => {
   postAPICall('reservations/getreservationsdata/',searchOptions, cb);
 }
 
+export const getReservationsCounts = (searchOptions, cb=(jR, s, e)=>{}) => {
+  postAPICall('reservations/getreservationscounts/',searchOptions, cb);
+}
+
 export const getReservationDetail = async (id, cb=(jR, s, e)=>{}) => {
   return await getAPICall('reservations/getreservationdetails/' + id, cb);
 }
