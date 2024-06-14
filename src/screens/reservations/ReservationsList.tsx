@@ -21,6 +21,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
   const { showAlert } = useAlertModal();
 
   const [tableData, setTableData] = useState([]);
+  const [isloading, setIsLoading] = useState(true);
   const [updateReservationListTrigger, setUpdateReservationListTrigger] = useState(false);
   const [periodRange, setPeriodRange] = useState<any>('');
   const initialWidths = [100, 160, 160, 100, 100, 110, 110, 80, 80];
@@ -202,6 +203,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
   }, [updateReservationListTrigger]);
 
   const getTable = () => {
+    setIsLoading(true);
     getReservationsData({searchOptions:searchOptions}, (jsonRes, status, error) => {
       switch (status) {
         case 200:
@@ -219,7 +221,7 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     });
   };
 
-  const renderTableData = () => {
+  const renderTableData = useMemo(() => {
     const convertStageToString = (stage) => {
       switch (stage) {
         case null: case 'null': return 'Draft';
@@ -260,28 +262,30 @@ const ReservationsList = ({ navigation, openReservationScreen }) => {
     } else {
       <></>;
     }
+
+    setIsLoading(false);
     return <>{rows}</>;
-  };
+  }, [tableData]);
 
   const tableElement = useMemo(()=>(
-  <BOHTable>
-    <BOHTHead>
-      <BOHTR>
-        <BOHTH width={initialWidths[0]}>{'Order #'}</BOHTH>
-        <BOHTH width={initialWidths[1]}>{'Brand'}</BOHTH>
-        <BOHTH width={initialWidths[2]}>{'Customer'}</BOHTH>
-        <BOHTH width={initialWidths[3]}>{'Start'}</BOHTH>
-        <BOHTH width={initialWidths[4]}>{'End'}</BOHTH>
-        <BOHTH width={initialWidths[5]}>{'Qty of bikes'}</BOHTH>
-        <BOHTH width={initialWidths[6]}>{'Stage'}</BOHTH>
-        <BOHTH width={initialWidths[7]}>{'Printed'}</BOHTH>
-        <BOHTH width={initialWidths[8]}>{'Proceed'}</BOHTH>
-      </BOHTR>
-    </BOHTHead>
-    <BOHTBody>
-      {renderTableData()}
-    </BOHTBody>
-  </BOHTable>), [tableData])
+    <BOHTable isLoading={isloading}>
+      <BOHTHead>
+        <BOHTR>
+          <BOHTH width={initialWidths[0]}>{'Order #'}</BOHTH>
+          <BOHTH width={initialWidths[1]}>{'Brand'}</BOHTH>
+          <BOHTH width={initialWidths[2]}>{'Customer'}</BOHTH>
+          <BOHTH width={initialWidths[3]}>{'Start'}</BOHTH>
+          <BOHTH width={initialWidths[4]}>{'End'}</BOHTH>
+          <BOHTH width={initialWidths[5]}>{'Qty of bikes'}</BOHTH>
+          <BOHTH width={initialWidths[6]}>{'Stage'}</BOHTH>
+          <BOHTH width={initialWidths[7]}>{'Printed'}</BOHTH>
+          <BOHTH width={initialWidths[8]}>{'Proceed'}</BOHTH>
+        </BOHTR>
+      </BOHTHead>
+      <BOHTBody>
+        {renderTableData}
+      </BOHTBody>
+    </BOHTable>), [isloading, tableData])
 
   return (
     <BasicLayout

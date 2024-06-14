@@ -20,6 +20,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
   const barcodeInputRef = useRef(null);
 
   const [tableData, setTableData] = useState([]);
+  const [isloading, setIsLoading] = useState(true);
   const [updateOrderListTrigger, setUpdateOrderListTrigger] = useState(false);
   const [barcode, SetBarcode] = useState('');
   const [periodRange, setPeriodRange] = useState<any>('');
@@ -198,6 +199,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
   }, [updateOrderListTrigger]);
 
   const getTable = () => {
+    setIsLoading(true);
     const payload = {
       searchOptions: {...searchOptions}
     };
@@ -279,7 +281,7 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     }
   }
 
-  const renderTableData = () => {
+  const renderTableData = useMemo(() => {
     const rows = [];
     if (tableData.length > 0) {
       tableData.map((item, index) => {
@@ -310,11 +312,13 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     } else {
       <></>;
     }
+
+    setIsLoading(false);
     return <>{rows}</>;
-  };
+  }, [tableData]);
 
   const tableElement = useMemo(()=>(
-    <BOHTable>
+    <BOHTable isLoading={isloading}>
       <BOHTHead>
         <BOHTR>
           <BOHTH width={InitialWidths[0]}>{'Order #'}</BOHTH>
@@ -331,9 +335,9 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
         </BOHTR>
       </BOHTHead>
       <BOHTBody>
-        {renderTableData()}
+        {renderTableData}
       </BOHTBody>
-    </BOHTable>), [tableData])
+    </BOHTable>), [isloading, tableData])
 
   return (
     <BasicLayout
