@@ -17,6 +17,7 @@ const LocationManager = ({ navigation }) => {
   const { showConfirm } = useConfirmModal();
   
   const [tableData, setTableData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(true);
   const InitialWidths = [80, 170, 170, 170, 113, 50, 50];
   const [searchKey, setSearchKey] = useState('');
@@ -63,6 +64,7 @@ const LocationManager = ({ navigation }) => {
   }, [searchKey])
 
   const getTable = () => {
+    setIsLoading(true);
     const payload={searchKey}
     getAddressesData(payload, (jsonRes, status, error) => {
       switch (status) {
@@ -81,7 +83,7 @@ const LocationManager = ({ navigation }) => {
     });
   };
 
-  const renderTableData = () => {
+  const renderTableData = useMemo(() => {
     const rows = [];
     if (tableData.length > 0) {
       tableData.map((item, index) => {
@@ -116,26 +118,28 @@ const LocationManager = ({ navigation }) => {
     } else {
       <></>;
     }
+    
+    setIsLoading(false);
     return <>{rows}</>;
-  };
+  }, [tableData]);
 
   const tableElement = useMemo(()=>(        
-  <BOHTable>
-    <BOHTHead>
-      <BOHTR>
-        <BOHTH2 width={InitialWidths[0]}>{'Number'}</BOHTH2>
-        <BOHTH2 width={InitialWidths[1]}>{'Street'}</BOHTH2>
-        <BOHTH2 width={InitialWidths[2]}>{'Plantation'}</BOHTH2>
-        <BOHTH2 width={InitialWidths[3]}>{'Property name'}</BOHTH2>
-        <BOHTH2 width={InitialWidths[4]}>{'Property type'}</BOHTH2>
-        <BOHTH2 width={InitialWidths[5]}>{'Edit'}</BOHTH2>
-        <BOHTH2 width={InitialWidths[6]}>{'DEL'}</BOHTH2>
-      </BOHTR>
-    </BOHTHead>
-    <BOHTBody>
-      {renderTableData()}
-    </BOHTBody>
-  </BOHTable>), [tableData])
+    <BOHTable isLoading={isLoading}>
+      <BOHTHead>
+        <BOHTR>
+          <BOHTH2 width={InitialWidths[0]}>{'Number'}</BOHTH2>
+          <BOHTH2 width={InitialWidths[1]}>{'Street'}</BOHTH2>
+          <BOHTH2 width={InitialWidths[2]}>{'Plantation'}</BOHTH2>
+          <BOHTH2 width={InitialWidths[3]}>{'Property name'}</BOHTH2>
+          <BOHTH2 width={InitialWidths[4]}>{'Property type'}</BOHTH2>
+          <BOHTH2 width={InitialWidths[5]}>{'Edit'}</BOHTH2>
+          <BOHTH2 width={InitialWidths[6]}>{'DEL'}</BOHTH2>
+        </BOHTR>
+      </BOHTHead>
+      <BOHTBody>
+        {renderTableData}
+      </BOHTBody>
+    </BOHTable>), [isLoading, tableData])
 
   return (
     <BasicLayout

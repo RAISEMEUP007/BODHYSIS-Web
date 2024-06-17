@@ -82,7 +82,7 @@ const Settings = ({navigation, initialItem }:Props) => {
                     <TouchNavGroup sectionTitle="Settings" items={[
                         { title: "Manufactures", icon: 'industry' },
                         { title: "Tag Management", icon: 'tags' },
-                        { title: "Locations", icon: 'map-marker-alt' },
+                        // { title: "Locations", icon: 'map-marker-alt' },
                         { title: "Document Management", icon: 'sticky-note' },
                         { title: "Reservation Types", icon: 'calendar-check' },
                         { title: "Trucks", icon: 'truck' },
