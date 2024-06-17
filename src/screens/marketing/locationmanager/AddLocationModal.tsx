@@ -110,7 +110,7 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
           closeModal();
           break;
         case 409:
-          setValidMessage(jsonRes.error);
+          showAlert('error', "This address is already exist");
           break;
         default:
           if (jsonRes && jsonRes.error) showAlert('error', jsonRes.error);
