@@ -6,9 +6,10 @@ import { BasicLayout, CommonContainer } from '../../../common/components/CustomL
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTH2, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal, useConfirmModal } from '../../../common/hooks';
-import { BOHTlbCheckbox, BOHToolbar, renderBOHTlbDatePicker } from '../../../common/components/bohtoolbar';
+import { BOHButton, BOHTlbCheckbox, BOHToolbar, renderBOHTlbDatePicker } from '../../../common/components/bohtoolbar';
 import { TextdefaultSize } from '../../../common/constants/Fonts';
 import { formatDate } from '../../../common/utils/DateUtils';
+import { API_URL } from '../../../common/constants/AppConstants';
 
 const Forecasting = ({ navigation }) => {
   const { showAlert } = useAlertModal();
@@ -98,6 +99,10 @@ const Forecasting = ({ navigation }) => {
     else if (percentage < 0.1) textColor = "black";
 
     return textColor;
+  }
+
+  const exportForecasting = () => {
+    location.href =  API_URL + `/forecasting/exportforecasting?start_date=${searchOptions.start_date}&end_date=${searchOptions.end_date}`
   }
 
   const renderTableData = () => {
@@ -226,6 +231,11 @@ const Forecasting = ({ navigation }) => {
             }}
           />
           <Text style={{fontSize:TextdefaultSize, marginLeft:30,}}>{`Total Nights: ${totalNights}`}</Text>
+          <BOHButton
+            style={{marginLeft:30}}
+            label='Export'
+            onPress={exportForecasting}
+          />
         </BOHToolbar>
         {tableElement}
       </CommonContainer>

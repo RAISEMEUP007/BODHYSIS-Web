@@ -42,7 +42,7 @@ const MainDrawer = ({ navigation }) => {
             navigation.navigate('Dashboard');
           }else if (route.toLowerCase().includes('reservation')) {
             navigation.navigate('Reservation');
-          }else if (route.toLowerCase().includes('demand')) {
+          }else if (route.toLowerCase().includes('demandslist')) {
             navigation.navigate('DemandsList');
           }else if (route.toLowerCase().includes('walkup')) {
             navigation.navigate('Walkup Order');
@@ -50,6 +50,14 @@ const MainDrawer = ({ navigation }) => {
             navigation.navigate('Inventory');
           }else if (route.toLowerCase().includes('customer')) {
             navigation.navigate('Customer');
+          }else if (route.toLowerCase().includes('marketing')) {
+            navigation.navigate('Marketing');
+          }else if (route.toLowerCase().includes('locations')) {
+            navigation.navigate('Locations');
+          }else if (route.toLowerCase().includes('forecasting')) {
+            navigation.navigate('Forecasting');
+          }else if (route.toLowerCase().includes('demands')) {
+            navigation.navigate('Demands Summary');
           }else if (route.toLowerCase().includes('scheduler')) {
             navigation.navigate('Scheduler');
           }else if (route.toLowerCase().includes('settings')) {
