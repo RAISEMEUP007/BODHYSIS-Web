@@ -29,7 +29,7 @@ const Dashboard = ({ navigation }) => {
   const [periodRange, setPeriodRange] = useState<any>('');
   const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
   const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
-  const initialWidths = [100, 160, 160, 100, 100, 110, 110, 80];
+  const initialWidths = [100, 100, 160, 160, 100, 100, 110, 110, 80];
 
   const [ searchOptions, setSearchOptions ] = useState({
     start_date : `${twoWeeksAgo.getFullYear()}-${String(twoWeeksAgo.getMonth() + 1).padStart(2, '0')}-${String(twoWeeksAgo.getDate()).padStart(2, '0')}`,
@@ -300,16 +300,18 @@ const Dashboard = ({ navigation }) => {
     const rows = [];
     if (tableData.length > 0) {
       tableData.map((item, index) => {
+        let wIndex = 0;
         rows.push(
           <BOHTR key={index}>
-            <BOHTD width={initialWidths[0]}>{item.order_number}</BOHTD>
-            <BOHTD width={initialWidths[1]}>{item.brand}</BOHTD>
-            <BOHTD width={initialWidths[2]}>{item.full_name}</BOHTD>
-            <BOHTD width={initialWidths[3]}>{item.start_date ? formatDate2(new Date(`${item.start_date} 00:00:00`)) : ''}</BOHTD>
-            <BOHTD width={initialWidths[4]}>{item.end_date ? formatDate2(new Date(`${item.end_date} 00:00:00`)) : ''}</BOHTD>
-            <BOHTD width={initialWidths[5]} textAlign={'right'}>{item?.quantity??''}</BOHTD>
-            <BOHTD width={initialWidths[6]}>{convertStageToString(item.stage)}</BOHTD>
-            <BOHTD width={initialWidths[7]} textAlign={'center'}>{item?.color_id?'YES':'NO'}</BOHTD>
+            <BOHTD width={initialWidths[wIndex++]}>{item.order_number}</BOHTD>
+            <BOHTD width={initialWidths[wIndex++]}>{formatDate2(new Date(item.createdAt))}</BOHTD>
+            <BOHTD width={initialWidths[wIndex++]}>{item.brand}</BOHTD>
+            <BOHTD width={initialWidths[wIndex++]}>{item.full_name}</BOHTD>
+            <BOHTD width={initialWidths[wIndex++]}>{item.start_date ? formatDate2(new Date(`${item.start_date} 00:00:00`)) : ''}</BOHTD>
+            <BOHTD width={initialWidths[wIndex++]}>{item.end_date ? formatDate2(new Date(`${item.end_date} 00:00:00`)) : ''}</BOHTD>
+            <BOHTD width={initialWidths[wIndex++]} textAlign={'right'}>{item?.quantity??''}</BOHTD>
+            <BOHTD width={initialWidths[wIndex++]}>{convertStageToString(item.stage)}</BOHTD>
+            <BOHTD width={initialWidths[wIndex++]} textAlign={'center'}>{item?.color_id?'YES':'NO'}</BOHTD>
           </BOHTR>
         );
       });
@@ -321,24 +323,26 @@ const Dashboard = ({ navigation }) => {
     return <>{rows}</>;
   }, [tableData]);
 
-  const tableElement = useMemo(()=>(
-    <BOHTable isLoading={isloading}>
+  const tableElement = useMemo(()=>{
+    let wIndex = 0;
+    return (<BOHTable isLoading={isloading}>
       <BOHTHead>
         <BOHTR>
-          <BOHTH width={initialWidths[0]}>{'Order #'}</BOHTH>
-          <BOHTH width={initialWidths[1]}>{'Brand'}</BOHTH>
-          <BOHTH width={initialWidths[2]}>{'Customer'}</BOHTH>
-          <BOHTH width={initialWidths[3]}>{'Start'}</BOHTH>
-          <BOHTH width={initialWidths[4]}>{'End'}</BOHTH>
-          <BOHTH width={initialWidths[5]}>{'Qty of bikes'}</BOHTH>
-          <BOHTH width={initialWidths[6]}>{'Stage'}</BOHTH>
-          <BOHTH width={initialWidths[7]}>{'Locked'}</BOHTH>
+          <BOHTH width={initialWidths[wIndex++]}>{'Order #'}</BOHTH>
+          <BOHTH width={initialWidths[wIndex++]}>{'Created'}</BOHTH>
+          <BOHTH width={initialWidths[wIndex++]}>{'Brand'}</BOHTH>
+          <BOHTH width={initialWidths[wIndex++]}>{'Customer'}</BOHTH>
+          <BOHTH width={initialWidths[wIndex++]}>{'Start'}</BOHTH>
+          <BOHTH width={initialWidths[wIndex++]}>{'End'}</BOHTH>
+          <BOHTH width={initialWidths[wIndex++]}>{'Qty of bikes'}</BOHTH>
+          <BOHTH width={initialWidths[wIndex++]}>{'Stage'}</BOHTH>
+          <BOHTH width={initialWidths[wIndex++]}>{'Locked'}</BOHTH>
         </BOHTR>
       </BOHTHead>
       <BOHTBody>
         {renderTableData}
       </BOHTBody>
-    </BOHTable>), [isloading, tableData])
+    </BOHTable>)}, [isloading, tableData])
 
   return (
     <BasicLayout

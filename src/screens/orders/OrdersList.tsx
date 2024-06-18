@@ -15,7 +15,7 @@ import { formatDate, formatDate2 } from '../../common/utils/DateUtils';
 const OrdersList = ({ navigation, openOrderScreen }) => {
 
   const { showAlert } = useAlertModal();
-  const InitialWidths = [100, 160, 160, 100, 100, 110, 70, 110, 80, 80, 80];
+  const InitialWidths = [100, 100, 160, 160, 100, 100, 110, 70, 110, 80, 80, 80];
 
   const barcodeInputRef = useRef(null);
 
@@ -311,19 +311,21 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     const rows = [];
     if (tableData.length > 0) {
       tableData.map((item, index) => {
+        let wIndex = 0;
         rows.push(
           <BOHTR key={index} style={{backgroundColor:returnBgColor(item.stage)}}>
-            <BOHTD width={InitialWidths[0]}>{item.order_number}</BOHTD>
-            <BOHTD width={InitialWidths[1]}>{item.brand}</BOHTD>
-            <BOHTD width={InitialWidths[2]}>{item.full_name}</BOHTD>
-            <BOHTD width={InitialWidths[3]}>{item.start_date ? formatDate2(new Date(`${item.start_date} 00:00:00`)) : ''}</BOHTD>
-            <BOHTD width={InitialWidths[4]}>{item.end_date ? formatDate2(new Date(`${item.end_date} 00:00:00`)) : ''}</BOHTD>
-            <BOHTD width={InitialWidths[5]} textAlign={'right'}>{item?.quantity??''}</BOHTD>
-            <BOHTD width={InitialWidths[6]} textAlign={'right'}>{(item && item.driver_tip>0)?item.driver_tip.toLocaleString('en-US', { style: 'currency', currency: 'USD' }):''}</BOHTD>
-            <BOHTD width={InitialWidths[7]}>{convertStageToString(item.stage)}</BOHTD>
-            <BOHTD width={InitialWidths[8]} textAlign={'center'}>{item?.color_id?'YES':'NO'}</BOHTD>
-            <BOHTD width={InitialWidths[9]} textAlign={'center'}>{item?.printed?'YES':'NO'}</BOHTD>
-            <BOHTDIconBox  width={InitialWidths[10]}>
+            <BOHTD width={InitialWidths[wIndex++]}>{item.order_number}</BOHTD>
+            <BOHTD width={InitialWidths[wIndex++]}>{formatDate2(new Date(item.createdAt))}</BOHTD>
+            <BOHTD width={InitialWidths[wIndex++]}>{item.brand}</BOHTD>
+            <BOHTD width={InitialWidths[wIndex++]}>{item.full_name}</BOHTD>
+            <BOHTD width={InitialWidths[wIndex++]}>{item.start_date ? formatDate2(new Date(`${item.start_date} 00:00:00`)) : ''}</BOHTD>
+            <BOHTD width={InitialWidths[wIndex++]}>{item.end_date ? formatDate2(new Date(`${item.end_date} 00:00:00`)) : ''}</BOHTD>
+            <BOHTD width={InitialWidths[wIndex++]} textAlign={'right'}>{item?.quantity??''}</BOHTD>
+            <BOHTD width={InitialWidths[wIndex++]} textAlign={'right'}>{(item && item.driver_tip>0)?item.driver_tip.toLocaleString('en-US', { style: 'currency', currency: 'USD' }):''}</BOHTD>
+            <BOHTD width={InitialWidths[wIndex++]}>{convertStageToString(item.stage)}</BOHTD>
+            <BOHTD width={InitialWidths[wIndex++]} textAlign={'center'}>{item?.color_id?'YES':'NO'}</BOHTD>
+            <BOHTD width={InitialWidths[wIndex++]} textAlign={'center'}>{item?.printed?'YES':'NO'}</BOHTD>
+            <BOHTDIconBox  width={InitialWidths[wIndex++]}>
               <TouchableOpacity
                 onPress={() => {
                   openOrderScreen('Action Order', {orderId:item.id})
@@ -343,27 +345,29 @@ const OrdersList = ({ navigation, openOrderScreen }) => {
     return <>{rows}</>;
   }, [tableData]);
 
-  const tableElement = useMemo(()=>(
-    <BOHTable isLoading={isloading}>
+  const tableElement = useMemo(()=>{
+    let wIndex = 0;
+    return (<BOHTable isLoading={isloading}>
       <BOHTHead>
         <BOHTR>
-          <BOHTH width={InitialWidths[0]}>{'Order #'}</BOHTH>
-          <BOHTH width={InitialWidths[1]}>{'Brand'}</BOHTH>
-          <BOHTH width={InitialWidths[2]}>{'Customer'}</BOHTH>
-          <BOHTH width={InitialWidths[4]}>{'Start'}</BOHTH>
-          <BOHTH width={InitialWidths[3]}>{'End'}</BOHTH>
-          <BOHTH width={InitialWidths[5]}>{'Qty of bikes'}</BOHTH>
-          <BOHTH width={InitialWidths[6]}>{'Tips'}</BOHTH>
-          <BOHTH width={InitialWidths[7]}>{'Stage'}</BOHTH>
-          <BOHTH width={InitialWidths[8]}>{'Locked'}</BOHTH>
-          <BOHTH width={InitialWidths[9]}>{'Printed'}</BOHTH>
-          <BOHTH width={InitialWidths[10]}>{'Action'}</BOHTH>
+          <BOHTH width={InitialWidths[wIndex++]}>{'Order #'}</BOHTH>
+          <BOHTH width={InitialWidths[wIndex++]}>{'Created'}</BOHTH>
+          <BOHTH width={InitialWidths[wIndex++]}>{'Brand'}</BOHTH>
+          <BOHTH width={InitialWidths[wIndex++]}>{'Customer'}</BOHTH>
+          <BOHTH width={InitialWidths[wIndex++]}>{'Start'}</BOHTH>
+          <BOHTH width={InitialWidths[wIndex++]}>{'End'}</BOHTH>
+          <BOHTH width={InitialWidths[wIndex++]}>{'Qty of bikes'}</BOHTH>
+          <BOHTH width={InitialWidths[wIndex++]}>{'Tips'}</BOHTH>
+          <BOHTH width={InitialWidths[wIndex++]}>{'Stage'}</BOHTH>
+          <BOHTH width={InitialWidths[wIndex++]}>{'Locked'}</BOHTH>
+          <BOHTH width={InitialWidths[wIndex++]}>{'Printed'}</BOHTH>
+          <BOHTH width={InitialWidths[wIndex++]}>{'Action'}</BOHTH>
         </BOHTR>
       </BOHTHead>
       <BOHTBody>
         {renderTableData}
       </BOHTBody>
-    </BOHTable>), [isloading, tableData])
+    </BOHTable>)}, [isloading, tableData])
 
   return (
     <BasicLayout
