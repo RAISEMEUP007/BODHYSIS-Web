@@ -86,6 +86,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
   const [Dateformat, setDateformat] = useState(0);
   const [Timeformat, setTimeformat] = useState(0);
   const [PickupTime, setPickupTime] = useState('');
+  const [CutOffTime, setCutOffTime] = useState('');
   const [DropOffTime, setDropOffTime] = useState('');
   const [WeekStart, setWeekStart] = useState(0);
 
@@ -100,7 +101,11 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
   const [selectedTaxCode, selectTaxCode] = useState(null);
 
   useEffect(() => {
-    getLanguagesData((jsonRes, status, error) => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    await getLanguagesData((jsonRes, status, error) => {
       if (status == 200) {
         setLanguages(jsonRes);
         if (jsonRes[0]) {
@@ -108,7 +113,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
         } else setLanguage(0);
       }
     });
-    getCountriesData((jsonRes, status, error) => {
+    await getCountriesData((jsonRes, status, error) => {
       if (status == 200) {
         setCountries(jsonRes);
         if (jsonRes[0]) {
@@ -116,7 +121,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
         } else setCountry(0);
       }
     });
-    getTimezonesData((jsonRes, status, error) => {
+    await getTimezonesData((jsonRes, status, error) => {
       if (status == 200) {
         setTimezones(jsonRes);
         if (jsonRes[0]) {
@@ -124,7 +129,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
         } else setTimezone(0);
       }
     });
-    getCurrenciesData((jsonRes, status, error) => {
+    await getCurrenciesData((jsonRes, status, error) => {
       if (status == 200) {
         setCurrencies(jsonRes);
         if (jsonRes[0]) {
@@ -132,7 +137,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
         } else setCurrency(0);
       }
     });
-    getDateformatsData((jsonRes, status, error) => {
+    await getDateformatsData((jsonRes, status, error) => {
       if (status == 200) {
         setDateformats(jsonRes);
         if (jsonRes[0]) {
@@ -140,7 +145,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
         } else setDateformat(0);
       }
     });
-    getTimeformatsData((jsonRes, status, error) => {
+    await getTimeformatsData((jsonRes, status, error) => {
       if (status == 200) {
         setTimeformats(jsonRes);
         if (jsonRes[0]) {
@@ -148,7 +153,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
         } else setTimeformat(0);
       }
     });
-    getDocumentsData((jsonRes, status, error) => {
+    await getDocumentsData((jsonRes, status, error) => {
       if (status == 200) {
         setDocuments(jsonRes);
         if (jsonRes[0]) {
@@ -156,7 +161,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
         } else setDocumentId(0);
       }
     });
-    getTaxcodesData((jsonRes, status, error) => {
+    await getTaxcodesData((jsonRes, status, error) => {
       if (status == 200) {
         setTaxCodes(jsonRes);
         if (jsonRes[0]) {
@@ -164,16 +169,8 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
         } else selectTaxCode(null);
       }else setTaxCodes([]);
     });
-
-    setTimeout(() => {
-      loadDetails();
-    }, 100);
-    // defaultInputRef.current && defaultInputRef.current.focus();
-  }, []);
-
-  const loadDetails = () => {
-    getStoreDetail(brandId, (jsonRes, status, error) => {
-      if (jsonRes) {
+    await getStoreDetail(brandId, (jsonRes, status, error) => {
+      if (status == 200 &&jsonRes) {
         if (jsonRes.store_name) setStoreNameTxt(jsonRes.store_name);
         if (jsonRes.store_url) setStoreURLTxt(jsonRes.store_url);
         if (jsonRes.language_id) setLanguage(jsonRes.language_id);
@@ -201,6 +198,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
         if (jsonRes.is_document) setIsDocument(jsonRes.is_document);
         if (jsonRes.taxcode_id) selectTaxCode(jsonRes.taxcode_id);
         if (jsonRes.pickup_time) setPickupTime(jsonRes.pickup_time);
+        if (jsonRes.cut_off_time) setCutOffTime(jsonRes.cut_off_time);
         if (jsonRes.dropoff_time) setDropOffTime(jsonRes.dropoff_time);
       }
     });
@@ -246,6 +244,7 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
     formData.append('date_format', Dateformat.toString());
     formData.append('time_format', Timeformat.toString());
     formData.append('week_start_day', WeekStart.toString());
+    formData.append('cut_off_time', CutOffTime.toString());
     // formData.append('sales_tax', SalesTaxTxt.toString());
     formData.append('store_wavier', StoreWavier);
     formData.append('document_id', documentId.toString());
@@ -616,7 +615,16 @@ const StoreDetails = ({ navigation, brandId, brandName, openStoreDetail }) => {
                     })}
                 </Picker>
               </View>
-              <View style={[styles.inputContainer, { flex: 1 }]}></View>
+              <View style={[styles.inputContainer, { flex: 1 }]}>
+                <Text style={styles.label}>Cut off Time</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Cut off Time"
+                  value={CutOffTime}
+                  onChangeText={setCutOffTime}
+                  placeholderTextColor="#ccc"
+                />
+              </View>
             </View>
             <View style={styles.inputRow}>
               <View style={[styles.inputContainer, { flex: 1 }]}>
