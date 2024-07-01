@@ -1,19 +1,12 @@
 import React, { useEffect, useState, forwardRef } from 'react';
 import {
-  ScrollView,
   View,
   Text,
-  TouchableHighlight,
-  ActivityIndicator,
   TouchableOpacity,
-  Dimensions,
-  TextInput,
-  TouchableWithoutFeedback,
   Platform,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { FontAwesome5 } from '@expo/vector-icons';
-import DatePicker from 'react-datepicker';
 
 import {
   createPriceLogic,
@@ -24,18 +17,22 @@ import {
   getPriceTablesData,
 } from '../../../../api/Price';
 import { msgStr } from '../../../../common/constants/Message';
-import { TextMediumSize } from '../../../../common/constants/Fonts';
+import { TextMediumSize, TextSmallSize, TextdefaultSize } from '../../../../common/constants/Fonts';
 import { useAlertModal, useConfirmModal } from '../../../../common/hooks';
 import BasicLayout from '../../../../common/components/CustomLayout/BasicLayout';
 
-import { priceLogicStyle } from './styles/PriceLogicStyle';
+import { CommonContainer } from '../../../../common/components/CustomLayout';
+import { BOHButton, BOHToolbar, renderBOHTlbDatePicker } from '../../../../common/components/bohtoolbar';
+import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../../../common/components/bohtable';
+import { formatDate } from '../../../../common/utils/DateUtils';
+import { TextStyle } from 'react-native';
 
 const PriceLogic = ({ navigation, openInventory }) => {
-  const screenHeight = Dimensions.get('window').height;
 
   const { showAlert } = useAlertModal();
   const { showConfirm } = useConfirmModal();
 
+  const initWidth = [200, 200, 200, 120, 120, 50]
   const [tableData, setTableData] = useState([]);
   const [seasonId, setSeasonId] = useState(0);
   const [brandId, setBrandId] = useState(0);
@@ -268,55 +265,18 @@ const PriceLogic = ({ navigation, openInventory }) => {
     );
   };
 
-  const CustomInput = forwardRef(({ value, onChange, onClick }, ref) => (
-    <input
-      onClick={onClick}
-      onChange={onChange}
-      ref={ref}
-      style={styles.input}
-      value={value}
-    ></input>
-  ));
-
-  const renderDatePicker = (selectedDate, onChangeHandler) => {
-    return (
-      <View style={{ marginRight: 20 }}>
-        <DatePicker
-          selected={selectedDate}
-          onChange={(date) => onChangeHandler(date)}
-          dateFormat="MM/dd/yyyy"
-          customInput={<CustomInput />}
-          peekNextMonth
-          showMonthDropdown
-          showYearDropdown
-          dropdownMode="select"
-        />
-      </View>
-    );
-  };
-
   const renderTableData = () => {
     const rows = [];
     if (tableData.length > 0) {
       tableData.map((item, index) => {
         rows.push(
-          <View key={index} style={styles.tableRow}>
-            <View style={styles.cell}>
-              <Text style={styles.cellText}>{item.brand ? item.brand.brand : ''}</Text>
-            </View>
-            <View style={styles.cell}>
-              <Text style={styles.cellText}>{item.season ? item.season.season : ''}</Text>
-            </View>
-            <View style={styles.cell}>
-              <Text style={styles.cellText}>{item.priceTable.table_name}</Text>
-            </View>
-            <View style={[styles.cell, styles.dateCell]}>
-              <Text>{item.start_date}</Text>
-            </View>
-            <View style={[styles.cell, styles.dateCell]}>
-              <Text>{item.end_date}</Text>
-            </View>
-            <View style={[styles.cell, styles.radioButtonCell]}>
+          <BOHTR key={index}>
+            <BOHTD width={initWidth[0]}>{item.brand ? item.brand.brand : ''}</BOHTD>
+            <BOHTD width={initWidth[1]}>{item.season ? item.season.season : ''}</BOHTD>
+            <BOHTD width={initWidth[2]}>{item.priceTable.table_name}</BOHTD>
+            <BOHTD width={initWidth[3]}>{item.start_date}</BOHTD>
+            <BOHTD width={initWidth[4]}>{item.end_date}</BOHTD>
+            <BOHTDIconBox width={initWidth[5]}>
               <TouchableOpacity
                 onPress={() => {
                   removePriceLogic(item.id);
@@ -324,8 +284,8 @@ const PriceLogic = ({ navigation, openInventory }) => {
               >
                 <FontAwesome5 size={TextMediumSize} name="times" color="black" />
               </TouchableOpacity>
-            </View>
-          </View>
+            </BOHTDIconBox>
+          </BOHTR>
         );
       });
     } else {
@@ -341,55 +301,93 @@ const PriceLogic = ({ navigation, openInventory }) => {
         openInventory(null);
       }}
       screenName={'Price logic'}
+      isLoading={isLoading}
     >
-      <ScrollView horizontal={true}>
-        <View style={styles.container}>
-          <View style={styles.toolbar}>
-            <Text style={styles.toolbarLabel}>Brands</Text>
-            {renderBrandPicker()}
-            <Text style={styles.toolbarLabel}>Seasons</Text>
-            {renderSeasonPicker()}
-            <Text style={styles.toolbarLabel}>Price table</Text>
-            {renderPriceTablePicker()}
-            <TouchableHighlight
-              style={styles.button}
-              onPress={() => {
-                addPriceLogic();
-              }}
-            >
-              <Text style={styles.buttonText}>Add</Text>
-            </TouchableHighlight>
-          </View>
-          <View style={styles.toolbar}>
-            <Text style={styles.toolbarLabel}>Start date</Text>
-            {Platform.OS == 'web' && renderDatePicker(startDate, setStartDate)}
-            <Text style={styles.toolbarLabel}>End date</Text>
-            {Platform.OS == 'web' && renderDatePicker(endDate, setEndDate)}
-          </View>
-          <View style={styles.tableContainer}>
-            <View style={styles.tableHeader}>
-              <Text style={styles.columnHeader}>{'Brand'}</Text>
-              <Text style={styles.columnHeader}>{'Season'}</Text>
-              <Text style={styles.columnHeader}>{'Price table'}</Text>
-              <Text style={[styles.columnHeader, styles.dateCell]}>{'Start date'}</Text>
-              <Text style={[styles.columnHeader, styles.dateCell]}>{'End date'}</Text>
-              <Text style={[styles.columnHeader, styles.radioButtonCell]}></Text>
-            </View>
-            <ScrollView style={{ flex: 1, maxHeight: screenHeight - 220 }}>
-              {renderTableData()}
-            </ScrollView>
-          </View>
-          {isLoading && (
-            <View style={styles.overlay}>
-              <ActivityIndicator size="large" color="#0000ff" />
-            </View>
-          )}
-        </View>
-      </ScrollView>
+      <CommonContainer>
+        <BOHToolbar>
+          <Text style={styles.toolbarLabel}>Brands</Text>
+          {renderBrandPicker()}
+          <Text style={styles.toolbarLabel}>Seasons</Text>
+          {renderSeasonPicker()}
+          <Text style={styles.toolbarLabel}>Price table</Text>
+          {renderPriceTablePicker()}
+          <BOHButton
+            label="Create"
+            onPress={addPriceLogic}/>
+        </BOHToolbar>
+        <BOHToolbar style={{zIndex:100}}>
+          <Text style={styles.toolbarLabel}>Start date</Text>
+          {Platform.OS == 'web' && renderBOHTlbDatePicker(startDate, date=>setStartDate(formatDate(date)), styles.input)}
+          <Text style={styles.toolbarLabel}>End date</Text>
+          {Platform.OS == 'web' && renderBOHTlbDatePicker(endDate, date=>setEndDate(formatDate(date)), styles.input)}
+        </BOHToolbar>
+        <BOHTable>
+          <BOHTHead>
+            <BOHTR>
+              <BOHTH width={initWidth[0]}>{'Brand'}</BOHTH>
+              <BOHTH width={initWidth[1]}>{'Season'}</BOHTH>
+              <BOHTH width={initWidth[2]}>{'Price table'}</BOHTH>
+              <BOHTH width={initWidth[3]}>{'Start date'}</BOHTH>
+              <BOHTH width={initWidth[4]}>{'End date'}</BOHTH>
+              <BOHTH width={initWidth[5]}>{'DEL'}</BOHTH>
+            </BOHTR>
+          </BOHTHead>
+          <BOHTBody>
+            {renderTableData()}
+          </BOHTBody>
+        </BOHTable>
+      </CommonContainer>
     </BasicLayout>
   );
 };
 
-const styles = priceLogicStyle;
+interface Styles {
+  toolbarLabel: TextStyle;
+  select: TextStyle;
+  message: TextStyle;
+  input: any;
+}
+
+const styles:Styles = {
+  toolbarLabel: {
+    fontSize: TextdefaultSize,
+    margin: 5,
+    paddingVertical: 5,
+  },
+  select: {
+    margin: 5,
+    fontSize: TextdefaultSize,
+    borderWidth: 1,
+    borderColor: '#ced4da',
+    borderRadius: 3,
+    width: 180,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginRight: 20,
+  },
+  message: {
+    position: 'absolute',
+    bottom: -15,
+    left: 10,
+    width: '100%',
+    color: 'red',
+    fontSize: TextSmallSize,
+  },
+  input: {
+    width: 150,
+    // padding: '0.375rem 0.rem',
+    padding: 6,
+    height: 17,
+    fontSize: TextdefaultSize,
+    lineHeight: 1.5,
+    color: '#495057',
+    backgroundColor: '#fff',
+    backgroundClip: 'padding-box',
+    border: '1px solid #ced4da',
+    borderRadius: 3,
+    marginRight:21,
+    transition: 'border-color .15s ease-in-out, box-shadow 0.15s-in-out',
+  },
+};
 
 export default PriceLogic;
