@@ -114,7 +114,7 @@ const OrderPotential = ({ navigation }) => {
           <BOHTR key={index}>
             <BOHTD width={InitialWidths[0]}>{item.plantation||" "}</BOHTD>
             <BOHTD width={InitialWidths[1]}>{item.xploriefif?'FIF':item.xplorievoucher?'Voucher':''}</BOHTD>
-            <BOHTD width={InitialWidths[2]}>{item.street?"House":"Condo"}</BOHTD>
+            <BOHTD width={InitialWidths[2]}>{item.property_type == 0?"House": item.property_type == 1 ? "Condo" : ''}</BOHTD>
             <BOHTD width={InitialWidths[3]}>{item.number||" "}</BOHTD>
             <BOHTD width={InitialWidths[4]}>{item.street||" "}</BOHTD>
             <BOHTD width={InitialWidths[5]}>{item.property_name||" "}</BOHTD>

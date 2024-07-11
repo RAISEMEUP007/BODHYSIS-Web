@@ -34,7 +34,8 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
     plantation : null,
     property_name : null,
     property_type : 0,
-    price : null,
+    voucher_potential : null,
+    fif_potential : null,
     guests : null,
     bedrooms : null,
     rental_company : null,
@@ -53,7 +54,8 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
         plantation : details.plantation,
         property_name : details.property_name,
         property_type : details.property_type,
-        price : details.price,
+        voucher_potential : details.voucher_potential,
+        fif_potential : details.fif_potential,
         guests : details.guests,
         bedrooms : details.bedrooms,
         rental_company : details.rental_company,
@@ -70,7 +72,8 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
         plantation : null,
         property_name : null,
         property_type : 0,
-        price : null,
+        voucher_potential : null,
+        fif_potential : null,
         guests : null,
         bedrooms : null,
         rental_company : null,
@@ -206,16 +209,28 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
                 <Picker.Item label={"House"} value={0} />;
                 <Picker.Item label={"Condo"} value={1} />;
               </Picker>
-              <Text style={styles.label}>Price</Text>
+              <Text style={styles.label}>Voucher Potential</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Price"
-                value={formValues.price || ''}
-                onChangeText={val=>updateFormValues('price', val)}
+                placeholder="Voucher Potential"
+                value={formValues.voucher_potential || ''}
+                onChangeText={val=>updateFormValues('voucher_potential', val)}
                 placeholderTextColor="#ccc"
                 onBlur={checkInput}
                 onSubmitEditing={AddLocationButtonHandler}
               />
+              <Text style={styles.label}>FIF Potential</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="FIF Potential"
+                value={formValues.fif_potential || ''}
+                onChangeText={val=>updateFormValues('fif_potential', val)}
+                placeholderTextColor="#ccc"
+                onBlur={checkInput}
+                onSubmitEditing={AddLocationButtonHandler}
+              />
+            </View>
+            <View>
               <Text style={styles.label}>Guests</Text>
               <TextInput
                 style={styles.input}
@@ -226,8 +241,6 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
                 onBlur={checkInput}
                 onSubmitEditing={AddLocationButtonHandler}
               />
-            </View>
-            <View>
               <Text style={styles.label}>Bedrooms</Text>
               <TextInput
                 style={styles.input}

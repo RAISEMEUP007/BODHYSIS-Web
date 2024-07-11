@@ -19,7 +19,7 @@ const LocationManager = ({ navigation }) => {
   const [tableData, setTableData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(true);
-  const InitialWidths = [80, 170, 170, 170, 113, 50, 50];
+  const InitialWidths = [80, 170, 170, 170, 90, 100, 100, 100, 50, 50];
   const [searchKey, setSearchKey] = useState('');
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
@@ -94,7 +94,10 @@ const LocationManager = ({ navigation }) => {
             <BOHTD width={InitialWidths[2]}>{item.plantation}</BOHTD>
             <BOHTD width={InitialWidths[3]}>{item.property_name}</BOHTD>
             <BOHTD width={InitialWidths[4]}>{item.property_type == 0?'House':item.property_type == 1?'Condo':''}</BOHTD>
-            <BOHTDIconBox width={InitialWidths[5]}>
+            <BOHTD width={InitialWidths[5]}>{item.rental_company}</BOHTD>
+            <BOHTD width={InitialWidths[6]} textAlign='right'>{item.voucher_potential}</BOHTD>
+            <BOHTD width={InitialWidths[7]} textAlign='right'>{item.fif_potential}</BOHTD>
+            <BOHTDIconBox width={InitialWidths[8]}>
               <TouchableOpacity
                 onPress={() => {
                   editLocation(item);
@@ -103,7 +106,7 @@ const LocationManager = ({ navigation }) => {
                 <FontAwesome5 size={TextMediumSize} name="edit" color="black" />
               </TouchableOpacity>
             </BOHTDIconBox>
-            <BOHTDIconBox width={InitialWidths[6]}>
+            <BOHTDIconBox width={InitialWidths[9]}>
               <TouchableOpacity
                 onPress={() => {
                   removeLocation(item.id);
@@ -132,8 +135,11 @@ const LocationManager = ({ navigation }) => {
           <BOHTH2 width={InitialWidths[2]}>{'Plantation'}</BOHTH2>
           <BOHTH2 width={InitialWidths[3]}>{'Property name'}</BOHTH2>
           <BOHTH2 width={InitialWidths[4]}>{'Property type'}</BOHTH2>
-          <BOHTH2 width={InitialWidths[5]}>{'Edit'}</BOHTH2>
-          <BOHTH2 width={InitialWidths[6]}>{'DEL'}</BOHTH2>
+          <BOHTH2 width={InitialWidths[5]}>{'Rental Company'}</BOHTH2>
+          <BOHTH2 width={InitialWidths[6]}>{'Voucher Potential'}</BOHTH2>
+          <BOHTH2 width={InitialWidths[7]}>{'FIF Potential'}</BOHTH2>
+          <BOHTH2 width={InitialWidths[8]}>{'Edit'}</BOHTH2>
+          <BOHTH2 width={InitialWidths[9]}>{'DEL'}</BOHTH2>
         </BOHTR>
       </BOHTHead>
       <BOHTBody>
