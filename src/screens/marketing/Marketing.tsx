@@ -25,6 +25,7 @@ const Marketing = ({navigation, initialItem }:Props) => {
             case 'Locations': navigation.navigate('Locations'); break;
             case 'Forecasting': navigation.navigate('Forecasting'); break;
             case 'Demands Summary': navigation.navigate('Demands Summary'); break;
+            case 'Order Potential': navigation.navigate('Order Potential'); break;
             default:
                 return (
                     <View style={{ marginTop: 20, paddingHorizontal: 10, paddingVertical:2, height: 28, justifyContent: 'center', flexDirection: 'row',}}>
@@ -48,6 +49,7 @@ const Marketing = ({navigation, initialItem }:Props) => {
                         { title: "Locations", icon: 'map-marker-alt' },
                         { title: "Forecasting", icon: 'th' },
                         { title: "Demands Summary", icon: 'th' },
+                        { title: "Order Potential", icon: 'th' },
                     ]} handleItemClick={handleItemClick} />
                 </View>
             </ScrollView>

@@ -15,6 +15,10 @@ export const getForecastingData = async (payload, cb = (jR, s, e)=>{}) => {
   return await postAPICall('forecasting/getsummary/', payload, cb);
 }
 
+export const getOrderPotentialData = async (payload, cb = (jR, s, e)=>{}) => {
+  return await postAPICall('marketing/orderpotential/', payload, cb);
+}
+
 export const updateAddress = (payload, cb=(jR, s, e)=>{}) => {
   postAPICall('alladdresses/updateaddress', payload, cb);
 };
