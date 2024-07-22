@@ -21,6 +21,7 @@ import Forecasting from './marketing/forecasting/Forecasting';
 import OrderPotential from './marketing/orderpotential/OrderPotential';
 import PotentialList from './reservations/PotentialList';
 import Plantations from './marketing/plantaions/Plantaions';
+import Streets from './marketing/streets/Streets';
 
 const MainDrawer = ({ navigation }) => {
 
@@ -57,6 +58,8 @@ const MainDrawer = ({ navigation }) => {
             navigation.navigate('Marketing');
           }else if (route.toLowerCase().includes('plantations')) {
             navigation.navigate('Plantations');
+          }else if (route.toLowerCase().includes('streets')) {
+            navigation.navigate('Streets');
           }else if (route.toLowerCase().includes('locations')) {
             navigation.navigate('Locations');
           }else if (route.toLowerCase().includes('forecasting')) {
@@ -117,6 +120,10 @@ const MainDrawer = ({ navigation }) => {
     },{
       name: "Plantations",
       component: ({navigation})=>{return <Plantations navigation={navigation} />},
+      hidden: true,
+    },{
+      name: "Streets",
+      component: ({navigation})=>{return <Streets navigation={navigation} />},
       hidden: true,
     },{
       name: "Forecasting",

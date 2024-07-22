@@ -57,3 +57,20 @@ export const deletePlantation = (id, cb=(jR, s, e)=>{}) => {
   const payload = { id };
   postAPICall('alladdresses/deleteplantation', payload, cb);
 }
+
+export const getStreetsData = async (cb = (jR, s, e)=>{}) => {
+  return await getAPICall('alladdresses/getstreetsdata/',  cb);
+}
+
+export const createStreet = async (payload, cb=(jR, s, e)=>{}) => {
+  return await postAPICall('alladdresses/createstreet', payload, cb);
+};
+
+export const updateStreet = async (payload, cb=(jR, s, e)=>{}) => {
+  return await postAPICall('alladdresses/updatestreet', payload, cb);
+};
+
+export const deleteStreet = (id, cb=(jR, s, e)=>{}) => {
+  const payload = { id };
+  postAPICall('alladdresses/deletestreet', payload, cb);
+}

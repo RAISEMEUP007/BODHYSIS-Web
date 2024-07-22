@@ -19,8 +19,9 @@ const Marketing = ({navigation, initialItem }:Props) => {
     
     if(selectedItem) {
         switch (selectedItem) {
-            case 'Locations': navigation.navigate('Locations'); break;
             case 'Plantations': navigation.navigate('Plantations'); break;
+            case 'Streets': navigation.navigate('Streets'); break;
+            case 'Locations': navigation.navigate('Locations'); break;
             case 'Forecasting': navigation.navigate('Forecasting'); break;
             case 'Demands Summary': navigation.navigate('Demands Summary'); break;
             case 'Order Potential': navigation.navigate('Order Potential'); break;
@@ -45,6 +46,7 @@ const Marketing = ({navigation, initialItem }:Props) => {
                 <View style={styles.container}>
                     <TouchNavGroup sectionTitle="Marketing" items={[
                         { title: "Plantations", icon: 'map-marker-alt' },
+                        { title: "Streets", icon: 'map-marker-alt' },
                         { title: "Locations", icon: 'map-marker-alt' },
                         { title: "Forecasting", icon: 'th' },
                         { title: "Demands Summary", icon: 'th' },
