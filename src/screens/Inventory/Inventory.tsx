@@ -83,7 +83,7 @@ const Inventory = ({ navigation, initalItem = null }) => {
               { title: 'Product Families', icon: 'check' },
               { title: 'Product Lines', icon: 'check' },
               { title: 'Display Group Manager', icon: 'check' },
-              { title: 'Search', icon: 'search' },
+              // { title: 'Search', icon: 'search' },
             ]}
             handleItemClick={handleItemClick}
           />

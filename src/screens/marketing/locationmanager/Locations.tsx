@@ -53,8 +53,7 @@ const LocationManager = ({ navigation }) => {
     }));
   }
 
-  useEffect(() => {
-    if (updateLocationTrigger == true) getTable();
+  useEffect(()=>{
     getStreets((jsonRes)=>{
       setStreets(jsonRes);
     });
@@ -64,6 +63,10 @@ const LocationManager = ({ navigation }) => {
     getPropertyNames((jsonRes)=>{
       setPropertyNames(jsonRes);
     });
+  }, [])
+
+  useEffect(() => {
+    if (updateLocationTrigger == true) getTable();
   }, [updateLocationTrigger]);
 
   const removeLocation = (id) => {
