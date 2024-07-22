@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Text, Platform, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getOrderPotentialData } from '../../../api/AllAddress ';
 import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
-import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTH2, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
+import { BOHTBody, BOHTD, BOHTDIconBox, BOHTDPressable, BOHTH, BOHTH2, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
 import { msgStr } from '../../../common/constants/Message';
 import { useAlertModal, useConfirmModal } from '../../../common/hooks';
 import { BOHButton, BOHTlbCheckbox, BOHToolbar, renderBOHTlbDatePicker } from '../../../common/components/bohtoolbar';
@@ -106,6 +107,15 @@ const OrderPotential = ({ navigation }) => {
     location.href =  API_URL + `/forecasting/exportforecasting?start_date=${searchOptions.start_date}&end_date=${searchOptions.end_date}`
   }
 
+  const openReservations = (searchOptions) => {
+
+    AsyncStorage.setItem('__potential_options', JSON.stringify(searchOptions))
+
+    if(Platform.OS == 'web'){
+      window.open('/home/PotentialList');
+    }
+  }
+
   const renderTableData = () => {
     const rows = [];
     if (tableData && tableData.length && tableData.length > 0) {
@@ -124,7 +134,7 @@ const OrderPotential = ({ navigation }) => {
               let bgcolor = getCellColor(subItem?.percentage??null);
               let txtColor = getCellTextColor(subItem?.percentage??null, subItem?.price);
               return (
-                <BOHTD 
+                <BOHTDPressable 
                   key={index} width={40} 
                   style={{
                     backgroundColor:bgcolor,
@@ -140,9 +150,19 @@ const OrderPotential = ({ navigation }) => {
                       fontWeight:'bold', 
                       textAlign:'center',
                       color: txtColor,
-                  }}}>
+                  }}}
+                  onPress={()=>{
+                    if(subItem){
+                      openReservations({
+                        date: subItem.date, 
+                        address: `${item.number} ${item.street} ${item.property_name} ${item.plantation}`,
+                        ids: subItem.ids,
+                        potential: subItem?.price??0,
+                      })}
+                    }
+                  }>
                   {subItem?.price??" "}
-                </BOHTD>
+                </BOHTDPressable>
               );
             })}
           </BOHTR>

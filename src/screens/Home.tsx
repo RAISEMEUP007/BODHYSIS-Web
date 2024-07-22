@@ -19,6 +19,7 @@ import LocationManager from './marketing/locationmanager/Locations';
 import Avaiable from './marketing/avaiable/Avaiable';
 import Forecasting from './marketing/forecasting/Forecasting';
 import OrderPotential from './marketing/orderpotential/OrderPotential';
+import PotentialList from './reservations/PotentialList';
 
 const MainDrawer = ({ navigation }) => {
 
@@ -63,6 +64,8 @@ const MainDrawer = ({ navigation }) => {
             navigation.navigate('Scheduler');
           }else if (route.toLowerCase().includes('settings')) {
             navigation.navigate('Settings');
+          }else if (route.toLowerCase().includes('potential%20list') || route.toLowerCase().includes('potentiallist')) {
+            navigation.navigate('Potential List');
           }else if (route.toLowerCase().includes('potential')) {
             navigation.navigate('Order Potential');
           }
@@ -80,71 +83,64 @@ const MainDrawer = ({ navigation }) => {
       component: ({navigation})=>{return <Dashboard navigation={navigation} />},
       iconName: "dashboard.png",
       label: "Dashboard",
-    },    {
+    },{
       name: "Reservation",
       component: ({navigation})=>{return <Reservations navigation={navigation} />},
       iconName: "reservations.png",
-      label: "Reservation",
-    },    {
+    },{
       name: "Walkup Order",
       component: ({navigation})=>{return <Orders navigation={navigation} />},
       iconName: "walk-up-order.png",
-      label: "Walkup Order",
-    },    {
+    },{
       name: "Inventory",
       component: ({navigation})=>{return <Inventory navigation={navigation} />},
       iconName: "inventory.png",
-      label: "Inventory",
-    },    {
+    },{
       name: "Customers",
       component: ({navigation})=>{return <Customers navigation={navigation} />},
       iconName: "customers.png",
-      label: "Customers",
-    },    {
+    },{
       name: "Scheduler",
       component: ({navigation})=>{return <Scheduler navigation={navigation} />},
       iconName: "scheduler.png",
-      label: "Scheduler",
       hidden: true,
-    },    {
+    },{
       name: "Marketing",
       component: ({navigation})=>{return <Marketing navigation={navigation} />},
       iconName: "marketing.png",
-      label: "Marketing",
-    },    {
+    },{
       name: "Locations",
       component: ({navigation})=>{return <LocationManager navigation={navigation} />},
       iconName: "marketing.png",
-      label: "Locations",
       hidden: true,
-    },    {
+    },{
       name: "Forecasting",
       component: ({navigation})=>{return <Forecasting navigation={navigation} />},
       iconName: "marketing.png",
-      label: "Forecasting",
       hidden: true,
-    },    {
+    },{
       name: "Demands Summary",
       component: ({navigation})=>{return <Avaiable navigation={navigation} />},
       iconName: "marketing.png",
-      label: "Demands Summary",
       hidden: true,
-    },    {
+    },{
       name: "Settings",
       component: ({navigation})=>{return <Settings navigation={navigation} />},
       iconName: "settings.png",
-      label: "Settings",
     },{
       name: "DemandsList",
       component: ({navigation})=>{return <DemandsList navigation={navigation} />},
       iconName: "reservations.png",
-      label: "DemandsList",
       hidden: true,
     },{
       name: "Order Potential",
       component: ({navigation})=>{return <OrderPotential navigation={navigation} />},
       iconName: "reservations.png",
-      label: "DemandsList",
+      hidden: true,
+    },{
+      name: "Potential List",
+      component: ({navigation})=>{return <PotentialList navigation={navigation} />},
+      iconName: "reservations.png",
       hidden: true,
     },
   ];
@@ -155,7 +151,7 @@ const MainDrawer = ({ navigation }) => {
       name={screen.name}
       component={screen.component}
       options={{
-        drawerLabel: screen.label,
+        drawerLabel: screen?.label??screen.name,
         unmountOnBlur: true,
         headerShown: false,
         drawerIcon: ({ focused, size }) => (

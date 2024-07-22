@@ -2,10 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { getAddressesData, deleteAddress } from '../../../api/AllAddress ';
+import { getAddressesData, deleteAddress, getStreets, getPlantations, getPropertyNames } from '../../../api/AllAddress ';
 import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
 import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTH2, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
-import { BOHButton, BOHTlbrSearchInput, BOHToolbar } from '../../../common/components/bohtoolbar';
+import { BOHButton, BOHTlbrSearchInput, BOHTlbrSearchPicker, BOHToolbar } from '../../../common/components/bohtoolbar';
 import { msgStr } from '../../../common/constants/Message';
 import { TextMediumSize } from '../../../common/constants/Fonts';
 import { useAlertModal, useConfirmModal } from '../../../common/hooks';
@@ -20,7 +20,15 @@ const LocationManager = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [updateLocationTrigger, setUpdateLocationsTrigger] = useState(true);
   const InitialWidths = [80, 170, 170, 170, 90, 100, 100, 100, 50, 50];
-  const [searchKey, setSearchKey] = useState('');
+  const [streets, setStreets] = useState([]);
+  const [plantataions, setPlantations] = useState([]);
+  const [propertyNames, setPropertyNames] = useState([]);
+  const [searchOptions, setSearchOptions] = useState({
+    searchKey: '',
+    street: '',
+    plantation: '',
+    property_name: '',
+  })
 
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -38,8 +46,24 @@ const LocationManager = ({ navigation }) => {
     setAddModalVisible(true);
   };
 
+  const changeSearchOptions = (key, val) => {
+    setSearchOptions(prevOptions => ({
+      ...prevOptions,
+      [key]: val
+    }));
+  }
+
   useEffect(() => {
     if (updateLocationTrigger == true) getTable();
+    getStreets((jsonRes)=>{
+      setStreets(jsonRes);
+    });
+    getPlantations((jsonRes)=>{
+      setPlantations(jsonRes);
+    });
+    getPropertyNames((jsonRes)=>{
+      setPropertyNames(jsonRes);
+    });
   }, [updateLocationTrigger]);
 
   const removeLocation = (id) => {
@@ -61,12 +85,11 @@ const LocationManager = ({ navigation }) => {
 
   useEffect(()=>{
     setUpdateLocationsTrigger(true);
-  }, [searchKey])
+  }, [searchOptions])
 
   const getTable = () => {
     setIsLoading(true);
-    const payload={searchKey}
-    getAddressesData(payload, (jsonRes, status, error) => {
+    getAddressesData(searchOptions, (jsonRes, status, error) => {
       switch (status) {
         case 200:
           setUpdateLocationsTrigger(false);
@@ -132,7 +155,7 @@ const LocationManager = ({ navigation }) => {
         <BOHTR>
           <BOHTH2 width={InitialWidths[0]}>{'Number'}</BOHTH2>
           <BOHTH2 width={InitialWidths[1]}>{'Street'}</BOHTH2>
-          <BOHTH2 width={InitialWidths[2]}>{'Plantation'}</BOHTH2>
+          <BOHTH2 width={InitialWidths[2]}>{'Plantation/Area'}</BOHTH2>
           <BOHTH2 width={InitialWidths[3]}>{'Property name'}</BOHTH2>
           <BOHTH2 width={InitialWidths[4]}>{'Property type'}</BOHTH2>
           <BOHTH2 width={InitialWidths[5]}>{'Rental Company'}</BOHTH2>
@@ -162,8 +185,59 @@ const LocationManager = ({ navigation }) => {
             onPress={openAddLocationModal}/>
           <BOHTlbrSearchInput
             label="Search"
-            value={searchKey}
-            onChangeText={setSearchKey}/>
+            value={searchOptions.searchKey}
+            onChangeText={(val)=>changeSearchOptions('searchKey', val)}/>
+          <BOHTlbrSearchPicker
+            width={136}
+            label="Plantation/Area"
+            items={[
+              {label: '', value: ''}, 
+              ...plantataions.map((item, index) => {
+                  if (item && item.trim()) {
+                    return {label: item.trim(), value: item.trim()};
+                  } else {
+                    return null;
+                  }
+                })
+                .filter(item => item !== null)
+            ]}
+            selectedValue={searchOptions.plantation || ''}
+            onValueChange={val=>changeSearchOptions('plantation', val)}
+            />
+          <BOHTlbrSearchPicker
+            width={136}
+            label="Street"
+            items={[
+              {label: '', value: ''}, 
+              ...streets.map((item, index) => {
+                  if (item && item.trim()) {
+                    return {label: item.trim(), value: item.trim()};
+                  } else {
+                    return null;
+                  }
+                })
+                .filter(item => item !== null)
+            ]}
+            selectedValue={searchOptions.street || ''}
+            onValueChange={val=>changeSearchOptions('street', val)}
+            />
+          <BOHTlbrSearchPicker
+            width={136}
+            label="Property Name"
+            items={[
+              {label: '', value: ''}, 
+              ...propertyNames.map((item, index) => {
+                  if (item && item.trim()) {
+                    return {label: item.trim(), value: item.trim()};
+                  } else {
+                    return null;
+                  }
+                })
+                .filter(item => item !== null)
+            ]}
+            selectedValue={searchOptions.property_name || ''}
+            onValueChange={val=>changeSearchOptions('property_name', val)}
+            />
         </BOHToolbar>
         {tableElement}
         <AddLocationModal

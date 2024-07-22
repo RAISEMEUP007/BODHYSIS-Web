@@ -1,14 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ScrollView, View, Text, TouchableOpacity, Platform } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { View, Text, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getReservationsCounts, getReservationsData } from '../../api/Reservation';
 import { BasicLayout, CommonContainer } from '../../common/components/CustomLayout';
 import { BOHTlbCheckbox, BOHTlbRadio, BOHTlbrSearchInput, BOHTlbrSearchPicker, BOHToolbar, renderBOHTlbDatePicker } from '../../common/components/bohtoolbar';
-import { BOHTBody, BOHTD, BOHTDIconBox, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
+import { BOHTBody, BOHTD, BOHTH, BOHTHead, BOHTR, BOHTable } from '../../common/components/bohtable';
 import { msgStr } from '../../common/constants/Message';
-import { TextMediumSize, TextdefaultSize } from '../../common/constants/Fonts';
+import { TextdefaultSize } from '../../common/constants/Fonts';
 import { useAlertModal } from '../../common/hooks';
 import { formatDate, formatDate2 } from '../../common/utils/DateUtils';
 
