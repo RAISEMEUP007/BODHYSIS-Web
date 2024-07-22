@@ -117,7 +117,7 @@ const Properties = ({ navigation }) => {
     <BOHTable isLoading={isLoading}>
       <BOHTHead>
         <BOHTR>
-          <BOHTH2 width={InitialWidths[0]}>{'PropertyName'}</BOHTH2>
+          <BOHTH2 width={InitialWidths[0]}>{'Property name'}</BOHTH2>
           <BOHTH2 width={InitialWidths[1]}>{'Edit'}</BOHTH2>
           <BOHTH2 width={InitialWidths[2]}>{'DEL'}</BOHTH2>
         </BOHTR>
@@ -133,7 +133,7 @@ const Properties = ({ navigation }) => {
       goBack={() => {
         navigation.navigate('Marketing');
       }}
-      screenName={'PropertyName Manager'}
+      screenName={'Property name Manager'}
     >
       <CommonContainer>
         <BOHToolbar>

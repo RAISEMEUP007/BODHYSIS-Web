@@ -105,10 +105,10 @@ const AddPropertyModal = ({ isModalVisible, details, setUpdatePropertyNamesTrigg
         <ModalHeader label={isUpdate ? 'Update' : 'Add' + 'Address'} closeModal={closeModal} />
         <ModalBody>
           <View >
-            <Text style={styles.label}>PropertyName</Text>
+            <Text style={styles.label}>Property name</Text>
             <TextInput
               style={styles.input}
-              placeholder="PropertyName"
+              placeholder="Property name"
               value={formValues.property_name || ''}
               onChangeText={val=>updateFormValues('property_name', val)}
               placeholderTextColor="#ccc"
