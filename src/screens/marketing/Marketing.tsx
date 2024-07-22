@@ -46,10 +46,10 @@ const Marketing = ({navigation, initialItem }:Props) => {
             <ScrollView>
                 <View style={styles.container}>
                     <TouchNavGroup sectionTitle="Marketing" items={[
+                        { title: "Locations", icon: 'map-marker-alt' },
                         { title: "Plantations", icon: 'map-marker-alt' },
                         { title: "Streets", icon: 'map-marker-alt' },
                         { title: "Properties", icon: 'map-marker-alt' },
-                        { title: "Locations", icon: 'map-marker-alt' },
                         { title: "Forecasting", icon: 'th' },
                         { title: "Demands Summary", icon: 'th' },
                         { title: "Order Potential", icon: 'th' },
