@@ -11,7 +11,7 @@ import {
 import CheckBox from 'expo-checkbox';
 import { Picker } from '@react-native-picker/picker';
 
-import { createAddress, updateAddress } from '../../../api/AllAddress ';
+import { createAddress, updateAddress, getStreetsData, getPlantationsData, getPropertyNamesData } from '../../../api/AllAddress ';
 import BasicModalContainer from '../../../common/components/basicmodal/BasicModalContainer';
 import ModalHeader from '../../../common/components/basicmodal/ModalHeader';
 import ModalBody from '../../../common/components/basicmodal/ModalBody';
@@ -27,12 +27,19 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
   const [ValidMessage, setValidMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const [streets, setStreetsData] = useState([]);
+  const [plantations, setPlantationsData] = useState([]);
+  const [propertyNames, setPropertyNames] = useState([]);
+
   const [formValues, setFormValues] = useState<any>({
     id: null,
     number:null,
     street: null,
+    street_id: null,
     plantation : null,
+    plantation_id : null,
     property_name : null,
+    property_name_id : null,
     property_type : 0,
     voucher_potential : null,
     fif_potential : null,
@@ -45,15 +52,30 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
     geolong : null,
   });
 
+  useEffect(()=>{
+    getStreetsData((jsonRes)=>{
+      setStreetsData(jsonRes);
+    })
+    getPlantationsData((jsonRes)=>{
+      setPlantationsData(jsonRes);
+    })
+    getPropertyNamesData((jsonRes)=>{
+      setPropertyNames(jsonRes);
+    })
+  }, [])
+
   useEffect(() => {
     if (isModalVisible && details) {
       setFormValues({
         id: details.id,
         number:details.number,
         street: details.street,
+        street_id: details.street_id,
         plantation : details.plantation,
+        plantation_id : details.plantation_id,
         property_name : details.property_name,
-        property_type : details.property_type,
+        property_name_id : details.property_name_id,
+        property_type : details?.property_type??0,
         voucher_potential : details.voucher_potential,
         fif_potential : details.fif_potential,
         guests : details.guests,
@@ -69,8 +91,11 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
         id: null,
         number:null,
         street: null,
+        street_id: null,
         plantation : null,
+        plantation_id : null,
         property_name : null,
+        property_name_id : null,
         property_type : 0,
         voucher_potential : null,
         fif_potential : null,
@@ -162,49 +187,44 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
                 value={formValues.number || ''}
                 onChangeText={val=>updateFormValues('number', val)}
                 placeholderTextColor="#ccc"
-                onBlur={checkInput}
-                onSubmitEditing={AddLocationButtonHandler}
-              />
-              <Text style={styles.label}>Street</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Street"
-                value={formValues.street || ''}
-                onChangeText={val=>updateFormValues('street', val)}
-                placeholderTextColor="#ccc"
-                onBlur={checkInput}
-                onSubmitEditing={AddLocationButtonHandler}
               />
               <Text style={styles.label}>Plantation</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Plantation"
-                value={formValues.plantation || ''}
-                onChangeText={val=>updateFormValues('plantation', val)}
-                placeholderTextColor="#ccc"
-                onBlur={checkInput}
-                onSubmitEditing={AddLocationButtonHandler}
-              />
+              <Picker
+                style={styles.select}
+                selectedValue={formValues.plantation_id || ''}
+                onValueChange={(val, index)=>{
+                  updateFormValues('plantation_id', val?val:null);
+                  updateFormValues('plantation', plantations[index-1]?.plantation??null);
+                }}
+              >
+                <Picker.Item label={""} value={""} />;
+                {plantations.map(plantation=>(<Picker.Item key={plantation.id} label={plantation.plantation} value={plantation.id} />))}
+              </Picker>
+              <Text style={styles.label}>Street</Text>
+              <Picker
+                style={styles.select}
+                selectedValue={formValues.street_id || ''}
+                onValueChange={(val, index)=>{
+                  updateFormValues('street_id', val?val:null);
+                  updateFormValues('street', streets[index-1]?.street??null);
+                }}
+              >
+                <Picker.Item label={""} value={""} />;
+                {streets.map(street=>(<Picker.Item key={street.id} label={street.street} value={street.id} />))}
+              </Picker>
               <Text style={styles.label}>Property Name</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Property Name"
-                value={formValues.property_name || ''}
-                onChangeText={val=>updateFormValues('property_name', val)}
-                placeholderTextColor="#ccc"
-                onBlur={checkInput}
-                onSubmitEditing={AddLocationButtonHandler}
-              />
+              <Picker
+                style={styles.select}
+                selectedValue={formValues.property_name_id || ''}
+                onValueChange={(val, index)=>{
+                  updateFormValues('property_name_id', val?val:null);
+                  updateFormValues('property_name', propertyNames[index-1]?.property_name??null);
+                }}
+              >
+                <Picker.Item label={""} value={""} />;
+                {propertyNames.map(item=>(<Picker.Item key={item.id} label={item.property_name} value={item.id} />))}
+              </Picker>
               <Text style={styles.label}>Property Type</Text>
-              {/* <TextInput
-                style={styles.input}
-                placeholder="Property Type"
-                value={formValues.property_type || ''}
-                onChangeText={val=>updateFormValues('property_type', val)}
-                placeholderTextColor="#ccc"
-                onBlur={checkInput}
-                onSubmitEditing={AddLocationButtonHandler}
-              /> */}
               <Picker style={styles.select} selectedValue={formValues.property_type} onValueChange={(val)=>updateFormValues('property_type', val)}>
                 <Picker.Item label={"House"} value={0} />;
                 <Picker.Item label={"Condo"} value={1} />;
@@ -216,8 +236,6 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
                 value={formValues.voucher_potential || ''}
                 onChangeText={val=>updateFormValues('voucher_potential', val)}
                 placeholderTextColor="#ccc"
-                onBlur={checkInput}
-                onSubmitEditing={AddLocationButtonHandler}
               />
               <Text style={styles.label}>FIF Potential</Text>
               <TextInput
@@ -226,8 +244,6 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
                 value={formValues.fif_potential || ''}
                 onChangeText={val=>updateFormValues('fif_potential', val)}
                 placeholderTextColor="#ccc"
-                onBlur={checkInput}
-                onSubmitEditing={AddLocationButtonHandler}
               />
             </View>
             <View>
@@ -238,8 +254,6 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
                 value={formValues.guests || ''}
                 onChangeText={val=>updateFormValues('guests', val)}
                 placeholderTextColor="#ccc"
-                onBlur={checkInput}
-                onSubmitEditing={AddLocationButtonHandler}
               />
               <Text style={styles.label}>Bedrooms</Text>
               <TextInput
@@ -248,8 +262,6 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
                 value={formValues.bedrooms || ''}
                 onChangeText={val=>updateFormValues('bedrooms', val)}
                 placeholderTextColor="#ccc"
-                onBlur={checkInput}
-                onSubmitEditing={AddLocationButtonHandler}
               />
               <Text style={styles.label}>Rental Company</Text>
               <TextInput
@@ -258,8 +270,6 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
                 value={formValues.rental_company || ''}
                 onChangeText={val=>updateFormValues('rental_company', val)}
                 placeholderTextColor="#ccc"
-                onBlur={checkInput}
-                onSubmitEditing={AddLocationButtonHandler}
               />
               <Text style={styles.label}>Geolat</Text>
               <TextInput
@@ -268,8 +278,6 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
                 value={formValues.geolat || ''}
                 onChangeText={val=>updateFormValues('geolat', val)}
                 placeholderTextColor="#ccc"
-                onBlur={checkInput}
-                onSubmitEditing={AddLocationButtonHandler}
               />
               <Text style={styles.label}>Geolong</Text>
               <TextInput
@@ -278,8 +286,6 @@ const AddLocationModal = ({ isModalVisible, details, setUpdateLocationsTrigger, 
                 value={formValues.geolong || ''}
                 onChangeText={val=>updateFormValues('geolong', val)}
                 placeholderTextColor="#ccc"
-                onBlur={checkInput}
-                onSubmitEditing={AddLocationButtonHandler}
               />
               <Pressable
                 style={{ flexDirection: 'row', marginVertical: 10, alignItems: 'center' }}

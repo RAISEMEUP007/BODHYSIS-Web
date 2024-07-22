@@ -20,6 +20,9 @@ import Avaiable from './marketing/avaiable/Avaiable';
 import Forecasting from './marketing/forecasting/Forecasting';
 import OrderPotential from './marketing/orderpotential/OrderPotential';
 import PotentialList from './reservations/PotentialList';
+import Plantations from './marketing/plantaions/Plantaions';
+import Streets from './marketing/streets/Streets';
+import Properties from './marketing/properties/Properties';
 
 const MainDrawer = ({ navigation }) => {
 
@@ -54,6 +57,12 @@ const MainDrawer = ({ navigation }) => {
             navigation.navigate('Customer');
           }else if (route.toLowerCase().includes('marketing')) {
             navigation.navigate('Marketing');
+          }else if (route.toLowerCase().includes('plantations')) {
+            navigation.navigate('Plantations');
+          }else if (route.toLowerCase().includes('streets')) {
+            navigation.navigate('Streets');
+          }else if (route.toLowerCase().includes('properties')) {
+            navigation.navigate('Properties');
           }else if (route.toLowerCase().includes('locations')) {
             navigation.navigate('Locations');
           }else if (route.toLowerCase().includes('forecasting')) {
@@ -102,7 +111,6 @@ const MainDrawer = ({ navigation }) => {
     },{
       name: "Scheduler",
       component: ({navigation})=>{return <Scheduler navigation={navigation} />},
-      iconName: "scheduler.png",
       hidden: true,
     },{
       name: "Marketing",
@@ -111,17 +119,26 @@ const MainDrawer = ({ navigation }) => {
     },{
       name: "Locations",
       component: ({navigation})=>{return <LocationManager navigation={navigation} />},
-      iconName: "marketing.png",
+      hidden: true,
+    },{
+      name: "Plantations",
+      component: ({navigation})=>{return <Plantations navigation={navigation} />},
+      hidden: true,
+    },{
+      name: "Streets",
+      component: ({navigation})=>{return <Streets navigation={navigation} />},
+      hidden: true,
+    },{
+      name: "Properties",
+      component: ({navigation})=>{return <Properties navigation={navigation} />},
       hidden: true,
     },{
       name: "Forecasting",
       component: ({navigation})=>{return <Forecasting navigation={navigation} />},
-      iconName: "marketing.png",
       hidden: true,
     },{
       name: "Demands Summary",
       component: ({navigation})=>{return <Avaiable navigation={navigation} />},
-      iconName: "marketing.png",
       hidden: true,
     },{
       name: "Settings",
@@ -130,17 +147,14 @@ const MainDrawer = ({ navigation }) => {
     },{
       name: "DemandsList",
       component: ({navigation})=>{return <DemandsList navigation={navigation} />},
-      iconName: "reservations.png",
       hidden: true,
     },{
       name: "Order Potential",
       component: ({navigation})=>{return <OrderPotential navigation={navigation} />},
-      iconName: "reservations.png",
       hidden: true,
     },{
       name: "Potential List",
       component: ({navigation})=>{return <PotentialList navigation={navigation} />},
-      iconName: "reservations.png",
       hidden: true,
     },
   ];
@@ -155,10 +169,14 @@ const MainDrawer = ({ navigation }) => {
         unmountOnBlur: true,
         headerShown: false,
         drawerIcon: ({ focused, size }) => (
-          <Image
-            style={{ width: 25, height: 25, resizeMode: 'contain' }}
-            source={require(`../assets/nav-icons/${screen.iconName}`)}
-          />
+          screen.iconName ? (
+            <Image
+              style={{ width: 25, height: 25, resizeMode: 'contain' }}
+              source={require(`../assets/nav-icons/${screen.iconName}`)}
+            />
+          ) : (
+            <></>
+          )
         ),
         drawerItemStyle: {
           display: screen.hidden ? 'none' : 'flex',
