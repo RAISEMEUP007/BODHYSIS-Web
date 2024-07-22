@@ -76,7 +76,7 @@ deploy main:
     - export NODE_OPTIONS=--openssl-legacy-provider 
     - npm config set loglevel warn
     - npx expo export:web
-    - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l gitlab" ./web-build/** gitlab@100.69.4.76:/var/storage/apps/bodhisys/apps/bohdisys-mobile
+    - rsync -azh --rsh="ssh -o StrictHostKeyChecking=no -l gitlab" ./web-build/** gitlab@100.69.4.76:/var/storage/apps/bodhisys/apps/bohdisys-mobile/web-build
 
 
 deploy development:
@@ -93,7 +93,7 @@ deploy development:
     - export NODE_OPTIONS=--openssl-legacy-provider 
     - npm config set loglevel warn
     - npx expo export:web
-    - rsync -azhv --rsh="ssh -o StrictHostKeyChecking=no -l gitlab" ./web-build/** gitlab@100.69.4.76:/var/storage/apps/bodhisys/apps-dev/bohdisys-mobile
+    - rsync -azhv --rsh="ssh -o StrictHostKeyChecking=no -l gitlab" ./web-build/** gitlab@100.69.4.76:/var/storage/apps/bodhisys/apps-dev/bohdisys-mobile/web-build
 #    - scp -r -o StrictHostKeyChecking=no ../** ubuntu@18.220.145.253:/var/www/apps/dev/test
 #    - ssh -o StrictHostKeyChecking=no ubuntu@18.220.145.253 "cd /var/www/apps/dev/bohdisys-admin; npx expo export:web"
 
