@@ -4,9 +4,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 import TouchNavGroup from '../../common/components/navpanel/TouchNavGroup';
 import BasicLayout from '../../common/components/CustomLayout/BasicLayout';
-import LocationManager from './locationmanager/Locations';
-import Forecasting from './forecasting/Forecasting';
-import Avaiable from './avaiable/Avaiable';
 
 interface Props {
     navigation: any;
@@ -23,6 +20,7 @@ const Marketing = ({navigation, initialItem }:Props) => {
     if(selectedItem) {
         switch (selectedItem) {
             case 'Locations': navigation.navigate('Locations'); break;
+            case 'Plantations': navigation.navigate('Plantations'); break;
             case 'Forecasting': navigation.navigate('Forecasting'); break;
             case 'Demands Summary': navigation.navigate('Demands Summary'); break;
             case 'Order Potential': navigation.navigate('Order Potential'); break;
@@ -46,6 +44,7 @@ const Marketing = ({navigation, initialItem }:Props) => {
             <ScrollView>
                 <View style={styles.container}>
                     <TouchNavGroup sectionTitle="Marketing" items={[
+                        { title: "Plantations", icon: 'map-marker-alt' },
                         { title: "Locations", icon: 'map-marker-alt' },
                         { title: "Forecasting", icon: 'th' },
                         { title: "Demands Summary", icon: 'th' },
