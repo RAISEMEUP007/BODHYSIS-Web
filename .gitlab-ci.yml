@@ -74,3 +74,11 @@ deploy development:
   script:
     - rsync -azhv --rsh="ssh -o StrictHostKeyChecking=no -l gitlab" ./web-build/** gitlab@100.69.4.76:/var/storage/apps/bodhisys/apps-dev/bohdisys-mobile/web-build
 
+
+deploy main:
+  stage: deploy
+  only:
+    - main
+  script:
+    - rsync -azhv --rsh="ssh -o StrictHostKeyChecking=no -l gitlab" ./web-build/** gitlab@100.69.4.76:/var/storage/apps/bodhisys/apps/bohdisys-mobile/web-build
+
