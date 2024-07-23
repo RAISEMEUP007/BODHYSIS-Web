@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Text, Platform, View } from 'react-native';
+import { Text, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { getOrderPotentialData } from '../../../api/AllAddress ';
+import { getOrderPotentialData, getPlantations, getPropertyNames } from '../../../api/AllAddress ';
 import { BasicLayout, CommonContainer } from '../../../common/components/CustomLayout';
-import { BOHTBody, BOHTD, BOHTDIconBox, BOHTDPressable, BOHTH, BOHTH2, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
+import { BOHTBody, BOHTD, BOHTDPressable, BOHTH2, BOHTHead, BOHTR, BOHTable } from '../../../common/components/bohtable';
 import { msgStr } from '../../../common/constants/Message';
-import { useAlertModal, useConfirmModal } from '../../../common/hooks';
-import { BOHButton, BOHTlbCheckbox, BOHToolbar, renderBOHTlbDatePicker } from '../../../common/components/bohtoolbar';
+import { useAlertModal } from '../../../common/hooks';
+import { BOHButton, BOHTlbCheckbox, BOHTlbrSearchPicker, BOHToolbar, renderBOHTlbDatePicker } from '../../../common/components/bohtoolbar';
 import { TextdefaultSize } from '../../../common/constants/Fonts';
 import { formatDate } from '../../../common/utils/DateUtils';
 import { API_URL } from '../../../common/constants/AppConstants';
@@ -23,6 +23,9 @@ const OrderPotential = ({ navigation }) => {
   const [daysArray, setdaysArray] = useState([]);
   const [isLoading, setLoading] = useState(false);
 
+  const [plantataions, setPlantations] = useState([]);
+  const [propertyNames, setPropertyNames] = useState([]);
+
   const today = new Date();
   const firstDateOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
   const lastDateOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
@@ -32,6 +35,8 @@ const OrderPotential = ({ navigation }) => {
     end_date: formatDate(lastDateOfMonth),
     xploriefif: false,
     xplorievoucher: false,
+    plantation: '',
+    property_name: '',
   });
 
   const changeSearchOptions = (key, val) => {
@@ -40,6 +45,15 @@ const OrderPotential = ({ navigation }) => {
       [key]: val
     }));
   }
+
+  useEffect(()=>{
+    getPlantations((jsonRes)=>{
+      setPlantations(jsonRes.filter(item=>!item.includes('Beach & Tennis')));
+    });
+    getPropertyNames((jsonRes)=>{
+      setPropertyNames(jsonRes);
+    });
+  }, [])
 
   useEffect(()=>{
     setLoading(true);
@@ -251,13 +265,46 @@ const OrderPotential = ({ navigation }) => {
               changeSearchOptions('xplorievoucher', !searchOptions.xplorievoucher);
             }}
           />
-          {/* <Text style={{fontSize:TextdefaultSize, marginLeft:30,}}>{`Total Nights: ${totalNights}`}</Text> */}
-          <BOHButton
-            style={{marginLeft:30}}
-            label='Export'
-            onPress={exportForecasting}
-          />
-        </BOHToolbar>
+          <BOHTlbrSearchPicker
+            width={136}
+            label="Plantation/Area"
+            items={[
+              {label: '', value: ''}, 
+              ...plantataions.map((item, index) => {
+                  if (item && item.trim()) {
+                    return {label: item.trim(), value: item.trim()};
+                  } else {
+                    return null;
+                  }
+                })
+                .filter(item => item !== null)
+            ]}
+            selectedValue={searchOptions.plantation || ''}
+            onValueChange={val=>changeSearchOptions('plantation', val)}
+            />
+          <BOHTlbrSearchPicker
+            width={136}
+            label="Property Name"
+            items={[
+              {label: '', value: ''}, 
+              ...propertyNames.map((item, index) => {
+                  if (item && item.trim()) {
+                    return {label: item.trim(), value: item.trim()};
+                  } else {
+                    return null;
+                  }
+                })
+                .filter(item => item !== null)
+            ]}
+            selectedValue={searchOptions.property_name || ''}
+            onValueChange={val=>changeSearchOptions('property_name', val)}
+            />
+            <BOHButton
+              style={{marginLeft:30}}
+              label='Export'
+              onPress={exportForecasting}
+            />
+          </BOHToolbar>
         {tableElement}
       </CommonContainer>
     </BasicLayout>
