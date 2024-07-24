@@ -176,11 +176,11 @@ const ReservationMainInfo = ({ details, setUpdateCount }) => {
 
     const payload:any = {
       id: details.id,
-      start_date : newValues.startDate,
-      end_date : newValues.endDate,
-      promo_code: newValues.discountCode,
     }
 
+    if(newValues.startDate) payload.start_date = newValues.startDate;
+    if(newValues.endDate) payload.end_date = newValues.endDate;
+    if(newValues.discountCode) payload.promo_code = newValues.discountCode;
     if(newValues.deliveryAddress) payload.delivery_address = newValues.deliveryAddress
 
     // if(fieldName == 'discountCode'){
